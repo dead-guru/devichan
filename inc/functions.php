@@ -164,7 +164,7 @@ function loadConfig() {
 
 		if (!isset($config['referer_match']))
 			if (isset($_SERVER['HTTP_HOST'])) {
-                $host = array_key_exists('raw_host', $config, true) ? $config['raw_host'] : $_SERVER['HTTP_HOST'];
+                $host = array_key_exists('raw_host', $config) ? $config['raw_host'] : $_SERVER['HTTP_HOST'];
 				$config['referer_match'] = '/^' .
 					(preg_match('@^https?://@', $config['root']) ? '' :
 						'https?:\/\/' . $host) .
