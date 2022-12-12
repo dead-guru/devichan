@@ -31,7 +31,6 @@ RUN apt-get install -y \
     && docker-php-ext-install curl
 
 RUN apt-get install -y libmagickwand-dev gifsicle graphicsmagick
-RUN pecl install imagick && docker-php-ext-enable imagick
 RUN apt-get update && apt-get install -y \
     imagemagick libmagickwand-dev --no-install-recommends \
     && pecl install imagick \

@@ -47,3 +47,6 @@ favicon.ico
 /static/spoiler.png
 
 /vendor/
+
+.idea
+.vscode
