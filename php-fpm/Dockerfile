@@ -12,7 +12,14 @@ RUN apt-get update && apt-get install -y \
     	git \
     	zip \
         ffmpeg \
+        libonig-dev \
     	unzip \
+        libcurl4-openssl-dev \
+        libmagickwand-dev \
+        gifsicle \
+        graphicsmagick \
+        imagemagick \
+        libmagickwand-dev \
     && docker-php-ext-configure gd --with-webp=/usr/include/webp --with-jpeg=/usr/include --with-freetype=/usr/include/freetype2/
 RUN pecl install redis && docker-php-ext-enable redis
 RUN docker-php-ext-install gd
@@ -23,20 +30,13 @@ RUN docker-php-ext-install pdo_mysql
 RUN docker-php-ext-install mysqli
 RUN docker-php-ext-install bcmath
 RUN docker-php-ext-install gettext
-RUN apt-get install -y \
-        libonig-dev \
-    && docker-php-ext-install iconv mbstring
+RUN docker-php-ext-install iconv mbstring
+RUN docker-php-ext-install curl
+RUN pecl install imagick \
+    && docker-php-ext-enable imagick \
 
-RUN apt-get install -y \
-        libcurl4-openssl-dev \
-    && docker-php-ext-install curl
+RUN mkdir -p /var/www/inc/ && echo "" > /var/www/inc/secrets.php && chmod 766 /var/www/inc/secrets.php
 
-RUN apt-get install -y libmagickwand-dev gifsicle graphicsmagick
-RUN apt-get update && apt-get install -y \
-    imagemagick libmagickwand-dev --no-install-recommends \
-    && pecl install imagick \
-    && docker-php-ext-enable imagick
-RUN mkdir -p /var/www/inc/ && echo "" > /var/www/inc/secrets.php
 WORKDIR "/var/www"
 CMD ["php-fpm"]
 EXPOSE 9000
