@@ -58,7 +58,7 @@
 				{{ antibot.html() }}
 			</th>
 			<td>
-				<textarea name="body" id="body" rows="5" cols="35"></textarea>
+				<textarea name="body" id="body" rows="5"></textarea>
 				{{ antibot.html() }}
 				{% if not (not (config.field_disable_subject or (id and config.field_disable_reply_subject)) or (mod and post.mod|hasPermission(config.mod.bypass_field_disable, board.uri))) %}
 				{% if not (not config.field_disable_email or (mod and post.mod|hasPermission(config.mod.bypass_field_disable, board.uri))) %}
@@ -95,7 +95,7 @@
 			</td>
 		</tr>
 			{% elseif config.new_thread_capt %}
- 			{% if not id %} 
+ 			{% if not id %}
  			<tr class='captcha'>
                         <th>
                                 {% trans %}Verification{% endtrans %}
@@ -148,7 +148,7 @@
 
 				{% if config.allow_upload_by_url %}
 					<div style="float:none;text-align:left" id="upload_url">
-						<label for="file_url">{% trans %}Or URL{% endtrans %}</label>: 
+						<label for="file_url">{% trans %}Or URL{% endtrans %}</label>:
 						<input style="display:inline" type="text" id="file_url" name="file_url" size="35">
 					</div>
 				{% endif %}
@@ -193,7 +193,7 @@
 				{{ antibot.html() }}
 			</th>
 			<td>
-				<input type="text" name="password" value="" size="12" maxlength="18" autocomplete="off"> 
+				<input type="text" name="password" value="" size="12" maxlength="18" autocomplete="off">
 				<span class="unimportant">{% trans %}(For file deletion.){% endtrans %}</span>
 				{{ antibot.html() }}
 			</td>
