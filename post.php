@@ -193,7 +193,7 @@ if (isset($_POST['delete'])) {
 	}
 	
 	checkDNSBL();
-		
+	
 	// Check if board exists
 	if (!openBoard($_POST['board']))
 		error($config['error']['noboard']);
@@ -224,7 +224,7 @@ if (isset($_POST['delete'])) {
 				$thread_query->bindValue(':id', $post['thread'], PDO::PARAM_INT);
 				$thread_query->execute() or error(db_error($query));
 
-				$thread = $thread_query->fetch(PDO::FETCH_ASSOC);	
+				$thread = $thread_query->fetch(PDO::FETCH_ASSOC);
 			}
 
 			if ($password != '' && $post['password'] != $password && (!$thread || $thread['password'] != $password))
@@ -280,7 +280,7 @@ if (isset($_POST['delete'])) {
 	}
 	
 	checkDNSBL();
-		
+	
 	// Check if board exists
 	if (!openBoard($_POST['board']))
 		error($config['error']['noboard']);
@@ -381,7 +381,7 @@ if (isset($_POST['delete'])) {
 		$_POST['subject'] = '';
 	
 	if (!isset($_POST['password']))
-		$_POST['password'] = '';	
+		$_POST['password'] = '';
 	
 	if (isset($_POST['thread'])) {
 		$post['op'] = false;
@@ -398,7 +398,7 @@ if (isset($_POST['delete'])) {
 		// Check for CAPTCHA right after opening the board so the "return" link is in there
 		if ($config['recaptcha']) {
 			if (!isset($_POST['g-recaptcha-response']))
-				error($config['error']['bot']);	
+				error($config['error']['bot']);
 
 			// Check what reCAPTCHA has to say...
 			$resp = json_decode(file_get_contents(sprintf('https://www.recaptcha.net/recaptcha/api/siteverify?secret=%s&response=%s&remoteip=%s',
@@ -434,7 +434,8 @@ if (isset($_POST['delete'])) {
 		// Check the referrer
 		if ($config['referer_match'] !== false &&
 			(!isset($_SERVER['HTTP_REFERER']) || !preg_match($config['referer_match'], rawurldecode($_SERVER['HTTP_REFERER']))))
-			error($config['error']['referer']);
+			
+            error($config['referer_match'] . ' - ' . $_SERVER['HTTP_REFERER']);
 	
 		checkDNSBL();
 		
@@ -486,7 +487,7 @@ if (isset($_POST['delete'])) {
 	else {
 		$thread = false;
 	}
-		
+	
 	
 	// Check for an embed field
 	if ($config['enable_embedding'] && isset($_POST['embed']) && !empty($_POST['embed'])) {
@@ -611,7 +612,7 @@ if (isset($_POST['delete'])) {
                         $numposts = numPosts($post['thread']);
 		}
 	}
-		
+	
 	if ($post['has_file']) {
 		// Determine size sanity
 		$size = 0;
@@ -723,7 +724,7 @@ if (isset($_POST['delete'])) {
 	if (!$dropped_post) {
 		// Check string lengths
 		if (mb_strlen($post['name']) > 35)
-			error(sprintf($config['error']['toolong'], 'name'));	
+			error(sprintf($config['error']['toolong'], 'name'));
 		if (mb_strlen($post['email']) > 40)
 			error(sprintf($config['error']['toolong'], 'email'));
 		if (mb_strlen($post['subject']) > 100)
@@ -1034,7 +1035,7 @@ if (isset($_POST['delete'])) {
 		if ($config['image_reject_repost']) {
 			if ($p = getPostByHash($post['filehash'])) {
 				undoImage($post);
-				error(sprintf($config['error']['fileexists'], 
+				error(sprintf($config['error']['fileexists'],
 					($post['mod'] ? $config['root'] . $config['file_mod'] . '?/' : $config['root']) .
 					($board['dir'] . $config['dir']['res'] .
 						($p['thread'] ?
@@ -1047,7 +1048,7 @@ if (isset($_POST['delete'])) {
 		} else if (!$post['op'] && $config['image_reject_repost_in_thread']) {
 			if ($p = getPostByHashInThread($post['filehash'], $post['thread'])) {
 				undoImage($post);
-				error(sprintf($config['error']['fileexistsinthread'], 
+				error(sprintf($config['error']['fileexistsinthread'],
 					($post['mod'] ? $config['root'] . $config['file_mod'] . '?/' : $config['root']) .
 					($board['dir'] . $config['dir']['res'] .
 						($p['thread'] ?
@@ -1186,7 +1187,7 @@ if (isset($_POST['delete'])) {
 	if ($noko) {
 		$redirect = $root . $board['dir'] . $config['dir']['res'] .
 			link_for($post, false, false, $thread) . (!$post['op'] ? '#' . $id : '');
-	   	
+	  
 		if (!$post['op'] && isset($_SERVER['HTTP_REFERER'])) {
 			$regex = array(
 				'board' => str_replace('%s', '(\w{1,8})', preg_quote($config['board_path'], '/')),
