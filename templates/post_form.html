@@ -21,7 +21,7 @@
 		</tr>{% endif %}
 		{% if not config.field_disable_email or (mod and post.mod|hasPermission(config.mod.bypass_field_disable, board.uri)) %}<tr>
 			<th>
-				{% trans %}Email{% endtrans %}
+				{% trans %}Options{% endtrans %}
 				{{ antibot.html() }}
 			</th>
 			<td>

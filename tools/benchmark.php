@@ -11,13 +11,13 @@ require 'inc/image.php';
 // move back to this directory
 chdir(dirname(__FILE__));
 
-if(count($argv) != 2)
-	die("Usage: {$argv[0]} [file]\n");
+if(count($argv) != 3)
+	die("Usage: {$argv[0]} [file] [count]\n");
 
 $file = $argv[1];
 $extension = strtolower(substr($file, strrpos($file, '.') + 1));
 $out = tempnam($config['tmp'], 'thumb');
-$count = 300;
+$count = $argv[2];
 
 function benchmark($method) {
 	global $config, $file, $extension, $out, $count;
@@ -54,4 +54,5 @@ if (extension_loaded('imagick')) {
 }
 benchmark('convert');
 benchmark('gm');
-becnhmark('convert+gifsicle');
+benchmark('convert+gifsicle');
+benchmark('gm+gifsicle');
