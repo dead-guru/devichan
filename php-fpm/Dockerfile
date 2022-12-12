@@ -11,6 +11,7 @@ RUN apt-get update && apt-get install -y \
     	libxml2-dev \
     	git \
     	zip \
+        ffmpeg \
     	unzip \
     && docker-php-ext-configure gd --with-webp=/usr/include/webp --with-jpeg=/usr/include --with-freetype=/usr/include/freetype2/
 RUN pecl install redis && docker-php-ext-enable redis
