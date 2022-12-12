@@ -167,7 +167,7 @@ function loadConfig() {
                 $host = array_key_exists('raw_host', $config, true) ? $config['raw_host'] : $_SERVER['HTTP_HOST'];
 				$config['referer_match'] = '/^' .
 					(preg_match('@^https?://@', $config['root']) ? '' :
-						'https?:\/\/' . $host .
+						'https?:\/\/' . $host) .
 						preg_quote($config['root'], '/') .
 					'(' .
 							str_replace('%s', $config['board_regex'], preg_quote($config['board_path'], '/')) .
