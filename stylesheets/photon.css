@@ -19,10 +19,6 @@ div.boardlist {
 }
 
 
-
-
-
-
 div.boardlist.bottom {
     margin-top: 20px;
     position: inherit;
@@ -366,6 +362,15 @@ form table tr td div {
 
 }
 
+.open-form a {
+    text-decoration: none;
+    color: #00b5ff;
+}
+
+.open-form {
+    font-size: 17pt;
+}
+
 .recaptchatable .recaptcha_image_cell {
     padding: 0px !important;
 }
@@ -391,13 +396,26 @@ div.ban h2 {
     border-radius: 7px;
     padding-top: 15px;
     padding-bottom: 10px;
-    border: 2px dashed rgba(187,187,187,0.31);
+    border: 2px dashed rgba(187, 187, 187, 0.31);
 }
+
 .news > .post:hover {
     background-color: #e3e3e3;
     cursor: pointer;
-    -webkit-box-shadow: 0px 0px 18px -3px rgba(0,0,0,0.14);
-    box-shadow: 0px 0px 18px -3px rgba(0,0,0,0.14);
+    -webkit-box-shadow: 0px 0px 18px -3px rgba(0, 0, 0, 0.14);
+    box-shadow: 0px 0px 18px -3px rgba(0, 0, 0, 0.14);
+}
+
+select {
+    border: 1px solid #a9a9a9;
+    vertical-align: top;
+    height: 20px;
+}
+
+input, select {
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
 }
 
 

@@ -1017,6 +1017,16 @@ div.boardlist a {
   float: right;
 }
 
+#thread-interactions_header {
+  margin: 8px 0;
+  clear: both;
+}
+
+#thread-links_header > a {
+  padding-left: 0;
+  padding-right: 10px;
+}
+
 #post-moderation-fields {
   float: right;
   text-align: right;

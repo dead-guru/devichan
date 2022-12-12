@@ -1,4 +1,13 @@
-<form name="post" onsubmit="return dopost(this);" enctype="multipart/form-data" action="{{ config.post_url }}" method="post">
+
+<h1 class="open-form">[<a href="#" onclick="toggle('form[name=post]'); return false">
+{% if not id %}
+	Start a New Thread
+{% else %}
+	Post a Reply
+{% endif %}
+</a>]</h1>
+<form name="post" style="display: none" onsubmit="return dopost(this);" enctype="multipart/form-data" action="{{ config.post_url }}" method="post">
+<br>
 {{ antibot.html() }}
 {% if id %}<input type="hidden" name="thread" value="{{ id }}">{% endif %}
 {{ antibot.html() }}
@@ -15,7 +24,7 @@
 				{{ antibot.html() }}
 			</th>
 			<td>
-				<input type="text" name="name" size="25" maxlength="35" autocomplete="off"> {% if config.allow_no_country and config.country_flags %}<input id="no_country" name="no_country" type="checkbox"> <label for="no_country">{% trans %}Don't show my flag{% endtrans %}</label>{% endif %}
+				<input type="text" name="name" style="width: 50%; height: 20px" maxlength="35" autocomplete="off"> {% if config.allow_no_country and config.country_flags %}<input id="no_country" name="no_country" type="checkbox"> <label for="no_country">{% trans %}Don't show my flag{% endtrans %}</label>{% endif %}
 				{{ antibot.html() }}
 			</td>
 		</tr>{% endif %}
@@ -26,13 +35,13 @@
 			</th>
 			<td>
 				{% if config.field_email_selectbox %}
-				<select name="email" id="email_selectbox" autocomplete="off">
+				<select name="email" id="email_selectbox" style="width: 50%; height: 20px" autocomplete="off">
 					<option value=""></option>
 					<option value="sage">sage</option>
 					{% if not config.always_noko %}<option value="noko">noko</option>{% endif %}
 				</select>
 				{% else %}
-				<input type="text" name="email" size="25" maxlength="40" autocomplete="off">
+				<input type="text" name="email" style="width: 50%; height: 20px" maxlength="40" autocomplete="off">
 				{% endif %}
 				{{ antibot.html() }}
 				{% if not (not (config.field_disable_subject or (id and config.field_disable_reply_subject)) or (mod and post.mod|hasPermission(config.mod.bypass_field_disable, board.uri))) %}
@@ -47,7 +56,7 @@
 				{{ antibot.html() }}
 			</th>
 			<td>
-				<input style="float:left;" type="text" name="subject" size="25" maxlength="100" autocomplete="off">
+				<input style="float:left; width: 50%; height: 20px" type="text" name="subject" maxlength="100" autocomplete="off">
 				<input accesskey="s" style="margin-left:2px;" type="submit" name="post" value="{% if id %}{{ config.button_reply }}{% else %}{{ config.button_newtopic }}{% endif %}" />{% if config.spoiler_images %} <input id="spoiler" name="spoiler" type="checkbox"> <label for="spoiler">{% trans %}Spoiler Image{% endtrans %}</label>{% endif %}
 			</td>
 		</tr>

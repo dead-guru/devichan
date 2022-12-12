@@ -29,7 +29,7 @@
 	{% if pm %}<div class="top_notice">You have <a href="?/PM/{{ pm.id }}">an unread PM</a>{% if pm.waiting > 0 %}, plus {{ pm.waiting }} more waiting{% endif %}.</div><hr />{% endif %}
 	{% if config.url_banner %}<img class="board_image" src="{{ config.url_banner }}?board={{ board.url }}" {% if config.banner_width or config.banner_height %}style="{% if config.banner_width %}width:{{ config.banner_width }}px{% endif %};{% if config.banner_width %}height:{{ config.banner_height }}px{% endif %}" {% endif %}alt="" />{% endif %}
 	<header>
-		<h1>{{ board.url }} - {{ board.title|e }}</h1>
+		<h1><a href="{{ return }}" style="color: inherit; text-decoration: inherit;">{{ board.url }} - {{ board.title|e }}</a></h1>
 		<div class="subtitle">
 			{% if board.subtitle %}
 				{% if config.allow_subtitle_html %}
@@ -44,14 +44,23 @@
 
 	{% include 'attention_bar.html' %}
 
-	<div class="banner">{% trans %}Posting mode: Reply{% endtrans %} <a class="unimportant" href="{{ return }}">[{% trans %}Return{% endtrans %}]</a> <a class="unimportant" href="#bottom">[{% trans %}Go to bottom {% endtrans %}]</a></div>
+	<div class="banner" style="display: none">{% trans %}Reply{% endtrans %} <a class="unimportant" href="{{ return }}">[{% trans %}Return{% endtrans %}]</a> <a class="unimportant" href="#bottom">[{% trans %}Go to bottom {% endtrans %}]</a></div>
 
 	{{ config.ad.top }}
 
 	{% include 'post_form.html' %}
-
+	<hr>
 	{% if config.global_message %}<hr /><div class="blotter">{{ config.global_message }}</div>{% endif %}
-	<hr />
+	<div id="thread-interactions_header">
+			<span id="thread-links_header">
+				<a href="{{ return }}">[{% trans %}Return{% endtrans %}]</a>
+				<a href="#bottom">[{% trans %}Go to bottom{% endtrans %}]</a>
+                		{% if config.catalog_link %}
+					<a href="{{ config.root }}{% if mod %}{{ config.file_mod }}?/{% endif %}{{ board.dir }}{{ config.catalog_link }}">[{% trans %}Catalog{% endtrans %}]</a>
+		                {% endif %}
+			</span>
+	</div>
+	<hr>
 	<form name="postcontrols" action="{{ config.post_url }}" method="post">
 		<input type="hidden" name="board" value="{{ board.uri }}" />
 		{% if mod %}<input type="hidden" name="mod" value="1" />{% endif %}
@@ -63,7 +72,7 @@
 				<a id="thread-return" href="{{ return }}">[{% trans %}Return{% endtrans %}]</a>
 				<a id="thread-top" href="#top">[{% trans %}Go to top{% endtrans %}]</a>
                 		{% if config.catalog_link %}
-					<a id="thread-catalog" href="{{ config.root }}{% if mod %}{{ config.file_mod }}?/{% endif %}{{ board.dir }}{{ config.catalog_link }}">{% trans %}Catalog{% endtrans %}</a>
+					<a id="thread-catalog" href="{{ config.root }}{% if mod %}{{ config.file_mod }}?/{% endif %}{{ board.dir }}{{ config.catalog_link }}">[{% trans %}Catalog{% endtrans %}]</a>
 		                {% endif %}
 			</span>
 
