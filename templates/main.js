@@ -390,14 +390,12 @@ function init() {
 	{% endif %}
 	{% verbatim %}
 	$(document).ready(function () {
-		console.log('ready');
 		if (window.location.hash.indexOf('q') != 1 && window.location.hash.substring(1)) {
 			let id = window.location.hash.substring(1);
 			highlightReply(id);
 
 			setTimeout(function () {
 				$(document).scrollTop($('#reply_' + id).offset().top - 50);
-				console.log($('#reply_' + id).offset().top);
 			}, 100);
 
 
