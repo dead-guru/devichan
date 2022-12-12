@@ -54,7 +54,7 @@ function loadConfig() {
 	}
 
 
-	if (isset($config['cache_config']) && 
+	if (isset($config['cache_config']) &&
 	    $config['cache_config'] &&
             $config = Cache::get('config_' . $boardsuffix ) ) {
 		$events = Cache::get('events_' . $boardsuffix );
@@ -73,7 +73,7 @@ function loadConfig() {
 	else {
 		$config = array();
 
-		reset_events();	
+		reset_events();
 
 		$arrays = array(
 			'db',
@@ -164,9 +164,10 @@ function loadConfig() {
 
 		if (!isset($config['referer_match']))
 			if (isset($_SERVER['HTTP_HOST'])) {
+                $host = array_key_exists('raw_host', $config, true) ? $config['raw_host'] : $_SERVER['HTTP_HOST'];
 				$config['referer_match'] = '/^' .
 					(preg_match('@^https?://@', $config['root']) ? '' :
-						'https?:\/\/' . $_SERVER['HTTP_HOST']) .
+						'https?:\/\/' . $host .
 						preg_quote($config['root'], '/') .
 					'(' .
 							str_replace('%s', $config['board_regex'], preg_quote($config['board_path'], '/')) .
@@ -341,7 +342,7 @@ function basic_error_function_because_the_other_isnt_loaded_yet($message, $prior
 		'<p class="c">This alternative error page is being displayed because the other couldn\'t be found or hasn\'t loaded yet.</p></body></html>');
 }
 
-function fatal_error_handler() { 
+function fatal_error_handler() {
 	if ($error = error_get_last()) {
 		if ($error['type'] == E_ERROR) {
 			if (function_exists('error')) {
@@ -425,7 +426,7 @@ function rebuildThemes($action, $boardname = false) {
 		$config = $_config;
 		$board = $_board;
 
-		// Reload the locale	
+		// Reload the locale
 	        if ($config['locale'] != $current_locale) {
 	                $current_locale = $config['locale'];
 	                init_locale($config['locale']);
@@ -446,7 +447,7 @@ function rebuildThemes($action, $boardname = false) {
 	$config = $_config;
 	$board = $_board;
 
-	// Reload the locale	
+	// Reload the locale
 	if ($config['locale'] != $current_locale) {
 	        $current_locale = $config['locale'];
 	        init_locale($config['locale']);
@@ -598,7 +599,7 @@ function purge($uri) {
 	global $config, $debug;
 
 	// Fix for Unicode
-	$uri = rawurlencode($uri); 
+	$uri = rawurlencode($uri);
 
 	$noescape = "/!~*()+:";
 	$noescape = preg_split('//', $noescape);
@@ -899,7 +900,7 @@ function checkBan($board = false) {
 	if (!isset($_SERVER['REMOTE_ADDR'])) {
 		// Server misconfiguration
 		return;
-	}		
+	}
 
 	if (event('check-ban', $board))
 		return true;
@@ -1043,7 +1044,7 @@ function post(array $post) {
 	$query->bindValue(':body', $post['body']);
 	$query->bindValue(':body_nomarkup', $post['body_nomarkup']);
 	$query->bindValue(':time', isset($post['time']) ? $post['time'] : time(), PDO::PARAM_INT);
-	$query->bindValue(':password', $post['password']);		
+	$query->bindValue(':password', $post['password']);
 	$query->bindValue(':ip', isset($post['ip']) ? $post['ip'] : $_SERVER['REMOTE_ADDR']);
 
 	if ($post['op'] && $post['mod'] && isset($post['sticky']) && $post['sticky']) {
@@ -1643,7 +1644,7 @@ function checkMute() {
 			// Not expired yet
 			error(sprintf($config['error']['youaremuted'], $mute['time'] + $mutetime - time()));
 		} else {
-			// Already expired	
+			// Already expired
 			return;
 		}
 	}
@@ -2013,7 +2014,7 @@ function extract_modifiers($body) {
 			$modifiers[$match[1]] = html_entity_decode($match[2]);
 		}
 	}
-		
+	
 	return $modifiers;
 }
 
@@ -2308,7 +2309,7 @@ function utf8tohtml($utf8) {
 }
 
 function ordutf8($string, &$offset) {
-	$code = ord(substr($string, $offset,1)); 
+	$code = ord(substr($string, $offset,1));
 	if ($code >= 128) { // otherwise 0xxxxxxx
 		if ($code < 224)
 			$bytesnumber = 2; // 110xxxxx
@@ -2478,13 +2479,13 @@ function buildThread50($id, $return = false, $mod = false, $thread = null, $anti
 		$thread->omitted += count($allPosts) - count($thread->posts);
 		foreach ($allPosts as $index => $post) {
 			if ($index == count($allPosts)-count($thread->posts))
-				break;  
+				break;
 			if ($post->files)
 				$thread->omitted_images += $post->num_files;
 		}
 	}
 
-	$hasnoko50 = $thread->postCount() >= $config['noko50_min'];		
+	$hasnoko50 = $thread->postCount() >= $config['noko50_min'];
 
 	$body = Element($config['file_thread'], array(
 		'board' => $board,
@@ -2498,7 +2499,7 @@ function buildThread50($id, $return = false, $mod = false, $thread = null, $anti
 		'antibot' => $mod ? false : ($antibot ? $antibot : create_antibot($board['uri'], $id)),
 		'boardlist' => createBoardlist($mod),
 		'return' => ($mod ? '?' . $board['url'] . $config['file_index'] : $config['root'] . $board['dir'] . $config['file_index'])
-	));	
+	));
 
 	if ($return) {
 		return $body;
@@ -2577,7 +2578,7 @@ function hcf($a, $b){
 		$b = $a-$b;
 		$a = $a-$b;
 	}
-	if ($b==(round($b/$a))*$a) 
+	if ($b==(round($b/$a))*$a)
 		$gcd=$a;
 	else {
 		for ($i=round($a/2);$i;$i--) {
