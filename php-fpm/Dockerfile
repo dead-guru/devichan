@@ -35,7 +35,7 @@ RUN apt-get update && apt-get install -y \
     imagemagick libmagickwand-dev --no-install-recommends \
     && pecl install imagick \
     && docker-php-ext-enable imagick
-RUN mkrid -p /var/www/inc/ && echo "" > /var/www/inc/secrets.php
+RUN mkdir -p /var/www/inc/ && echo "" > /var/www/inc/secrets.php
 WORKDIR "/var/www"
 CMD ["php-fpm"]
 EXPOSE 9000
