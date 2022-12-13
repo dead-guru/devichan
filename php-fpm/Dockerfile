@@ -32,8 +32,10 @@ RUN docker-php-ext-install bcmath
 RUN docker-php-ext-install gettext
 RUN docker-php-ext-install iconv mbstring
 RUN docker-php-ext-install curl
+RUN pecl install -o -f igbinary \
+    && docker-php-ext-enable igbinary
 RUN pecl install imagick \
-    && docker-php-ext-enable imagick \
+    && docker-php-ext-enable imagick
 
 RUN mkdir -p /var/www/inc/ && echo "" > /var/www/inc/secrets.php && chmod 766 /var/www/inc/secrets.php
 

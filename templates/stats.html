@@ -1,0 +1,29 @@
+<div class="ban board-stats" style="padding-bottom: 20px;">
+    <h2>{% trans %}All time stats{% endtrans %}</h2>
+    {% for boardStat in stats.all_time %}
+    <h3 style="margin-left: 15px; color: #f60;">{{ boardStat.board }}</h3>
+    <ul style="border: #bbb solid 1px;margin: 0 20px 20px;border-radius: 7px;list-style-type: none;padding-inline-start: 0;padding: 10px;">
+        <li>
+            <strong>Threads:</strong> {{ boardStat.threads }}
+        </li>
+        <li>
+            <strong>Replays:</strong> {{ boardStat.replays }}
+        </li>
+    </ul>
+    <hr>
+    {% endfor %}
+</div>
+<div class="ban board-stats">
+    <h2>{% trans %}7d stats{% endtrans %}</h2>
+    {% for boardStat in stats.all_time %}
+    <h3 style="margin-left: 15px; color: #f60;">{{ boardStat.board }}</h3>
+    <ul style="border: #bbb solid 1px;margin: 0 20px;border-radius: 7px;list-style-type: none;padding-inline-start: 0;padding: 10px;">
+        <li>
+            <strong>Threads:</strong> {{ boardStat.threads }}
+        </li>
+        <li>
+            <strong>Replays:</strong> {{ boardStat.replays }}
+        </li>
+    </ul>
+    {% endfor %}
+</div>
