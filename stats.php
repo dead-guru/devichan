@@ -10,16 +10,22 @@ $stats = [
     '7d' => []
 ];
 
-
-dump($_SERVER);
-
-
 foreach (listBoards(true) as $boardsLink) { //TODO: count results of thread field grouping
     $queryThreads = prepare("SELECT COUNT(*) FROM ``posts_" . $boardsLink . "`` WHERE `thread` is NULL");
     $queryThreads->execute() or error(db_error($queryThreads));
     
     $queryReplays = prepare("SELECT COUNT(*) FROM ``posts_" . $boardsLink . "`` WHERE `thread` is not NULL");
     $queryReplays->execute() or error(db_error($queryReplays));
+    
+    $files = prepare("SELECT COUNT(num_files) FROM ``posts_" . $boardsLink . "`` WHERE `num_files` > 0");
+    $files->execute() or error(db_error($files));
+    
+    $stats['all_time'][$boardsLink] = [
+        'board' => $boardsLink,
+        'threads' => $queryThreads->fetchColumn(),
+        'replays' => $queryReplays->fetchColumn(),
+        'files' => $files->fetchColumn(),
+    ];
     
     $time = time();
     
@@ -36,16 +42,16 @@ foreach (listBoards(true) as $boardsLink) { //TODO: count results of thread fiel
     $queryReplays7d->bindValue(':last', $last, PDO::PARAM_INT);
     $queryReplays7d->execute() or error(db_error($queryReplays7d));
     
-    $stats['all_time'][$boardsLink] = [
-        'board' => $boardsLink,
-        'threads' => $queryThreads->fetchColumn(),
-        'replays' => $queryReplays->fetchColumn()
-    ];
+    $files7d = prepare("SELECT COUNT(num_files) FROM ``posts_" . $boardsLink . "`` WHERE `num_files` > 0 AND time BETWEEN :first AND :last");
+    $files7d->bindValue(':first', $first, PDO::PARAM_INT);
+    $files7d->bindValue(':last', $last, PDO::PARAM_INT);
+    $files7d->execute() or error(db_error($files7d));
     
     $stats['7d'][$boardsLink] = [
         'board' => $boardsLink,
         'threads' => $queryThreads7d->fetchColumn(),
-        'replays' => $queryReplays7d->fetchColumn()
+        'replays' => $queryReplays7d->fetchColumn(),
+        'files' => $files7d->fetchColumn(),
     ];
 }
 $body = Element('stats.html', ['stats' => $stats]);
