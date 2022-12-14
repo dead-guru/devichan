@@ -5,7 +5,7 @@
 			<a href="http://imgops.com/{{ config.domain }}{{ config.uri_img }}{{ file.file }}" target="_blank">[ImgOps]</a>&nbsp;
 		{% endif %}
 		{% if config.image_identification_exif and file.file|extension == 'jpg' %}
-			<a href="http://exif.int21h.win/?url={{ config.domain }}{{ config.uri_img }}{{ file.file }}" target="_blank">[Exif]</a>&nbsp;
+			<a href="https://exif.tools/{{ config.domain }}{{ config.uri_img }}{{ file.file }}" target="_blank">[Exif]</a>&nbsp;
 		{% endif %}
 		{% if config.image_identification_google %}
 			<a href="https://lens.google.com/uploadbyurl?url={{ config.domain|url_encode }}{{ config.uri_img|url_encode }}{{ file.file|url_encode }}" target="_blank">[Google]</a>&nbsp;
