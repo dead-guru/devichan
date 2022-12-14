@@ -35,10 +35,7 @@ case "get":
 
   $cookie = rand_string(20, "abcdefghijklmnopqrstuvwxyz");
 
-  ob_start();
-  $captcha->to_html();
-  $html = ob_get_contents();
-  ob_end_clean();
+  $html = $captcha->to_html();
 
   $query = $pdo->prepare("INSERT INTO `captchas` (`cookie`, `extra`, `text`, `created_at`) VALUES (?, ?, ?, ?)");
   $query->execute(                               [$cookie,  $extra,  $text,  time()]);

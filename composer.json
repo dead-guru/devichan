@@ -14,7 +14,8 @@
     "mrclay/minify": "^2.1.6",
     "geoip/geoip": "^1.17",
     "dapphp/securimage": "^4.0",
-    "ext-gettext": "*"
+    "ext-gettext": "*",
+    "ext-imagick": "*"
   },
   "autoload": {
     "classmap": [
