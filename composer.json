@@ -6,6 +6,7 @@
     "php": ">=8.0",
     "ext-mbstring": ">=5.4",
     "ext-gd": ">=5.4",
+    "ext-curl": "*",
     "ext-pdo": ">=5.4",
     "ext-fileinfo": "*",
     "twig/twig": "^1.44.2",

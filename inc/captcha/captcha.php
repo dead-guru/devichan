@@ -30,7 +30,7 @@ class CzaksCaptcha
     {
         $base64Image = $this->generate($this->text, $this->width, $this->height);
         
-        return '<img src="data:image/jpg;base64,' . $base64Image . '" title="Click for regenerate" alt="captcha">';
+        return '<img style="width: 50%" src="data:image/jpg;base64,' . $base64Image . '" title="Click for regenerate" alt="captcha">';
     }
     
     private function rand_color()
@@ -44,12 +44,13 @@ class CzaksCaptcha
         $Imagick = new Imagick();
         $bg = new ImagickPixel('#EEEEEE');
         $ImagickDraw = new ImagickDraw();
-        //$ImagickDraw->setFont();
-        $ImagickDraw->setFontSize(50);
+        $ImagickDraw->setFont('font.ttf');
+        $ImagickDraw->setFontSize(65);
         
         $Imagick->newImage($width, $height, $bg);
+        $Imagick->addNoiseImage($Imagick::NOISE_POISSON);
         
-        for ($x = 0; $x <= 40; $x++) {
+        for ($x = 0; $x <= 15; $x++) {
             $ImagickDraw->setStrokeOpacity(random_int(3, 7) / 10);
             $ImagickDraw->setStrokeColor(new ImagickPixel($this->rand_color()));
             $ImagickDraw->setStrokeWidth(random_int(1, 3));
@@ -60,8 +61,9 @@ class CzaksCaptcha
                 random_int(0, $height)
             );
         }
+        $ImagickDraw->setStrokeWidth(1);
         $ImagickDraw->setFillColor(new ImagickPixel('#000000'));
-        $Imagick->annotateImage($ImagickDraw, 30, $height / 2, random_int(0, 10), $string);
+        $Imagick->annotateImage($ImagickDraw, 5, ($height+25) / 2, random_int(0, 10), $string);
         $Imagick->blurImage(0.4, 1);
         $Imagick->swirlImage(20);
         $Imagick->drawImage($ImagickDraw);
