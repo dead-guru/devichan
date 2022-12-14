@@ -6,8 +6,7 @@
  */
 
 if (active_page === "catalog" || active_page === "thread" || active_page === "index") {
-    $(document).on('ready', function () {
-
+    $(document).ready(function () {
         if (window.Options && Options.get_tab('general')) {
             Options.extend_tab("general",
                 "<fieldset><legend>Image hover</legend>"
@@ -37,7 +36,6 @@ if (active_page === "catalog" || active_page === "thread" || active_page === "in
             if (filename.match(/\.([a-z0-9]+)(&loop.*)?$/i) !== null) {
                 return filename.match(/\.([a-z0-9]+)(&loop.*)?$/i)[1];
             } else if (filename.match(/^https?:\/\/(\w+\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9\-_]{10,11})(&.+)?$/i)) {
-                console.log('Youtube')
                 return 'Youtube';
             } else {
                 return "unknown: " + filename;

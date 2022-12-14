@@ -270,7 +270,7 @@ $(document).ready(function () {
 });
 
 //YT draggable
-$(document).on('ready', function () {
+$(document).ready(function () {
     //Options for jQuery-UI draggable
     var ui_draggable_opts = {
         handle: ".video-handle",
