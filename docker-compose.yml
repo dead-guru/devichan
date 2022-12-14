@@ -16,7 +16,7 @@ services:
     environment:
       MYSQL_DATABASE: 'dead'
       MYSQL_USER: 'dead'
-      MYSQL_PASSWORD: 'changeme'
+      MYSQL_PASSWORD: 'a*%)@FD43fs%34fddjh35'
       MYSQL_ROOT_PASSWORD: 'changeme'
     ports:
       - '3311:3306'
@@ -48,6 +48,7 @@ services:
     labels:
       caddy.address: "https://4.dead.guru"
       caddy.tls: "assada.ua@gmail.com"
+      caddy.proxy.transparent: ""
 volumes:
   mysql:
     driver: local
