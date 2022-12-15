@@ -29,7 +29,7 @@ class Twig_Extensions_Node_Trans extends Node
 {
     public function __construct(Node $body, ?Node $plural = null, ?AbstractExpression $count = null, ?Node $notes = null, $lineno, $tag = null)
     {
-        $nodes = array('body' => $body);
+        $nodes = ['body' => $body];
         if (null !== $count) {
             $nodes['count'] = $count;
         }
@@ -115,21 +115,17 @@ class Twig_Extensions_Node_Trans extends Node
     
     public function getNode($name)
     {
-        if (!isset($this->nodes[$name])) {
-            return null;
-        }
-    
-        return $this->nodes[$name];
+        return $this->nodes[$name] ?? null;
     }
     
     
     protected function compileString(Node $body): array
     {
         if ($body instanceof NameExpression || $body instanceof ConstantExpression || $body instanceof TempNameExpression) {
-            return array($body, array());
+            return [$body, []];
         }
         
-        $vars = array();
+        $vars = [];
         if (count($body)) {
             $msg = '';
             
