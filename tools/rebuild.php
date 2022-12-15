@@ -3,10 +3,10 @@
 
 /*
  *  rebuild.php - rebuilds all static files
- * 
+ *
  *  Command line arguments:
  *     -q, --quiet
- *          Suppress output. 
+ *          Suppress output.
  *
  *     --quick
  *          Do not rebuild posts.
@@ -36,13 +36,16 @@ $options['quick'] = isset($opts['quick']);
 $options['full'] = isset($opts['full']) || isset($opts['f']);
 
 if(!$options['quiet'])
-	echo "== Tinyboard + vichan {$config['version']} ==\n";	
+	echo "== Tinyboard + vichan {$config['version']} ==\n";
 
 if(!$options['quiet'])
 	echo "Clearing template cache...\n";
 
 load_twig();
-$twig->clearCacheFiles();
+$cache = $twig->getCache();
+if(is_string($cache)) {
+    @unlink($cache);
+}
 
 if(!$options['quiet'])
 	echo "Regenerating theme files...\n";

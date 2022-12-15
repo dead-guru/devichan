@@ -39,12 +39,15 @@ $options['api'] = isset($opts['api']);
 // How many processes?
 $options['processes'] = isset($opts['processes']) ? $opts['processes'] : 1;
 
-echo "== Tinyboard + vichan {$config['version']} ==\n";	
+echo "== Tinyboard + vichan {$config['version']} ==\n";
 
 if ($options['cache']) {
 	echo "Clearing template cache...\n";
 	load_twig();
-	$twig->clearCacheFiles();
+    $cache = $twig->getCache();
+    if(is_string($cache)) {
+        @unlink($cache);
+    }
 }
 
 if($options['themes']) {
@@ -122,7 +125,7 @@ foreach ($boards_m as $i => $bb) {
 			$i++;
 			doboard($b);
 			echo "I'm on board $i/$total\n";
-		}	
+		}
 		break;
 	}
 }
