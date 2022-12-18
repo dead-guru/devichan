@@ -18,7 +18,7 @@ function mod_page($title, $template, $args, $subtitle = false) {
 		'boardlist' => createBoardlist($mod),
 		'body' => Element($template,
 				array_merge(
-					array('config' => $config, 'mod' => $mod), 
+					array('config' => $config, 'mod' => $mod),
 					$args
 				)
 			)
@@ -126,7 +126,7 @@ function mod_dashboard() {
 							'major' => (int) $matches[2],
 							'minor' => (int) $matches[3]
 						);
-						if (isset($m[4])) { 
+						if (isset($m[4])) {
 							// Development versions are always ahead in the versioning numbers
 							$current['minor'] --;
 						}
@@ -301,7 +301,7 @@ function mod_search($type, $search_query_escaped, $page_no = 1) {
 		if (!hasPermission($config['mod']['modlog']))
 			error($config['error']['noaccess']);
 	}
-		
+	
 	// Execute SQL query (with pages)
 	$q = query($query . ' LIMIT ' . (($page_no - 1) * $config['mod']['search_page']) . ', ' . $config['mod']['search_page']) or error(db_error());
 	$results = $q->fetchAll(PDO::FETCH_ASSOC);
@@ -330,7 +330,7 @@ function mod_search($type, $search_query_escaped, $page_no = 1) {
 	}
 	
 	// $results now contains the search results
-		
+	
 	mod_page(_('Search results'), $config['file_mod_search_results'], array(
 		'search_type' => $type,
 		'search_query' => $search_query,
@@ -1194,7 +1194,7 @@ function mod_bumplock($board, $unbumplock, $post) {
 	header('Location: ?/' . sprintf($config['board_path'], $board) . $config['file_index'], true, $config['redirect_http']);
 }
 
-function mod_move_reply($originBoard, $postID) { 
+function mod_move_reply($originBoard, $postID) {
 	global $board, $config, $mod;
 
 	if (!openBoard($originBoard))
@@ -1228,7 +1228,7 @@ function mod_move_reply($originBoard, $postID) {
 			$post['has_file'] = true;
 			foreach ($post['files'] as $i => &$file) {
 				$file['file_path'] = sprintf($config['board_path'], $board['uri']) . $config['dir']['img'] . $file['file'];
-				if (isset($file['thumb'])) 
+				if (isset($file['thumb']))
 				$file['thumb_path'] = sprintf($config['board_path'], $board['uri']) . $config['dir']['thumb'] . $file['thumb'];
 			}
 		} else {
@@ -1241,13 +1241,13 @@ function mod_move_reply($originBoard, $postID) {
 		if (!openBoard($targetBoard))
 			error($config['error']['noboard']);
 		
-		// create the new post 
+		// create the new post
 		$newID = post($post);
 		
 		if ($post['has_file']) {
 			foreach ($post['files'] as $i => &$file) {
 				// move the image
-				if (isset($file['thumb'])) 
+				if (isset($file['thumb']))
 				if ($file['thumb'] != 'spoiler' || $file['thumb'] != 'deleted') { //trying to move/copy the spoiler thumb raises an error
 				rename($file['file_path'], sprintf($config['board_path'], $board['uri']) . $config['dir']['img'] . $file['file']);
 				rename($file['thumb_path'], sprintf($config['board_path'], $board['uri']) . $config['dir']['thumb'] . $file['thumb']);
@@ -1328,7 +1328,7 @@ function mod_move($originBoard, $postID) {
 			$post['files'] = json_decode($post['files'], TRUE);
 			$post['has_file'] = true;
 			foreach ($post['files'] as $i => &$file) {
-				if ($file['file'] === 'deleted') 
+				if ($file['file'] === 'deleted')
 					continue;
 				$file['file_path'] = sprintf($config['board_path'], $board['uri']) . $config['dir']['img'] . $file['file'];
 				$file['thumb_path'] = sprintf($config['board_path'], $board['uri']) . $config['dir']['thumb'] . $file['thumb'];
@@ -1352,7 +1352,7 @@ function mod_move($originBoard, $postID) {
 		if ($post['has_file']) {
 			// copy image
 			foreach ($post['files'] as $i => &$file) {
-				if ($file['file'] !== 'deleted') 
+				if ($file['file'] !== 'deleted')
 					$clone($file['file_path'], sprintf($config['board_path'], $board['uri']) . $config['dir']['img'] . $file['file']);
 				if (isset($file['thumb']) && !in_array($file['thumb'], array('spoiler', 'deleted', 'file')))
 					$clone($file['thumb_path'], sprintf($config['board_path'], $board['uri']) . $config['dir']['thumb'] . $file['thumb']);
@@ -1378,7 +1378,7 @@ function mod_move($originBoard, $postID) {
 				foreach ($post['files'] as $i => &$file) {
 					$file['file_path'] = sprintf($config['board_path'], $board['uri']) . $config['dir']['img'] . $file['file'];
 
-					if (isset($file['thumb'])) 
+					if (isset($file['thumb']))
 						$file['thumb_path'] = sprintf($config['board_path'], $board['uri']) . $config['dir']['thumb'] . $file['thumb'];
 				}
 			} else {
@@ -1418,7 +1418,7 @@ function mod_move($originBoard, $postID) {
 			if ($post['has_file']) {
 				// copy image
 				foreach ($post['files'] as $i => &$file) {
-					if (isset($file['thumb'])) 
+					if (isset($file['thumb']))
 					if ($file['thumb'] != 'spoiler' || $file['thumb'] != 'deleted') { //trying to move/copy the spoiler thumb raises an error
 						$clone($file['file_path'], sprintf($config['board_path'], $board['uri']) . $config['dir']['img'] . $file['file']);
 						$clone($file['thumb_path'], sprintf($config['board_path'], $board['uri']) . $config['dir']['thumb'] . $file['thumb']);
@@ -1638,7 +1638,7 @@ function mod_edit_post($board, $edit_raw_html, $postID) {
 	} else {
 		// Remove modifiers
 		$post['body_nomarkup'] = remove_modifiers($post['body_nomarkup']);
-				
+		
 		$post['body_nomarkup'] = utf8tohtml($post['body_nomarkup']);
 		$post['body'] = utf8tohtml($post['body']);
 		if ($config['minify_html']) {
@@ -1700,10 +1700,10 @@ function mod_deletefile($board, $post, $file) {
 
 function mod_spoiler_image($board, $post, $file) {
 	global $config, $mod;
-	   
+	
 	if (!openBoard($board))
 		error($config['error']['noboard']);
-	   
+	 
 	if (!hasPermission($config['mod']['spoilerimage'], $board))
 		error($config['error']['noaccess']);
 
@@ -1738,7 +1738,7 @@ function mod_spoiler_image($board, $post, $file) {
 
 	// Rebuild themes
 	rebuildThemes('post-delete', $board);
-	   
+	
 	// Redirect
 	header('Location: ?/' . sprintf($config['board_path'], $board) . $config['file_index'], true, $config['redirect_http']);
 }
@@ -1992,7 +1992,7 @@ function mod_user_new() {
 		header('Location: ?/users', true, $config['redirect_http']);
 		return;
 	}
-		
+	
 	mod_page(_('New user'), $config['file_mod_user'], array('new' => true, 'boards' => listBoards(), 'token' => make_secure_link_token('users/new')));
 }
 
@@ -2196,7 +2196,7 @@ function mod_rebuild() {
 	
 	if (isset($_POST['rebuild'])) {
 		@set_time_limit($config['mod']['rebuild_timelimit']);
-				
+		
 		$log = array();
 		$boards = listBoards();
 		$rebuilt_scripts = array();
@@ -2209,7 +2209,10 @@ function mod_rebuild() {
 			
 			$log[] = 'Clearing template cache';
 			load_twig();
-			$twig->clearCacheFiles();
+            $cache = $twig->getCache();
+            if(is_string($cache)) {
+                @unlink($cache);
+            }
 		}
 		
 		if (isset($_POST['rebuild_themes'])) {
@@ -2462,7 +2465,7 @@ function mod_config($board_config = false) {
 			else {
 				file_put_contents($config_file, $old_code);
 				error($config['error']['badsyntax'] . $resp);
-			}	
+			}
 		}
 		
 		$instance_config = @file_get_contents($config_file);
@@ -2781,12 +2784,12 @@ function mod_edit_page($id) {
 		$content = $_POST['content'];
 		$method = $_POST['method'];
 		$page['type'] = $method;
-			
+		
 		if (!in_array($method, array('markdown', 'html', 'infinity')))
 			error(_('Unrecognized page markup method.'));
 	
 		switch ($method) {
-			case 'markdown': 
+			case 'markdown':
 				$write = markdown($content);
 				break;
 			case 'html':

@@ -6,13 +6,14 @@
 require_once 'inc/bootstrap.php';
 defined('TINYBOARD') or exit;
 
+/** @var \Twig\Environment $twig */
 $twig = false;
 
 function load_twig() {
 	global $twig, $config;
-	$loader = new Twig_Loader_Filesystem($config['dir']['template']);
+	$loader = new \Twig\Loader\FilesystemLoader($config['dir']['template']);
 	$loader->setPaths($config['dir']['template']);
-	$twig = new Twig_Environment($loader, array(
+	$twig = new \Twig\Environment($loader, array(
 		'autoescape' => false,
 		'cache' => is_writable('templates') || (is_dir('templates/cache') && is_writable('templates/cache')) ?
 			"{$config['dir']['template']}/cache" : false,
@@ -27,7 +28,7 @@ function Element($templateFile, array $options) {
 	
 	if (!$twig)
 		load_twig();
-	
+  
 	if (function_exists('create_pm_header') && ((isset($options['mod']) && $options['mod']) || isset($options['__mod'])) && !preg_match('!^mod/!', $templateFile)) {
 		$options['pm'] = create_pm_header();
 	}
@@ -55,9 +56,9 @@ function Element($templateFile, array $options) {
 	
 	// Read the template file
 	if (@file_get_contents("{$config['dir']['template']}/${templateFile}")) {
-		$body = $twig->render($templateFile, $options);
-		
-		if ($config['minify_html'] && preg_match('/\.html$/', $templateFile)) {
+        $body = $twig->render($templateFile, $options);
+        
+        if ($config['minify_html'] && preg_match('/\.html$/', $templateFile)) {
 			$body = trim(preg_replace("/[\t\r\n]/", '', $body));
 		}
 		

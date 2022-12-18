@@ -1,6 +1,6 @@
 <?php
 
-// Installation/upgrade file	
+// Installation/upgrade file
 define('VERSION', '5.1.4');
 require 'inc/bootstrap.php';
 loadConfig();
@@ -176,7 +176,7 @@ if (file_exists($config['has_installed'])) {
 			
 			query("ALTER IGNORE TABLE  `robot` ADD PRIMARY KEY (`hash`)") or error(db_error());
 			query("ALTER TABLE  `bans` ADD FULLTEXT (`ip`)") or error(db_error());
-			query("ALTER TABLE  `ip_notes` ADD INDEX (`ip`)") or error(db_error());	
+			query("ALTER TABLE  `ip_notes` ADD INDEX (`ip`)") or error(db_error());
 			query("ALTER TABLE  `modlogs` ADD INDEX (`time`)") or error(db_error());
 			query("ALTER TABLE  `boards` ADD PRIMARY KEY(`uri`)") or error(db_error());
 			query("ALTER TABLE  `mutes` ADD INDEX (`ip`)") or error(db_error());
@@ -214,14 +214,14 @@ if (file_exists($config['has_installed'])) {
 			}
 			query("CREATE TABLE IF NOT EXISTS `cites` (  `board` varchar(8) NOT NULL,  `post` int(11) NOT NULL,  `target_board` varchar(8) NOT NULL,  `target` int(11) NOT NULL,  KEY `target` (`target_board`,`target`),  KEY `post` (`board`,`post`)) ENGINE=MyISAM DEFAULT CHARSET=utf8;") or error(db_error());
 		case 'v0.9.5-dev-2':
-			query("ALTER TABLE  `boards` 
+			query("ALTER TABLE  `boards`
 				CHANGE  `uri`  `uri` VARCHAR( 15 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
 				CHANGE  `title`  `title` VARCHAR( 40 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
 				CHANGE  `subtitle`  `subtitle` VARCHAR( 120 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL") or error(db_error());
 		case 'v0.9.5-dev-3':
 			// v0.9.5
 		case 'v0.9.5':
-			query("ALTER TABLE  `boards` 
+			query("ALTER TABLE  `boards`
 				CHANGE  `uri`  `uri` VARCHAR( 50 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
 				CHANGE  `title`  `title` TINYTEXT CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
 				CHANGE  `subtitle`  `subtitle` TINYTEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL") or error(db_error());
@@ -486,7 +486,7 @@ if (file_exists($config['has_installed'])) {
 				) ENGINE=MyISAM  DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1") or error(db_error());
 			$listquery = query("SELECT * FROM ``bans`` ORDER BY `id`") or error(db_error());
 			while ($ban = $listquery->fetch(PDO::FETCH_ASSOC)) {
-				$query = prepare("INSERT INTO ``bans_new_temp`` VALUES 
+				$query = prepare("INSERT INTO ``bans_new_temp`` VALUES
 					(NULL, :ipstart, :ipend, :created, :expires, :board, :creator, :reason, :seen, NULL)");
 				
 				$range = Bans::parse_range($ban['ip']);
@@ -562,7 +562,10 @@ if (file_exists($config['has_installed'])) {
 			}
 		case '4.4.98-pre':
 			if (!$twig) load_twig();
-			$twig->clearCacheFiles();
+            $cache = $twig->getCache();
+            if(is_string($cache)) {
+                @unlink($cache);
+            }
 		case '4.4.98':
 		case '4.5.0':
 		case '4.5.1':
@@ -653,7 +656,7 @@ if (file_exists($config['has_installed'])) {
 			$page['title'] = 'Already installed';
 			$page['body'] = '<p style="text-align:center">It appears that vichan is already installed (' . $version . ') and there is nothing to upgrade! Delete <strong>' . $config['has_installed'] . '</strong> to reinstall.</p>';
 			break;
-	}			
+	}
 	
 	die(Element('page.html', $page));
 }
@@ -934,7 +937,7 @@ if ($step == 0) {
 	$more = $_POST['more'];
 	unset($_POST['more']);
 
-	$instance_config = 
+	$instance_config =
 '<'.'?php
 
 /*
