@@ -29,20 +29,32 @@ foreach (listBoards(true) as $boardsLink) { //TODO: count results of thread fiel
     
     $time = time();
     
-    $last = DateTime::createFromFormat('Y-m-d H:i:s', (new DateTime())->setTimestamp($time)->format('Y-m-d 23:59:59'))->getTimestamp();
-    $first = DateTime::createFromFormat('Y-m-d H:i:s', (new DateTime())->modify('-7d')->setTimestamp($time)->format('Y-m-d 00:00:00'))->getTimestamp();
+    $last = DateTime::createFromFormat(
+        'Y-m-d H:i:s',
+        (new DateTime())->setTimestamp($time)->format('Y-m-d 23:59:59')
+    )->getTimestamp();
+    $first = DateTime::createFromFormat(
+        'Y-m-d H:i:s',
+        (new DateTime())->modify('-7d')->setTimestamp($time)->format('Y-m-d 00:00:00')
+    )->getTimestamp();
     
-    $queryThreads7d = prepare("SELECT COUNT(*) FROM ``posts_" . $boardsLink . "`` WHERE `thread` is NULL AND time BETWEEN :first AND :last");
+    $queryThreads7d = prepare(
+        "SELECT COUNT(*) FROM ``posts_" . $boardsLink . "`` WHERE `thread` is NULL AND time BETWEEN :first AND :last"
+    );
     $queryThreads7d->bindValue(':first', $first, PDO::PARAM_INT);
     $queryThreads7d->bindValue(':last', $last, PDO::PARAM_INT);
     $queryThreads7d->execute() or error(db_error($queryThreads7d));
     
-    $queryReplays7d = prepare("SELECT COUNT(*) FROM ``posts_" . $boardsLink . "`` WHERE `thread` is not NULL AND time BETWEEN :first AND :last");
+    $queryReplays7d = prepare(
+        "SELECT COUNT(*) FROM ``posts_" . $boardsLink . "`` WHERE `thread` is not NULL AND time BETWEEN :first AND :last"
+    );
     $queryReplays7d->bindValue(':first', $first, PDO::PARAM_INT);
     $queryReplays7d->bindValue(':last', $last, PDO::PARAM_INT);
     $queryReplays7d->execute() or error(db_error($queryReplays7d));
     
-    $files7d = prepare("SELECT COUNT(num_files) FROM ``posts_" . $boardsLink . "`` WHERE `num_files` > 0 AND time BETWEEN :first AND :last");
+    $files7d = prepare(
+        "SELECT COUNT(num_files) FROM ``posts_" . $boardsLink . "`` WHERE `num_files` > 0 AND time BETWEEN :first AND :last"
+    );
     $files7d->bindValue(':first', $first, PDO::PARAM_INT);
     $files7d->bindValue(':last', $last, PDO::PARAM_INT);
     $files7d->execute() or error(db_error($files7d));
@@ -59,6 +71,7 @@ $body = Element('stats.html', ['stats' => $stats]);
 echo Element($config['file_page_template'], [
     'config' => $config,
     'title' => _('Statistics'),
+    'subtitle' => _('Board Statistics'),
     'boardlist' => createBoardlist(),
     'body' => '' . $body
 ]);

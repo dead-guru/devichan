@@ -88,6 +88,11 @@ textarea#body {
     width: 518px;
 }
 
+textarea.text_body {
+    height: 136px;
+    width: 518px;
+}
+
 
 html, body {
     background: none;
@@ -440,4 +445,16 @@ input, select {
         height: 100px;
         width: 100%;
     }
+}
+
+
+.postform__limits {
+    position: absolute;
+    bottom: 4px;
+    right: 10px;
+    opacity: 0.6;
+    font-size: 0.8rem;
+}
+.postarea {
+    position: relative;
 }

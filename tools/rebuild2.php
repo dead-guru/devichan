@@ -45,8 +45,8 @@ if ($options['cache']) {
 	echo "Clearing template cache...\n";
 	load_twig();
     $cache = $twig->getCache();
-    if(is_string($cache)) {
-        @unlink($cache);
+    if(is_string($cache) && is_dir($cache)) {
+        rrmdir($cache);
     }
 }
 

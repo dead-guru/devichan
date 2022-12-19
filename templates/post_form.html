@@ -67,7 +67,11 @@
 				{{ antibot.html() }}
 			</th>
 			<td>
-				<textarea name="body" id="body" rows="5"></textarea>
+				<div class="postarea">
+					<textarea name="body" id="body" rows="5" class="text_body"></textarea>
+					<div class="postform__limits" title="Post/reply limits">{{ config.max_filesize | format_bytes(0) }} / {{ config.max_images }} files / <span class="postform__len">{{config.max_body}}</span></div>
+				</div>
+
 				{{ antibot.html() }}
 				{% if not (not (config.field_disable_subject or (id and config.field_disable_reply_subject)) or (mod and post.mod|hasPermission(config.mod.bypass_field_disable, board.uri))) %}
 				{% if not (not config.field_disable_email or (mod and post.mod|hasPermission(config.mod.bypass_field_disable, board.uri))) %}

@@ -43,8 +43,8 @@ if(!$options['quiet'])
 
 load_twig();
 $cache = $twig->getCache();
-if(is_string($cache)) {
-    @unlink($cache);
+if(is_string($cache) && is_dir($cache)) {
+    rrmdir($cache);
 }
 
 if(!$options['quiet'])

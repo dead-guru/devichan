@@ -300,9 +300,11 @@
         // Synchronise body text with original post form
         $origPostForm.find('textarea[name="body"]').on('change input propertychange', function () {
             $postForm.find('textarea[name="body"]').val($(this).val());
+            $postForm.find('textarea[name="body"]').trigger('keyup');
         });
         $postForm.find('textarea[name="body"]').on('change input propertychange', function () {
             $origPostForm.find('textarea[name="body"]').val($(this).val());
+            $origPostForm.find('textarea[name="body"]').trigger('keyup');
         });
         $postForm.find('textarea[name="body"]').focus(function () {
             $origPostForm.find('textarea[name="body"]').removeAttr('id');

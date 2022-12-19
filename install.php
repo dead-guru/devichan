@@ -563,8 +563,8 @@ if (file_exists($config['has_installed'])) {
 		case '4.4.98-pre':
 			if (!$twig) load_twig();
             $cache = $twig->getCache();
-            if(is_string($cache)) {
-                @unlink($cache);
+            if(is_string($cache) && is_dir($cache)) {
+                rrmdir($cache);
             }
 		case '4.4.98':
 		case '4.5.0':

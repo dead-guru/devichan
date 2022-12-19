@@ -2210,8 +2210,8 @@ function mod_rebuild() {
 			$log[] = 'Clearing template cache';
 			load_twig();
             $cache = $twig->getCache();
-            if(is_string($cache)) {
-                @unlink($cache);
+            if(is_string($cache) && is_dir($cache)) {
+                rrmdir($cache);
             }
 		}
 		

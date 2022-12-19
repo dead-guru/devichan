@@ -35,13 +35,13 @@ tb_settings['quick-reply'] = {
 	// Show remote in quick reply
 	show_remote: false,
 	// Show embedding in quick reply
-	show_embed: false
+	show_embed: true
 };
 
 // ajax.js
 tb_settings['ajax'] = {
 	// Always act as if "noko" was typed when posting replies with the ajax script
-	always_noko_replies: false	
+	always_noko_replies: false
 };
 
 // wpaint.js
