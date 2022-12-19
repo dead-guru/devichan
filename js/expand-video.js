@@ -186,13 +186,19 @@ function setupVideo(thumb, url) {
                 }
             }
             loopControls[i].style.fontWeight = "bold";
+            loopControls[i].className = "ev-action active";
             loopControls[1-i].style.fontWeight = "inherit";
+            loopControls[1-i].className = "ev-action";
         }, false);
     }
 
-    loopControls[0].textContent = _("[play once]");
-    loopControls[1].textContent = _("[loop]");
+    loopControls[0].textContent = _("[Play once]");
+    loopControls[0].style.cursor = "pointer";
+    loopControls[0].className = "ev-action";
+    loopControls[1].textContent = _("[Loop]");
     loopControls[1].style.fontWeight = "bold";
+    loopControls[1].style.cursor = "pointer";
+    loopControls[1].className = "ev-action active";
     for (var i = 0; i < 2; i++) {
         setupLoopControl(i);
         loopControls[i].style.whiteSpace = "nowrap";

@@ -462,3 +462,15 @@ input, select {
 a.show-image-link, a.hide-image-link {
     color: #acacac;
 }
+
+.ev-action {
+    font-size: 10px;
+    color: #8A8A8A;
+    text-decoration: underline;
+}
+
+.ev-action.active {
+    font-size: 10px;
+    color: #5a5a5a;
+    text-decoration: none;
+}
