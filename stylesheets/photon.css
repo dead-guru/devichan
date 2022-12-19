@@ -458,3 +458,7 @@ input, select {
 .postarea {
     position: relative;
 }
+
+a.show-image-link, a.hide-image-link {
+    color: #acacac;
+}

@@ -48,7 +48,7 @@ $(document).ready(function(){
 			hidden_data[board] = {}; // id : timestamp
 		}
 
-		var replacement = $('<span>'+' <small>(<a class="hide-image-link" href="javascript:void(0)">'+_('hide')+'</a>)</small>: </span>');
+		var replacement = $('<span>'+' <small><a class="hide-image-link" href="javascript:void(0)" title="Hide image"><i class="fa fa-eye-slash fa-sm"></i></a></small> </span>');
 
 		replacement.find('a').click(function() {
 			if (hidden_data[board][id]) {
@@ -60,7 +60,7 @@ $(document).ready(function(){
 			}
 			store_data();
 
-			var show_link = $('<a class="show-image-link" href="javascript:void(0)">'+_('show')+'</a>').click(function() {
+			var show_link = $('<a class="show-image-link" href="javascript:void(0)" title="Show image"><i class="fa fa-eye"></i></a>').click(function() {
 				var i = hidden_data[board][id]['index'].indexOf(index);
 				if (i > -1) hidden_data[board][id]['index'].splice(i,1);
 
