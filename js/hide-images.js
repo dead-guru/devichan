@@ -48,7 +48,7 @@ $(document).ready(function(){
 			hidden_data[board] = {}; // id : timestamp
 		}
 
-		var replacement = $('<span>'+_('File')+' <small>(<a class="hide-image-link" href="javascript:void(0)">'+_('hide')+'</a>)</small>: </span>');
+		var replacement = $('<span>'+' <small><a class="hide-image-link" href="javascript:void(0)" title="Hide image"><i class="fa fa-eye-slash fa-sm"></i></a></small> </span>');
 
 		replacement.find('a').click(function() {
 			if (hidden_data[board][id]) {
