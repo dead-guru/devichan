@@ -12,11 +12,11 @@
     "twig/twig": "^2",
     "lifo/ip": "^1.1",
     "gettext/gettext": "^1.0",
-    "mrclay/minify": "^2.3.3",
     "geoip/geoip": "^1.17",
     "dapphp/securimage": "^4.0",
     "ext-gettext": "*",
-    "ext-imagick": "*"
+    "ext-imagick": "*",
+    "mrclay/jsmin-php": "^2.4"
   },
   "autoload": {
     "classmap": [
