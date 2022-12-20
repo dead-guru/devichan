@@ -2,6 +2,15 @@ devichan - A Dockerized lightweight and full featured PHP imageboard based on vi
 ========================================================
 <img width="768" alt="image" src="https://user-images.githubusercontent.com/1472664/207603999-fcf8037d-ab36-4c64-833a-e2160cdc5dde.png">
 
+New Features
+------------
+* docker-compose
+* Updated twig (1 -> 3), jquery (2 -> 3)
+* add 404 and 500 error pages
+* Banners for each board
+* statistics page (stats.php)
+* Removed lot of dead code
+* tons of small fixes of js and templates
 
 About
 ------------
