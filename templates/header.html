@@ -12,7 +12,7 @@
 			var modRoot="{{ config.root }}"+(inMod ? "mod.php?/" : "");
 		</script>
 		{% if not nojavascript %}
-			<script type="text/javascript" src="{{ config.url_javascript }}"></script>
+			<script type="text/javascript" src="{{ config.url_javascript }}{% if config.minify_js_hash != false %}?v={{ config.minify_js_hash }}{% endif %}"></script>
 			{% if not config.additional_javascript_compile %}
 			{% for javascript in config.additional_javascript %}<script type="text/javascript" src="{{ config.additional_javascript_url }}{{ javascript }}"></script>{% endfor %}
 			{% endif %}

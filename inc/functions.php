@@ -55,7 +55,6 @@ function loadConfig() {
 		require_once('tmp/cache/cache_config.php');
 	}
 
-
 	if (isset($config['cache_config']) &&
 	    $config['cache_config'] &&
             $config = Cache::get('config_' . $boardsuffix ) ) {
@@ -251,7 +250,15 @@ function loadConfig() {
 			event_handler('post', 'postHandler');
 	}
 	// Effectful config processing below:
-
+    
+    if ($config['minify_js'] && !Cache::get('minify_js_hash') && file_exists('js/package.json')) {
+        $package = json_decode(file_get_contents('js/package.json'), true);
+        $hash = array_key_exists('hash', $package) ? $package['hash'] : false;
+        Cache::set('minify_js_hash', $hash);
+    }
+    
+    $config['minify_js_hash'] = Cache::get('minify_js_hash');
+    
 	date_default_timezone_set($config['timezone']);
 
 	if ($config['root_file']) {
@@ -1871,7 +1878,22 @@ function buildJavascript() {
 
 	if ($config['minify_js']) {
 		$script = JSMin::minify($script);
-	}
+        $config['minify_js_hash'] = md5($script);
+        $script =  '//' . $config['minify_js_hash'] . PHP_EOL .'console.log("' . $config['minify_js_hash'].'");' . $script;
+        Cache::set('minify_js_hash', $config['minify_js_hash']);
+        
+        $package = [
+            'additional_javascript' => $config['additional_javascript'],
+            'minify_js' => $config['minify_js'],
+            'additional_javascript_compile' => $config['additional_javascript_compile'],
+            'hash' => $config['minify_js'] === true ? $config['minify_js_hash'] : null,
+            'time' => time(),
+        ];
+        
+        file_write('js/package.json', json_encode($package, JSON_THROW_ON_ERROR));
+	} else {
+        @unlink('js/package.json');
+    }
 
 	file_write($config['file_script'], $script);
 }

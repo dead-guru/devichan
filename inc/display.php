@@ -9,7 +9,7 @@ if (realpath($_SERVER['SCRIPT_FILENAME']) == str_replace('\\', '/', __FILE__)) {
 	exit;
 }
 
-/* 
+/*
 	joaoptm78@gmail.com
 	http://www.php.net/manual/en/function.filesize.php#100097
 */
@@ -99,9 +99,9 @@ function error($message, $priority = true, $debug_stuff = false) {
 		die(json_encode(array(
 			'error' => $message
 		)));
-	}
-	else {
-		header($_SERVER['SERVER_PROTOCOL'] . ' 400 Bad Request');
+	} else {
+		header($_SERVER['SERVER_PROTOCOL'] . ' 500 Internal Server Error', true, 500);
+        die(require '500.php');
 	}
 
 	$pw = $config['db']['password'];
@@ -113,7 +113,7 @@ function error($message, $priority = true, $debug_stuff = false) {
 	};
 
 
-	if ($debug_stuff) 
+	if ($debug_stuff)
 		$debug_stuff = array_filter($debug_stuff, $debug_callback);
 
 	die(Element($config['file_page_template'], array(
