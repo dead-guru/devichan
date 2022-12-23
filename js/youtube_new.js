@@ -287,7 +287,7 @@ $(document).ready(function () {
     dummy_reply.remove();
 
     //Add pop buttons
-    $('.video-container').prepend($('<a href="#" class="video-pop" style="font-weight:bold;float:right">[pop]</a>'))
+    $('.video-container').prepend($('<a href="#" class="video-pop" style="font-weight:bold;float:right"><i class="fa fa-picture-o" aria-hidden="true"></i></a>'))
     $('.video-container').css({display: 'inline-block', float: 'left'});
     $('.thread>.video-container>a>img').css('margin-bottom', 0)
 
@@ -302,7 +302,7 @@ $(document).ready(function () {
             vc.removeClass('ui-draggable');
             vc.css('position', 'static');
             vc.find('.video-handle').remove();
-            $(this).text('[pop]');
+            $(this).text('<i class="fa fa-picture-o" aria-hidden="true"></i>');
 
         } else {
             $(this).text('[return]');
@@ -321,7 +321,7 @@ $(document).ready(function () {
     });
     /*Vidme*/
     //Add pop buttons
-    $('.video-container-vidme').prepend($('<a href="#" class="video-pop" style="font-weight:bold;float:right">[pop]</a>'))
+    $('.video-container-vidme').prepend($('<a href="#" class="video-pop" style="font-weight:bold;float:right"><i class="fa fa-picture-o" aria-hidden="true"></i></a>'))
     $('.video-container-vidme').css({display: 'inline-block', float: 'left'});
     $('.thread>.video-container-vidme>a>img').css('margin-bottom', 0)
 
@@ -336,7 +336,7 @@ $(document).ready(function () {
             vc.removeClass('ui-draggable');
             vc.css('position', 'static');
             vc.find('.video-handle').remove();
-            $(this).text('[pop]');
+            $(this).text('<i class="fa fa-picture-o" aria-hidden="true"></i>');
 
         } else {
             $(this).text('[return]');
@@ -356,7 +356,7 @@ $(document).ready(function () {
 
     /*TGW*/
     //Add pop buttons
-    $('.video-container-tgw1').prepend($('<a href="#" class="video-pop" style="font-weight:bold;float:right">[pop]</a>'))
+    $('.video-container-tgw1').prepend($('<a href="#" class="video-pop" style="font-weight:bold;float:right"><i class="fa fa-picture-o" aria-hidden="true"></i></a>'))
     $('.video-container-tgw1').css({display: 'inline-block', float: 'left'});
     $('.thread>.video-container-tgw1>a>img').css('margin-bottom', 0)
 
@@ -371,7 +371,7 @@ $(document).ready(function () {
             vc.removeClass('ui-draggable');
             vc.css('position', 'static');
             vc.find('.video-handle').remove();
-            $(this).text('[pop]');
+            $(this).text('<i class="fa fa-picture-o" aria-hidden="true"></i>');
 
         } else {
             $(this).text('[return]');
@@ -391,7 +391,7 @@ $(document).ready(function () {
 
     /*TGW*/
     //Add pop buttons
-    $('.video-container-tgw2').prepend($('<a href="#" class="video-pop" style="font-weight:bold;float:right">[pop]</a>'))
+    $('.video-container-tgw2').prepend($('<a href="#" class="video-pop" style="font-weight:bold;float:right"><i class="fa fa-picture-o" aria-hidden="true"></i></a>'))
     $('.video-container-tgw2').css({display: 'inline-block', float: 'left'});
     $('.thread>.video-container-tgw2>a>img').css('margin-bottom', 0)
 
@@ -406,7 +406,7 @@ $(document).ready(function () {
             vc.removeClass('ui-draggable');
             vc.css('position', 'static');
             vc.find('.video-handle').remove();
-            $(this).text('[pop]');
+            $(this).text('<i class="fa fa-picture-o" aria-hidden="true"></i>');
 
         } else {
             $(this).text('[return]');
@@ -426,7 +426,7 @@ $(document).ready(function () {
 
     /*xhamster*/
     //Add pop buttons
-    $('.video-container-xhamster').prepend($('<a href="#" class="video-pop" style="font-weight:bold;float:right">[pop]</a>'))
+    $('.video-container-xhamster').prepend($('<a href="#" class="video-pop" style="font-weight:bold;float:right"><i class="fa fa-picture-o" aria-hidden="true"></i></a>'))
     $('.video-container-xhamster').css({display: 'inline-block', float: 'left'});
     $('.thread>.video-container-xhamster>a>img').css('margin-bottom', 0)
 
@@ -441,7 +441,7 @@ $(document).ready(function () {
             vc.removeClass('ui-draggable');
             vc.css('position', 'static');
             vc.find('.video-handle').remove();
-            $(this).text('[pop]');
+            $(this).text('<i class="fa fa-picture-o" aria-hidden="true"></i>');
 
         } else {
             $(this).text('[return]');
@@ -461,7 +461,7 @@ $(document).ready(function () {
 
     /*redtube*/
     //Add pop buttons
-    $('.video-container-redtube').prepend($('<a href="#" class="video-pop" style="font-weight:bold;float:right">[pop]</a>'))
+    $('.video-container-redtube').prepend($('<a href="#" class="video-pop" style="font-weight:bold;float:right"><i class="fa fa-picture-o" aria-hidden="true"></i></a>'))
     $('.video-container-redtube').css({display: 'inline-block', float: 'left'});
     $('.thread>.video-container-redtube>a>img').css('margin-bottom', 0)
 
@@ -476,7 +476,7 @@ $(document).ready(function () {
             vc.removeClass('ui-draggable');
             vc.css('position', 'static');
             vc.find('.video-handle').remove();
-            $(this).text('[pop]');
+            $(this).text('<i class="fa fa-picture-o" aria-hidden="true"></i>');
 
         } else {
             $(this).text('[return]');
@@ -496,7 +496,7 @@ $(document).ready(function () {
 
     /*pornhub*/
     //Add pop buttons
-    $('.video-container-pornhub').prepend($('<a href="#" class="video-pop" style="font-weight:bold;float:right">[pop]</a>'))
+    $('.video-container-pornhub').prepend($('<a href="#" class="video-pop" style="font-weight:bold;float:right"><i class="fa fa-picture-o" aria-hidden="true"></i></a>'))
     $('.video-container-pornhub').css({display: 'inline-block', float: 'left'});
     $('.thread>.video-container-pornhub>a>img').css('margin-bottom', 0)
 
@@ -511,7 +511,7 @@ $(document).ready(function () {
             vc.removeClass('ui-draggable');
             vc.css('position', 'static');
             vc.find('.video-handle').remove();
-            $(this).text('[pop]');
+            $(this).text('<i class="fa fa-picture-o" aria-hidden="true"></i>');
 
         } else {
             $(this).text('[return]');
@@ -531,7 +531,7 @@ $(document).ready(function () {
 
     /*tube8*/
     //Add pop buttons
-    $('.video-container-tube8').prepend($('<a href="#" class="video-pop" style="font-weight:bold;float:right">[pop]</a>'))
+    $('.video-container-tube8').prepend($('<a href="#" class="video-pop" style="font-weight:bold;float:right"><i class="fa fa-picture-o" aria-hidden="true"></i></a>'))
     $('.video-container-tube8').css({display: 'inline-block', float: 'left'});
     $('.thread>.video-container-tube8>a>img').css('margin-bottom', 0)
 
@@ -546,7 +546,7 @@ $(document).ready(function () {
             vc.removeClass('ui-draggable');
             vc.css('position', 'static');
             vc.find('.video-handle').remove();
-            $(this).text('[pop]');
+            $(this).text('<i class="fa fa-picture-o" aria-hidden="true"></i>');
 
         } else {
             $(this).text('[return]');
@@ -566,7 +566,7 @@ $(document).ready(function () {
 
     /*xvideos*/
     //Add pop buttons
-    $('.video-container-xvideos').prepend($('<a href="#" class="video-pop" style="font-weight:bold;float:right">[pop]</a>'))
+    $('.video-container-xvideos').prepend($('<a href="#" class="video-pop" style="font-weight:bold;float:right"><i class="fa fa-picture-o" aria-hidden="true"></i></a>'))
     $('.video-container-xvideos').css({display: 'inline-block', float: 'left'});
     $('.thread>.video-container-xvideos>a>img').css('margin-bottom', 0)
 
@@ -581,7 +581,7 @@ $(document).ready(function () {
             vc.removeClass('ui-draggable');
             vc.css('position', 'static');
             vc.find('.video-handle').remove();
-            $(this).text('[pop]');
+            $(this).text('<i class="fa fa-picture-o" aria-hidden="true"></i>');
 
         } else {
             $(this).text('[return]');
@@ -601,7 +601,7 @@ $(document).ready(function () {
 
     /*youjizz*/
     //Add pop buttons
-    $('.video-container-youjizz').prepend($('<a href="#" class="video-pop" style="font-weight:bold;float:right">[pop]</a>'))
+    $('.video-container-youjizz').prepend($('<a href="#" class="video-pop" style="font-weight:bold;float:right"><i class="fa fa-picture-o" aria-hidden="true"></i></a>'))
     $('.video-container-youjizz').css({display: 'inline-block', float: 'left'});
     $('.thread>.video-container-youjizz>a>img').css('margin-bottom', 0)
 
@@ -616,7 +616,7 @@ $(document).ready(function () {
             vc.removeClass('ui-draggable');
             vc.css('position', 'static');
             vc.find('.video-handle').remove();
-            $(this).text('[pop]');
+            $(this).text('<i class="fa fa-picture-o" aria-hidden="true"></i>');
 
         } else {
             $(this).text('[return]');
@@ -636,7 +636,7 @@ $(document).ready(function () {
 
     /*twitch*/
     //Add pop buttons
-    $('.video-container-twitch').prepend($('<a href="#" class="video-pop" style="font-weight:bold;float:right">[pop]</a>'))
+    $('.video-container-twitch').prepend($('<a href="#" class="video-pop" style="font-weight:bold;float:right"><i class="fa fa-picture-o" aria-hidden="true"></i></a>'))
     $('.video-container-twitch').css({display: 'inline-block', float: 'left'});
     $('.thread>.video-container-twitch>a>img').css('margin-bottom', 0)
 
@@ -651,7 +651,7 @@ $(document).ready(function () {
             vc.removeClass('ui-draggable');
             vc.css('position', 'static');
             vc.find('.video-handle').remove();
-            $(this).text('[pop]');
+            $(this).text('<i class="fa fa-picture-o" aria-hidden="true"></i>');
 
         } else {
             $(this).text('[return]');
@@ -671,7 +671,7 @@ $(document).ready(function () {
 
     /*Dailymotion*/
     //Add pop buttons
-    $('.video-container-dailymotion').prepend($('<a href="#" class="video-pop" style="font-weight:bold;float:right">[pop]</a>'))
+    $('.video-container-dailymotion').prepend($('<a href="#" class="video-pop" style="font-weight:bold;float:right"><i class="fa fa-picture-o" aria-hidden="true"></i></a>'))
     $('.video-container-dailymotion').css({display: 'inline-block', float: 'left'});
     $('.thread>.video-container-dailymotion>a>img').css('margin-bottom', 0)
 
@@ -686,7 +686,7 @@ $(document).ready(function () {
             vc.removeClass('ui-draggable');
             vc.css('position', 'static');
             vc.find('.video-handle').remove();
-            $(this).text('[pop]');
+            $(this).text('<i class="fa fa-picture-o" aria-hidden="true"></i>');
 
         } else {
             $(this).text('[return]');
@@ -706,7 +706,7 @@ $(document).ready(function () {
 
     /*vaughnlive*/
     //Add pop buttons
-    $('.video-container-vaughnlive').prepend($('<a href="#" class="video-pop" style="font-weight:bold;float:right">[pop]</a>'))
+    $('.video-container-vaughnlive').prepend($('<a href="#" class="video-pop" style="font-weight:bold;float:right"><i class="fa fa-picture-o" aria-hidden="true"></i></a>'))
     $('.video-container-vaughnlive').css({display: 'inline-block', float: 'left'});
     $('.thread>.video-container-vaughnlive>a>img').css('margin-bottom', 0)
 
@@ -721,7 +721,7 @@ $(document).ready(function () {
             vc.removeClass('ui-draggable');
             vc.css('position', 'static');
             vc.find('.video-handle').remove();
-            $(this).text('[pop]');
+            $(this).text('<i class="fa fa-picture-o" aria-hidden="true"></i>');
 
         } else {
             $(this).text('[return]');
@@ -741,7 +741,7 @@ $(document).ready(function () {
 
     /*Liveleak*/
     //Add pop buttons
-    $('.video-container-liveleak').prepend($('<a href="#" class="video-pop" style="font-weight:bold;float:right">[pop]</a>'))
+    $('.video-container-liveleak').prepend($('<a href="#" class="video-pop" style="font-weight:bold;float:right"><i class="fa fa-picture-o" aria-hidden="true"></i></a>'))
     $('.video-container-liveleak').css({display: 'inline-block', float: 'left'});
     $('.thread>.video-container-liveleak>a>img').css('margin-bottom', 0)
 
@@ -756,7 +756,7 @@ $(document).ready(function () {
             vc.removeClass('ui-draggable');
             vc.css('position', 'static');
             vc.find('.video-handle').remove();
-            $(this).text('[pop]');
+            $(this).text('<i class="fa fa-picture-o" aria-hidden="true"></i>');
 
         } else {
             $(this).text('[return]');
@@ -776,7 +776,7 @@ $(document).ready(function () {
 
     /*Nicovideo*/
     //Add pop buttons
-    $('.video-container-nicovideo').prepend($('<a href="#" class="video-pop" style="font-weight:bold;float:right">[pop]</a>'))
+    $('.video-container-nicovideo').prepend($('<a href="#" class="video-pop" style="font-weight:bold;float:right"><i class="fa fa-picture-o" aria-hidden="true"></i></a>'))
     $('.video-container-nicovideo').css({display: 'inline-block', float: 'left'});
     $('.thread>.video-container-nicovideo>a>img').css('margin-bottom', 0)
 
@@ -791,7 +791,7 @@ $(document).ready(function () {
             vc.removeClass('ui-draggable');
             vc.css('position', 'static');
             vc.find('.video-handle').remove();
-            $(this).text('[pop]');
+            $(this).text('<i class="fa fa-picture-o" aria-hidden="true"></i>');
 
         } else {
             $(this).text('[return]');
@@ -811,7 +811,7 @@ $(document).ready(function () {
 
     /*Streamable*/
     //Add pop buttons
-    $('.video-container-streamable').prepend($('<a href="#" class="video-pop" style="font-weight:bold;float:right">[pop]</a>'))
+    $('.video-container-streamable').prepend($('<a href="#" class="video-pop" style="font-weight:bold;float:right"><i class="fa fa-picture-o" aria-hidden="true"></i></a>'))
     $('.video-container-streamable').css({display: 'inline-block', float: 'left'});
     $('.thread>.video-container-streamable>a>img').css('margin-bottom', 0)
 
@@ -826,7 +826,7 @@ $(document).ready(function () {
             vc.removeClass('ui-draggable');
             vc.css('position', 'static');
             vc.find('.video-handle').remove();
-            $(this).text('[pop]');
+            $(this).text('<i class="fa fa-picture-o" aria-hidden="true"></i>');
 
         } else {
             $(this).text('[return]');
@@ -846,7 +846,7 @@ $(document).ready(function () {
 
     /*Soundcloud*/
     //Add pop buttons
-    $('.video-container-soundcloud').prepend($('<a href="#" class="video-pop" style="font-weight:bold;float:right">[pop]</a>'))
+    $('.video-container-soundcloud').prepend($('<a href="#" class="video-pop" style="font-weight:bold;float:right"><i class="fa fa-picture-o" aria-hidden="true"></i></a>'))
     $('.video-container-soundcloud').css({display: 'inline-block', float: 'left'});
     $('.thread>.video-container-soundcloud>a>img').css('margin-bottom', 0)
 
@@ -861,7 +861,7 @@ $(document).ready(function () {
             vc.removeClass('ui-draggable');
             vc.css('position', 'static');
             vc.find('.video-handle').remove();
-            $(this).text('[pop]');
+            $(this).text('<i class="fa fa-picture-o" aria-hidden="true"></i>');
 
         } else {
             $(this).text('[return]');
@@ -881,7 +881,7 @@ $(document).ready(function () {
 
     /*Xaniatube*/
     //Add pop buttons
-    $('.video-container-xaniatube').prepend($('<a href="#" class="video-pop" style="font-weight:bold;float:right">[pop]</a>'))
+    $('.video-container-xaniatube').prepend($('<a href="#" class="video-pop" style="font-weight:bold;float:right"><i class="fa fa-picture-o" aria-hidden="true"></i></a>'))
     $('.video-container-xaniatube').css({display: 'inline-block', float: 'left'});
     $('.thread>.video-container-xaniatube>a>img').css('margin-bottom', 0)
 
@@ -896,7 +896,7 @@ $(document).ready(function () {
             vc.removeClass('ui-draggable');
             vc.css('position', 'static');
             vc.find('.video-handle').remove();
-            $(this).text('[pop]');
+            $(this).text('<i class="fa fa-picture-o" aria-hidden="true"></i>');
 
         } else {
             $(this).text('[return]');
@@ -916,7 +916,7 @@ $(document).ready(function () {
 
     /*Vlive*/
     //Add pop buttons
-    $('.video-container-vlive').prepend($('<a href="#" class="video-pop" style="font-weight:bold;float:right">[pop]</a>'))
+    $('.video-container-vlive').prepend($('<a href="#" class="video-pop" style="font-weight:bold;float:right"><i class="fa fa-picture-o" aria-hidden="true"></i></a>'))
     $('.video-container-vlive').css({display: 'inline-block', float: 'left'});
     $('.thread>.video-container-vlive>a>img').css('margin-bottom', 0)
 
@@ -930,7 +930,7 @@ $(document).ready(function () {
             vc.removeClass('ui-draggable');
             vc.css('position', 'static');
             vc.find('.video-handle').remove();
-            $(this).text('[pop]');
+            $(this).text('<i class="fa fa-picture-o" aria-hidden="true"></i>');
 
         } else {
             $(this).text('[return]');
@@ -950,7 +950,7 @@ $(document).ready(function () {
 
     /*Vocaroo*/
     //Add pop buttons
-    $('.video-container-vocaroo').prepend($('<a href="#" class="video-pop" style="font-weight:bold;float:right">[pop]</a>'))
+    $('.video-container-vocaroo').prepend($('<a href="#" class="video-pop" style="font-weight:bold;float:right"><i class="fa fa-picture-o" aria-hidden="true"></i></a>'))
     $('.video-container-vocaroo').css({display: 'inline-block', float: 'left'});
     $('.thread>.video-container-vocaroo>a>img').css('margin-bottom', 0)
 
@@ -965,7 +965,7 @@ $(document).ready(function () {
             vc.removeClass('ui-draggable');
             vc.css('position', 'static');
             vc.find('.video-handle').remove();
-            $(this).text('[pop]');
+            $(this).text('<i class="fa fa-picture-o" aria-hidden="true"></i>');
 
         } else {
             $(this).text('[return]');
@@ -986,7 +986,7 @@ $(document).ready(function () {
 
     /*Hooktube*/
     //Add pop buttons
-    $('.video-container-hooktube').prepend($('<a href="#" class="video-pop" style="font-weight:bold;float:right">[pop]</a>'))
+    $('.video-container-hooktube').prepend($('<a href="#" class="video-pop" style="font-weight:bold;float:right"><i class="fa fa-picture-o" aria-hidden="true"></i></a>'))
     $('.video-container-hooktube').css({display: 'inline-block', float: 'left'});
     $('.thread>.video-container-hooktube>a>img').css('margin-bottom', 0)
 
@@ -1001,7 +1001,7 @@ $(document).ready(function () {
             vc.removeClass('ui-draggable');
             vc.css('position', 'static');
             vc.find('.video-handle').remove();
-            $(this).text('[pop]');
+            $(this).text('<i class="fa fa-picture-o" aria-hidden="true"></i>');
 
         } else {
             $(this).text('[return]');
@@ -1021,7 +1021,7 @@ $(document).ready(function () {
 
     /*Smashcast*/
     //Add pop buttons
-    $('.video-container-smashcast').prepend($('<a href="#" class="video-pop" style="font-weight:bold;float:right">[pop]</a>'))
+    $('.video-container-smashcast').prepend($('<a href="#" class="video-pop" style="font-weight:bold;float:right"><i class="fa fa-picture-o" aria-hidden="true"></i></a>'))
     $('.video-container-smashcast').css({display: 'inline-block', float: 'left'});
     $('.thread>.video-container-smashcast>a>img').css('margin-bottom', 0)
 
@@ -1036,7 +1036,7 @@ $(document).ready(function () {
             vc.removeClass('ui-draggable');
             vc.css('position', 'static');
             vc.find('.video-handle').remove();
-            $(this).text('[pop]');
+            $(this).text('<i class="fa fa-picture-o" aria-hidden="true"></i>');
 
         } else {
             $(this).text('[return]');
@@ -1057,7 +1057,7 @@ $(document).ready(function () {
 
     /*Invidio*/
     //Add pop buttons
-    $('.video-container-invidio').prepend($('<a href="#" class="video-pop" style="font-weight:bold;float:right">[pop]</a>'))
+    $('.video-container-invidio').prepend($('<a href="#" class="video-pop" style="font-weight:bold;float:right"><i class="fa fa-picture-o" aria-hidden="true"></i></a>'))
     $('.video-container-invidio').css({display: 'inline-block', float: 'left'});
     $('.thread>.video-container-invidio>a>img').css('margin-bottom', 0)
 
@@ -1072,7 +1072,7 @@ $(document).ready(function () {
             vc.removeClass('ui-draggable');
             vc.css('position', 'static');
             vc.find('.video-handle').remove();
-            $(this).text('[pop]');
+            $(this).text('<i class="fa fa-picture-o" aria-hidden="true"></i>');
 
         } else {
             $(this).text('[return]');

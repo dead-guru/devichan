@@ -14,88 +14,116 @@
  *
  */
 
-$(document).ready(function(){
-	$('<style type="text/css"> img.hidden{ opacity: 0.1; background: grey; border: 1px solid #000; } </style>').appendTo($('head'));
+const empty_image = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==';
 
-	if (!localStorage.hiddenimages)
-		localStorage.hiddenimages = '{}';
+$(document).ready(function () {
+    $('<style type="text/css"> img.hidden{ opacity: 0.1; background: grey; border: 1px solid #000; } </style>').appendTo($('head'));
 
-	// Load data from HTML5 localStorage
-	var hidden_data = JSON.parse(localStorage.hiddenimages);
+    if (!localStorage.hiddenimages)
+        localStorage.hiddenimages = '{}';
 
-	var store_data = function() {
-		localStorage.hiddenimages = JSON.stringify(hidden_data);
-	};
+    // Load data from HTML5 localStorage
+    var hidden_data = JSON.parse(localStorage.hiddenimages);
 
-	// Delete old hidden images (30+ days old)
-	for (var key in hidden_data) {
-		for (var id in hidden_data[key]) {
-			if (hidden_data[key][id] < Math.round(Date.now() / 1000) - 60 * 60 * 24 * 30) {
-				delete hidden_data[key][id];
-				store_data();
-			}
-		}
-	}
+    var store_data = function () {
+        localStorage.hiddenimages = JSON.stringify(hidden_data);
+    };
 
-	var handle_images = function() {
-		var index = $(this).parents('.file').index();
-		var img = this;
-		var fileinfo = $(this).parent().prev();
-		var id = $(this).parents('div.post, div[id^="thread_"]').attr('id').split('_')[1];
-		var board = $(this).parents('[id^="thread_"]').data("board");
+    // Delete old hidden images (30+ days old)
+    for (var key in hidden_data) {
+        for (var id in hidden_data[key]) {
+            if (hidden_data[key][id] < Math.round(Date.now() / 1000) - 60 * 60 * 24 * 30) {
+                delete hidden_data[key][id];
+                store_data();
+            }
+        }
+    }
 
-		if (!hidden_data[board]) {
-			hidden_data[board] = {}; // id : timestamp
-		}
+    var handle_images = function () {
+        var index = $(this).parents('.file').index();
+        var img = this;
+        var fileinfo = $(this).parent().prev();
+        var id = $(this).parents('div.post, div[id^="thread_"]').attr('id').split('_')[1];
+        var board = $(this).parents('[id^="thread_"]').data("board");
 
-		var replacement = $('<span>'+' <small><a class="hide-image-link" href="javascript:void(0)" title="Hide image"><i class="fa fa-eye-slash fa-sm"></i></a></small> </span>');
+        if (!hidden_data[board]) {
+            hidden_data[board] = {}; // id : timestamp
+        }
 
-		replacement.find('a').click(function() {
-			if (hidden_data[board][id]) {
-				hidden_data[board][id]['ts'] = Math.round(Date.now() / 1000);
-				if (hidden_data[board][id]['index'].indexOf(index) === -1)
-					hidden_data[board][id]['index'].push(index);
-			} else {
-				hidden_data[board][id] = {ts: Math.round(Date.now() / 1000), index: [index]};
-			}
-			store_data();
+        var replacement = $('<span>' + ' <small><a class="hide-image-link" href="javascript:void(0)" title="Hide image"><i style="margin-left: 0" class="fa fa-eye-slash fa-sm"></i></a></small> </span>');
 
-			var show_link = $('<a class="show-image-link" href="javascript:void(0)" title="Show image"><i class="fa fa-eye"></i></a>').click(function() {
-				var i = hidden_data[board][id]['index'].indexOf(index);
-				if (i > -1) hidden_data[board][id]['index'].splice(i,1);
+        replacement.find('a').click(function () {
+            if (hidden_data[board][id]) {
+                hidden_data[board][id]['ts'] = Math.round(Date.now() / 1000);
+                if (hidden_data[board][id]['index'].indexOf(index) === -1)
+                    hidden_data[board][id]['index'].push(index);
+            } else {
+                hidden_data[board][id] = {ts: Math.round(Date.now() / 1000), index: [index]};
+            }
+            store_data();
 
-				if (hidden_data[board][id]['index'].length === 0)
-					delete hidden_data[board][id];
-				store_data();
+            var show_link = $('<a class="show-image-link" href="javascript:void(0)" title="Show image"><i style="margin-left: 0" class="fa fa-eye"></i></a>').click(function () {
+                var i = hidden_data[board][id]['index'].indexOf(index);
+                if (i > -1) hidden_data[board][id]['index'].splice(i, 1);
 
-				$(img)
-					.removeClass('hidden')
-					.attr('src', $(img).data('orig'));
-				$(this).prev().show();
-				$(this).remove();
-			});
+                if (hidden_data[board][id]['index'].length === 0)
+                    delete hidden_data[board][id];
+                store_data();
 
-			$(this).hide().after(show_link);
+                $(img)
+                    .removeClass('hidden')
+                    .attr('src', $(img).data('orig'));
+                $(this).prev().show();
+                $(this).remove();
+            });
 
-			if ($(img).parent().data('expanded') == 'true') {
-				$(img).parent().click();
-			}
+            $(this).hide().after(show_link);
 
-			$(img)
-				.data('orig', img.src)
-				.attr('src', 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==')
-				.addClass('hidden');
-		});
+            if ($(img).parent().data('expanded') == 'true') {
+                $(img).parent().click();
+            }
 
-		$(this).parent().prev().contents().first().replaceWith(replacement);
-
-		if (hidden_data[board][id] && hidden_data[board][id]['index'].indexOf(index) !== -1)
-			$(this).parent().prev().find('.hide-image-link').click();
-	};
-
-	$('div.post > a > img.post-image, div.post > a > video.post-image, div > a > img.post-image, div > a > video.post-image').each(handle_images);
-
-        $(document).on('new_post', function(e, post) {
-                $(post).find('a > img.post-image, a > video.post-image').each(handle_images);
+            $(img)
+                .data('orig', img.src)
+                .attr('src', empty_image)
+                .addClass('hidden');
         });
+
+        if (active_page === 'catalog' && board in hidden_data && id in hidden_data[board]) {
+            let w = this.width;
+            let h = this.height;
+            let src = this.src;
+            let newImage = $(this)
+                .data('orig', src)
+                .attr('src', empty_image)
+                .width(w)
+                .height(h)
+                .addClass('hidden-image');
+            $(this).replaceWith(newImage);
+        } else {
+            $(this).parent().prev().contents().first().replaceWith(replacement);
+
+            if (hidden_data[board][id] && hidden_data[board][id]['index'].indexOf(index) !== -1)
+                $(this).parent().prev().find('.hide-image-link').click();
+        }
+    };
+
+    $('div.post > a > img.post-image, div.post > a > video.post-image, div > a > img.post-image, div > a > img.thread-image, div > a > video.post-image').each(handle_images);
+
+    $(document).on('new_post', function (e, post) {
+        $(post).find('a > img.post-image, a > video.post-image').each(handle_images);
+    });
+
+    if (active_page === 'catalog') {
+        $('body').on('mouseover', '.hidden-image', function () {
+            let img = $(this);
+            $(this).attr('src', img.data('orig'));
+        }).on('mouseleave', '.hidden-image', function () {
+            let src = this.src;
+
+            $(this).data('orig', src)
+                .attr('src', empty_image);
+        });
+    }
+
 });

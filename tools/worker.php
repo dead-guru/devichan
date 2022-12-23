@@ -6,11 +6,11 @@ require dirname(__FILE__) . '/inc/cli.php';
 require_once 'inc/controller.php';
 
 $config['smart_build'] = false; // Let's disable it, so we can build the page for real
-$config['generation_strategies'] = array('strategy_immediate');
+$config['generation_strategies'] = ['strategy_immediate'];
 
 function after_open_board() { global $config;
   $config['smart_build'] = false;
-  $config['generation_strategies'] = array('strategy_immediate');
+  $config['generation_strategies'] = ['strategy_immediate'];
 };
 
 echo "Hello world!\n";

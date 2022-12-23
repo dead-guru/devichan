@@ -192,17 +192,18 @@ function setupVideo(thumb, url) {
         }, false);
     }
 
-    loopControls[0].textContent = _("[Play once]");
+    loopControls[0].innerHTML = '<i title="once" class="fa fa-stop-circle" aria-hidden="true"></i>';
     loopControls[0].style.cursor = "pointer";
     loopControls[0].className = "ev-action";
-    loopControls[1].textContent = _("[Loop]");
+    loopControls[1].innerHTML = '<i title="loop" class="fa fa-repeat" aria-hidden="true"></i>';
     loopControls[1].style.fontWeight = "bold";
     loopControls[1].style.cursor = "pointer";
     loopControls[1].className = "ev-action active";
+    fileInfo.appendChild(document.createTextNode(""));
     for (var i = 0; i < 2; i++) {
         setupLoopControl(i);
         loopControls[i].style.whiteSpace = "nowrap";
-        fileInfo.appendChild(document.createTextNode(" "));
+        fileInfo.appendChild(document.createTextNode(""));
         fileInfo.appendChild(loopControls[i]);
     }
 }

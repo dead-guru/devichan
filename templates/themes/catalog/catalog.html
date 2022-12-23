@@ -37,8 +37,10 @@
                 <div id="Grid">
                 {% for post in recent_posts %}
                         <div class="mix"
-				data-reply="{{ post.reply_count }}"
+							 id="thread_{{ post.id }}"
+				 data-reply="{{ post.reply_count }}"
 				 data-bump="{{ post.bump }}"
+				 data-board="{{post.board}}"
 				 data-time="{{ post.time }}"
 				 data-id="{{ post.id }}"
 				 data-sticky="{% if post.sticky %}true{% else %}false{% endif %}"

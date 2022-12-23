@@ -21,7 +21,7 @@ if (array_key_exists('board', $_GET) && is_dir($dir . ltrim($_GET['board'], '/')
     $dir .= ltrim($_GET['board'], '/');
 }
 
-$images = array_filter(array_diff(scandir($dir), ['.', '..']), static function ($file) {
+$images = array_filter(array_diff(scandir($dir, SCANDIR_SORT_NONE), ['.', '..']), static function ($file) {
     return endsWith($file, ['.gif', '.jpg', '.jpeg', '.png', '.webp', '.svg', '.apng']);
 });
 
