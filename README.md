@@ -1,6 +1,7 @@
 devichan - A Dockerized lightweight and full featured PHP imageboard based on vichan 
 ========================================================
-<img width="1440" alt="image" src="https://user-images.githubusercontent.com/1472664/209416019-09f5f06f-23e5-452a-80f3-c2e5774541fb.png">
+<img width="1440" alt="image" src="https://user-images.githubusercontent.com/1472664/209444612-366fdc49-319b-42c6-9f4d-f3215277dcb8.png">
+
 
 
 New Features
