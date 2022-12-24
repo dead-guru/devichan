@@ -55,8 +55,9 @@ div.title {
 }
 
 .intro span.name {
-    color: #FFAB3F;
-    font-weight: bold;
+    color: #c3672a;
+    font-weight: normal;
+    text-transform: lowercase;
 }
 
 h2 {
