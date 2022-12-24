@@ -1,5 +1,5 @@
 /*https://github.com/turanga/Tinyboard/blob/efe78b81c1ffca32bcf9601d0e3877bb65c70df1/stylesheets/photon.css*/
-
+@import url('https://fonts.googleapis.com/css2?family=PT+Sans:wght@400;700&display=swap');
 
 .floatiframe {
     float: left;
@@ -16,6 +16,10 @@ div.boardlist {
     padding: 10px;
     position: fixed;
     top: 0;
+}
+
+.desktop-style div.boardlist:nth-child(1) {
+    border: none;
 }
 
 
@@ -108,7 +112,7 @@ html, body {
     background: none;
     background-color: #EEEEEE;
     color: #333333;
-    font-family: "Trebuchet MS", Trebuchet, serif;
+    font-family: 'Trebuchet MS', sans-serif;
     font-size: 12pt;
     margin-top: 20px;
 }
@@ -374,10 +378,13 @@ h1 {
     letter-spacing: inherit;
 }
 
-.pages {
+div.pages {
     background: rgba(204, 204, 204, 0.32) !important;
-    width: 100%;
+    width: auto;
+    display: block;
+    margin-top: 45px;
     color: #707070 !important;
+    border: none;
 }
 
 div.banner {
