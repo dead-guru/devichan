@@ -252,9 +252,11 @@ a:hover {
     margin-left: 20px;
 }
 
-.unimportant, .fileinfo {
+.unimportant, .fileinfo, .no-new-threads, .unimportant * {
     font-size: 0.7rem;
+    color: #b0b0b0;
 }
+
 
 .intro {
     font-size: 0.9em;
@@ -588,5 +590,70 @@ div.post i.fa {
 .video-pop {
     display: block;
     float: none !important;
+}
 
+#expand-all-images, #watch-pin, #watch-board, #watch-thread, .tree-view-cntrl {
+    display: inline;
+    padding: 0 5px;
+    font-size: 0.7rem;
+}
+
+.new-threads {
+    text-align: left;
+    display: inline;
+    padding: 0 5px;
+}
+
+#thread_stats {
+    padding: 5px 0;
+}
+
+#thread-interactions_header, #thread-interactions, #thread_stats, #updater {
+    display: inline;
+    font-size: 0.7rem;
+    color: #b0b0b0;
+}
+
+#thread-links_header a, #thread-links a {
+    color: #b0b0b0;
+}
+
+#thread-links_header a:hover, #thread-links a:hover {
+    color: #FF6600;
+}
+
+
+.index-search {
+    display: inline-block;
+    margin: 0
+}
+
+.index-search > p {
+    margin: 0
+}
+
+
+input:focus, textarea:focus, select:focus {
+    background-color: #f6f6f6;
+}
+
+input, select, input[type="text"], input[type="password"], textarea {
+    border: none;
+    outline: medium none;
+    transition: background-color 0.2s ease;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+}
+
+input[type="submit"], input[type="button"] {
+    border: 1px solid #CCCCCC;
+    font-weight: bold;
+    background-color: #b0b0b0;
+    cursor: pointer;
+}
+
+input.index-search-input {
+    background-color: #eee;
+    border: 1px solid #CCCCCC;
 }

@@ -18,12 +18,12 @@ if (active_page == 'thread') {
             .first()
             .before('<div id="thread_stats"></div>');
         var el = $('#thread_stats');
-        el.prepend(_('Page') + ' <span id="thread_stats_page">?</span>');
+        el.prepend('<i class="fa-solid fa-file-lines"></i> <span id="thread_stats_page">?</span>');
         if (IDsupport) {
             el.prepend('<span id="thread_stats_uids">0</span> UIDs |&nbsp;');
         }
-        el.prepend('<span id="thread_stats_images">0</span> ' + _('images') + ' |&nbsp;');
-        el.prepend('<span id="thread_stats_posts">0</span> ' + _('replies') + ' |&nbsp;');
+        el.prepend('<span id="thread_stats_images">0</span> <i class="fa-solid fa-photo-film"></i> |&nbsp;');
+        el.prepend('<span id="thread_stats_posts">0</span> <i class="fa-solid fa-comments"></i> |&nbsp;');
         delete el;
 
         function update_thread_stats() {

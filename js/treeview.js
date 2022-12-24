@@ -65,7 +65,7 @@ $(function() {
 		}
 	}
 
-	$('hr:first').before('<div class="unimportant" style="text-align:right"><label for="treeview"><input type="checkbox" id="treeview"> '+_('Tree view')+'</label></div>');
+	$('hr:first').before('<div class="tree-view-cntrl unimportant" style="text-align:right"><label for="treeview"><input type="checkbox" id="treeview"> '+_('Tree view')+'</label></div>');
 	$('input#treeview').on('change', function(e) { treeview($(this).is(':checked')); });
 
 	if (localStorage.treeview === 'true') {

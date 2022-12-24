@@ -49,14 +49,14 @@
 	{{ config.ad.top }}
 
 	{% include 'post_form.html' %}
-	<hr>
+
 	{% if config.global_message %}<hr /><div class="blotter">{{ config.global_message }}</div>{% endif %}
 	<div id="thread-interactions_header">
 			<span id="thread-links_header">
-				<a href="{{ return }}">[{% trans %}Return{% endtrans %}]</a>
-				<a href="#bottom">[{% trans %}Go to bottom{% endtrans %}]</a>
+				<a href="{{ return }}" title="Return"><i class="fa-solid fa-arrow-left-long"></i></a>
+				<a href="#bottom"  title="Go To Bottom"><i class="fa-solid fa-angles-down"></i></a>
                 		{% if config.catalog_link %}
-					<a href="{{ config.root }}{% if mod %}{{ config.file_mod }}?/{% endif %}{{ board.dir }}{{ config.catalog_link }}">[{% trans %}Catalog{% endtrans %}]</a>
+					<a href="{{ config.root }}{% if mod %}{{ config.file_mod }}?/{% endif %}{{ board.dir }}{{ config.catalog_link }}" title="Catalog"><i class="fa-solid fa-grip"></i></a>
 		                {% endif %}
 			</span>
 	</div>
@@ -69,10 +69,10 @@
 
 		<div id="thread-interactions">
 			<span id="thread-links">
-				<a id="thread-return" href="{{ return }}">[{% trans %}Return{% endtrans %}]</a>
-				<a id="thread-top" href="#top">[{% trans %}Go to top{% endtrans %}]</a>
+				<a id="thread-return" href="{{ return }}"><i class="fa-solid fa-arrow-left-long"></i></a>
+				<a id="thread-top" href="#top"><i class="fa-solid fa-angle-up"></i></a>
                 		{% if config.catalog_link %}
-					<a id="thread-catalog" href="{{ config.root }}{% if mod %}{{ config.file_mod }}?/{% endif %}{{ board.dir }}{{ config.catalog_link }}">[{% trans %}Catalog{% endtrans %}]</a>
+					<a id="thread-catalog" href="{{ config.root }}{% if mod %}{{ config.file_mod }}?/{% endif %}{{ board.dir }}{{ config.catalog_link }}"><i class="fa-solid fa-grip"></i></a>
 		                {% endif %}
 			</span>
 

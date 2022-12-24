@@ -1,16 +1,16 @@
-/*              
+/*
  * live-index.js
  * https://github.com/vichan-devel/Tinyboard/blob/master/js/live-index.js
- *      
+ *
  * Released under the MIT license
  * Copyright (c) 2014 Marcin Łabanowski <marcin@6irc.net>
- *      
+ *
  * Usage:
  *   $config['api']['enabled'] = true;
  *   $config['additional_javascript'][] = 'js/jquery.min.js';
  *   $config['additional_javascript'][] = 'js/expand.js';
  *   $config['additional_javascript'][] = 'js/live-index.js';
- *              
+ *
  */
 
 if (active_page == 'index' && (""+document.location).match(/\/(index\.html)?(\?|$|#)/))
@@ -22,12 +22,12 @@ if (active_page == 'index' && (""+document.location).match(/\/(index\.html)?(\?|
 
   var handle_one_thread = function() {
     if ($(this).find(".new-posts").length <= 0) {
-      $(this).find("br.clear").before("<div class='new-posts'>"+_("No new posts.")+"</div>");
+      $(this).find("br.clear").before("<div class='new-posts no-new-threads'>"+_("No new posts.")+"</div>");
     }
   };
 
   $(function() {
-    $("hr:first").before("<hr /><div class='new-threads'>"+_("No new threads.")+"</div>");
+    $("hr:first").before("<div class='new-threads no-new-threads'>"+_("No new threads.")+"</div>");
 
     $('div[id^="thread_"]').each(handle_one_thread);
 
