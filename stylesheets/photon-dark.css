@@ -1,6 +1,35 @@
 /*https://github.com/turanga/Tinyboard/blob/efe78b81c1ffca32bcf9601d0e3877bb65c70df1/stylesheets/photon.css*/
 
 
+html[data-theme=nightmode] {
+    --theme_default_bg: rgb(21, 32, 43);
+    --theme_default_postbg: #192734;
+    --theme_default_postbghighlight: rgb(19 29 40);
+    --theme_default_spectext: #800080;
+    --theme_default_postnum: #789922;
+    --theme_default_border: #38444d66;
+    --theme_default_text: #ccc;
+    --theme_default_alttext: #7d7d7d;
+    --theme_default_link: #c3672a;
+    --theme_default_hover: #a74300;
+    --theme_default_title: #6995c5;
+    --theme_default_drag: rgb(76, 96, 116);
+    --theme_default_spoiler: #000000;
+    --theme_default_icon: #565656;
+    --theme_default_btntext: #ccc;
+    --theme_default_btnbg: #192734;
+    --theme_default_btnborder: rgb(56, 68, 77);
+    --theme_default_altbtnbg: #192734;
+    --theme_default_btnbghover: rgb(21, 32, 43);
+    --theme_default_altbtnbghover: rgb(21, 32, 43);
+    --theme_default_inputtext: #ccc;
+    --theme_nmswitch: #c3672a;
+    --theme_mpborder: rgb(13, 20, 27);
+    --theme_mubtn: #333d46;
+    --theme_sbthumb: #223546;
+    --theme_sbtrack: rgb(21, 32, 43);
+}
+
 .floatiframe {
     float: left;
     padding: 10px;
@@ -8,10 +37,10 @@
 
 
 div.boardlist {
-    color: #8899AA;
+    color: #ccc;
     font-size: 12pt;
-    background-color: #DDDDDD;
-    border: 1px solid #cccccc;
+    background-color: #192734;
+    border: 1px solid #38444d66;
     border-radius: 4px 4px 4px 4px;
     padding: 10px;
     position: fixed;
@@ -22,7 +51,7 @@ div.boardlist {
 div.boardlist.bottom {
     margin-top: 20px;
     position: inherit;
-    background: inherit;
+    background-color: #192734;
 }
 
 
@@ -33,8 +62,8 @@ div.boardlist.bottom {
 }
 
 div.blotter {
-    background: none repeat scroll 0 0 #DDDDDD;
-    border: 1px solid #CCCCCC;
+    background: none repeat scroll 0 0 #15202B;
+    border: 1px solid #38444d66;
     border-radius: 5px 5px 5px 5px;
     clear: both;
     color: #006AB9;
@@ -54,22 +83,13 @@ div.title {
 
 }
 
-.intro span.name {
-    color: #FFAB3F;
-    font-weight: bold;
-}
-
-h2 {
-    color: #FF6600;
-}
-
 div.ban h2 {
     border-radius: 6px 6px 6px 6px;
 }
 
 div.ban {
-    background: none repeat scroll 0 0 #DDDDDD;
-    border: 1px solid #CCCCCC;
+    background: none repeat scroll 0 0 #15202B;
+    border: 1px solid #38444d66;
     margin: 30px auto;
     max-width: 700px;
     border-radius: 7px;
@@ -105,8 +125,8 @@ textarea.text_body {
 
 html, body {
     background: none;
-    background-color: #EEEEEE;
-    color: #333333;
+    background-color: #15202B;
+    color: #ccc;
     font-family: "Trebuchet MS", Trebuchet, serif;
     font-size: 12pt;
     margin-top: 20px;
@@ -118,6 +138,19 @@ a, a:visited {
 
 a:hover {
     color: #FF6600;
+}
+
+h2 {
+    color: #FF6600;
+}
+
+.options_tab_icon.active {
+    color: #FF6600;
+}
+
+.intro span.name {
+    color: #FFAB3F;
+    font-weight: bold;
 }
 
 .adminbar {
@@ -140,14 +173,14 @@ a:hover {
 }
 
 .theader, .passvalid {
-    background: #DDDDDD;
+    background-color: #192734;
     text-align: center;
     padding: 2px;
     color: #2266AA;
     clear: both;
     font-weight: bold;
     margin-bottom: .5em;
-    border: solid 1px #CCCCCC;
+    border: solid 1px #38444d66;
     -moz-border-radius: 5px;
 }
 
@@ -182,26 +215,26 @@ a:hover {
 }
 
 .managehead {
-    background: #DDDDDD;
+    background-color: #192734;
     color: #002244;
     padding: 0px;
 }
 
 .postlists {
-    background: #FFFFFF;
+    background-color: #192734;
     width: 100%;
     padding: 0px;
     color: #800000;
 }
 
 .row1 {
-    background: #DDDDDD;
-    color: #002244;
+    background-color: #192734;
+    color: #cccccc;
 }
 
 .row2 {
-    background: #CCCCCC;
-    color: #002244;
+    background-color: #192734;
+    color: #cccccc;
 }
 
 .unkfunc {
@@ -260,8 +293,8 @@ a:hover {
 }
 
 .reply {
-    background: #DDDDDD;
-    border: solid 1px #CCCCCC;
+    background-color: #192734;
+    border: solid 1px #38444d66;
     padding: 0;
     margin: 0;
     -moz-border-radius: 5px;
@@ -306,7 +339,7 @@ blockquote p {
 hr {
     border-style: solid none none none;
     border-width: 1px;
-    border-color: #BBBBBB;
+    border-color: #38444d66;
 }
 
 table {
@@ -339,7 +372,7 @@ div.banner, div.banner a {
 }
 
 div.banner {
-    background-color: inherit;
+    background-color: #192734;
 }
 
 form table tr th {
@@ -347,8 +380,8 @@ form table tr th {
 }
 
 div.post.reply {
-    background: none repeat scroll 0 0 #DDDDDD;
-    border: 1px solid #CCCCCC;
+    background: none repeat scroll 0 0 #192734;
+    border: 1px solid #38444d66;
     border-radius: 5px 5px 5px 5px;
 }
 
@@ -356,10 +389,6 @@ div.title, h1 {
     color: #FF6600;
     font-size: 32px;
     font-weight: bold;
-}
-
-.options_tab_icon.active {
-    color: #FF6600;
 }
 
 div.title p {
@@ -378,8 +407,8 @@ h1 {
 }
 
 div.banner {
-    background: none repeat scroll 0 0 #DDDDDD;
-    border: 1px solid #CCCCCC;
+    background-color: #192734;
+    border: 1px solid #38444d66;
     border-radius: 5px 5px 5px 5px;
     clear: both;
     color: #2266AA;
@@ -408,12 +437,13 @@ form table tr td div {
 }
 
 .desktop-style div.boardlist:not(.bottom) {
-    background-color: #DDDDDD;
+    background-color: #192734;
+    border: 1px solid #38444d66;
 }
 
 div.ban h2 {
-    background: #bbbbbb;
-    color: black;
+    background: #192734;
+    color: #cccccc;
     font-size: 12pt;
 }
 
@@ -428,7 +458,7 @@ div.ban h2 {
     border-radius: 7px;
     padding-top: 15px;
     padding-bottom: 10px;
-    border: 2px dashed rgba(187, 187, 187, 0.31);
+    border: 2px dashed #38444d66;
 }
 
 .news > .post:hover {
@@ -439,24 +469,39 @@ div.ban h2 {
 }
 
 select {
-    border: 1px solid #a9a9a9;
+    border: 1px solid #38444d66;
     vertical-align: top;
     height: 20px;
 }
 
-input, select {
+input, select, input[type="text"], input[type="password"], textarea {
+    outline: medium none;
+    border: 1px solid rgb(56, 68, 77);
+    background-color: #192734;
+    transition: background-color 0.2s ease;
+    color: #ccc;
     box-sizing: border-box;
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
 }
 
+.select {
+    padding: 2px 16px 2px 4px;
+    cursor: pointer;
+    border-radius: 4px;
+    /* max-width: 12ch; */
+}
+
+.input:focus {
+    background-color: rgb(21, 32, 43);
+}
 
 @media only screen and (max-device-width: 480px) {
     div.boardlist {
-        color: #8899AA;
+        color: #ccc;
         font-size: 10pt;
-        background-color: rgba(221, 221, 221, 0.74);
-        border: 1px solid rgba(204, 204, 204, 0.74);
+        background-color: #192734;
+        border: 1px solid #38444d66;
         border-radius: 4px 4px 4px 4px;
         padding: 5px;
         position: fixed;
@@ -504,7 +549,7 @@ a.show-image-link, a.hide-image-link {
 }
 
 .post_file_webm, .post_file_mp4 {
-    border: 1px dashed #5d5d5d;
+    border: 1px dashed #38444d66;
 }
 
 div.post .post-image {
