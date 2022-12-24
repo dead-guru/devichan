@@ -236,7 +236,7 @@ a:hover {
     color: #666666;
 }
 
-.omitted {
+.omitted, .toolong {
     font-size: 0.9em;
     color: #5d5d5d;
     margin-left: 20px;
