@@ -37,13 +37,11 @@ div.boardlist.bottom {
 }
 
 div.blotter {
-    background: none repeat scroll 0 0 #DDDDDD;
-    border: 1px solid #CCCCCC;
-    border-radius: 5px 5px 5px 5px;
+    border-radius: 7px;
     clear: both;
-    color: #006AB9;
-    font-weight: bold;
-    margin-bottom: 0.5em;
+    color: #AF0A0F;
+    font-weight: normal;
+    margin: 0.5rem 0.5rem;
     padding: 2px;
     text-align: center;
 }
@@ -663,4 +661,8 @@ input[type="submit"], input[type="button"] {
 input.index-search-input {
     background-color: #eee;
     border: 1px solid #CCCCCC;
+}
+
+.file:not(.multifile) {
+    float: left;
 }
