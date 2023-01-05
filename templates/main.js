@@ -112,7 +112,7 @@ var saved = {};
 var selectedstyle = '{% endverbatim %}{{ config.default_stylesheet.0|addslashes }}{% verbatim %}';
 var styles = {
 	{% endverbatim %}
-	{% for stylesheet in stylesheets %}{% verbatim %}'{% endverbatim %}{{ stylesheet.name|addslashes }}{% verbatim %}' : '{% endverbatim %}{{ stylesheet.uri|addslashes }}{% verbatim %}',
+	{% for stylesheet in stylesheets %}{% verbatim %}'{% endverbatim %}{{ stylesheet.name|addslashes }}{% verbatim %}' : '{% endverbatim %}{{ stylesheet.uri|ccss|addslashes }}{% verbatim %}',
 	{% endverbatim %}{% endfor %}{% verbatim %}
 };
 

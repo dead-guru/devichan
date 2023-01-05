@@ -5,7 +5,7 @@
  */
 
 
-use JSMin\JSMin;
+use MatthiasMullie\Minify\CSS;
 
 if (realpath($_SERVER['SCRIPT_FILENAME']) == str_replace('\\', '/', __FILE__)) {
 	// You cannot request this file directly.
@@ -1852,17 +1852,42 @@ function buildIndex($global_api = "yes") {
 function buildJavascript() {
 	global $config;
 
-	$stylesheets = array();
-	foreach ($config['stylesheets'] as $name => $uri) {
-		$stylesheets[] = array(
-			'name' => addslashes($name),
-			'uri' => addslashes((!empty($uri) ? $config['uri_stylesheets'] : '') . $uri));
+	$stylesheets = [];
+    $root = dirname(__DIR__);
+    
+    
+    $stylesheetList = $config['stylesheets'];
+    $stylesheetList['_style'] = 'style.css'; //because $config is global
+    
+	foreach ($stylesheetList as $name => $stylesheet) {
+        $stylesheet = $config['uri_stylesheets'] . $stylesheet;
+        
+        if (!empty($stylesheet) && $config['minify_css'] && file_exists($root . $stylesheet)) { //try to minify css using php if enabled
+            $path_parts = pathinfo($stylesheet);
+            $newPath = $path_parts['dirname'] . DIRECTORY_SEPARATOR . str_replace(
+                    $path_parts['extension'],
+                    'min.' . $path_parts['extension'],
+                    $path_parts['basename']
+                );
+            
+            $minifier = new CSS($root . $stylesheet);
+            $minifier->minify($root . $newPath);
+            $uri = $newPath;
+        } else {
+            $uri = (!empty($stylesheet) ? $config['uri_stylesheets'] : '') . $stylesheet;
+        }
+        if ($name !== '_style') { //Do Not include style.css to list
+            $stylesheets[] = [
+                'name' => addslashes($name),
+                'uri' => addslashes($uri)
+            ];
+        }
 	}
 
-	$script = Element('main.js', array(
+	$script = Element('main.js', [
 		'config' => $config,
 		'stylesheets' => $stylesheets
-	));
+    ]);
 
 	// Check if we have translation for the javascripts; if yes, we add it to additional javascripts
 	list($pure_locale) = explode(".", $config['locale']);
@@ -1877,12 +1902,17 @@ function buildJavascript() {
 	}
 
 	if ($config['minify_js']) {
-		$script = JSMin::minify($script);
+        $before = strlen($script);
+        $minifier = new MatthiasMullie\Minify\JS();
+        $minifier->add($script);
+		$script = $minifier->minify();
         $config['minify_js_hash'] = md5($script);
         $script =  '//' . $config['minify_js_hash'] . PHP_EOL .'console.log("' . $config['minify_js_hash'].'");' . $script;
         Cache::set('minify_js_hash', $config['minify_js_hash']);
-        
+        $after = strlen($script);
         $package = [
+            'saved' => $before - $after,
+            'total' => $after,
             'additional_javascript' => $config['additional_javascript'],
             'minify_js' => $config['minify_js'],
             'additional_javascript_compile' => $config['additional_javascript_compile'],

@@ -22,6 +22,7 @@ function load_twig() {
 	$twig->addExtension(new Twig_Extensions_Extension_Tinyboard());
 	$twig->addExtension(new Twig_Extensions_Extension_I18n());
 	$twig->addExtension(new ByteConversionTwigExtension());
+	$twig->addExtension(new CssCompressTwigExtension());
 }
 
 function Element($templateFile, array $options) {
