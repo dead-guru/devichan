@@ -640,11 +640,14 @@ div.post i.fa {
 
 }
 @media only screen and (max-device-width: 960px) {
-    div.post.op, div.post.reply {
-        word-break: break-word;
-        word-wrap: break-word;
-        position: relative
+    .file:not(.multifile) {
+        float: none;
     }
+
+    #thread-links, .file, .file:not(.multifile) .post-image, .post-image, input.delete {
+        float: none;
+    }
+
 
     div.post.reply div.body {
         overflow: auto;
@@ -658,7 +661,8 @@ div.post i.fa {
     }
 
     div.post.reply {
-        margin: 2px 0 4px 20px
+        margin: 2px 0 4px 0px;
+        width: 100%;
     }
 
     div.post.reply > .files {
@@ -686,5 +690,25 @@ div.post i.fa {
         display: block;
         margin: 0
     }
+
+    .omitted, .toolong {
+        margin-left: 0;
+    }
+
+    div.post.reply:before {
+        content: '';
+        top: 0;
+        left: 0;
+    }
+    div.post.op {
+        padding-left: 0;
+    }
+
+    .hide-thread-link {
+        display: none;
+    }
 }
 
+input.delete {
+    margin: 3px 6px 0 0;
+}

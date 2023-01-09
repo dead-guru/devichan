@@ -559,10 +559,6 @@ div.post.reply div.body a {
     color: #e60
 }
 
-.hidden {
-    visibility: visible;
-}
-
 .dropbtn {
     display: inline;
     color: #acacac;
@@ -700,6 +696,12 @@ input.index-search-input {
     content: " ";
 }
 
+div.post.op, div.post.reply {
+    word-break: break-word;
+    word-wrap: break-word;
+    position: relative;
+    margin-left: 15px;
+}
 
 @media only screen and (max-device-width: 960px) {
     .file:not(.multifile) {
@@ -709,11 +711,7 @@ input.index-search-input {
     #thread-links, .file, .file:not(.multifile) .post-image, .post-image, input.delete {
         float: none;
     }
-    div.post.op, div.post.reply {
-        word-break: break-word;
-        word-wrap: break-word;
-        position: relative
-    }
+
 
     div.post.reply div.body {
         overflow: auto;

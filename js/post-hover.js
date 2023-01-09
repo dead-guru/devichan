@@ -54,7 +54,6 @@ onready(function(){
 			hovered_at = {'x': e.pageX, 'y': e.pageY};
 
 			var start_hover = function($link) {
-                console.log('start_hover');
 				if ($post.is(':visible') &&
 						$post.offset().top >= $(window).scrollTop() &&
 						$post.offset().top + $post.height() <= $(window).scrollTop() + $(window).height()) {
