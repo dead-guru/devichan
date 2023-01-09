@@ -639,3 +639,52 @@ div.post i.fa {
     float: none !important;
 
 }
+@media only screen and (max-device-width: 960px) {
+    div.post.op, div.post.reply {
+        word-break: break-word;
+        word-wrap: break-word;
+        position: relative
+    }
+
+    div.post.reply div.body {
+        overflow: auto;
+        max-height: 600px;
+        margin-top: 0
+    }
+
+    div.post.op {
+        max-width: 75vw;
+        overflow: hidden
+    }
+
+    div.post.reply {
+        margin: 2px 0 4px 20px
+    }
+
+    div.post.reply > .files {
+        display: flex;
+        padding: 0 0 0 16px;
+        float: left;
+        flex-flow: row wrap
+    }
+
+    div.post.op > div.body {
+        padding: 30px 16px 16px 0
+    }
+
+    div.post.op > span.omitted {
+        position: relative;
+        bottom: 0;
+        right: 0
+    }
+
+    div.post p.fileinfo {
+        padding-left: 0
+    }
+
+    p.fileinfo {
+        display: block;
+        margin: 0
+    }
+}
+

@@ -1,5 +1,73 @@
 @import url(https://fonts.googleapis.com/css2?family=PT+Sans:wght@400;700&display=swap);
 
+html {
+    overflow-y: scroll;
+    font-family: 'Trebuchet MS', sans-serif;
+    font-size: 15px; /*scroll-behavior: smooth;*/
+}
+
+body {
+    line-height: 1.3;
+    background-color: #EEE;
+    color: #333;
+}
+
+* {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.fullsize, video {
+    max-width: 100%;
+    height: auto;
+}
+
+hr {
+    clear: both;
+    border: none;
+    border-top: 1px solid #DDD;
+    height: 0;
+}
+
+sub {
+    vertical-align: sub;
+    font-size: smaller;
+}
+
+sup {
+    vertical-align: super;
+    font-size: smaller;
+}
+
+td, td img {
+    vertical-align: top;
+}
+
+a {
+    color: #FF6600;
+    margin: 0;
+    padding: 0;
+    font-size: 100%;
+    vertical-align: baseline;
+    text-decoration: none;
+    background: transparent;
+    cursor: pointer;
+}
+
+a:hover {
+    color: #a74300;
+}
+
+a[href*="youtube.com"] {
+    border-bottom: 1px dotted;
+    line-height: 1.5em;
+}
+
+a, a:visited {
+    color: #8a8a8a
+}
+
 div.ban, div.boardlist {
     border: 1px solid #ccc
 }
@@ -59,7 +127,7 @@ div.blotter {
     text-align: center
 }
 
-#thread-links a:hover, #thread-links_header a:hover, .logo, .options_tab_icon.active, a:hover, h2 {
+#thread-links a:hover, #thread-links_header a:hover, .intro a.post_no:hover, .logo, .options_tab_icon.active, a:hover, h2 {
     color: #f60
 }
 
@@ -114,9 +182,6 @@ body, html {
     margin-top: 20px
 }
 
-a, a:visited {
-    color: #8a8a8a
-}
 
 .adminbar {
     clear: both;
@@ -340,7 +405,8 @@ div.title p {
 }
 
 h1 {
-    letter-spacing: inherit
+    letter-spacing: inherit;
+    font-family: 'Trebuchet MS', sans-serif;
 }
 
 div.pages {
@@ -364,11 +430,18 @@ form table tr td div {
 }
 
 .open-form a {
-    color: #00b5ff
+    color: #00b5ff;
+    margin: 0 10px;
+    transition: all .09s;
+}
+
+.open-form a:hover {
+    margin: 0 5px;
+    color: #009fde;
 }
 
 .open-form {
-    font-size: 17pt
+    font-size: 16pt
 }
 
 .recaptchatable .recaptcha_image_cell {
@@ -390,7 +463,8 @@ div.ban h2 {
     border-radius: 7px;
     padding-top: 15px;
     padding-bottom: 10px;
-    border: 2px dashed rgba(187, 187, 187, .31)
+    border: 2px dashed rgba(187, 187, 187, .31);
+    transition: all .09s;
 }
 
 .news > .post:hover {
@@ -473,7 +547,8 @@ div.post .post-image {
 
 a.reply-thread {
     color: #e60;
-    font-weight: 700
+    font-weight: 700;
+    transition: all .09s;
 }
 
 a.reply-thread:hover {
@@ -482,6 +557,10 @@ a.reply-thread:hover {
 
 div.post.reply div.body a {
     color: #e60
+}
+
+.hidden {
+    visibility: visible;
 }
 
 .dropbtn {
@@ -524,55 +603,11 @@ div.post.reply div.body a {
 .dropdown:hover .dropbtn {
     color: #212121
 }
-
-@media (min-width: 961px) {
-    div.post.op, div.post.reply {
-        word-break: break-word;
-        word-wrap: break-word;
-        position: relative
-    }
-
-    div.post.reply div.body {
-        overflow: auto;
-        max-height: 600px;
-        margin-top: 0
-    }
-
-    div.post.op {
-        max-width: 75vw;
-        overflow: hidden
-    }
-
-    div.post.reply {
-        margin: 2px 0 4px 20px
-    }
-
-    div.post.reply > .files {
-        display: flex;
-        padding: 0 0 0 16px;
-        float: left;
-        flex-flow: row wrap
-    }
-
-    div.post.op > div.body {
-        padding: 30px 16px 16px 0
-    }
-
-    div.post.op > span.omitted {
-        position: relative;
-        bottom: 0;
-        right: 0
-    }
-
-    div.post p.fileinfo {
-        padding-left: 0
-    }
-
-    p.fileinfo {
-        display: block;
-        margin: 0
-    }
+div.post p.fileinfo {
+    padding-left: 5px;
+    margin: 0;
 }
+
 
 div.post.reply:before {
     content: '...';
@@ -580,6 +615,9 @@ div.post.reply:before {
     top: -5px;
     left: -21px;
     color: #8c8c8c
+}
+div.post.reply.post-hover:before {
+    content: '';
 }
 
 div.post i.fa {
@@ -652,4 +690,91 @@ input.index-search-input {
 
 .file:not(.multifile) {
     float: left
+}
+
+.boardlist:not(.compact-boardlist) #watch-pinned::before {
+    content: " ";
+}
+
+.boardlist:not(.compact-boardlist) #watch-pinned::after {
+    content: " ";
+}
+
+
+@media only screen and (max-device-width: 960px) {
+    .file:not(.multifile) {
+        float: none;
+    }
+
+    #thread-links, .file, .file:not(.multifile) .post-image, .post-image, input.delete {
+        float: none;
+    }
+    div.post.op, div.post.reply {
+        word-break: break-word;
+        word-wrap: break-word;
+        position: relative
+    }
+
+    div.post.reply div.body {
+        overflow: auto;
+        max-height: 600px;
+        margin-top: 0
+    }
+
+    div.post.op {
+        max-width: 75vw;
+        overflow: hidden
+    }
+
+    div.post.reply {
+        margin: 2px 0 4px 0px;
+        width: 100%;
+    }
+
+    div.post.reply > .files {
+        display: flex;
+        padding: 0 0 0 16px;
+        float: left;
+        flex-flow: row wrap
+    }
+
+    div.post.op > div.body {
+        padding: 30px 16px 16px 0
+    }
+
+    div.post.op > span.omitted {
+        position: relative;
+        bottom: 0;
+        right: 0
+    }
+
+    div.post p.fileinfo {
+        padding-left: 0
+    }
+
+    p.fileinfo {
+        display: block;
+        margin: 0
+    }
+
+    .omitted, .toolong {
+        margin-left: 0;
+    }
+
+    div.post.reply:before {
+        content: '';
+        top: 0;
+        left: 0;
+    }
+    div.post.op {
+        padding-left: 0;
+    }
+
+    .hide-thread-link {
+        display: none;
+    }
+}
+
+input.delete {
+    margin: 3px 6px 0 0;
 }

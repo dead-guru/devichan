@@ -1860,9 +1860,11 @@ function buildJavascript() {
     $stylesheetList['_style'] = 'style.css'; //because $config is global
     
 	foreach ($stylesheetList as $name => $stylesheet) {
-        $stylesheet = $config['uri_stylesheets'] . $stylesheet;
-        
-        if (!empty($stylesheet) && $config['minify_css'] && file_exists($root . $stylesheet)) { //try to minify css using php if enabled
+        if (
+            !empty($stylesheet) && $config['minify_css']
+            && file_exists($root . $config['uri_stylesheets'] . $stylesheet)
+        ) { //try to minify css using php if enabled
+            $stylesheet = $config['uri_stylesheets'] . $stylesheet;
             $path_parts = pathinfo($stylesheet);
             $newPath = $path_parts['dirname'] . DIRECTORY_SEPARATOR . str_replace(
                     $path_parts['extension'],

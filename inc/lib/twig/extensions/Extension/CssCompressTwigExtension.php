@@ -26,6 +26,12 @@ class CssCompressTwigExtension extends Twig\Extension\AbstractExtension
     
     public function cssComp(string $filepath): string
     {
+        global $config;
+        
+        if($config['minify_css'] === false) {
+            return $filepath;
+        }
+        
         $root = realpath(__DIR__ . '/../../../../..');
     
         $path_parts = pathinfo($filepath);
@@ -36,11 +42,8 @@ class CssCompressTwigExtension extends Twig\Extension\AbstractExtension
             );
         
         if (file_exists($root . $newPath)) {
-            
             return $newPath;
         }
-        
-        
         
         return $filepath;
     }

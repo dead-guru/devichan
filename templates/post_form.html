@@ -24,7 +24,7 @@
 				{{ antibot.html() }}
 			</th>
 			<td>
-				<input type="text" name="name" style="width: 50%; height: 20px" maxlength="35" autocomplete="off"> {% if config.allow_no_country and config.country_flags %}<input id="no_country" name="no_country" type="checkbox"> <label for="no_country">{% trans %}Don't show my flag{% endtrans %}</label>{% endif %}
+				<input type="text" name="name" placeholder="{% trans %}Name{% endtrans %}" style="width: 50%; height: 20px" maxlength="35" autocomplete="off"> {% if config.allow_no_country and config.country_flags %}<input id="no_country" name="no_country" type="checkbox"> <label for="no_country">{% trans %}Don't show my flag{% endtrans %}</label>{% endif %}
 				{{ antibot.html() }}
 			</td>
 		</tr>{% endif %}
@@ -36,7 +36,7 @@
 			<td>
 				{% if config.field_email_selectbox %}
 				<select name="email" id="email_selectbox" style="width: 50%; height: 20px" autocomplete="off">
-					<option value=""></option>
+					<option value="" selected>{% trans %}Options{% endtrans %}</option>
 					<option value="sage">sage</option>
 					{% if not config.always_noko %}<option value="noko">noko</option>{% endif %}
 				</select>
@@ -56,7 +56,7 @@
 				{{ antibot.html() }}
 			</th>
 			<td>
-				<input style="float:left; width: 50%; height: 20px" type="text" name="subject" maxlength="100" autocomplete="off">
+				<input style="float:left; width: 50%; height: 20px" placeholder="{% trans %}Subject{% endtrans %}" type="text" name="subject" maxlength="100" autocomplete="off">
 				<input accesskey="s" style="margin-left:2px;" type="submit" name="post" value="{% if id %}{{ config.button_reply }}{% else %}{{ config.button_newtopic }}{% endif %}" />{% if config.spoiler_images %} <input id="spoiler" name="spoiler" type="checkbox"> <label for="spoiler">{% trans %}Spoiler Image{% endtrans %}</label>{% endif %}
 			</td>
 		</tr>
@@ -68,7 +68,7 @@
 			</th>
 			<td>
 				<div class="postarea">
-					<textarea name="body" id="body" rows="5" class="text_body"></textarea>
+					<textarea name="body" placeholder="{% trans %}Comment{% endtrans %}" id="body" rows="5" class="text_body"></textarea>
 					<div class="postform__limits" title="Post/reply limits">{{ config.max_filesize | format_bytes(0) }} / {{ config.max_images }} files / <span class="postform__len">{{config.max_body}}</span></div>
 				</div>
 
@@ -175,7 +175,7 @@
 				{{ antibot.html() }}
 			</th>
 			<td>
-				<input type="text" name="embed" value="" size="30" maxlength="120" autocomplete="off">
+				<input type="text" name="embed" placeholder="{% trans %}Embed{% endtrans %}" value="" size="30" maxlength="120" autocomplete="off">
 			</td>
 		</tr>
 		{% endif %}
