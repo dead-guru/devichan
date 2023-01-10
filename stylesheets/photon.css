@@ -99,7 +99,8 @@ div.boardlist {
     border-radius: 4px;
     padding: 10px;
     position: fixed;
-    top: 0
+    top: 0;
+    z-index: 9999;
 }
 
 .desktop-style div.boardlist:first-child {
@@ -697,10 +698,21 @@ input.index-search-input {
 }
 
 div.post.op, div.post.reply {
-    word-break: break-word;
-    word-wrap: break-word;
+    /*word-break: break-word;
+    word-wrap: break-word;*/
     position: relative;
     margin-left: 15px;
+    min-width: fit-content;
+}
+
+div.post.reply div.body {
+    word-break: break-word;
+    word-wrap: break-word;
+     margin-left: 0;
+     margin-top: 0;
+     margin-right: 0;
+     padding-right: 3em;
+     padding-bottom: 0;
 }
 
 @media only screen and (max-device-width: 960px) {
@@ -716,7 +728,9 @@ div.post.op, div.post.reply {
     div.post.reply div.body {
         overflow: auto;
         max-height: 600px;
-        margin-top: 0
+        margin-top: 0;
+        margin-left:0;
+        font-size: 14px;
     }
 
     div.post.op {
@@ -727,11 +741,12 @@ div.post.op, div.post.reply {
     div.post.reply {
         margin: 2px 0 4px 0px;
         width: 100%;
+        max-width: 100% !important;
     }
 
     div.post.reply > .files {
         display: flex;
-        padding: 0 0 0 16px;
+        padding: 0;
         float: left;
         flex-flow: row wrap
     }

@@ -63,7 +63,23 @@ $(document).ready(function(){
 		}
 	}
 
-	var do_localtime = function(elem) {	
+	var isMoreThanDaysAgo = function(days, date) {
+		//                   days  hours min  sec  ms
+		const thirtyDaysInMs = days * 24 * 60 * 60 * 1000;
+		const timestampThirtyDaysAgo = new Date().getTime() - thirtyDaysInMs;
+
+		if (timestampThirtyDaysAgo > date) {
+			console.log('date is more than 30 days into the past');
+
+			return true;
+		} else {
+			console.log('date is NOT more than 30 days into the past');
+
+			return false;
+		}
+	}
+
+	var do_localtime = function(elem) {
 		var times = elem.getElementsByTagName('time');
 		var currentTime = Date.now();
 
@@ -71,16 +87,21 @@ $(document).ready(function(){
 			var t = times[i].getAttribute('datetime');
 			var postTime = new Date(t);
 
+			if(isMoreThanDaysAgo(3, postTime)) {
+				continue;
+			}
+
 			times[i].setAttribute('data-local', 'true');
 
 			if (localStorage.show_relative_time === 'false') {
 				times[i].innerHTML = dateformat(iso8601(t));
 				times[i].setAttribute('title', timeDifference(currentTime, postTime.getTime()));
 			} else {
+				console.log(postTime)
 				times[i].innerHTML = timeDifference(currentTime, postTime.getTime());
 				times[i].setAttribute('title', dateformat(iso8601(t)));
 			}
-		
+
 		}
 	};
 
