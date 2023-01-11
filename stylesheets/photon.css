@@ -100,7 +100,7 @@ div.boardlist {
     padding: 10px;
     position: fixed;
     top: 0;
-    z-index: 9999;
+    z-index: 9800;
 }
 
 .desktop-style div.boardlist:first-child {
@@ -303,12 +303,16 @@ body, html {
 .omitted, .toolong {
     font-size: .9em;
     color: #5d5d5d;
-    margin-left: 20px
+    margin-left: 0
 }
 
 .fileinfo, .no-new-threads, .unimportant, .unimportant * {
     font-size: .7rem;
     color: #b0b0b0
+}
+
+.mobile-style body {
+    padding-top: 20px;
 }
 
 .intro {
@@ -391,7 +395,9 @@ div.banner, div.banner a {
 div.post.reply {
     background: #ddd;
     border: 1px solid #ccc;
-    border-radius: 5px
+    border-radius: 5px;
+    max-width: 75vw !important;
+    margin: 2px 0 4px 20px;
 }
 
 div.title, h1 {
@@ -553,11 +559,15 @@ a.reply-thread {
 }
 
 a.reply-thread:hover {
-    text-decoration: underline dotted #EE6600
+    text-decoration: underline dotted #FF6600
 }
 
 div.post.reply div.body a {
     color: #e60
+}
+
+div.post.reply a:hover {
+    color: #FF6600 !important;
 }
 
 .dropbtn {
@@ -701,7 +711,7 @@ div.post.op, div.post.reply {
     /*word-break: break-word;
     word-wrap: break-word;*/
     position: relative;
-    margin-left: 15px;
+    /*margin-left: 15px;*/
     min-width: fit-content;
 }
 
@@ -715,7 +725,68 @@ div.post.reply div.body {
      padding-bottom: 0;
 }
 
+span.public_ban, span.toolong {
+    margin-left: 0 ;
+}
+
+.files {
+    height: max-content;
+}
+
+p.intro {
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+}
+
+.files {
+    float: left;
+    display: flex;
+    flex-flow: row wrap;
+}
+
+.post.reply .body {
+    overflow: auto;
+    max-height: 800px;
+}
+
+span.spoiler, span.spoiler a {
+    color: #bbb;
+    background-color: #bbb;
+}
+span.spoiler:hover, span.spoiler a:hover {
+    color: #333;
+    background-color: transparent;
+}
+
+div.post.reply.highlighted {
+    background: #eedacb;
+}
+
+.mentioned {
+    font-size: 80%;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    padding: 15px 0px 6px;
+}
+
+
+.mentioned a {
+    color: #FF6600;
+    padding: 0 3px;
+}
+.mentioned a:hover {
+    color: #a74300;
+}
+
 @media only screen and (max-device-width: 960px) {
+    .intro {
+        font-size: 0.8em;
+        display: flex;
+        flex-flow: row wrap;
+        align-items: center;
+    }
+
     .file:not(.multifile) {
         float: none;
     }
@@ -724,11 +795,11 @@ div.post.reply div.body {
         float: none;
     }
 
-
     div.post.reply div.body {
         overflow: auto;
-        max-height: 600px;
-        margin-top: 0;
+        max-height: 800px;
+        display: block;
+        margin-top: 10px;
         margin-left:0;
         font-size: 14px;
     }
@@ -742,12 +813,13 @@ div.post.reply div.body {
         margin: 2px 0 4px 0px;
         width: 100%;
         max-width: 100% !important;
+        min-width: 100% !important;
     }
 
     div.post.reply > .files {
         display: flex;
         padding: 0;
-        float: left;
+        float: none;
         flex-flow: row wrap
     }
 

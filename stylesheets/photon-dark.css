@@ -45,6 +45,7 @@ div.boardlist {
     padding: 10px;
     position: fixed;
     top: 0;
+    z-index: 9800;
 }
 
 
@@ -130,6 +131,14 @@ html, body {
     font-family: "Trebuchet MS", Trebuchet, serif;
     font-size: 12pt;
     margin-top: 20px;
+}
+
+body {
+    line-height: 1.3;
+}
+
+.mobile-style body {
+    padding-top: 20px;
 }
 
 a, a:visited {
@@ -398,6 +407,7 @@ div.title p {
 
 h1 {
     letter-spacing: inherit;
+    font-family: 'Trebuchet MS', sans-serif;
 }
 
 .pages {
@@ -626,10 +636,6 @@ div.post.reply div.body a {
     color: #212121;
 }
 
-div.post.reply div.body {
-    min-width: 75vh;
-}
-
 div.post i.fa {
     font-size: 0.7rem;
 }
@@ -639,7 +645,97 @@ div.post i.fa {
     float: none !important;
 
 }
+.index-search {
+    display: inline-block;
+    margin: 0;
+}
+.new-threads {
+    text-align: left;
+    display: inline;
+    padding: 0 5px;
+}
+
+#thread-interactions, #thread-interactions_header, #thread_stats, #updater {
+    display: inline;
+    font-size: .7rem;
+    color: #b0b0b0;
+}
+
+#expand-all-images, #watch-board, #watch-pin, #watch-thread, .tree-view-cntrl {
+    display: inline;
+    padding: 0 5px;
+    font-size: .7rem;
+}
+
+.fileinfo, .no-new-threads, .unimportant, .unimportant * {
+    font-size: .7rem;
+    color: #8A8A8A
+}
+
+.file:not(.multifile) {
+    float: left
+}
+
+.boardlist:not(.compact-boardlist) #watch-pinned::before {
+    content: " ";
+}
+
+.boardlist:not(.compact-boardlist) #watch-pinned::after {
+    content: " ";
+}
+
+div.post.op, div.post.reply {
+    /*word-break: break-word;
+    word-wrap: break-word;*/
+    position: relative;
+    /*margin-left: 15px;*/
+    min-width: fit-content;
+}
+
+div.post.reply div.body {
+    word-break: break-word;
+    word-wrap: break-word;
+    margin-left: 0;
+    margin-top: 0;
+    margin-right: 0;
+    padding-right: 3em;
+    padding-bottom: 0;
+}
+
+span.public_ban, span.toolong {
+    margin-left: 0 ;
+}
+
+.files {
+    height: max-content;
+}
+
+.post.reply p.intro {
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+}
+
+.post.reply .files {
+    float: left;
+    display: flex;
+    flex-flow: row wrap;
+}
+
+.post.reply .body {
+    overflow: auto;
+    max-height: 800px;
+}
+
 @media only screen and (max-device-width: 960px) {
+
+    .intro {
+        font-size: 0.8em;
+        display: flex;
+        flex-flow: row wrap;
+        align-items: center;
+    }
+
     .file:not(.multifile) {
         float: none;
     }
@@ -648,11 +744,13 @@ div.post i.fa {
         float: none;
     }
 
-
     div.post.reply div.body {
         overflow: auto;
-        max-height: 600px;
-        margin-top: 0
+        max-height: 800px;
+        display: block;
+        margin-top: 10px;
+        margin-left:0;
+        font-size: 14px;
     }
 
     div.post.op {
@@ -663,12 +761,14 @@ div.post i.fa {
     div.post.reply {
         margin: 2px 0 4px 0px;
         width: 100%;
+        max-width: 100% !important;
+        min-width: 100% !important;
     }
 
     div.post.reply > .files {
         display: flex;
-        padding: 0 0 0 16px;
-        float: left;
+        padding: 0;
+        float: none;
         flex-flow: row wrap
     }
 
@@ -712,3 +812,4 @@ div.post i.fa {
 input.delete {
     margin: 3px 6px 0 0;
 }
+

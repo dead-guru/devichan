@@ -62,8 +62,16 @@ onready(function(){
 				} else {
 					var $newPost = $post.clone();
 					$newPost.find('>.reply, >br').remove();
-					$newPost.find('span.mentioned').remove();
+					$newPost.find('div.mentioned').remove();
 					$newPost.find('a.post_anchor').remove();
+
+					let to = $link.parent().parent();
+					console.log(to.attr("class").split(/\s+/))
+
+					if(to.hasClass('body')) {
+						to = to.parent();
+					}
+					console.log(to.attr("class").split(/\s+/))
 
 					$newPost
 						.attr('id', 'post-hover-' + id)
@@ -76,7 +84,7 @@ onready(function(){
 						.css('font-style', 'normal')
 						.css('z-index', '100')
 						.addClass('reply').addClass('post')
-						.insertAfter($link.parent().parent());
+						.insertAfter(to);
 
 					$link.trigger('mousemove');
 				}

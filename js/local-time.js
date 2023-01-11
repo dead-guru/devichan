@@ -69,12 +69,8 @@ $(document).ready(function(){
 		const timestampThirtyDaysAgo = new Date().getTime() - thirtyDaysInMs;
 
 		if (timestampThirtyDaysAgo > date) {
-			console.log('date is more than 30 days into the past');
-
 			return true;
 		} else {
-			console.log('date is NOT more than 30 days into the past');
-
 			return false;
 		}
 	}
@@ -97,7 +93,6 @@ $(document).ready(function(){
 				times[i].innerHTML = dateformat(iso8601(t));
 				times[i].setAttribute('title', timeDifference(currentTime, postTime.getTime()));
 			} else {
-				console.log(postTime)
 				times[i].innerHTML = timeDifference(currentTime, postTime.getTime());
 				times[i].setAttribute('title', dateformat(iso8601(t)));
 			}
