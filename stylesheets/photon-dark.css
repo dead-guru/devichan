@@ -727,6 +727,25 @@ span.public_ban, span.toolong {
     max-height: 800px;
 }
 
+.hide-thread-link {
+    position: relative;
+    z-index: 999;
+}
+
+.mentioned a {
+    color: #FF6600;
+    padding: 0 3px;
+}
+.mentioned a:hover {
+    color: #a74300;
+}
+.mentioned {
+    font-size: 80%;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    padding: 15px 0px 6px;
+}
+
 @media only screen and (max-device-width: 960px) {
 
     .intro {

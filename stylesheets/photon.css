@@ -770,6 +770,10 @@ div.post.reply.highlighted {
     padding: 15px 0px 6px;
 }
 
+.hide-thread-link {
+    position: relative;
+    z-index: 999;
+}
 
 .mentioned a {
     color: #FF6600;
