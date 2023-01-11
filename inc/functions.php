@@ -1874,7 +1874,7 @@ function buildJavascript() {
             
             $minifier = new CSS($root . $stylesheet);
             $minifier->minify($root . $newPath);
-            $uri = $newPath;
+            $uri = $newPath . '?v=' . md5_file($root . $newPath);
         } else {
             $uri = (!empty($stylesheet) ? $config['uri_stylesheets'] : '') . $stylesheet;
         }
