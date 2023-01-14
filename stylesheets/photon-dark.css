@@ -932,6 +932,11 @@ header.header {
     flex: 1 1 auto;
 }
 
+.main__meta {
+    font-family: 'Open Sans', sans-serif;
+    text-align: justify;
+}
+
 div.subtitle {
     font-size: 1.1rem !important;
     font-family: 'Open Sans', sans-serif;

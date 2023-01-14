@@ -14,9 +14,9 @@
 								checked
 							{% endif %}>
 						{% elseif conf.type == 'textarea' %}
-							<textarea name="{{ conf.name }}">{% if settings[conf.name] %}{{ settings[conf.name] }}{% else %} {% if conf.default %}{{ conf.default }}{% endif %}{% endif %}</textarea> 
+							<textarea name="{{ conf.name }}" rows="25" cols="40">{% if settings[conf.name] %}{{ settings[conf.name] }}{% else %} {% if conf.default %}{{ conf.default }}{% endif %}{% endif %}</textarea>
 						{% else %}
-							<input type="text" name="{{ conf.name }}" 
+							<input type="text" name="{{ conf.name }}"
 							{% if settings[conf.name] %}
 								value="{{ settings[conf.name] }}"
 							{% else %}
@@ -24,7 +24,7 @@
 							{% if conf.size %}
 								size="{{ conf.size }}"
 							{% endif %}>
-						
+
 						{% endif %}
 					{% if conf.comment %}
 						 <span class="unimportant">{{ conf.comment }}</span>

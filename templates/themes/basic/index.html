@@ -25,6 +25,7 @@
     <h1>{{ settings.title }}</h1>
     <div class="subtitle">{{ settings.subtitle }}</div>
 </header>
+<section class="main__block main__meta">{{ settings.meta }}</section>
 <section class="main__block boards">
     {% for col in config.index_boards %}
     <div class="boards__col">
@@ -59,7 +60,6 @@
     {% endfor %}
     {% endif %}
 </div>
-
 <hr />
 {% include 'footer.html' %}
 </body>

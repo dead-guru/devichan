@@ -30,6 +30,12 @@
         'default' => '/static/dd2.png',
 		'comment' => '/static/dd2.png'
 	);
+	$theme['config'][] = Array(
+		'title' => 'meta',
+		'name' => 'meta',
+		'type' => 'textarea',
+		'comment' => 'Meta text under logo (HTML)'
+	);
 	
 	$theme['config'][] = Array(
 		'title' => 'File',
