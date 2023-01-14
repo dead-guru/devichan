@@ -967,3 +967,9 @@ header.header {
 .header__item {
     flex: 1 1 auto;
 }
+
+div.subtitle {
+    font-size: 1.1rem !important;
+    font-family: 'Open Sans', sans-serif;
+    color: #5e5e5e !important;
+}
