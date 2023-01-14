@@ -539,9 +539,13 @@ function mod_news($page_no = 1) {
 	if (isset($_POST['subject'], $_POST['body'])) {
 		if (!hasPermission($config['mod']['news']))
 			error($config['error']['noaccess']);
-		
-		$_POST['body'] = escape_markup_modifiers($_POST['body']);
-		markup($_POST['body']);
+        
+        if($config['html_news'] === false) {
+            $_POST['body'] = escape_markup_modifiers($_POST['body']);
+            markup($_POST['body']);
+        } else {
+            purify_html($_POST['body']);
+        }
 		
 		$query = prepare('INSERT INTO ``news`` VALUES (NULL, :name, :time, :subject, :body)');
 		$query->bindValue(':name', isset($_POST['name']) && hasPermission($config['mod']['news_custom']) ? $_POST['name'] : $mod['username']);

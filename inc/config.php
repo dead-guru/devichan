@@ -899,6 +899,8 @@
 
 	// Allow unfiltered HTML in board subtitle. This is useful for placing icons and links.
 	$config['allow_subtitle_html'] = false;
+ 
+	$config['news_html'] = false;
 
 /*
  * ====================
@@ -981,6 +983,8 @@
 	// 	array('k', array('l', 'm')),
 	// 	array('status' => 'http://status.example.org/')
 	// );
+
+    $config['index_boards'] = [];
 
 	// Whether or not to put brackets around the whole board list
 	$config['boardlist_wrap_bracket'] = false;

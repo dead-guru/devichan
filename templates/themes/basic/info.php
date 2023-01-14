@@ -7,7 +7,7 @@
 	$theme['description'] = 'Extremely basic news listing for the homepage. Enabling boardlinks is recommended for this theme.';
 	$theme['version'] = 'v0.9.1';
 	
-	// Theme configuration	
+	// Theme configuration
 	$theme['config'] = Array();
 	
 	$theme['config'][] = Array(
@@ -21,6 +21,14 @@
 		'name' => 'subtitle',
 		'type' => 'text',
 		'comment' => '(optional)'
+	);
+ 
+	$theme['config'][] = Array(
+		'title' => 'Logo',
+		'name' => 'logo',
+		'type' => 'text',
+        'default' => '/static/dd2.png',
+		'comment' => '/static/dd2.png'
 	);
 	
 	$theme['config'][] = Array(

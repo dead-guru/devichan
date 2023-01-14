@@ -2944,7 +2944,7 @@ function purify_html($s) {
 	$c = HTMLPurifier_Config::createDefault();
 	$c->set('HTML.Allowed', $config['allowed_html']);
 	$uri = $c->getDefinition('URI');
-	$uri->addFilter(new HTMLPurifier_URIFilter_NoExternalImages(), $c);
+	$uri->addFilter(new HTMLPurifier_URIFilter_DisableExternalResources(), $c);
 	$purifier = new HTMLPurifier($c);
 	$clean_html = $purifier->purify($s);
 	return $clean_html;
