@@ -42,6 +42,10 @@ class CssCompressTwigExtension extends Twig\Extension\AbstractExtension
             );
         
         if (file_exists($root . $newPath)) {
+            if(!str_contains($newPath, '?v=')) {
+                $newPath .= '?v=' . md5_file($root . $newPath);
+            }
+            
             return $newPath;
         }
         
