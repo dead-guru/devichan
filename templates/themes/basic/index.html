@@ -11,9 +11,9 @@
     {% if config.url_favicon %}
     <link rel="shortcut icon" href="{{ config.url_favicon }}">
     {% endif %}
-    <link rel="stylesheet" media="screen" href="{{ config.url_stylesheet }}">
+    <link rel="stylesheet" media="screen" href="{{ config.url_stylesheet|ccss }}">
     {% if config.default_stylesheet.1 != '' %}
-    <link rel="stylesheet" type="text/css" id="stylesheet" href="{{ config.uri_stylesheets }}{{ config.default_stylesheet.1 }}">
+    <link rel="stylesheet" type="text/css" id="stylesheet" href="{{ (config.uri_stylesheets ~ config.default_stylesheet.1) | ccss }}">
     {% endif %}
     {% if config.font_awesome %}
     <link rel="stylesheet" href="{{ config.root }}{{ config.font_awesome_css }}">
