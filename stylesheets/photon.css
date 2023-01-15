@@ -978,3 +978,7 @@ div.subtitle {
     font-family: 'Open Sans', sans-serif;
     color: #5e5e5e !important;
 }
+.paragraph {
+    font-weight: bold;
+    font-size: 1.1rem;
+}
