@@ -11,9 +11,16 @@
 	$theme['config'] = Array();
 	
 	$theme['config'][] = Array(
+		'title' => 'Head title',
+		'name' => 'head_title',
+		'type' => 'text'
+	);
+ 
+	$theme['config'][] = Array(
 		'title' => 'Site title',
 		'name' => 'title',
-		'type' => 'text'
+		'type' => 'text',
+        'comment' => '(optional)'
 	);
 	
 	$theme['config'][] = Array(

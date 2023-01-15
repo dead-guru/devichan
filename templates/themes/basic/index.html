@@ -3,7 +3,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>{{ settings.title }}</title>
+    <title>{{ settings.head_title }} - {{ settings.subtitle }}</title>
     {% if config.meta_keywords %}
     <meta name="keywords" content="{{ config.meta_keywords }}">
     {% endif %}
@@ -21,7 +21,7 @@
 </head>
 <body class="8chan main vichan {% if mod %}is-moderator{% else %}is-not-moderator{% endif %}" data-stylesheet="{% if config.default_stylesheet.1 != '' %}{{ config.default_stylesheet.1 }}{% else %}default{% endif %}">
 <header class="header">
-    <img src="{{ settings.logo }}" style="max-width: 460px" alt="Logo">
+    <img src="{{ settings.logo }}" style="max-width: 460px; width: 100%; height: auto;" alt="Logo">
     <h1>{{ settings.title }}</h1>
     <div class="subtitle">{{ settings.subtitle }}</div>
 </header>
