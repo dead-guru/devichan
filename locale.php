@@ -19,4 +19,5 @@ function init_locale($locale, $error='error') {
 }
 
 init_locale('uk_UA.utf8');
+echo locale_get_default() . PHP_EOL;
 echo gettext("Start a New Thread");
