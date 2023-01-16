@@ -3949,17 +3949,26 @@ msgstr ""
 msgid "Can't build the Index theme, because there are no boards to be fetched."
 msgstr ""
 
+#: ../../../../templates/themes/index/theme.php:62
 msgid "Post a Reply"
 msgstr "Додати Відповідь"
 
+#: ../../../../templates/themes/index/theme.php:62
 msgid "Start a New Thread"
 msgstr "Створити Новий Тред"
 
+#: ../../../../templates/themes/index/theme.php:62
 msgid "Options"
 msgstr "Опції"
 
+#: ../../../../templates/themes/index/theme.php:62
 msgid "Catalog"
 msgstr "Каталог"
 
+#: ../../../../templates/themes/index/theme.php:62
 msgid "search"
 msgstr "пошук"
+
+#: ../../../../templates/themes/index/theme.php:62
+msgid "search1"
+msgstr "пошук1"
