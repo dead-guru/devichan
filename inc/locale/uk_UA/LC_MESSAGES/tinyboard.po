@@ -3955,7 +3955,7 @@ msgstr "Додати Відповідь"
 
 #: ../../../../templates/themes/index/theme.php:62
 msgid "Start a New Thread"
-msgstr "Створити Новий Тред"
+msgstr "Створити Новий Тред1"
 
 #: ../../../../templates/themes/index/theme.php:62
 msgid "Options"

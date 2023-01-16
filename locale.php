@@ -20,5 +20,12 @@ function init_locale($locale) {
 echo locale_get_default() . PHP_EOL. PHP_EOL;
 echo init_locale('uk_UA.utf8');
 echo locale_get_default() . PHP_EOL . PHP_EOL;
+echo "<br>";
 var_dump($_ENV['HTTP_ACCEPT_LANGUAGE']);
+echo "<br>";echo "<br>";echo "<br>";
 echo gettext("Start a New Thread");
+echo "<br>";
+echo gettext("search");
+echo "<br>";
+echo gettext("Catalog");
+echo "<br>";
