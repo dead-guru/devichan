@@ -110,7 +110,8 @@ div.boardlist {
 div.boardlist.bottom {
     margin-top: 20px;
     position: inherit;
-    background: inherit
+    background: inherit;
+    border: none;
 }
 
 .return1 a {
