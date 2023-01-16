@@ -7,7 +7,7 @@
  *  Options:
  *    -l [locale], --locale=[locale]
  *      Updates only [locale] locale. If it does not exist yet, we create a new directory.
- *      
+ *
  */
 
 require dirname(__FILE__) . '/inc/cli.php';
@@ -38,6 +38,7 @@ foreach ($locales as $loc) {
 	// Generate tinyboard.po
 	if (file_exists($locdir."/LC_MESSAGES/tinyboard.po"))	$join = "-j";
 	else							$join = "";
+ 
 	passthru("cd $locdir/LC_MESSAGES;
          xgettext -d tinyboard -L php --from-code utf-8 $join -c $(find ../../../../ -name \*.php)");
 

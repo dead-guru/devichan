@@ -19,6 +19,7 @@ RUN apt-get update && apt-get install -y \
         gifsicle \
         graphicsmagick \
         imagemagick \
+        locales locales-all \
         libmagickwand-dev \
     && docker-php-ext-configure gd --with-webp=/usr/include/webp --with-jpeg=/usr/include --with-freetype=/usr/include/freetype2/ \
     && pecl install redis && pecl install imagick && pecl install -o -f igbinary \

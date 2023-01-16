@@ -17,11 +17,8 @@ use Twig\Node\TextNode;
 use Twig\Token;
 use Twig\TokenParser\AbstractTokenParser;
 
-class Twig_Extensions_TokenParser_Trans extends AbstractTokenParser
+class TransTokenParser extends AbstractTokenParser
 {
-    /**
-     * {@inheritdoc}
-     */
     public function parse(Token $token)
     {
         $lineno = $token->getLine();
@@ -34,21 +31,21 @@ class Twig_Extensions_TokenParser_Trans extends AbstractTokenParser
             $body = $this->parser->getExpressionParser()->parseExpression();
         } else {
             $stream->expect(Token::BLOCK_END_TYPE);
-            $body = $this->parser->subparse(array($this, 'decideForFork'));
+            $body = $this->parser->subparse([$this, 'decideForFork']);
             $next = $stream->next()->getValue();
             
             if ('plural' === $next) {
                 $count = $this->parser->getExpressionParser()->parseExpression();
                 $stream->expect(Token::BLOCK_END_TYPE);
-                $plural = $this->parser->subparse(array($this, 'decideForFork'));
+                $plural = $this->parser->subparse([$this, 'decideForFork']);
                 
                 if ('notes' === $stream->next()->getValue()) {
                     $stream->expect(Token::BLOCK_END_TYPE);
-                    $notes = $this->parser->subparse(array($this, 'decideForEnd'), true);
+                    $notes = $this->parser->subparse([$this, 'decideForEnd'], true);
                 }
             } elseif ('notes' === $next) {
                 $stream->expect(Token::BLOCK_END_TYPE);
-                $notes = $this->parser->subparse(array($this, 'decideForEnd'), true);
+                $notes = $this->parser->subparse([$this, 'decideForEnd'], true);
             }
         }
         
@@ -56,12 +53,12 @@ class Twig_Extensions_TokenParser_Trans extends AbstractTokenParser
         
         $this->checkTransString($body, $lineno);
         
-        return new Twig_Extensions_Node_Trans($body, $plural, $count, $notes, $lineno, $this->getTag());
+        return new TransNode($body, $plural, $count, $notes, $lineno, $this->getTag());
     }
     
     public function decideForFork(Token $token)
     {
-        return $token->test(array('plural', 'notes', 'endtrans'));
+        return $token->test(['plural', 'notes', 'endtrans']);
     }
     
     public function decideForEnd(Token $token)
@@ -69,15 +66,12 @@ class Twig_Extensions_TokenParser_Trans extends AbstractTokenParser
         return $token->test('endtrans');
     }
     
-    /**
-     * {@inheritdoc}
-     */
     public function getTag()
     {
         return 'trans';
     }
     
-    protected function checkTransString(Node $body, $lineno)
+    private function checkTransString(Node $body, $lineno)
     {
         foreach ($body as $i => $node) {
             if (
@@ -88,9 +82,7 @@ class Twig_Extensions_TokenParser_Trans extends AbstractTokenParser
                 continue;
             }
             
-            throw new SyntaxError(
-                'The text to be translated with "trans" can only contain references to simple variables', $lineno);
+            throw new SyntaxError(sprintf('The text to be translated with "trans" can only contain references to simple variables'), $lineno);
         }
     }
-    
 }

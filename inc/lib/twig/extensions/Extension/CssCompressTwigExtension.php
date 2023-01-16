@@ -1,6 +1,5 @@
 <?php
 
-use MatthiasMullie\Minify\CSS;
 use Twig\TwigFilter;
 
 class CssCompressTwigExtension extends Twig\Extension\AbstractExtension

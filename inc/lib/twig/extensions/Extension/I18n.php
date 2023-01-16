@@ -17,7 +17,7 @@ class Twig_Extensions_Extension_I18n extends Twig\Extension\AbstractExtension
      */
     public function getTokenParsers()
     {
-        return array(new Twig_Extensions_TokenParser_Trans());
+        return array(new TransTokenParser());
     }
 
     /**

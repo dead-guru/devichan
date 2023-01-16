@@ -1,9 +1,9 @@
 
 <h1 class="open-form">[<a href="#" onclick="toggle('form[name=post]'); return false">
 {% if not id %}
-	Start a New Thread
+	{% trans %}Start a New Thread{% endtrans %}
 {% else %}
-	Post a Reply
+	{% trans %}Post a Reply{% endtrans %}
 {% endif %}
 </a>]</h1>
 <form name="post" style="display: none" onsubmit="return dopost(this);" enctype="multipart/form-data" action="{{ config.post_url }}" method="post">
