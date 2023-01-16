@@ -113,19 +113,20 @@ class Bans {
 		return array($ipstart, $ipend);
 	}
 	
-	static public function find($ip, $board = false, $get_mod_info = false) {
+	static public function find($ip, $board = false, $get_mod_info = false, $banid = null) {
 		global $config;
 		
 		$query = prepare('SELECT ``bans``.*' . ($get_mod_info ? ', `username`' : '') . ' FROM ``bans``
 		' . ($get_mod_info ? 'LEFT JOIN ``mods`` ON ``mods``.`id` = `creator`' : '') . '
 		WHERE
 			(' . ($board !== false ? '(`board` IS NULL OR `board` = :board) AND' : '') . '
-			(`ipstart` = :ip OR (:ip >= `ipstart` AND :ip <= `ipend`)))
+			(`ipstart` = :ip OR (:ip >= `ipstart` AND :ip <= `ipend`)) OR (``bans``.id = :id))
 		ORDER BY `expires` IS NULL, `expires` DESC');
 		
 		if ($board !== false)
 			$query->bindValue(':board', $board, PDO::PARAM_STR);
-		
+        
+        $query->bindValue(':id', $banid);
 		$query->bindValue(':ip', inet_pton($ip));
 		$query->execute() or error(db_error($query));
 		
@@ -249,7 +250,7 @@ class Bans {
 		if ($mod_id === false) {
 			$mod_id = isset($mod['id']) ? $mod['id'] : -1;
 		}
-				
+		
 		$range = self::parse_range($mask);
 		$mask = self::range_to_string($range);
 		$cloaked_mask = cloak_mask($mask);
@@ -289,6 +290,8 @@ class Bans {
 			$query->bindValue(':board', null, PDO::PARAM_NULL);
 		
 		if ($post) {
+            if (!isset($board['uri']))
+                openBoard($post['board']);
 			$post['board'] = $board['uri'];
 			$query->bindValue(':post', json_encode($post));
 		} else

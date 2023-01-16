@@ -13,7 +13,7 @@ class Filter {
 	
 	public function __construct(array $arr) {
 		foreach ($arr as $key => $value)
-			$this->$key = $value;		
+			$this->$key = $value;
 	}
 	
 	public function match($condition, $match) {
@@ -29,7 +29,7 @@ class Filter {
 			case 'flood-match':
 				if (!is_array($match))
 					error('Filter condition "flood-match" must be an array.');
-								
+					
 				// Filter out "flood" table entries which do not match this filter.
 				
 				$flood_check_matched = array();
@@ -142,7 +142,7 @@ class Filter {
 	                $query->bindValue(':time', time());
 	                $query->bindValue(':body', "Autoban message: ".$this->post['body']);
 	                $query->execute() or error(db_error($query));
-		}				
+		}
 		if (isset ($this->action)) switch($this->action) {
 			case 'reject':
 				error(isset($this->message) ? $this->message : 'Posting throttled by filter.');
@@ -191,8 +191,8 @@ function purge_flood_table() {
 	// Determine how long we need to keep a cache of posts for flood prevention. Unfortunately, it is not
 	// aware of flood filters in other board configurations. You can solve this problem by settings the
 	// config variable $config['flood_cache'] (seconds).
-	
-	if (isset($config['flood_cache'])) {
+    
+    if ($config['flood_cache'] !== -1) {
 		$max_time = &$config['flood_cache'];
 	} else {
 		$max_time = 0;

@@ -461,7 +461,10 @@
 	// outside the current board. This means that if you have a special flood condition for a specific board
 	// (contained in a board configuration file) which has a flood-time greater than any of those in the
 	// global configuration, you need to set the following variable to the maximum flood-time condition value.
+    // Set to -1 to disable.
 	// $config['flood_cache'] = 60 * 60 * 24; // 24 hours
+
+    $config['flood_cache'] = -1;
 
 /*
  * ====================
@@ -1565,6 +1568,8 @@
 	$config['mod']['unban'] = MOD;
 	// Spoiler image
 	$config['mod']['spoilerimage'] = JANITOR;
+    // Edit bans
+    $config['mod']['edit_ban'] = &$config['mod']['ban'];
 	// Delete file (and keep post)
 	$config['mod']['deletefile'] = JANITOR;
 	// Delete all posts by IP
