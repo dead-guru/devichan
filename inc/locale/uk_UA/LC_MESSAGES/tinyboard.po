@@ -3,21 +3,20 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
+#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: \n"
+"Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-10-18 13:47+0200\n"
-"PO-Revision-Date: 2016-06-19 17:31+0300\n"
-"Language: uk\n"
+"POT-Creation-Date: 2023-01-16 12:17+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
-"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"Last-Translator: kotobenko <aniguysubs@gmail.com>\n"
-"Language-Team: \n"
-"X-Generator: Poedit 1.8.8\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
 #: ../../../../inc/functions.php:583 ../../../../inc/functions.php:600
 #: ../../../../inc/functions.php:591 ../../../../inc/functions.php:608
@@ -29,6 +28,7 @@ msgstr ""
 #: ../../../../inc/functions.php:655 ../../../../inc/functions.php:672
 #: ../../../../inc/functions.php:683 ../../../../inc/functions.php:700
 #: ../../../../inc/functions.php:701 ../../../../inc/functions.php:719
+#: ../../../../inc/functions.php:818 ../../../../inc/functions.php:836
 msgid "second"
 msgid_plural "seconds"
 msgstr[0] "секунда"
@@ -46,6 +46,7 @@ msgstr[2] "секунд"
 #: ../../../../inc/functions.php:657 ../../../../inc/functions.php:674
 #: ../../../../inc/functions.php:685 ../../../../inc/functions.php:702
 #: ../../../../inc/functions.php:703 ../../../../inc/functions.php:721
+#: ../../../../inc/functions.php:820 ../../../../inc/functions.php:838
 msgid "minute"
 msgid_plural "minutes"
 msgstr[0] "хвилина"
@@ -63,6 +64,7 @@ msgstr[2] "хвилин"
 #: ../../../../inc/functions.php:659 ../../../../inc/functions.php:676
 #: ../../../../inc/functions.php:687 ../../../../inc/functions.php:704
 #: ../../../../inc/functions.php:705 ../../../../inc/functions.php:723
+#: ../../../../inc/functions.php:822 ../../../../inc/functions.php:840
 msgid "hour"
 msgid_plural "hours"
 msgstr[0] "година"
@@ -80,6 +82,7 @@ msgstr[2] "годин"
 #: ../../../../inc/functions.php:661 ../../../../inc/functions.php:678
 #: ../../../../inc/functions.php:689 ../../../../inc/functions.php:706
 #: ../../../../inc/functions.php:707 ../../../../inc/functions.php:725
+#: ../../../../inc/functions.php:824 ../../../../inc/functions.php:842
 msgid "day"
 msgid_plural "days"
 msgstr[0] "день"
@@ -97,6 +100,7 @@ msgstr[2] "днів"
 #: ../../../../inc/functions.php:663 ../../../../inc/functions.php:680
 #: ../../../../inc/functions.php:691 ../../../../inc/functions.php:708
 #: ../../../../inc/functions.php:709 ../../../../inc/functions.php:727
+#: ../../../../inc/functions.php:826 ../../../../inc/functions.php:844
 msgid "week"
 msgid_plural "weeks"
 msgstr[0] "тиждень"
@@ -112,7 +116,8 @@ msgstr[2] "тижнів"
 #: ../../../../inc/functions.php:664 ../../../../inc/functions.php:681
 #: ../../../../inc/functions.php:666 ../../../../inc/functions.php:683
 #: ../../../../inc/functions.php:694 ../../../../inc/functions.php:711
-#: ../../../../inc/functions.php:729
+#: ../../../../inc/functions.php:729 ../../../../inc/functions.php:828
+#: ../../../../inc/functions.php:846
 msgid "year"
 msgid_plural "years"
 msgstr[0] "рік"
@@ -124,6 +129,7 @@ msgstr[2] "років"
 #: ../../../../inc/functions.php:708 ../../../../inc/functions.php:722
 #: ../../../../inc/functions.php:732 ../../../../inc/functions.php:727
 #: ../../../../inc/functions.php:755 ../../../../inc/functions.php:774
+#: ../../../../inc/functions.php:891
 msgid "Banned!"
 msgstr "Заблоковано!"
 
@@ -138,6 +144,7 @@ msgstr "Заблоковано!"
 #: ../../../../inc/functions.php:1244 ../../../../inc/functions.php:1228
 #: ../../../../inc/functions.php:1242 ../../../../inc/functions.php:1256
 #: ../../../../inc/functions.php:1261 ../../../../inc/functions.php:1275
+#: ../../../../inc/functions.php:1472 ../../../../inc/functions.php:1486
 msgid "Previous"
 msgstr "Попередня"
 
@@ -152,32 +159,33 @@ msgstr "Попередня"
 #: ../../../../inc/functions.php:1258 ../../../../inc/functions.php:1233
 #: ../../../../inc/functions.php:1242 ../../../../inc/functions.php:1261
 #: ../../../../inc/functions.php:1270 ../../../../inc/functions.php:1280
-#: ../../../../inc/functions.php:1289
+#: ../../../../inc/functions.php:1289 ../../../../inc/functions.php:1491
+#: ../../../../inc/functions.php:1500
 msgid "Next"
 msgstr "Наступна"
 
 #: ../../../../inc/display.php:93 ../../../../inc/display.php:105
 #: ../../../../inc/display.php:108 ../../../../inc/display.php:112
-#: ../../../../inc/display.php:126
+#: ../../../../inc/display.php:126 ../../../../inc/display.php:121
 msgid "Error"
 msgstr "Помилка"
 
 #: ../../../../inc/display.php:94 ../../../../inc/display.php:106
 #: ../../../../inc/display.php:109 ../../../../inc/display.php:113
-#: ../../../../inc/display.php:127
+#: ../../../../inc/display.php:127 ../../../../inc/display.php:122
 msgid "An error has occured."
 msgstr "Сталася помилка."
 
 #: ../../../../inc/display.php:110 ../../../../inc/mod/pages.php:62
 #: ../../../../inc/mod/pages.php:60 ../../../../inc/display.php:122
 #: ../../../../inc/display.php:125 ../../../../inc/display.php:129
-#: ../../../../inc/display.php:143
+#: ../../../../inc/display.php:143 ../../../../inc/display.php:138
 msgid "Login"
 msgstr "Логін"
 
 #: ../../../../inc/display.php:229 ../../../../inc/display.php:241
 #: ../../../../inc/display.php:244 ../../../../inc/display.php:248
-#: ../../../../inc/display.php:262
+#: ../../../../inc/display.php:262 ../../../../inc/display.php:257
 #, php-format
 msgid "Post too long. Click <a href=\"%s\">here</a> to view the full text."
 msgstr ""
@@ -189,6 +197,7 @@ msgstr ""
 #: ../../../../inc/display.php:388 ../../../../inc/display.php:498
 #: ../../../../inc/display.php:392 ../../../../inc/display.php:502
 #: ../../../../templates/cache/59/eb/57ea544c6cb07c523441e4872c03216560589e8425c0df3a895c17253c4c.php:60
+#: ../../../../templates/cache/1c/1cfc0d9b5bd0c051e4b8fdf515e0ca3e.php:75
 msgid "Ban"
 msgstr "Заблокувати"
 
@@ -197,6 +206,7 @@ msgstr "Заблокувати"
 #: ../../../../inc/display.php:392 ../../../../inc/display.php:502
 #: ../../../../inc/display.php:396 ../../../../inc/display.php:506
 #: ../../../../templates/cache/59/eb/57ea544c6cb07c523441e4872c03216560589e8425c0df3a895c17253c4c.php:74
+#: ../../../../templates/cache/1c/1cfc0d9b5bd0c051e4b8fdf515e0ca3e.php:89
 msgid "Ban & Delete"
 msgstr "Заблокувати й видалити"
 
@@ -206,6 +216,7 @@ msgstr "Заблокувати й видалити"
 #: ../../../../inc/display.php:396 ../../../../inc/display.php:506
 #: ../../../../inc/display.php:400 ../../../../inc/display.php:510
 #: ../../../../templates/cache/b9/2b/ba2b45df5e1d76f6cdfb98a47468df19a1ffc1c2af2dc1792eb75eeb0791.php:29
+#: ../../../../templates/cache/a5/a52128149c2f75de4b803a68bf47fe44.php:44
 msgid "Delete file"
 msgstr "Видалити файл"
 
@@ -214,6 +225,7 @@ msgstr "Видалити файл"
 #: ../../../../inc/display.php:396 ../../../../inc/display.php:506
 #: ../../../../inc/display.php:400 ../../../../inc/display.php:510
 #: ../../../../templates/cache/b9/2b/ba2b45df5e1d76f6cdfb98a47468df19a1ffc1c2af2dc1792eb75eeb0791.php:29
+#: ../../../../templates/cache/a5/a52128149c2f75de4b803a68bf47fe44.php:44
 msgid "Are you sure you want to delete this file?"
 msgstr "Ви впевнені, що хочете видалити цей файл?"
 
@@ -229,6 +241,7 @@ msgstr "Заховати файл у спойлер"
 #: ../../../../inc/display.php:400 ../../../../inc/display.php:510
 #: ../../../../inc/display.php:404 ../../../../inc/display.php:514
 #: ../../../../templates/cache/b9/2b/ba2b45df5e1d76f6cdfb98a47468df19a1ffc1c2af2dc1792eb75eeb0791.php:36
+#: ../../../../templates/cache/a5/a52128149c2f75de4b803a68bf47fe44.php:51
 msgid "Are you sure you want to spoiler this file?"
 msgstr "Ви впевнені, що хочете заховати цей файл у спойлер?"
 
@@ -236,6 +249,7 @@ msgstr "Ви впевнені, що хочете заховати цей фай�
 #: ../../../../inc/display.php:384 ../../../../inc/display.php:401
 #: ../../../../inc/display.php:404 ../../../../inc/display.php:408
 #: ../../../../templates/cache/59/eb/57ea544c6cb07c523441e4872c03216560589e8425c0df3a895c17253c4c.php:193
+#: ../../../../templates/cache/1c/1cfc0d9b5bd0c051e4b8fdf515e0ca3e.php:205
 msgid "Move reply to another board"
 msgstr "Перемістити відповідь до іншої дошки"
 
@@ -247,12 +261,14 @@ msgstr "Перемістити відповідь до іншої дошки"
 #: ../../../../inc/mod/pages.php:1508
 #: ../../../../templates/cache/59/eb/57ea544c6cb07c523441e4872c03216560589e8425c0df3a895c17253c4c.php:208
 #: ../../../../inc/mod/pages.php:1509 ../../../../inc/mod/pages.php:1506
-#: ../../../../inc/mod/pages.php:1511
+#: ../../../../inc/mod/pages.php:1511 ../../../../inc/mod/pages.php:1660
+#: ../../../../templates/cache/1c/1cfc0d9b5bd0c051e4b8fdf515e0ca3e.php:246
 msgid "Edit post"
 msgstr "Редагувати допис"
 
 #. line 5
 #. line 6
+#. line 7
 #: ../../../../inc/display.php:461
 #: ../../../../templates/cache/82/40/4c4a4b82f787181e6500ce83494d.php:33
 #: ../../../../inc/display.php:483
@@ -260,36 +276,43 @@ msgstr "Редагувати допис"
 #: ../../../../inc/display.php:486 ../../../../inc/display.php:490
 #: ../../../../templates/cache/17/2f/ea79f6d94768f645ed33b3f5c1a54caee235af04d24b88e34cc8c2d48583.php:38
 #: ../../../../templates/cache/59/eb/57ea544c6cb07c523441e4872c03216560589e8425c0df3a895c17253c4c.php:36
+#: ../../../../templates/cache/1c/1cfc0d9b5bd0c051e4b8fdf515e0ca3e.php:51
+#: ../../../../templates/cache/23/23cbfe650e40ac057f1e85511556af91.php:56
 msgid "Delete"
 msgstr "Видалити"
 
 #: ../../../../inc/display.php:461 ../../../../inc/display.php:483
 #: ../../../../inc/display.php:486 ../../../../inc/display.php:490
 #: ../../../../templates/cache/59/eb/57ea544c6cb07c523441e4872c03216560589e8425c0df3a895c17253c4c.php:36
+#: ../../../../templates/cache/1c/1cfc0d9b5bd0c051e4b8fdf515e0ca3e.php:51
 msgid "Are you sure you want to delete this?"
 msgstr "Ви впевнені, що хочете видалити?"
 
 #: ../../../../inc/display.php:465 ../../../../inc/display.php:487
 #: ../../../../inc/display.php:490 ../../../../inc/display.php:494
 #: ../../../../templates/cache/59/eb/57ea544c6cb07c523441e4872c03216560589e8425c0df3a895c17253c4c.php:44
+#: ../../../../templates/cache/1c/1cfc0d9b5bd0c051e4b8fdf515e0ca3e.php:59
 msgid "Delete all posts by IP"
 msgstr "Видалити всі дописи цього IP"
 
 #: ../../../../inc/display.php:465 ../../../../inc/display.php:487
 #: ../../../../inc/display.php:490 ../../../../inc/display.php:494
 #: ../../../../templates/cache/59/eb/57ea544c6cb07c523441e4872c03216560589e8425c0df3a895c17253c4c.php:44
+#: ../../../../templates/cache/1c/1cfc0d9b5bd0c051e4b8fdf515e0ca3e.php:59
 msgid "Are you sure you want to delete all posts by this IP address?"
 msgstr "Ви впевнені, що хочете видалити всі дописи цього IP?"
 
 #: ../../../../inc/display.php:469 ../../../../inc/display.php:491
 #: ../../../../inc/display.php:494 ../../../../inc/display.php:498
 #: ../../../../templates/cache/59/eb/57ea544c6cb07c523441e4872c03216560589e8425c0df3a895c17253c4c.php:52
+#: ../../../../templates/cache/1c/1cfc0d9b5bd0c051e4b8fdf515e0ca3e.php:67
 msgid "Delete all posts by IP across all boards"
 msgstr "Видалити всі дописи цього IP на всіх дошках"
 
 #: ../../../../inc/display.php:469 ../../../../inc/display.php:491
 #: ../../../../inc/display.php:494 ../../../../inc/display.php:498
 #: ../../../../templates/cache/59/eb/57ea544c6cb07c523441e4872c03216560589e8425c0df3a895c17253c4c.php:52
+#: ../../../../templates/cache/1c/1cfc0d9b5bd0c051e4b8fdf515e0ca3e.php:67
 msgid ""
 "Are you sure you want to delete all posts by this IP address, across all "
 "boards?"
@@ -298,42 +321,49 @@ msgstr "Ви впенені, що хочете видалити всі допи�
 #: ../../../../inc/display.php:490 ../../../../inc/display.php:512
 #: ../../../../inc/display.php:515 ../../../../inc/display.php:519
 #: ../../../../templates/cache/59/eb/57ea544c6cb07c523441e4872c03216560589e8425c0df3a895c17253c4c.php:96
+#: ../../../../templates/cache/1c/1cfc0d9b5bd0c051e4b8fdf515e0ca3e.php:111
 msgid "Make thread not sticky"
 msgstr "Відкріпити нитку"
 
 #: ../../../../inc/display.php:492 ../../../../inc/display.php:514
 #: ../../../../inc/display.php:517 ../../../../inc/display.php:521
 #: ../../../../templates/cache/59/eb/57ea544c6cb07c523441e4872c03216560589e8425c0df3a895c17253c4c.php:106
+#: ../../../../templates/cache/1c/1cfc0d9b5bd0c051e4b8fdf515e0ca3e.php:121
 msgid "Make thread sticky"
 msgstr "Закріпити нитку"
 
 #: ../../../../inc/display.php:496 ../../../../inc/display.php:518
 #: ../../../../inc/display.php:521 ../../../../inc/display.php:525
 #: ../../../../templates/cache/59/eb/57ea544c6cb07c523441e4872c03216560589e8425c0df3a895c17253c4c.php:122
+#: ../../../../templates/cache/1c/1cfc0d9b5bd0c051e4b8fdf515e0ca3e.php:137
 msgid "Allow thread to be bumped"
 msgstr "Увімкнути цій нитці підіймання"
 
 #: ../../../../inc/display.php:498 ../../../../inc/display.php:520
 #: ../../../../inc/display.php:523 ../../../../inc/display.php:527
 #: ../../../../templates/cache/59/eb/57ea544c6cb07c523441e4872c03216560589e8425c0df3a895c17253c4c.php:132
+#: ../../../../templates/cache/1c/1cfc0d9b5bd0c051e4b8fdf515e0ca3e.php:147
 msgid "Prevent thread from being bumped"
 msgstr "Вимкнути цій нитці підіймання"
 
 #: ../../../../inc/display.php:503 ../../../../inc/display.php:525
 #: ../../../../inc/display.php:528 ../../../../inc/display.php:532
 #: ../../../../templates/cache/59/eb/57ea544c6cb07c523441e4872c03216560589e8425c0df3a895c17253c4c.php:148
+#: ../../../../templates/cache/1c/1cfc0d9b5bd0c051e4b8fdf515e0ca3e.php:163
 msgid "Unlock thread"
 msgstr "Відкрити нитку"
 
 #: ../../../../inc/display.php:505 ../../../../inc/display.php:527
 #: ../../../../inc/display.php:530 ../../../../inc/display.php:534
 #: ../../../../templates/cache/59/eb/57ea544c6cb07c523441e4872c03216560589e8425c0df3a895c17253c4c.php:158
+#: ../../../../templates/cache/1c/1cfc0d9b5bd0c051e4b8fdf515e0ca3e.php:173
 msgid "Lock thread"
 msgstr "Закрити нитку"
 
 #: ../../../../inc/display.php:508 ../../../../inc/display.php:530
 #: ../../../../inc/display.php:533 ../../../../inc/display.php:537
 #: ../../../../templates/cache/59/eb/57ea544c6cb07c523441e4872c03216560589e8425c0df3a895c17253c4c.php:181
+#: ../../../../templates/cache/1c/1cfc0d9b5bd0c051e4b8fdf515e0ca3e.php:193
 msgid "Move thread to another board"
 msgstr "Перемістити нитку на іншу дошку"
 
@@ -341,10 +371,14 @@ msgstr "Перемістити нитку на іншу дошку"
 #. 2 weeks
 #. If you want to alter the algorithm a bit. Default value is 2.
 #. (n^x where x is the number of previous mutes)
+#. How long before vichan forgets about a mute?
+#. 2 weeks
+#. If you want to alter the algorithm a bit. Default value is 2.
+#. (n^x where x is the number of previous mutes)
 #: ../../../../inc/config.php:346 ../../../../inc/config.php:473
 #: ../../../../inc/config.php:474 ../../../../inc/config.php:475
 #: ../../../../inc/config.php:476 ../../../../inc/config.php:479
-#: ../../../../inc/config.php:482
+#: ../../../../inc/config.php:482 ../../../../inc/config.php:533
 msgid "You have been muted for unoriginal content."
 msgstr "Вас позбавлено права дописувати за неоригінальний контент."
 
@@ -356,6 +390,7 @@ msgstr "Вас позбавлено права дописувати за нео�
 #: ../../../../inc/config.php:776 ../../../../inc/config.php:792
 #: ../../../../inc/config.php:803 ../../../../inc/config.php:829
 #: ../../../../inc/config.php:832 ../../../../inc/config.php:835
+#: ../../../../inc/config.php:926
 msgid "New Topic"
 msgstr "Нова тема"
 
@@ -364,6 +399,7 @@ msgstr "Нова тема"
 #: ../../../../inc/config.php:777 ../../../../inc/config.php:793
 #: ../../../../inc/config.php:804 ../../../../inc/config.php:830
 #: ../../../../inc/config.php:833 ../../../../inc/config.php:836
+#: ../../../../inc/config.php:927
 msgid "New Reply"
 msgstr "Нова відповідь"
 
@@ -373,6 +409,7 @@ msgstr "Нова відповідь"
 #: ../../../../inc/config.php:788 ../../../../inc/config.php:804
 #: ../../../../inc/config.php:815 ../../../../inc/config.php:841
 #: ../../../../inc/config.php:844 ../../../../inc/config.php:847
+#: ../../../../inc/config.php:938
 msgid ""
 "All trademarks, copyrights, comments, and images on this page are owned by "
 "and are the responsibility of their respective parties."
@@ -402,6 +439,7 @@ msgstr ""
 #: ../../../../inc/config.php:967 ../../../../inc/config.php:983
 #: ../../../../inc/config.php:991 ../../../../inc/config.php:1017
 #: ../../../../inc/config.php:1020 ../../../../inc/config.php:1023
+#: ../../../../inc/config.php:1122
 msgid "You look like a bot."
 msgstr "Ви поводитесь як бот."
 
@@ -410,6 +448,7 @@ msgstr "Ви поводитесь як бот."
 #: ../../../../inc/config.php:968 ../../../../inc/config.php:984
 #: ../../../../inc/config.php:992 ../../../../inc/config.php:1018
 #: ../../../../inc/config.php:1021 ../../../../inc/config.php:1024
+#: ../../../../inc/config.php:1123
 msgid "Your browser sent an invalid or no HTTP referer."
 msgstr "Ваш браузер не надіслав HTTP реферера або надіслав хибний"
 
@@ -418,6 +457,7 @@ msgstr "Ваш браузер не надіслав HTTP реферера або
 #: ../../../../inc/config.php:969 ../../../../inc/config.php:985
 #: ../../../../inc/config.php:993 ../../../../inc/config.php:1019
 #: ../../../../inc/config.php:1022 ../../../../inc/config.php:1025
+#: ../../../../inc/config.php:1124
 #, php-format
 msgid "The %s field was too long."
 msgstr "Поле %s занадто довге."
@@ -427,6 +467,7 @@ msgstr "Поле %s занадто довге."
 #: ../../../../inc/config.php:970 ../../../../inc/config.php:986
 #: ../../../../inc/config.php:994 ../../../../inc/config.php:1020
 #: ../../../../inc/config.php:1023 ../../../../inc/config.php:1026
+#: ../../../../inc/config.php:1125
 msgid "The body was too long."
 msgstr "Вміст допису занадто довге."
 
@@ -435,6 +476,7 @@ msgstr "Вміст допису занадто довге."
 #: ../../../../inc/config.php:971 ../../../../inc/config.php:987
 #: ../../../../inc/config.php:995 ../../../../inc/config.php:1021
 #: ../../../../inc/config.php:1024 ../../../../inc/config.php:1027
+#: ../../../../inc/config.php:1126
 msgid "The body was too short or empty."
 msgstr "Вміст допису занадто короткий або пустий."
 
@@ -443,6 +485,7 @@ msgstr "Вміст допису занадто короткий або пуст�
 #: ../../../../inc/config.php:972 ../../../../inc/config.php:988
 #: ../../../../inc/config.php:996 ../../../../inc/config.php:1022
 #: ../../../../inc/config.php:1025 ../../../../inc/config.php:1028
+#: ../../../../inc/config.php:1127
 msgid "You must upload an image."
 msgstr "Допис повинен містити зображення."
 
@@ -451,6 +494,7 @@ msgstr "Допис повинен містити зображення."
 #: ../../../../inc/config.php:973 ../../../../inc/config.php:989
 #: ../../../../inc/config.php:998 ../../../../inc/config.php:1024
 #: ../../../../inc/config.php:1027 ../../../../inc/config.php:1030
+#: ../../../../inc/config.php:1129
 msgid "The server failed to handle your upload."
 msgstr "Не вдалося завантажити файл на сервер."
 
@@ -459,6 +503,7 @@ msgstr "Не вдалося завантажити файл на сервер."
 #: ../../../../inc/config.php:974 ../../../../inc/config.php:990
 #: ../../../../inc/config.php:999 ../../../../inc/config.php:1025
 #: ../../../../inc/config.php:1028 ../../../../inc/config.php:1031
+#: ../../../../inc/config.php:1130
 msgid "Unsupported image format."
 msgstr "Формат зображення не підтримується."
 
@@ -467,6 +512,7 @@ msgstr "Формат зображення не підтримується."
 #: ../../../../inc/config.php:975 ../../../../inc/config.php:991
 #: ../../../../inc/config.php:1000 ../../../../inc/config.php:1026
 #: ../../../../inc/config.php:1029 ../../../../inc/config.php:1032
+#: ../../../../inc/config.php:1131
 msgid "Invalid board!"
 msgstr "Неправильна дошка!"
 
@@ -475,6 +521,7 @@ msgstr "Неправильна дошка!"
 #: ../../../../inc/config.php:976 ../../../../inc/config.php:992
 #: ../../../../inc/config.php:1001 ../../../../inc/config.php:1027
 #: ../../../../inc/config.php:1030 ../../../../inc/config.php:1033
+#: ../../../../inc/config.php:1132
 msgid "Thread specified does not exist."
 msgstr "Вказана нитка не існує."
 
@@ -483,6 +530,7 @@ msgstr "Вказана нитка не існує."
 #: ../../../../inc/config.php:977 ../../../../inc/config.php:993
 #: ../../../../inc/config.php:1002 ../../../../inc/config.php:1028
 #: ../../../../inc/config.php:1031 ../../../../inc/config.php:1034
+#: ../../../../inc/config.php:1133
 msgid "Thread locked. You may not reply at this time."
 msgstr "Нитку закрито. Ви більше не можете сюди дописати."
 
@@ -491,6 +539,7 @@ msgstr "Нитку закрито. Ви більше не можете сюди 
 #: ../../../../inc/config.php:978 ../../../../inc/config.php:994
 #: ../../../../inc/config.php:1003 ../../../../inc/config.php:1029
 #: ../../../../inc/config.php:1032 ../../../../inc/config.php:1035
+#: ../../../../inc/config.php:1134
 msgid "Thread has reached its maximum reply limit."
 msgstr "Кількість дописів у нитці досягла максимально припустимої."
 
@@ -499,6 +548,7 @@ msgstr "Кількість дописів у нитці досягла макс�
 #: ../../../../inc/config.php:979 ../../../../inc/config.php:995
 #: ../../../../inc/config.php:1004 ../../../../inc/config.php:1030
 #: ../../../../inc/config.php:1033 ../../../../inc/config.php:1036
+#: ../../../../inc/config.php:1135
 msgid "Thread has reached its maximum image limit."
 msgstr "Кількість зображень у нитці досягла максимально припустимої."
 
@@ -507,6 +557,7 @@ msgstr "Кількість зображень у нитці досягла ма�
 #: ../../../../inc/config.php:980 ../../../../inc/config.php:996
 #: ../../../../inc/config.php:1005 ../../../../inc/config.php:1031
 #: ../../../../inc/config.php:1034 ../../../../inc/config.php:1037
+#: ../../../../inc/config.php:1136
 msgid "You didn't make a post."
 msgstr "Ви не розмістили допис."
 
@@ -515,6 +566,7 @@ msgstr "Ви не розмістили допис."
 #: ../../../../inc/config.php:981 ../../../../inc/config.php:997
 #: ../../../../inc/config.php:1006 ../../../../inc/config.php:1032
 #: ../../../../inc/config.php:1035 ../../../../inc/config.php:1038
+#: ../../../../inc/config.php:1137
 msgid "Flood detected; Post discarded."
 msgstr "Виявлено флуд — опис відхилено."
 
@@ -523,6 +575,7 @@ msgstr "Виявлено флуд — опис відхилено."
 #: ../../../../inc/config.php:982 ../../../../inc/config.php:998
 #: ../../../../inc/config.php:1007 ../../../../inc/config.php:1033
 #: ../../../../inc/config.php:1036 ../../../../inc/config.php:1039
+#: ../../../../inc/config.php:1138
 msgid "Your request looks automated; Post discarded."
 msgstr "Ваш запит схожий на автоматизований— допис відхилено."
 
@@ -531,6 +584,7 @@ msgstr "Ваш запит схожий на автоматизований— д
 #: ../../../../inc/config.php:983 ../../../../inc/config.php:999
 #: ../../../../inc/config.php:1008 ../../../../inc/config.php:1034
 #: ../../../../inc/config.php:1037 ../../../../inc/config.php:1040
+#: ../../../../inc/config.php:1139
 msgid "Unoriginal content!"
 msgstr "Неоригінальний контент!"
 
@@ -539,6 +593,7 @@ msgstr "Неоригінальний контент!"
 #: ../../../../inc/config.php:984 ../../../../inc/config.php:1000
 #: ../../../../inc/config.php:1009 ../../../../inc/config.php:1035
 #: ../../../../inc/config.php:1038 ../../../../inc/config.php:1041
+#: ../../../../inc/config.php:1140
 #, php-format
 msgid "Unoriginal content! You have been muted for %d seconds."
 msgstr ""
@@ -549,6 +604,7 @@ msgstr ""
 #: ../../../../inc/config.php:985 ../../../../inc/config.php:1001
 #: ../../../../inc/config.php:1010 ../../../../inc/config.php:1036
 #: ../../../../inc/config.php:1039 ../../../../inc/config.php:1042
+#: ../../../../inc/config.php:1141
 #, php-format
 msgid "You are muted! Expires in %d seconds."
 msgstr "Вас позбавлено можливості дописувати! Буде повернено через %d секунд."
@@ -558,6 +614,7 @@ msgstr "Вас позбавлено можливості дописувати! �
 #: ../../../../inc/config.php:986 ../../../../inc/config.php:1002
 #: ../../../../inc/config.php:1011 ../../../../inc/config.php:1037
 #: ../../../../inc/config.php:1040 ../../../../inc/config.php:1043
+#: ../../../../inc/config.php:1142
 #, php-format
 msgid "Your IP address is listed in %s."
 msgstr "Вашу IP адресу знайдено в списку %s."
@@ -567,6 +624,7 @@ msgstr "Вашу IP адресу знайдено в списку %s."
 #: ../../../../inc/config.php:987 ../../../../inc/config.php:1003
 #: ../../../../inc/config.php:1012 ../../../../inc/config.php:1038
 #: ../../../../inc/config.php:1041 ../../../../inc/config.php:1044
+#: ../../../../inc/config.php:1143
 msgid "Too many links; flood detected."
 msgstr "Забагато посилань — виявлено флуд."
 
@@ -575,6 +633,7 @@ msgstr "Забагато посилань — виявлено флуд."
 #: ../../../../inc/config.php:988 ../../../../inc/config.php:1004
 #: ../../../../inc/config.php:1013 ../../../../inc/config.php:1039
 #: ../../../../inc/config.php:1042 ../../../../inc/config.php:1045
+#: ../../../../inc/config.php:1144
 msgid "Too many cites; post discarded."
 msgstr "Забагато цитування — допис відхилено."
 
@@ -583,6 +642,7 @@ msgstr "Забагато цитування — допис відхилено."
 #: ../../../../inc/config.php:989 ../../../../inc/config.php:1005
 #: ../../../../inc/config.php:1014 ../../../../inc/config.php:1040
 #: ../../../../inc/config.php:1043 ../../../../inc/config.php:1046
+#: ../../../../inc/config.php:1145
 msgid "Too many cross-board links; post discarded."
 msgstr "Забагато міждошкових посилань — допис відхилено."
 
@@ -591,6 +651,7 @@ msgstr "Забагато міждошкових посилань — допис
 #: ../../../../inc/config.php:990 ../../../../inc/config.php:1006
 #: ../../../../inc/config.php:1015 ../../../../inc/config.php:1041
 #: ../../../../inc/config.php:1044 ../../../../inc/config.php:1047
+#: ../../../../inc/config.php:1146
 msgid "You didn't select anything to delete."
 msgstr "Ви не вибрали жодного допису, щоб видалити."
 
@@ -599,6 +660,7 @@ msgstr "Ви не вибрали жодного допису, щоб видал�
 #: ../../../../inc/config.php:991 ../../../../inc/config.php:1007
 #: ../../../../inc/config.php:1016 ../../../../inc/config.php:1042
 #: ../../../../inc/config.php:1045 ../../../../inc/config.php:1048
+#: ../../../../inc/config.php:1147
 msgid "You didn't select anything to report."
 msgstr "Ви не вибрали жодного допису, щоб поскаржитися."
 
@@ -607,6 +669,7 @@ msgstr "Ви не вибрали жодного допису, щоб поска�
 #: ../../../../inc/config.php:992 ../../../../inc/config.php:1008
 #: ../../../../inc/config.php:1017 ../../../../inc/config.php:1043
 #: ../../../../inc/config.php:1046 ../../../../inc/config.php:1049
+#: ../../../../inc/config.php:1149
 msgid "You can't report that many posts at once."
 msgstr "Ви не можете поскаржитися на таку кількість дописів відразу."
 
@@ -615,6 +678,7 @@ msgstr "Ви не можете поскаржитися на таку кільк
 #: ../../../../inc/config.php:993 ../../../../inc/config.php:1009
 #: ../../../../inc/config.php:1018 ../../../../inc/config.php:1044
 #: ../../../../inc/config.php:1047 ../../../../inc/config.php:1050
+#: ../../../../inc/config.php:1150
 msgid "Wrong password…"
 msgstr "Неправильний пароль…"
 
@@ -623,6 +687,7 @@ msgstr "Неправильний пароль…"
 #: ../../../../inc/config.php:994 ../../../../inc/config.php:1010
 #: ../../../../inc/config.php:1019 ../../../../inc/config.php:1045
 #: ../../../../inc/config.php:1048 ../../../../inc/config.php:1051
+#: ../../../../inc/config.php:1151
 msgid "Invalid image."
 msgstr "Неправильне зображення."
 
@@ -631,6 +696,7 @@ msgstr "Неправильне зображення."
 #: ../../../../inc/config.php:995 ../../../../inc/config.php:1011
 #: ../../../../inc/config.php:1020 ../../../../inc/config.php:1046
 #: ../../../../inc/config.php:1049 ../../../../inc/config.php:1052
+#: ../../../../inc/config.php:1153
 msgid "Unknown file extension."
 msgstr "Невідоме розширення файла."
 
@@ -639,6 +705,7 @@ msgstr "Невідоме розширення файла."
 #: ../../../../inc/config.php:996 ../../../../inc/config.php:1012
 #: ../../../../inc/config.php:1021 ../../../../inc/config.php:1047
 #: ../../../../inc/config.php:1050 ../../../../inc/config.php:1053
+#: ../../../../inc/config.php:1154
 msgid "Maximum file size: %maxsz% bytes<br>Your file's size: %filesz% bytes"
 msgstr ""
 "Максимальний розмір файла: %maxsz% байтів<br>Розмір вашого файла: %filesz% "
@@ -649,6 +716,7 @@ msgstr ""
 #: ../../../../inc/config.php:997 ../../../../inc/config.php:1013
 #: ../../../../inc/config.php:1022 ../../../../inc/config.php:1048
 #: ../../../../inc/config.php:1051 ../../../../inc/config.php:1054
+#: ../../../../inc/config.php:1155
 msgid "The file was too big."
 msgstr "Файл завеликий."
 
@@ -657,6 +725,7 @@ msgstr "Файл завеликий."
 #: ../../../../inc/config.php:998 ../../../../inc/config.php:1014
 #: ../../../../inc/config.php:1023 ../../../../inc/config.php:1053
 #: ../../../../inc/config.php:1057 ../../../../inc/config.php:1060
+#: ../../../../inc/config.php:1161
 #, php-format
 msgid "That file <a href=\"%s\">already exists</a>!"
 msgstr "Файл <a href=\"%s\">уже існує</a>!"
@@ -666,6 +735,7 @@ msgstr "Файл <a href=\"%s\">уже існує</a>!"
 #: ../../../../inc/config.php:999 ../../../../inc/config.php:1015
 #: ../../../../inc/config.php:1024 ../../../../inc/config.php:1054
 #: ../../../../inc/config.php:1058 ../../../../inc/config.php:1061
+#: ../../../../inc/config.php:1162
 #, php-format
 msgid "That file <a href=\"%s\">already exists</a> in this thread!"
 msgstr "Файл <a href=\"%s\">уже існує</a> у цій нитці!"
@@ -675,6 +745,7 @@ msgstr "Файл <a href=\"%s\">уже існує</a> у цій нитці!"
 #: ../../../../inc/config.php:1000 ../../../../inc/config.php:1016
 #: ../../../../inc/config.php:1025 ../../../../inc/config.php:1055
 #: ../../../../inc/config.php:1059 ../../../../inc/config.php:1062
+#: ../../../../inc/config.php:1163
 #, php-format
 msgid "You'll have to wait another %s before deleting that."
 msgstr "Почекайте ще %s перед видаленням."
@@ -684,6 +755,7 @@ msgstr "Почекайте ще %s перед видаленням."
 #: ../../../../inc/config.php:1001 ../../../../inc/config.php:1017
 #: ../../../../inc/config.php:1026 ../../../../inc/config.php:1056
 #: ../../../../inc/config.php:1060 ../../../../inc/config.php:1063
+#: ../../../../inc/config.php:1164
 msgid "MIME type detection XSS exploit (IE) detected; post discarded."
 msgstr "Виявлено XSS-експлойт визначення MIME-типу — допис відхилено."
 
@@ -692,6 +764,7 @@ msgstr "Виявлено XSS-експлойт визначення MIME-типу
 #: ../../../../inc/config.php:1002 ../../../../inc/config.php:1018
 #: ../../../../inc/config.php:1027 ../../../../inc/config.php:1057
 #: ../../../../inc/config.php:1061 ../../../../inc/config.php:1064
+#: ../../../../inc/config.php:1165
 msgid "Couldn't make sense of the URL of the video you tried to embed."
 msgstr "Не вдалося розпізнати адресу відео, яке ви намагалися вбудувати."
 
@@ -700,6 +773,7 @@ msgstr "Не вдалося розпізнати адресу відео, яке
 #: ../../../../inc/config.php:1003 ../../../../inc/config.php:1019
 #: ../../../../inc/config.php:1028 ../../../../inc/config.php:1058
 #: ../../../../inc/config.php:1062 ../../../../inc/config.php:1065
+#: ../../../../inc/config.php:1166
 msgid "You seem to have mistyped the verification."
 msgstr "Здається, ви не пройшли підтвердження."
 
@@ -709,6 +783,7 @@ msgstr "Здається, ви не пройшли підтвердження."
 #: ../../../../inc/config.php:1006 ../../../../inc/config.php:1022
 #: ../../../../inc/config.php:1031 ../../../../inc/config.php:1062
 #: ../../../../inc/config.php:1066 ../../../../inc/config.php:1069
+#: ../../../../inc/config.php:1172
 #, php-format
 msgid ""
 "You are only allowed to unban %s users at a time. You tried to unban %u "
@@ -722,6 +797,7 @@ msgstr ""
 #: ../../../../inc/config.php:1007 ../../../../inc/config.php:1023
 #: ../../../../inc/config.php:1032 ../../../../inc/config.php:1063
 #: ../../../../inc/config.php:1067 ../../../../inc/config.php:1070
+#: ../../../../inc/config.php:1173
 msgid "Invalid username and/or password."
 msgstr "Неправильне імʼя користувача і/або пароль."
 
@@ -730,6 +806,7 @@ msgstr "Неправильне імʼя користувача і/або пар�
 #: ../../../../inc/config.php:1008 ../../../../inc/config.php:1024
 #: ../../../../inc/config.php:1033 ../../../../inc/config.php:1064
 #: ../../../../inc/config.php:1068 ../../../../inc/config.php:1071
+#: ../../../../inc/config.php:1174
 msgid "You are not a mod…"
 msgstr "Ви не модератор…"
 
@@ -738,6 +815,7 @@ msgstr "Ви не модератор…"
 #: ../../../../inc/config.php:1009 ../../../../inc/config.php:1025
 #: ../../../../inc/config.php:1034 ../../../../inc/config.php:1065
 #: ../../../../inc/config.php:1069 ../../../../inc/config.php:1072
+#: ../../../../inc/config.php:1175
 msgid ""
 "Invalid username and/or password. Your user may have been deleted or changed."
 msgstr ""
@@ -749,6 +827,7 @@ msgstr ""
 #: ../../../../inc/config.php:1010 ../../../../inc/config.php:1026
 #: ../../../../inc/config.php:1035 ../../../../inc/config.php:1066
 #: ../../../../inc/config.php:1070 ../../../../inc/config.php:1073
+#: ../../../../inc/config.php:1176
 msgid "Invalid/malformed cookies."
 msgstr "Неправильні/неправильно сформовані куки."
 
@@ -757,6 +836,7 @@ msgstr "Неправильні/неправильно сформовані ку�
 #: ../../../../inc/config.php:1011 ../../../../inc/config.php:1027
 #: ../../../../inc/config.php:1036 ../../../../inc/config.php:1067
 #: ../../../../inc/config.php:1071 ../../../../inc/config.php:1074
+#: ../../../../inc/config.php:1177
 msgid "Your browser didn't submit an input when it should have."
 msgstr "Ваш браузер не підтвердив введення тоді, коли потрібно."
 
@@ -765,6 +845,7 @@ msgstr "Ваш браузер не підтвердив введення тод�
 #: ../../../../inc/config.php:1012 ../../../../inc/config.php:1028
 #: ../../../../inc/config.php:1037 ../../../../inc/config.php:1068
 #: ../../../../inc/config.php:1072 ../../../../inc/config.php:1075
+#: ../../../../inc/config.php:1178
 #, php-format
 msgid "The %s field is required."
 msgstr "Поле %s обовʼязкове."
@@ -774,6 +855,7 @@ msgstr "Поле %s обовʼязкове."
 #: ../../../../inc/config.php:1013 ../../../../inc/config.php:1029
 #: ../../../../inc/config.php:1038 ../../../../inc/config.php:1069
 #: ../../../../inc/config.php:1073 ../../../../inc/config.php:1076
+#: ../../../../inc/config.php:1179
 #, php-format
 msgid "The %s field was invalid."
 msgstr "Поле %s заповнено неправильно."
@@ -783,6 +865,7 @@ msgstr "Поле %s заповнено неправильно."
 #: ../../../../inc/config.php:1014 ../../../../inc/config.php:1030
 #: ../../../../inc/config.php:1039 ../../../../inc/config.php:1070
 #: ../../../../inc/config.php:1074 ../../../../inc/config.php:1077
+#: ../../../../inc/config.php:1180
 #, php-format
 msgid "There is already a %s board."
 msgstr "Дошка %s уже існує."
@@ -792,6 +875,7 @@ msgstr "Дошка %s уже існує."
 #: ../../../../inc/config.php:1015 ../../../../inc/config.php:1031
 #: ../../../../inc/config.php:1040 ../../../../inc/config.php:1071
 #: ../../../../inc/config.php:1075 ../../../../inc/config.php:1078
+#: ../../../../inc/config.php:1181
 msgid "You don't have permission to do that."
 msgstr "У вас відсутній дозвіл на цю дію."
 
@@ -800,6 +884,7 @@ msgstr "У вас відсутній дозвіл на цю дію."
 #: ../../../../inc/config.php:1016 ../../../../inc/config.php:1032
 #: ../../../../inc/config.php:1041 ../../../../inc/config.php:1072
 #: ../../../../inc/config.php:1076 ../../../../inc/config.php:1079
+#: ../../../../inc/config.php:1182
 msgid "That post doesn't exist…"
 msgstr "Цей допис не існує…"
 
@@ -808,6 +893,7 @@ msgstr "Цей допис не існує…"
 #: ../../../../inc/config.php:1017 ../../../../inc/config.php:1033
 #: ../../../../inc/config.php:1042 ../../../../inc/config.php:1073
 #: ../../../../inc/config.php:1077 ../../../../inc/config.php:1080
+#: ../../../../inc/config.php:1183
 msgid "Page not found."
 msgstr "Сторінку не знайдено."
 
@@ -816,6 +902,7 @@ msgstr "Сторінку не знайдено."
 #: ../../../../inc/config.php:1018 ../../../../inc/config.php:1034
 #: ../../../../inc/config.php:1043 ../../../../inc/config.php:1074
 #: ../../../../inc/config.php:1078 ../../../../inc/config.php:1081
+#: ../../../../inc/config.php:1184
 #, php-format
 msgid "That mod <a href=\"?/users/%d\">already exists</a>!"
 msgstr "Модератор <a href=\"?/users/%d\">уже існує</a>!"
@@ -825,6 +912,7 @@ msgstr "Модератор <a href=\"?/users/%d\">уже існує</a>!"
 #: ../../../../inc/config.php:1019 ../../../../inc/config.php:1035
 #: ../../../../inc/config.php:1044 ../../../../inc/config.php:1075
 #: ../../../../inc/config.php:1079 ../../../../inc/config.php:1082
+#: ../../../../inc/config.php:1185
 msgid "That theme doesn't exist!"
 msgstr "Цієї теми не існує!"
 
@@ -834,6 +922,7 @@ msgstr "Цієї теми не існує!"
 #: ../../../../inc/config.php:1020 ../../../../inc/config.php:1036
 #: ../../../../inc/config.php:1045 ../../../../inc/config.php:1076
 #: ../../../../inc/config.php:1080 ../../../../inc/config.php:1083
+#: ../../../../inc/config.php:1186
 msgid "Invalid security token! Please go back and try again."
 msgstr "Неправильний токен безпеки! Поверніться і спробуйте ще раз."
 
@@ -847,6 +936,7 @@ msgstr "Неправильний токен безпеки! Повернітьс
 #: ../../../../inc/config.php:1187 ../../../../inc/config.php:1203
 #: ../../../../inc/config.php:1212 ../../../../inc/config.php:1243
 #: ../../../../inc/config.php:1247 ../../../../inc/config.php:1250
+#: ../../../../inc/config.php:1488
 msgid "USER WAS BANNED FOR THIS POST"
 msgstr "АВТОРА ЦЬОГО ДОПИСУ ЗАБЛОКОВАНО"
 
@@ -858,39 +948,49 @@ msgstr "Підтвердити дію"
 msgid "Could not find current version! (Check .installed)"
 msgstr "Не вдалося знайти поточної версії! (перевірте .installed)"
 
-#: ../../../../inc/mod/pages.php:162
+#: ../../../../inc/mod/pages.php:162 ../../../../inc/mod/pages.php:108
 msgid "Dashboard"
 msgstr "Панель керування"
 
 #: ../../../../inc/mod/pages.php:267 ../../../../inc/mod/pages.php:265
+#: ../../../../inc/mod/pages.php:211
 msgid "There are no boards to search!"
 msgstr "Немає дошок для пошуку!"
 
 #. $results now contains the search results
 #: ../../../../inc/mod/pages.php:335 ../../../../inc/mod/pages.php:334
+#: ../../../../inc/mod/pages.php:280
 msgid "Search results"
 msgstr "Результати пошуку"
 
 #: ../../../../inc/mod/pages.php:436 ../../../../inc/mod/pages.php:438
+#: ../../../../inc/mod/pages.php:384
 msgid "Edit board"
 msgstr "Редагувати дошку"
 
 #: ../../../../inc/mod/pages.php:486 ../../../../inc/mod/pages.php:491
+#: ../../../../inc/mod/pages.php:437
 msgid "Couldn't open board after creation."
 msgstr "Не вдалося відкрити дошку після створення."
 
 #: ../../../../inc/mod/pages.php:506 ../../../../inc/mod/pages.php:511
+#: ../../../../inc/mod/pages.php:457
 msgid "New board"
 msgstr "Нова дошка"
 
 #. line 37
+#. line 41
 #: ../../../../inc/mod/pages.php:553 ../../../../inc/mod/pages.php:562
 #: ../../../../templates/cache/72/7e/271125664718133518fd942f20fb724224e100f8a0d47cb0b52f895ac12f.php:121
+#: ../../../../inc/mod/pages.php:508
+#: ../../../../templates/cache/e3/e3b42961f48b80667c181b5e038a031d.php:169
 msgid "Noticeboard"
 msgstr "Дошка оголошень"
 
 #: ../../../../inc/mod/pages.php:614 ../../../../inc/mod/pages.php:631
 #: ../../../../templates/cache/72/7e/271125664718133518fd942f20fb724224e100f8a0d47cb0b52f895ac12f.php:194
+#: ../../../../inc/mod/pages.php:581
+#: ../../../../templates/cache/e3/e3b42961f48b80667c181b5e038a031d.php:242
 msgid "News"
 msgstr "Новини"
 
@@ -898,6 +998,9 @@ msgstr "Новини"
 #: ../../../../inc/mod/pages.php:671 ../../../../inc/mod/pages.php:698
 #: ../../../../templates/cache/72/7e/271125664718133518fd942f20fb724224e100f8a0d47cb0b52f895ac12f.php:300
 #: ../../../../templates/cache/73/f8/5e3142a8a6f8d7e40422ff577e83b0dedf55a7cb9bc7082839b24f653545.php:75
+#: ../../../../inc/mod/pages.php:621 ../../../../inc/mod/pages.php:648
+#: ../../../../templates/cache/48/48decf1a9e3eff5d01e3fc45adca297f.php:90
+#: ../../../../templates/cache/e3/e3b42961f48b80667c181b5e038a031d.php:349
 msgid "Moderation log"
 msgstr "Журнал модерації"
 
@@ -940,7 +1043,7 @@ msgstr "Журнал модерації"
 #: ../../../../templates/cache/b1/4c/16a427b0d49ecf353c259d9fb606841783484eca9d790e766fdf0e3e9754.php:275
 #: ../../../../templates/cache/88/92/8e730a689121629afa3d2c0f374e1f246baa76e7cf0f3ec680f51805eccd.php:71
 #: ../../../../templates/cache/03/13/62c259daae13f7b39b689162b7cd380b2673bee7e05b90f0d34b69a01190.php:64
-#: ../../../../inc/mod/pages.php:849
+#: ../../../../inc/mod/pages.php:849 ../../../../inc/mod/pages.php:903
 msgid "IP"
 msgstr "IP"
 
@@ -950,7 +1053,8 @@ msgstr "IP"
 #: ../../../../templates/cache/b1/4c/16a427b0d49ecf353c259d9fb606841783484eca9d790e766fdf0e3e9754.php:440
 #: ../../../../inc/mod/pages.php:1446 ../../../../inc/mod/pages.php:1447
 #: ../../../../inc/mod/pages.php:859 ../../../../inc/mod/pages.php:1444
-#: ../../../../inc/mod/pages.php:1449
+#: ../../../../inc/mod/pages.php:1449 ../../../../inc/mod/pages.php:963
+#: ../../../../inc/mod/pages.php:1584
 msgid "New ban"
 msgstr "Нове блокування"
 
@@ -958,6 +1062,8 @@ msgstr "Нове блокування"
 #: ../../../../templates/cache/72/7e/271125664718133518fd942f20fb724224e100f8a0d47cb0b52f895ac12f.php:256
 #: ../../../../inc/mod/pages.php:911 ../../../../inc/mod/pages.php:903
 #: ../../../../templates/themes/public_banlist/theme.php:42
+#: ../../../../inc/mod/pages.php:1004
+#: ../../../../templates/cache/e3/e3b42961f48b80667c181b5e038a031d.php:304
 msgid "Ban list"
 msgstr "Список блокувань"
 
@@ -966,19 +1072,21 @@ msgstr "Список блокувань"
 #: ../../../../inc/mod/pages.php:1172
 #: ../../../../templates/cache/56/25/ac2c51fa6b3e26f9f9ed7dda5224acfbec96881d648c8ded10c5eef2c3e5.php:108
 #: ../../../../inc/mod/pages.php:1173 ../../../../inc/mod/pages.php:1170
-#: ../../../../inc/mod/pages.php:1175
+#: ../../../../inc/mod/pages.php:1175 ../../../../inc/mod/pages.php:1300
 msgid "Move reply"
 msgstr "Перемістити відповідь"
 
 #: ../../../../inc/mod/pages.php:1131 ../../../../inc/mod/pages.php:1191
 #: ../../../../inc/mod/pages.php:1198 ../../../../inc/mod/pages.php:1199
 #: ../../../../inc/mod/pages.php:1196 ../../../../inc/mod/pages.php:1201
+#: ../../../../inc/mod/pages.php:1326
 msgid "Target and source board are the same."
 msgstr "Початкова дошка і дошка призначення збігаються."
 
 #: ../../../../inc/mod/pages.php:1296 ../../../../inc/mod/pages.php:1357
 #: ../../../../inc/mod/pages.php:1371 ../../../../inc/mod/pages.php:1372
 #: ../../../../inc/mod/pages.php:1369 ../../../../inc/mod/pages.php:1374
+#: ../../../../inc/mod/pages.php:1509
 msgid "Impossible to move thread; there is only one board."
 msgstr "Неможливо перемістити нитку: дошка тільки одна."
 
@@ -987,19 +1095,22 @@ msgstr "Неможливо перемістити нитку: дошка тіл�
 #: ../../../../templates/cache/32/3a/d7e02cef5846ec4f1f423bb0ad2d3c307845d29f70da3f8a90a41f873e7d.php:114
 #: ../../../../inc/mod/pages.php:1375 ../../../../inc/mod/pages.php:1376
 #: ../../../../inc/mod/pages.php:1373 ../../../../inc/mod/pages.php:1378
+#: ../../../../inc/mod/pages.php:1513
 msgid "Move thread"
 msgstr "Перемістити нитку"
 
 #: ../../../../inc/mod/pages.php:1698 ../../../../inc/mod/pages.php:1751
 #: ../../../../inc/mod/pages.php:1775 ../../../../inc/mod/pages.php:1791
 #: ../../../../inc/mod/pages.php:1792 ../../../../inc/mod/pages.php:1796
+#: ../../../../inc/mod/pages.php:1946
 msgid "Edit user"
 msgstr "Редагувати користувача"
 
 #: ../../../../inc/mod/pages.php:1764 ../../../../inc/mod/pages.php:1855
 #: ../../../../templates/cache/72/7e/271125664718133518fd942f20fb724224e100f8a0d47cb0b52f895ac12f.php:274
 #: ../../../../inc/mod/pages.php:1871 ../../../../inc/mod/pages.php:1872
-#: ../../../../inc/mod/pages.php:1876
+#: ../../../../inc/mod/pages.php:1876 ../../../../inc/mod/pages.php:2025
+#: ../../../../templates/cache/e3/e3b42961f48b80667c181b5e038a031d.php:322
 msgid "Manage users"
 msgstr "Керування користувачами"
 
@@ -1009,20 +1120,23 @@ msgstr "Керування користувачами"
 #: ../../../../inc/mod/pages.php:1961 ../../../../inc/mod/pages.php:2037
 #: ../../../../inc/mod/pages.php:1962 ../../../../inc/mod/pages.php:2038
 #: ../../../../inc/mod/pages.php:1966 ../../../../inc/mod/pages.php:2042
+#: ../../../../inc/mod/pages.php:2115 ../../../../inc/mod/pages.php:2191
 msgid "New PM for"
 msgstr "Нове приватне повідомлення до"
 
 #: ../../../../inc/mod/pages.php:1830 ../../../../inc/mod/pages.php:1952
 #: ../../../../inc/mod/pages.php:1968 ../../../../inc/mod/pages.php:1969
-#: ../../../../inc/mod/pages.php:1973
+#: ../../../../inc/mod/pages.php:1973 ../../../../inc/mod/pages.php:2122
 msgid "Private message"
 msgstr "Приватне повідомлення"
 
 #. line 68
+#. line 72
 #: ../../../../inc/mod/pages.php:1851 ../../../../inc/mod/pages.php:1973
 #: ../../../../templates/cache/72/7e/271125664718133518fd942f20fb724224e100f8a0d47cb0b52f895ac12f.php:200
 #: ../../../../inc/mod/pages.php:1989 ../../../../inc/mod/pages.php:1990
-#: ../../../../inc/mod/pages.php:1994
+#: ../../../../inc/mod/pages.php:1994 ../../../../inc/mod/pages.php:2143
+#: ../../../../templates/cache/e3/e3b42961f48b80667c181b5e038a031d.php:248
 msgid "PM inbox"
 msgstr "Скринька вхідних приватних повідомлень"
 
@@ -1033,14 +1147,17 @@ msgstr "Скринька вхідних приватних повідомлен�
 #: ../../../../inc/mod/pages.php:2106 ../../../../inc/mod/pages.php:2110
 #: ../../../../templates/cache/72/7e/271125664718133518fd942f20fb724224e100f8a0d47cb0b52f895ac12f.php:318
 #: ../../../../inc/mod/pages.php:2107 ../../../../inc/mod/pages.php:2111
-#: ../../../../inc/mod/pages.php:2115
+#: ../../../../inc/mod/pages.php:2115 ../../../../inc/mod/pages.php:2263
+#: ../../../../inc/mod/pages.php:2267
+#: ../../../../templates/cache/e3/e3b42961f48b80667c181b5e038a031d.php:376
 msgid "Rebuild"
 msgstr "Перебудувати"
 
 #: ../../../../inc/mod/pages.php:2043 ../../../../inc/mod/pages.php:2179
 #: ../../../../templates/cache/72/7e/271125664718133518fd942f20fb724224e100f8a0d47cb0b52f895ac12f.php:238
 #: ../../../../inc/mod/pages.php:2195 ../../../../inc/mod/pages.php:2196
-#: ../../../../inc/mod/pages.php:2200
+#: ../../../../inc/mod/pages.php:2200 ../../../../inc/mod/pages.php:2352
+#: ../../../../templates/cache/e3/e3b42961f48b80667c181b5e038a031d.php:286
 msgid "Report queue"
 msgstr "Черга скарг"
 
@@ -1050,18 +1167,21 @@ msgstr "Черга скарг"
 #: ../../../../inc/mod/pages.php:2328 ../../../../inc/mod/pages.php:2422
 #: ../../../../inc/mod/pages.php:2327 ../../../../inc/mod/pages.php:2421
 #: ../../../../inc/mod/pages.php:2332 ../../../../inc/mod/pages.php:2426
+#: ../../../../inc/mod/pages.php:2484 ../../../../inc/mod/pages.php:2578
 msgid "Config editor"
 msgstr "Редактор конфігурації"
 
 #: ../../../../inc/mod/pages.php:2226 ../../../../inc/mod/pages.php:2367
 #: ../../../../inc/mod/pages.php:2445 ../../../../inc/mod/pages.php:2439
 #: ../../../../inc/mod/pages.php:2438 ../../../../inc/mod/pages.php:2443
+#: ../../../../inc/mod/pages.php:2595
 msgid "Themes directory doesn't exist!"
 msgstr "Каталог з темами не існує!"
 
 #: ../../../../inc/mod/pages.php:2228 ../../../../inc/mod/pages.php:2369
 #: ../../../../inc/mod/pages.php:2447 ../../../../inc/mod/pages.php:2441
 #: ../../../../inc/mod/pages.php:2440 ../../../../inc/mod/pages.php:2445
+#: ../../../../inc/mod/pages.php:2597
 msgid "Cannot open themes directory; check permissions."
 msgstr "Не вдалося відкрити каталог з темами, перевірте дозволи."
 
@@ -1069,12 +1189,15 @@ msgstr "Не вдалося відкрити каталог з темами, п�
 #: ../../../../templates/cache/72/7e/271125664718133518fd942f20fb724224e100f8a0d47cb0b52f895ac12f.php:291
 #: ../../../../inc/mod/pages.php:2466 ../../../../inc/mod/pages.php:2460
 #: ../../../../inc/mod/pages.php:2459 ../../../../inc/mod/pages.php:2464
+#: ../../../../inc/mod/pages.php:2616
+#: ../../../../templates/cache/e3/e3b42961f48b80667c181b5e038a031d.php:340
 msgid "Manage themes"
 msgstr "Керування темами"
 
 #: ../../../../inc/mod/pages.php:2307 ../../../../inc/mod/pages.php:2453
 #: ../../../../inc/mod/pages.php:2531 ../../../../inc/mod/pages.php:2525
 #: ../../../../inc/mod/pages.php:2524 ../../../../inc/mod/pages.php:2529
+#: ../../../../inc/mod/pages.php:2685
 #, php-format
 msgid "Installed theme: %s"
 msgstr "Встановлена теми: %s"
@@ -1082,6 +1205,7 @@ msgstr "Встановлена теми: %s"
 #: ../../../../inc/mod/pages.php:2318 ../../../../inc/mod/pages.php:2464
 #: ../../../../inc/mod/pages.php:2542 ../../../../inc/mod/pages.php:2536
 #: ../../../../inc/mod/pages.php:2535 ../../../../inc/mod/pages.php:2540
+#: ../../../../inc/mod/pages.php:2696
 #, php-format
 msgid "Configuring theme: %s"
 msgstr "Конфігурується тема: %s"
@@ -1089,6 +1213,7 @@ msgstr "Конфігурується тема: %s"
 #: ../../../../inc/mod/pages.php:2346 ../../../../inc/mod/pages.php:2493
 #: ../../../../inc/mod/pages.php:2571 ../../../../inc/mod/pages.php:2565
 #: ../../../../inc/mod/pages.php:2564 ../../../../inc/mod/pages.php:2569
+#: ../../../../inc/mod/pages.php:2729
 #, php-format
 msgid "Rebuilt theme: %s"
 msgstr "Перебудовано тему: %s"
@@ -1096,18 +1221,21 @@ msgstr "Перебудовано тему: %s"
 #: ../../../../inc/mod/pages.php:2385 ../../../../inc/mod/pages.php:2532
 #: ../../../../inc/mod/pages.php:2610 ../../../../inc/mod/pages.php:2604
 #: ../../../../inc/mod/pages.php:2603 ../../../../inc/mod/pages.php:2608
+#: ../../../../inc/mod/pages.php:2929
 msgid "Debug: Anti-spam"
 msgstr "Зневадження: Антиспам"
 
 #: ../../../../inc/mod/pages.php:2409 ../../../../inc/mod/pages.php:2566
 #: ../../../../inc/mod/pages.php:2644 ../../../../inc/mod/pages.php:2638
 #: ../../../../inc/mod/pages.php:2637 ../../../../inc/mod/pages.php:2642
+#: ../../../../inc/mod/pages.php:2963
 msgid "Debug: Recent posts"
 msgstr "Зневадження: Останні пости"
 
 #: ../../../../inc/mod/pages.php:2433 ../../../../inc/mod/pages.php:2590
 #: ../../../../inc/mod/pages.php:2668 ../../../../inc/mod/pages.php:2662
 #: ../../../../inc/mod/pages.php:2661 ../../../../inc/mod/pages.php:2666
+#: ../../../../inc/mod/pages.php:2987
 msgid "Debug: SQL"
 msgstr "Зневадження: SQL"
 
@@ -1138,9 +1266,11 @@ msgstr "Інформація про помилку"
 
 #. line 2
 #. line 3
+#. line 4
 #: ../../../../templates/cache/82/40/4c4a4b82f787181e6500ce83494d.php:22
 #: ../../../../templates/cache/17/2f/ea79f6d94768f645ed33b3f5c1a54caee235af04d24b88e34cc8c2d48583.php:25
 #: ../../../../templates/cache/17/2f/ea79f6d94768f645ed33b3f5c1a54caee235af04d24b88e34cc8c2d48583.php:27
+#: ../../../../templates/cache/23/23cbfe650e40ac057f1e85511556af91.php:45
 msgid "Delete Post"
 msgstr "Видалити допис"
 
@@ -1179,6 +1309,8 @@ msgstr "Видалити допис"
 #. line 4
 #. line 97
 #. line 4
+#. line 5
+#. line 155
 #: ../../../../templates/cache/82/40/4c4a4b82f787181e6500ce83494d.php:26
 #: ../../../../templates/cache/0c/37/9331df01df7c2986d77a02d3beb0.php:250
 #: ../../../../templates/cache/cf/63/151e140d85df674832f4ede3f3e7811b97d4efa91cac6086ca7e8ce65d25.php:253
@@ -1186,6 +1318,8 @@ msgstr "Видалити допис"
 #: ../../../../templates/cache/cf/63/151e140d85df674832f4ede3f3e7811b97d4efa91cac6086ca7e8ce65d25.php:290
 #: ../../../../templates/cache/17/2f/ea79f6d94768f645ed33b3f5c1a54caee235af04d24b88e34cc8c2d48583.php:31
 #: ../../../../templates/cache/cf/63/151e140d85df674832f4ede3f3e7811b97d4efa91cac6086ca7e8ce65d25.php:301
+#: ../../../../templates/cache/23/23cbfe650e40ac057f1e85511556af91.php:49
+#: ../../../../templates/cache/5f/5fdd89ab369529abff6de6e9bea75be1.php:454
 msgid "File"
 msgstr "Файл"
 
@@ -1215,6 +1349,7 @@ msgstr "Файл"
 #. line 144
 #. line 21
 #. line 14
+#. line 205
 #: ../../../../templates/cache/82/40/4c4a4b82f787181e6500ce83494d.php:28
 #: ../../../../templates/cache/0c/37/9331df01df7c2986d77a02d3beb0.php:364
 #: ../../../../templates/cache/cf/63/151e140d85df674832f4ede3f3e7811b97d4efa91cac6086ca7e8ce65d25.php:367
@@ -1225,6 +1360,8 @@ msgstr "Файл"
 #: ../../../../templates/cache/cf/63/151e140d85df674832f4ede3f3e7811b97d4efa91cac6086ca7e8ce65d25.php:400
 #: ../../../../templates/cache/17/2f/ea79f6d94768f645ed33b3f5c1a54caee235af04d24b88e34cc8c2d48583.php:33
 #: ../../../../templates/cache/cf/63/151e140d85df674832f4ede3f3e7811b97d4efa91cac6086ca7e8ce65d25.php:411
+#: ../../../../templates/cache/23/23cbfe650e40ac057f1e85511556af91.php:51
+#: ../../../../templates/cache/5f/5fdd89ab369529abff6de6e9bea75be1.php:573
 msgid "Password"
 msgstr "Пароль"
 
@@ -1300,6 +1437,7 @@ msgstr "Пароль"
 #. line 32
 #. line 23
 #. line 48
+#. line 12
 #: ../../../../templates/cache/82/40/4c4a4b82f787181e6500ce83494d.php:39
 #: ../../../../templates/cache/17/2f/ea79f6d94768f645ed33b3f5c1a54caee235af04d24b88e34cc8c2d48583.php:42
 #: ../../../../templates/cache/b1/4c/16a427b0d49ecf353c259d9fb606841783484eca9d790e766fdf0e3e9754.php:285
@@ -1309,6 +1447,7 @@ msgstr "Пароль"
 #: ../../../../templates/cache/3a/62/f804928dbcf285e3d5d8d7ae31b1e3a7c78264f270efa9650d31f69c7897.php:37
 #: ../../../../templates/cache/6a/a4/b13523024ba2660a4f8f05e0c909c55477f675db9a2620075762ac245c91.php:141
 #: ../../../../templates/cache/17/2f/ea79f6d94768f645ed33b3f5c1a54caee235af04d24b88e34cc8c2d48583.php:47
+#: ../../../../templates/cache/23/23cbfe650e40ac057f1e85511556af91.php:66
 msgid "Reason"
 msgstr "Причина"
 
@@ -1330,6 +1469,10 @@ msgstr "Поскаржитися"
 #: ../../../../templates/cache/b8/d9/05d4f2709538c393e80cdee33c24efe8d6fd13e68df2f5b3493356ef42e3.php:120
 #: ../../../../templates/cache/26/b3/eb11457d26f281883c21fad69f55f2c85f7cde1e4986db8692a12aaf72a5.php:138
 #: ../../../../templates/cache/26/b3/eb11457d26f281883c21fad69f55f2c85f7cde1e4986db8692a12aaf72a5.php:129
+#: ../../../../templates/cache/46/46a3695bfe1fee58529c923b5e7a13ef.php:170
+#: ../../../../templates/cache/58/589bef4eab98077f28dc71db1612c5e5.php:210
+#: ../../../../templates/cache/93/93945ccbb097555c238d612b01c64679.php:106
+#: ../../../../templates/cache/9e/9e079e296ec86427e108ce967cf3fdc9.php:99
 msgid "Return to dashboard"
 msgstr "Повернутися до панелі керування"
 
@@ -1347,6 +1490,8 @@ msgstr "Режим дописування: відповідь"
 #: ../../../../templates/cache/b8/d9/05d4f2709538c393e80cdee33c24efe8d6fd13e68df2f5b3493356ef42e3.php:203
 #: ../../../../templates/cache/b8/d9/05d4f2709538c393e80cdee33c24efe8d6fd13e68df2f5b3493356ef42e3.php:138
 #: ../../../../templates/cache/b8/d9/05d4f2709538c393e80cdee33c24efe8d6fd13e68df2f5b3493356ef42e3.php:186
+#: ../../../../post.php:193
+#: ../../../../templates/cache/58/589bef4eab98077f28dc71db1612c5e5.php:228
 msgid "Return"
 msgstr "Повернутися"
 
@@ -1360,6 +1505,7 @@ msgstr "(немає новин)"
 #: ../../../../templates/cache/39/f9/8228f77b382baf1d61c1215dc0f0236e4cdf8cc5e938259785cf3e67d1ca.php:116
 #: ../../../../templates/cache/1a/7f/6eb467b2d978da59cfea2fe64f8898a5fb769be35fbb2ec50691da9a3d52.php:144
 #: ../../../../templates/cache/d2/14/70c07e4c5f648cfa0d0663a1f18973ff6f6946363b45332b2627a0fcf273.php:88
+#: ../../../../templates/cache/e3/e3b42961f48b80667c181b5e038a031d.php:194
 msgid "no subject"
 msgstr "без заголовка"
 
@@ -1414,9 +1560,14 @@ msgstr "Файл:"
 #: ../../../../templates/cache/cf/63/151e140d85df674832f4ede3f3e7811b97d4efa91cac6086ca7e8ce65d25.php:141
 #: ../../../../templates/cache/cf/63/151e140d85df674832f4ede3f3e7811b97d4efa91cac6086ca7e8ce65d25.php:179
 #: ../../../../templates/cache/cf/63/151e140d85df674832f4ede3f3e7811b97d4efa91cac6086ca7e8ce65d25.php:220
+#: ../../../../templates/cache/5f/5fdd89ab369529abff6de6e9bea75be1.php:178
+#: ../../../../templates/cache/5f/5fdd89ab369529abff6de6e9bea75be1.php:219
+#: ../../../../templates/cache/5f/5fdd89ab369529abff6de6e9bea75be1.php:274
+#: ../../../../templates/cache/b2/b2cfb747d8ce766e39dea332da8ee38c.php:102
 msgid "Spoiler Image"
 msgstr "Спойлерне зображення"
 
+#. line 47
 #: ../../../../templates/cache/d8/f2/7780eb1adcdbda7e332659e3fb4f.php:530
 #: ../../../../templates/cache/b5/eb/fd7d06d38210e123d492fb7f2a1891578af746ef421003f1b55da157122f.php:495
 #: ../../../../templates/cache/b5/eb/fd7d06d38210e123d492fb7f2a1891578af746ef421003f1b55da157122f.php:506
@@ -1426,6 +1577,8 @@ msgstr "Спойлерне зображення"
 #: ../../../../templates/cache/b5/eb/fd7d06d38210e123d492fb7f2a1891578af746ef421003f1b55da157122f.php:216
 #: ../../../../templates/cache/b5/eb/fd7d06d38210e123d492fb7f2a1891578af746ef421003f1b55da157122f.php:227
 #: ../../../../templates/cache/b5/eb/fd7d06d38210e123d492fb7f2a1891578af746ef421003f1b55da157122f.php:229
+#: ../../../../templates/cache/58/589bef4eab98077f28dc71db1612c5e5.php:224
+#: ../../../../templates/cache/c2/c22264350d67618952d24ad4d660c88b.php:259
 msgid "Reply"
 msgstr "Відповісти"
 
@@ -1438,6 +1591,7 @@ msgstr "Відповісти"
 #: ../../../../templates/cache/b5/eb/fd7d06d38210e123d492fb7f2a1891578af746ef421003f1b55da157122f.php:230
 #: ../../../../templates/cache/b5/eb/fd7d06d38210e123d492fb7f2a1891578af746ef421003f1b55da157122f.php:241
 #: ../../../../templates/cache/b5/eb/fd7d06d38210e123d492fb7f2a1891578af746ef421003f1b55da157122f.php:243
+#: ../../../../templates/cache/c2/c22264350d67618952d24ad4d660c88b.php:273
 msgid "View All"
 msgstr "Показати все"
 
@@ -1450,6 +1604,7 @@ msgstr "Показати все"
 #: ../../../../templates/cache/b5/eb/fd7d06d38210e123d492fb7f2a1891578af746ef421003f1b55da157122f.php:247
 #: ../../../../templates/cache/b5/eb/fd7d06d38210e123d492fb7f2a1891578af746ef421003f1b55da157122f.php:258
 #: ../../../../templates/cache/b5/eb/fd7d06d38210e123d492fb7f2a1891578af746ef421003f1b55da157122f.php:260
+#: ../../../../templates/cache/c2/c22264350d67618952d24ad4d660c88b.php:290
 msgid "Last 1 Post"
 msgid_plural "Last %count% Posts"
 msgstr[0] "Останній %count% допис"
@@ -1465,6 +1620,7 @@ msgstr[2] "Останні %count% дописів"
 #: ../../../../templates/cache/b5/eb/fd7d06d38210e123d492fb7f2a1891578af746ef421003f1b55da157122f.php:284
 #: ../../../../templates/cache/b5/eb/fd7d06d38210e123d492fb7f2a1891578af746ef421003f1b55da157122f.php:295
 #: ../../../../templates/cache/b5/eb/fd7d06d38210e123d492fb7f2a1891578af746ef421003f1b55da157122f.php:297
+#: ../../../../templates/cache/c2/c22264350d67618952d24ad4d660c88b.php:332
 msgid "1 post"
 msgid_plural "%count% posts"
 msgstr[0] "%count% допис"
@@ -1482,6 +1638,7 @@ msgstr[2] "%count% дописів"
 #: ../../../../templates/cache/b5/eb/fd7d06d38210e123d492fb7f2a1891578af746ef421003f1b55da157122f.php:301
 #: ../../../../templates/cache/b5/eb/fd7d06d38210e123d492fb7f2a1891578af746ef421003f1b55da157122f.php:303
 #: ../../../../templates/cache/b7/ae/f9663c9ca58d1e218de29e04d0fa229f6263f4e68b613ce608bc023897a2.php:141
+#: ../../../../templates/cache/c2/c22264350d67618952d24ad4d660c88b.php:339
 msgid "and"
 msgstr "і"
 
@@ -1494,6 +1651,7 @@ msgstr "і"
 #: ../../../../templates/cache/b5/eb/fd7d06d38210e123d492fb7f2a1891578af746ef421003f1b55da157122f.php:302
 #: ../../../../templates/cache/b5/eb/fd7d06d38210e123d492fb7f2a1891578af746ef421003f1b55da157122f.php:313
 #: ../../../../templates/cache/b5/eb/fd7d06d38210e123d492fb7f2a1891578af746ef421003f1b55da157122f.php:315
+#: ../../../../templates/cache/c2/c22264350d67618952d24ad4d660c88b.php:351
 msgid "1 image reply"
 msgid_plural "%count% image replies"
 msgstr[0] "%count% допис із зображеннями"
@@ -1509,6 +1667,7 @@ msgstr[2] "%count% дописів із зображеннями"
 #: ../../../../templates/cache/b5/eb/fd7d06d38210e123d492fb7f2a1891578af746ef421003f1b55da157122f.php:307
 #: ../../../../templates/cache/b5/eb/fd7d06d38210e123d492fb7f2a1891578af746ef421003f1b55da157122f.php:318
 #: ../../../../templates/cache/b5/eb/fd7d06d38210e123d492fb7f2a1891578af746ef421003f1b55da157122f.php:320
+#: ../../../../templates/cache/c2/c22264350d67618952d24ad4d660c88b.php:357
 msgid "omitted. Click reply to view."
 msgstr "пропущено. Натисніть «Відповісти», щоб побачити."
 
@@ -1540,6 +1699,8 @@ msgstr "пропущено. Натисніть «Відповісти», щоб 
 #. line 7
 #. line 8
 #. line 14
+#. line 23
+#. line 27
 #: ../../../../templates/cache/39/42/cbc36382096edfa72a8bc26e4514.php:30
 #: ../../../../templates/cache/0c/37/9331df01df7c2986d77a02d3beb0.php:66
 #: ../../../../templates/cache/39/f9/8228f77b382baf1d61c1215dc0f0236e4cdf8cc5e938259785cf3e67d1ca.php:38
@@ -1548,6 +1709,8 @@ msgstr "пропущено. Натисніть «Відповісти», щоб 
 #: ../../../../templates/cache/cf/63/151e140d85df674832f4ede3f3e7811b97d4efa91cac6086ca7e8ce65d25.php:69
 #: ../../../../templates/cache/d1/2d/e4ea563232b42da227befa9cf03fef935e472b1268221e2399d8d6af1cd5.php:33
 #: ../../../../templates/cache/ae/30/5b1888bb2e8ab6981af945fea88c1ecb021b0dfa8a068ee7adeb9dd3ee7d.php:40
+#: ../../../../templates/cache/5f/5fdd89ab369529abff6de6e9bea75be1.php:101
+#: ../../../../templates/cache/5f/5fdd89ab369529abff6de6e9bea75be1.php:110
 msgid "Name"
 msgstr "Імʼя"
 
@@ -1602,6 +1765,8 @@ msgstr "Ел. пошта"
 #. line 23
 #. line 12
 #. line 46
+#. line 55
+#. line 59
 #: ../../../../templates/cache/39/42/cbc36382096edfa72a8bc26e4514.php:58
 #: ../../../../templates/cache/0c/37/9331df01df7c2986d77a02d3beb0.php:147
 #: ../../../../templates/cache/39/f9/8228f77b382baf1d61c1215dc0f0236e4cdf8cc5e938259785cf3e67d1ca.php:48
@@ -1609,6 +1774,8 @@ msgstr "Ел. пошта"
 #: ../../../../templates/cache/cf/63/151e140d85df674832f4ede3f3e7811b97d4efa91cac6086ca7e8ce65d25.php:150
 #: ../../../../templates/cache/d1/2d/e4ea563232b42da227befa9cf03fef935e472b1268221e2399d8d6af1cd5.php:61
 #: ../../../../templates/cache/cf/63/151e140d85df674832f4ede3f3e7811b97d4efa91cac6086ca7e8ce65d25.php:161
+#: ../../../../templates/cache/5f/5fdd89ab369529abff6de6e9bea75be1.php:198
+#: ../../../../templates/cache/5f/5fdd89ab369529abff6de6e9bea75be1.php:207
 msgid "Subject"
 msgstr "Тема"
 
@@ -1632,11 +1799,15 @@ msgstr "Оновлення"
 #. line 57
 #. line 32
 #. line 57
+#. line 66
+#. line 71
 #: ../../../../templates/cache/39/42/cbc36382096edfa72a8bc26e4514.php:76
 #: ../../../../templates/cache/0c/37/9331df01df7c2986d77a02d3beb0.php:178
 #: ../../../../templates/cache/cf/63/151e140d85df674832f4ede3f3e7811b97d4efa91cac6086ca7e8ce65d25.php:181
 #: ../../../../templates/cache/d1/2d/e4ea563232b42da227befa9cf03fef935e472b1268221e2399d8d6af1cd5.php:79
 #: ../../../../templates/cache/cf/63/151e140d85df674832f4ede3f3e7811b97d4efa91cac6086ca7e8ce65d25.php:192
+#: ../../../../templates/cache/5f/5fdd89ab369529abff6de6e9bea75be1.php:232
+#: ../../../../templates/cache/5f/5fdd89ab369529abff6de6e9bea75be1.php:242
 msgid "Comment"
 msgstr "Допис"
 
@@ -1656,38 +1827,52 @@ msgid "Edit raw HTML instead?"
 msgstr "Редагувати натомість сирий HTML?"
 
 #. line 73
+#. line 86
+#. line 98
+#. line 114
 #: ../../../../templates/cache/0c/37/9331df01df7c2986d77a02d3beb0.php:226
 #: ../../../../templates/cache/cf/63/151e140d85df674832f4ede3f3e7811b97d4efa91cac6086ca7e8ce65d25.php:229
 #: ../../../../templates/cache/cf/63/151e140d85df674832f4ede3f3e7811b97d4efa91cac6086ca7e8ce65d25.php:240
+#: ../../../../templates/cache/5f/5fdd89ab369529abff6de6e9bea75be1.php:294
+#: ../../../../templates/cache/5f/5fdd89ab369529abff6de6e9bea75be1.php:321
+#: ../../../../templates/cache/5f/5fdd89ab369529abff6de6e9bea75be1.php:353
 msgid "Verification"
 msgstr "Підтвердження"
 
 #. line 90
 #. line 103
+#. line 164
 #: ../../../../templates/cache/0c/37/9331df01df7c2986d77a02d3beb0.php:262
 #: ../../../../templates/cache/cf/63/151e140d85df674832f4ede3f3e7811b97d4efa91cac6086ca7e8ce65d25.php:265
 #: ../../../../templates/cache/cf/63/151e140d85df674832f4ede3f3e7811b97d4efa91cac6086ca7e8ce65d25.php:302
 #: ../../../../templates/cache/cf/63/151e140d85df674832f4ede3f3e7811b97d4efa91cac6086ca7e8ce65d25.php:313
+#: ../../../../templates/cache/5f/5fdd89ab369529abff6de6e9bea75be1.php:472
 msgid "Or URL"
 msgstr "Або URL"
 
 #. line 100
 #. line 113
+#. line 174
+#. line 178
 #: ../../../../templates/cache/0c/37/9331df01df7c2986d77a02d3beb0.php:282
 #: ../../../../templates/cache/cf/63/151e140d85df674832f4ede3f3e7811b97d4efa91cac6086ca7e8ce65d25.php:285
 #: ../../../../templates/cache/cf/63/151e140d85df674832f4ede3f3e7811b97d4efa91cac6086ca7e8ce65d25.php:322
 #: ../../../../templates/cache/cf/63/151e140d85df674832f4ede3f3e7811b97d4efa91cac6086ca7e8ce65d25.php:333
+#: ../../../../templates/cache/5f/5fdd89ab369529abff6de6e9bea75be1.php:492
+#: ../../../../templates/cache/5f/5fdd89ab369529abff6de6e9bea75be1.php:501
 msgid "Embed"
 msgstr "Вбудувати"
 
 #. line 112
 #. line 111
 #. line 124
+#. line 185
 #: ../../../../templates/cache/0c/37/9331df01df7c2986d77a02d3beb0.php:306
 #: ../../../../templates/cache/cf/63/151e140d85df674832f4ede3f3e7811b97d4efa91cac6086ca7e8ce65d25.php:309
 #: ../../../../templates/cache/cf/63/151e140d85df674832f4ede3f3e7811b97d4efa91cac6086ca7e8ce65d25.php:305
 #: ../../../../templates/cache/cf/63/151e140d85df674832f4ede3f3e7811b97d4efa91cac6086ca7e8ce65d25.php:342
 #: ../../../../templates/cache/cf/63/151e140d85df674832f4ede3f3e7811b97d4efa91cac6086ca7e8ce65d25.php:353
+#: ../../../../templates/cache/5f/5fdd89ab369529abff6de6e9bea75be1.php:515
 msgid "Flags"
 msgstr "Позначки"
 
@@ -1727,6 +1912,8 @@ msgstr "Позначки"
 #. line 129
 #. line 128
 #. line 129
+#. line 189
+#. line 190
 #: ../../../../templates/cache/0c/37/9331df01df7c2986d77a02d3beb0.php:316
 #: ../../../../templates/cache/0c/37/9331df01df7c2986d77a02d3beb0.php:320
 #: ../../../../templates/cache/cf/63/151e140d85df674832f4ede3f3e7811b97d4efa91cac6086ca7e8ce65d25.php:319
@@ -1736,6 +1923,8 @@ msgstr "Позначки"
 #: ../../../../templates/cache/cf/63/151e140d85df674832f4ede3f3e7811b97d4efa91cac6086ca7e8ce65d25.php:356
 #: ../../../../templates/cache/cf/63/151e140d85df674832f4ede3f3e7811b97d4efa91cac6086ca7e8ce65d25.php:363
 #: ../../../../templates/cache/cf/63/151e140d85df674832f4ede3f3e7811b97d4efa91cac6086ca7e8ce65d25.php:367
+#: ../../../../templates/cache/5f/5fdd89ab369529abff6de6e9bea75be1.php:525
+#: ../../../../templates/cache/5f/5fdd89ab369529abff6de6e9bea75be1.php:529
 msgid "Sticky"
 msgstr "Прикріплений"
 
@@ -1775,6 +1964,8 @@ msgstr "Прикріплений"
 #. line 133
 #. line 132
 #. line 133
+#. line 193
+#. line 194
 #: ../../../../templates/cache/0c/37/9331df01df7c2986d77a02d3beb0.php:330
 #: ../../../../templates/cache/0c/37/9331df01df7c2986d77a02d3beb0.php:334
 #: ../../../../templates/cache/cf/63/151e140d85df674832f4ede3f3e7811b97d4efa91cac6086ca7e8ce65d25.php:333
@@ -1784,6 +1975,8 @@ msgstr "Прикріплений"
 #: ../../../../templates/cache/cf/63/151e140d85df674832f4ede3f3e7811b97d4efa91cac6086ca7e8ce65d25.php:370
 #: ../../../../templates/cache/cf/63/151e140d85df674832f4ede3f3e7811b97d4efa91cac6086ca7e8ce65d25.php:377
 #: ../../../../templates/cache/cf/63/151e140d85df674832f4ede3f3e7811b97d4efa91cac6086ca7e8ce65d25.php:381
+#: ../../../../templates/cache/5f/5fdd89ab369529abff6de6e9bea75be1.php:539
+#: ../../../../templates/cache/5f/5fdd89ab369529abff6de6e9bea75be1.php:543
 msgid "Lock"
 msgstr "Закритий"
 
@@ -1823,6 +2016,8 @@ msgstr "Закритий"
 #. line 137
 #. line 136
 #. line 137
+#. line 197
+#. line 198
 #: ../../../../templates/cache/0c/37/9331df01df7c2986d77a02d3beb0.php:344
 #: ../../../../templates/cache/0c/37/9331df01df7c2986d77a02d3beb0.php:348
 #: ../../../../templates/cache/cf/63/151e140d85df674832f4ede3f3e7811b97d4efa91cac6086ca7e8ce65d25.php:347
@@ -1832,6 +2027,8 @@ msgstr "Закритий"
 #: ../../../../templates/cache/cf/63/151e140d85df674832f4ede3f3e7811b97d4efa91cac6086ca7e8ce65d25.php:384
 #: ../../../../templates/cache/cf/63/151e140d85df674832f4ede3f3e7811b97d4efa91cac6086ca7e8ce65d25.php:391
 #: ../../../../templates/cache/cf/63/151e140d85df674832f4ede3f3e7811b97d4efa91cac6086ca7e8ce65d25.php:395
+#: ../../../../templates/cache/5f/5fdd89ab369529abff6de6e9bea75be1.php:553
+#: ../../../../templates/cache/5f/5fdd89ab369529abff6de6e9bea75be1.php:557
 msgid "Raw HTML"
 msgstr "Сирий HTML"
 
@@ -1839,29 +2036,34 @@ msgstr "Сирий HTML"
 #. line 136
 #. line 141
 #. line 154
+#. line 210
 #: ../../../../templates/cache/0c/37/9331df01df7c2986d77a02d3beb0.php:374
 #: ../../../../templates/cache/cf/63/151e140d85df674832f4ede3f3e7811b97d4efa91cac6086ca7e8ce65d25.php:377
 #: ../../../../templates/cache/cf/63/151e140d85df674832f4ede3f3e7811b97d4efa91cac6086ca7e8ce65d25.php:373
 #: ../../../../templates/cache/cf/63/151e140d85df674832f4ede3f3e7811b97d4efa91cac6086ca7e8ce65d25.php:378
 #: ../../../../templates/cache/cf/63/151e140d85df674832f4ede3f3e7811b97d4efa91cac6086ca7e8ce65d25.php:415
 #: ../../../../templates/cache/cf/63/151e140d85df674832f4ede3f3e7811b97d4efa91cac6086ca7e8ce65d25.php:426
+#: ../../../../templates/cache/5f/5fdd89ab369529abff6de6e9bea75be1.php:583
 msgid "(For file deletion.)"
 msgstr "(для видалення файла)"
 
-#: ../../../../search.php:5
+#: ../../../../search.php:5 ../../../../search.php:9
 msgid "Post search is disabled"
 msgstr "Пошук дописів вимкнено"
 
 #: ../../../../search.php:25 ../../../../search.php:31
 #: ../../../../search.php:29 ../../../../search.php:35
+#: ../../../../search.php:40 ../../../../search.php:47
 msgid "Wait a while before searching again, please."
 msgstr "Будь ласка, зачекайте трохи, перш ніж знову шукати."
 
 #: ../../../../search.php:131 ../../../../search.php:135
+#: ../../../../search.php:154
 msgid "Query too broad."
 msgstr "Запит надто загальний."
 
 #: ../../../../search.php:152 ../../../../search.php:156
+#: ../../../../search.php:176
 #, php-format
 msgid "%d result in"
 msgid_plural "%d results in"
@@ -1870,6 +2072,7 @@ msgstr[1] "%d результати у"
 msgstr[2] "%d результатів у"
 
 #: ../../../../search.php:163 ../../../../search.php:167
+#: ../../../../search.php:189
 msgid "No results."
 msgstr "Нема результатів."
 
@@ -1928,6 +2131,9 @@ msgstr "Нема результатів."
 #. line 2
 #. line 13
 #. line 2
+#. line 16
+#. line 22
+#. line 125
 #: ../../../../search.php:168
 #: ../../../../templates/cache/72/7e/271125664718133518fd942f20fb724224e100f8a0d47cb0b52f895ac12f.php:334
 #: ../../../../templates/cache/73/f8/5e3142a8a6f8d7e40422ff577e83b0dedf55a7cb9bc7082839b24f653545.php:83
@@ -1937,11 +2143,15 @@ msgstr "Нема результатів."
 #: ../../../../search.php:172
 #: ../../../../templates/cache/72/7e/271125664718133518fd942f20fb724224e100f8a0d47cb0b52f895ac12f.php:343
 #: ../../../../templates/cache/ba/55/2553cc018aecf7d29a62331aec4bedc71b646817c7e4c4e7d1a885263676.php:61
+#: ../../../../search.php:195
+#: ../../../../templates/cache/48/48decf1a9e3eff5d01e3fc45adca297f.php:98
+#: ../../../../templates/cache/e2/e28d7ce7636f0a860707ec80707bf75f.php:76
+#: ../../../../templates/cache/e3/e3b42961f48b80667c181b5e038a031d.php:401
 msgid "Search"
 msgstr "Пошук"
 
 #: ../../../../inc/mod/pages.php:939 ../../../../inc/mod/pages.php:936
-#: ../../../../inc/mod/pages.php:941
+#: ../../../../inc/mod/pages.php:941 ../../../../inc/mod/pages.php:1042
 msgid "Ban appeal not found!"
 msgstr "Оскарження блокування не знайдено!"
 
@@ -1949,22 +2159,26 @@ msgstr "Оскарження блокування не знайдено!"
 #: ../../../../templates/cache/72/7e/271125664718133518fd942f20fb724224e100f8a0d47cb0b52f895ac12f.php:265
 #: ../../../../inc/mod/pages.php:994 ../../../../inc/mod/pages.php:995
 #: ../../../../inc/mod/pages.php:992 ../../../../inc/mod/pages.php:997
+#: ../../../../inc/mod/pages.php:1098
+#: ../../../../templates/cache/e3/e3b42961f48b80667c181b5e038a031d.php:313
 msgid "Ban appeals"
 msgstr "Оскарження блокувань"
 
 #: ../../../../inc/mod/pages.php:1833 ../../../../inc/mod/pages.php:1849
 #: ../../../../inc/mod/pages.php:1850 ../../../../inc/mod/pages.php:1854
+#: ../../../../inc/mod/pages.php:2003
 msgid "New user"
 msgstr "Новий користувач"
 
 #: ../../../../inc/mod/pages.php:1888 ../../../../inc/mod/pages.php:1904
 #: ../../../../inc/mod/pages.php:1905 ../../../../inc/mod/pages.php:1909
+#: ../../../../inc/mod/pages.php:2058
 msgid "Impossible to promote/demote user."
 msgstr "Неможливо підвищити/понизити користувача."
 
 #: ../../../../inc/mod/pages.php:2612 ../../../../inc/mod/pages.php:2690
 #: ../../../../inc/mod/pages.php:2684 ../../../../inc/mod/pages.php:2683
-#: ../../../../inc/mod/pages.php:2688
+#: ../../../../inc/mod/pages.php:2688 ../../../../inc/mod/pages.php:3009
 msgid "Debug: APC"
 msgstr "Зневадження: APC"
 
@@ -1972,7 +2186,7 @@ msgstr "Зневадження: APC"
 #: ../../../../inc/config.php:1019 ../../../../inc/config.php:1021
 #: ../../../../inc/config.php:1037 ../../../../inc/config.php:1046
 #: ../../../../inc/config.php:1077 ../../../../inc/config.php:1081
-#: ../../../../inc/config.php:1084
+#: ../../../../inc/config.php:1084 ../../../../inc/config.php:1187
 msgid ""
 "Your code contained PHP syntax errors. Please go back and correct them. PHP "
 "says: "
@@ -1996,90 +2210,114 @@ msgstr ""
 #. line 2
 #. line 46
 #. line 6
+#. line 3
 #: ../../../../templates/cache/72/7e/271125664718133518fd942f20fb724224e100f8a0d47cb0b52f895ac12f.php:25
 #: ../../../../templates/cache/fc/8d/2b5f6c25d93a9966c429a79ee7ebdd921957079dab214aebbc665d67b9f4.php:38
 #: ../../../../templates/cache/37/ea/10898251a344348e062662ce7a7b7f6c8dae001e2c860ce58ea35cedd935.php:139
+#: ../../../../templates/cache/e3/e3b42961f48b80667c181b5e038a031d.php:62
 msgid "Boards"
 msgstr "Дошки"
 
 #: ../../../../templates/cache/72/7e/271125664718133518fd942f20fb724224e100f8a0d47cb0b52f895ac12f.php:79
 #: ../../../../templates/cache/fc/8d/2b5f6c25d93a9966c429a79ee7ebdd921957079dab214aebbc665d67b9f4.php:215
+#: ../../../../templates/cache/e3/e3b42961f48b80667c181b5e038a031d.php:116
 msgid "edit"
 msgstr "редагування"
 
 #: ../../../../templates/cache/72/7e/271125664718133518fd942f20fb724224e100f8a0d47cb0b52f895ac12f.php:97
+#: ../../../../templates/cache/e3/e3b42961f48b80667c181b5e038a031d.php:145
 msgid "Create new board"
 msgstr "Створити нову дошку"
 
 #. line 32
+#. line 36
 #: ../../../../templates/cache/72/7e/271125664718133518fd942f20fb724224e100f8a0d47cb0b52f895ac12f.php:108
+#: ../../../../templates/cache/e3/e3b42961f48b80667c181b5e038a031d.php:156
 msgid "Messages"
 msgstr "Повідомлення"
 
 #: ../../../../templates/cache/72/7e/271125664718133518fd942f20fb724224e100f8a0d47cb0b52f895ac12f.php:188
+#: ../../../../templates/cache/e3/e3b42961f48b80667c181b5e038a031d.php:236
 msgid "View all noticeboard entries"
 msgstr "Переглянути всі записи дошки оголошень"
 
 #. line 76
+#. line 80
 #: ../../../../templates/cache/72/7e/271125664718133518fd942f20fb724224e100f8a0d47cb0b52f895ac12f.php:222
+#: ../../../../templates/cache/e3/e3b42961f48b80667c181b5e038a031d.php:270
 msgid "Administration"
 msgstr "Адміністрування"
 
 #: ../../../../templates/cache/72/7e/271125664718133518fd942f20fb724224e100f8a0d47cb0b52f895ac12f.php:282
+#: ../../../../templates/cache/e3/e3b42961f48b80667c181b5e038a031d.php:331
 msgid "Change password"
 msgstr "Змінити пароль"
 
 #: ../../../../templates/cache/72/7e/271125664718133518fd942f20fb724224e100f8a0d47cb0b52f895ac12f.php:318
 #: ../../../../templates/cache/72/7e/271125664718133518fd942f20fb724224e100f8a0d47cb0b52f895ac12f.php:327
+#: ../../../../templates/cache/e3/e3b42961f48b80667c181b5e038a031d.php:385
 msgid "Configuration"
 msgstr "Конфігурування"
 
 #. line 127
 #. line 130
+#. line 137
 #: ../../../../templates/cache/72/7e/271125664718133518fd942f20fb724224e100f8a0d47cb0b52f895ac12f.php:357
 #: ../../../../templates/cache/72/7e/271125664718133518fd942f20fb724224e100f8a0d47cb0b52f895ac12f.php:366
+#: ../../../../templates/cache/e3/e3b42961f48b80667c181b5e038a031d.php:424
 msgid "Other"
 msgstr "Інше"
 
 #. line 139
 #. line 142
+#. line 149
 #: ../../../../templates/cache/72/7e/271125664718133518fd942f20fb724224e100f8a0d47cb0b52f895ac12f.php:391
 #: ../../../../templates/cache/72/7e/271125664718133518fd942f20fb724224e100f8a0d47cb0b52f895ac12f.php:400
+#: ../../../../templates/cache/e3/e3b42961f48b80667c181b5e038a031d.php:458
 msgid "Debug"
 msgstr "Зневадження"
 
 #. line 141
 #. line 144
+#. line 151
 #: ../../../../templates/cache/72/7e/271125664718133518fd942f20fb724224e100f8a0d47cb0b52f895ac12f.php:396
 #: ../../../../templates/cache/72/7e/271125664718133518fd942f20fb724224e100f8a0d47cb0b52f895ac12f.php:405
+#: ../../../../templates/cache/e3/e3b42961f48b80667c181b5e038a031d.php:463
 msgid "Anti-spam"
 msgstr "Антиспам"
 
 #. line 142
 #. line 145
+#. line 152
 #: ../../../../templates/cache/72/7e/271125664718133518fd942f20fb724224e100f8a0d47cb0b52f895ac12f.php:400
 #: ../../../../inc/mod/pages.php:2288
 #: ../../../../templates/cache/72/7e/271125664718133518fd942f20fb724224e100f8a0d47cb0b52f895ac12f.php:309
 #: ../../../../templates/cache/72/7e/271125664718133518fd942f20fb724224e100f8a0d47cb0b52f895ac12f.php:409
 #: ../../../../inc/mod/pages.php:2283 ../../../../inc/mod/pages.php:2282
-#: ../../../../inc/mod/pages.php:2287
+#: ../../../../inc/mod/pages.php:2287 ../../../../inc/mod/pages.php:2439
+#: ../../../../templates/cache/e3/e3b42961f48b80667c181b5e038a031d.php:367
+#: ../../../../templates/cache/e3/e3b42961f48b80667c181b5e038a031d.php:467
 msgid "Recent posts"
 msgstr "Останні дописи"
 
 #: ../../../../templates/cache/72/7e/271125664718133518fd942f20fb724224e100f8a0d47cb0b52f895ac12f.php:407
 #: ../../../../templates/cache/72/7e/271125664718133518fd942f20fb724224e100f8a0d47cb0b52f895ac12f.php:416
+#: ../../../../templates/cache/e3/e3b42961f48b80667c181b5e038a031d.php:474
 msgid "SQL"
 msgstr "SQL"
 
 #. line 164
 #. line 167
+#. line 174
 #: ../../../../templates/cache/72/7e/271125664718133518fd942f20fb724224e100f8a0d47cb0b52f895ac12f.php:446
 #: ../../../../templates/cache/72/7e/271125664718133518fd942f20fb724224e100f8a0d47cb0b52f895ac12f.php:455
+#: ../../../../templates/cache/e3/e3b42961f48b80667c181b5e038a031d.php:513
 msgid "User account"
 msgstr "Обліковий запис користувача"
 
 #: ../../../../templates/cache/72/7e/271125664718133518fd942f20fb724224e100f8a0d47cb0b52f895ac12f.php:454
 #: ../../../../templates/cache/72/7e/271125664718133518fd942f20fb724224e100f8a0d47cb0b52f895ac12f.php:463
+#: ../../../../templates/cache/e3/e3b42961f48b80667c181b5e038a031d.php:521
 msgid "Logout"
 msgstr "Вийти"
 
@@ -2729,25 +2967,31 @@ msgstr "Нове блокування"
 #. line 5
 #. line 2
 #. line 5
+#. line 2
 #: ../../../../templates/cache/73/f8/5e3142a8a6f8d7e40422ff577e83b0dedf55a7cb9bc7082839b24f653545.php:25
 #: ../../../../templates/cache/cb/8b/63013711213735996df92becb7bd43d753c51314cfe5433c562706333eb0.php:31
+#: ../../../../templates/cache/48/48decf1a9e3eff5d01e3fc45adca297f.php:40
 msgid "Phrase:"
 msgstr "Фраза:"
 
 #: ../../../../templates/cache/73/f8/5e3142a8a6f8d7e40422ff577e83b0dedf55a7cb9bc7082839b24f653545.php:38
+#: ../../../../templates/cache/48/48decf1a9e3eff5d01e3fc45adca297f.php:53
 msgid "Posts"
 msgstr "Дописи"
 
 #: ../../../../templates/cache/73/f8/5e3142a8a6f8d7e40422ff577e83b0dedf55a7cb9bc7082839b24f653545.php:49
+#: ../../../../templates/cache/48/48decf1a9e3eff5d01e3fc45adca297f.php:64
 msgid "IP address notes"
 msgstr "Примітки до IP адреси"
 
 #: ../../../../templates/cache/73/f8/5e3142a8a6f8d7e40422ff577e83b0dedf55a7cb9bc7082839b24f653545.php:62
+#: ../../../../templates/cache/48/48decf1a9e3eff5d01e3fc45adca297f.php:77
 msgid "Bans"
 msgstr "Блокування"
 
 #. line 18
 #: ../../../../templates/cache/73/f8/5e3142a8a6f8d7e40422ff577e83b0dedf55a7cb9bc7082839b24f653545.php:88
+#: ../../../../templates/cache/48/48decf1a9e3eff5d01e3fc45adca297f.php:103
 msgid ""
 "(Search is case-insensitive and based on keywords. To match exact phrases, "
 "use \"quotes\". Use an asterisk (*) for wildcard.)"
@@ -2789,6 +3033,7 @@ msgstr "Термін"
 #. line 92
 #: ../../../../templates/cache/ba/55/2553cc018aecf7d29a62331aec4bedc71b646817c7e4c4e7d1a885263676.php:269
 #: ../../../../templates/cache/ba/55/2553cc018aecf7d29a62331aec4bedc71b646817c7e4c4e7d1a885263676.php:68
+#: ../../../../templates/cache/e2/e28d7ce7636f0a860707ec80707bf75f.php:83
 msgid "Unban selected"
 msgstr "Розблокувати вибраних"
 
@@ -2835,22 +3080,22 @@ msgid "There are no reports."
 msgstr "Немає скарг."
 
 #: ../../../../post.php:802 ../../../../post.php:811 ../../../../post.php:825
-#: ../../../../post.php:894 ../../../../post.php:896
+#: ../../../../post.php:894 ../../../../post.php:896 ../../../../post.php:1090
 msgid "That ban doesn't exist or is not for you."
 msgstr "Це блокування не існує або його застосовано не до вас."
 
 #: ../../../../post.php:806 ../../../../post.php:815 ../../../../post.php:829
-#: ../../../../post.php:898 ../../../../post.php:900
+#: ../../../../post.php:898 ../../../../post.php:900 ../../../../post.php:1094
 msgid "You cannot appeal a ban of this length."
 msgstr "Ви не можете оскаржити блокування з таким терміном."
 
 #: ../../../../post.php:813 ../../../../post.php:822 ../../../../post.php:836
-#: ../../../../post.php:905 ../../../../post.php:907
+#: ../../../../post.php:905 ../../../../post.php:907 ../../../../post.php:1101
 msgid "You cannot appeal this ban again."
 msgstr "Ви не можете оскаржити це блокування знову."
 
 #: ../../../../post.php:818 ../../../../post.php:827 ../../../../post.php:841
-#: ../../../../post.php:910 ../../../../post.php:912
+#: ../../../../post.php:910 ../../../../post.php:912 ../../../../post.php:1106
 msgid "There is already a pending appeal for this ban."
 msgstr "Оскарження цього блокування вже розглядається."
 
@@ -2865,6 +3110,7 @@ msgstr "Не вдалося перемалювати зображення!"
 #: ../../../../inc/image.php:324 ../../../../inc/image.php:343
 #: ../../../../inc/image.php:368 ../../../../inc/image.php:342
 #: ../../../../inc/image.php:366 ../../../../inc/image.php:372
+#: ../../../../inc/image.php:370 ../../../../inc/image.php:374
 msgid "Failed to resize image!"
 msgstr "Не вдалося змінити розмір зображення!"
 
@@ -3312,14 +3558,18 @@ msgid "View more logs for this user."
 msgstr "Переглянути більше записів журналу щодо цього користувача."
 
 #. line 84
+#. line 130
 #: ../../../../templates/cache/cf/63/151e140d85df674832f4ede3f3e7811b97d4efa91cac6086ca7e8ce65d25.php:255
 #: ../../../../templates/cache/cf/63/151e140d85df674832f4ede3f3e7811b97d4efa91cac6086ca7e8ce65d25.php:266
+#: ../../../../templates/cache/5f/5fdd89ab369529abff6de6e9bea75be1.php:386
 msgid "Flag"
 msgstr "Позначити"
 
 #. line 87
+#. line 133
 #: ../../../../templates/cache/cf/63/151e140d85df674832f4ede3f3e7811b97d4efa91cac6086ca7e8ce65d25.php:261
 #: ../../../../templates/cache/cf/63/151e140d85df674832f4ede3f3e7811b97d4efa91cac6086ca7e8ce65d25.php:272
+#: ../../../../templates/cache/5f/5fdd89ab369529abff6de6e9bea75be1.php:392
 msgid "None"
 msgstr "Немає"
 
@@ -3328,12 +3578,13 @@ msgstr "Немає"
 #. standard cross-board post citation (>>>/board/xxx)
 #: ../../../../inc/config.php:1211 ../../../../inc/config.php:1220
 #: ../../../../inc/config.php:1251 ../../../../inc/config.php:1255
-#: ../../../../inc/config.php:1258
+#: ../../../../inc/config.php:1258 ../../../../inc/config.php:1496
 #, php-format
 msgid "Moved to %s."
 msgstr "Переміщено до %s."
 
 #: ../../../../templates/themes/recent/theme.php:50
+#: ../../../../templates/themes/recent/theme.php:57
 msgid ""
 "Can't build the RecentPosts theme, because there are no boards to be fetched."
 msgstr ""
@@ -3341,11 +3592,13 @@ msgstr ""
 
 #: ../../../../inc/config.php:997 ../../../../inc/config.php:1023
 #: ../../../../inc/config.php:1026 ../../../../inc/config.php:1029
+#: ../../../../inc/config.php:1128
 msgid "You have attempted to upload too many images!"
 msgstr "Ви спробували завантажити надто багато зображень!"
 
 #. line 7
 #: ../../../../templates/cache/b9/2b/ba2b45df5e1d76f6cdfb98a47468df19a1ffc1c2af2dc1792eb75eeb0791.php:36
+#: ../../../../templates/cache/a5/a52128149c2f75de4b803a68bf47fe44.php:51
 msgid "Spoiler file"
 msgstr "Заховати файл під спойлер"
 
@@ -3359,10 +3612,12 @@ msgstr "Заховати файл під спойлер"
 #. line 28
 #. line 20
 #. line 28
+#. line 24
 #: ../../../../templates/cache/41/57/9143de5f74d921965e5ff24e0f1ce44a18317fd4937f5d8d65f56337acf3.php:80
 #: ../../../../templates/cache/41/57/9143de5f74d921965e5ff24e0f1ce44a18317fd4937f5d8d65f56337acf3.php:107
 #: ../../../../templates/cache/41/57/9143de5f74d921965e5ff24e0f1ce44a18317fd4937f5d8d65f56337acf3.php:67
 #: ../../../../templates/cache/41/57/9143de5f74d921965e5ff24e0f1ce44a18317fd4937f5d8d65f56337acf3.php:90
+#: ../../../../templates/cache/9e/9e079e296ec86427e108ce967cf3fdc9.php:113
 msgid "Bump order"
 msgstr "порядком підіймання"
 
@@ -3385,10 +3640,12 @@ msgstr "Остання відповідь"
 #. line 29
 #. line 21
 #. line 29
+#. line 25
 #: ../../../../templates/cache/41/57/9143de5f74d921965e5ff24e0f1ce44a18317fd4937f5d8d65f56337acf3.php:88
 #: ../../../../templates/cache/41/57/9143de5f74d921965e5ff24e0f1ce44a18317fd4937f5d8d65f56337acf3.php:115
 #: ../../../../templates/cache/41/57/9143de5f74d921965e5ff24e0f1ce44a18317fd4937f5d8d65f56337acf3.php:71
 #: ../../../../templates/cache/41/57/9143de5f74d921965e5ff24e0f1ce44a18317fd4937f5d8d65f56337acf3.php:94
+#: ../../../../templates/cache/9e/9e079e296ec86427e108ce967cf3fdc9.php:117
 msgid "Creation date"
 msgstr "датою створення"
 
@@ -3402,10 +3659,12 @@ msgstr "датою створення"
 #. line 30
 #. line 22
 #. line 30
+#. line 26
 #: ../../../../templates/cache/41/57/9143de5f74d921965e5ff24e0f1ce44a18317fd4937f5d8d65f56337acf3.php:92
 #: ../../../../templates/cache/41/57/9143de5f74d921965e5ff24e0f1ce44a18317fd4937f5d8d65f56337acf3.php:119
 #: ../../../../templates/cache/41/57/9143de5f74d921965e5ff24e0f1ce44a18317fd4937f5d8d65f56337acf3.php:75
 #: ../../../../templates/cache/41/57/9143de5f74d921965e5ff24e0f1ce44a18317fd4937f5d8d65f56337acf3.php:98
+#: ../../../../templates/cache/9e/9e079e296ec86427e108ce967cf3fdc9.php:121
 msgid "Reply count"
 msgstr "кількістю відповідей"
 
@@ -3419,38 +3678,48 @@ msgstr "кількістю відповідей"
 #. line 31
 #. line 23
 #. line 31
+#. line 27
 #: ../../../../templates/cache/41/57/9143de5f74d921965e5ff24e0f1ce44a18317fd4937f5d8d65f56337acf3.php:96
 #: ../../../../templates/cache/41/57/9143de5f74d921965e5ff24e0f1ce44a18317fd4937f5d8d65f56337acf3.php:123
 #: ../../../../templates/cache/41/57/9143de5f74d921965e5ff24e0f1ce44a18317fd4937f5d8d65f56337acf3.php:79
 #: ../../../../templates/cache/41/57/9143de5f74d921965e5ff24e0f1ce44a18317fd4937f5d8d65f56337acf3.php:102
+#: ../../../../templates/cache/9e/9e079e296ec86427e108ce967cf3fdc9.php:125
 msgid "Random"
 msgstr "довільно"
 
 #. line 33
 #. line 26
+#. line 22
 #: ../../../../templates/cache/41/57/9143de5f74d921965e5ff24e0f1ce44a18317fd4937f5d8d65f56337acf3.php:102
 #: ../../../../templates/cache/41/57/9143de5f74d921965e5ff24e0f1ce44a18317fd4937f5d8d65f56337acf3.php:85
+#: ../../../../templates/cache/9e/9e079e296ec86427e108ce967cf3fdc9.php:108
 msgid "Sort by"
 msgstr "Сортувати за"
 
 #. line 42
 #. line 34
+#. line 30
 #: ../../../../templates/cache/41/57/9143de5f74d921965e5ff24e0f1ce44a18317fd4937f5d8d65f56337acf3.php:129
 #: ../../../../templates/cache/41/57/9143de5f74d921965e5ff24e0f1ce44a18317fd4937f5d8d65f56337acf3.php:108
+#: ../../../../templates/cache/9e/9e079e296ec86427e108ce967cf3fdc9.php:131
 msgid "Image size"
 msgstr "Розмір зображення"
 
 #. line 44
 #. line 37
+#. line 33
 #: ../../../../templates/cache/41/57/9143de5f74d921965e5ff24e0f1ce44a18317fd4937f5d8d65f56337acf3.php:134
 #: ../../../../templates/cache/41/57/9143de5f74d921965e5ff24e0f1ce44a18317fd4937f5d8d65f56337acf3.php:117
+#: ../../../../templates/cache/9e/9e079e296ec86427e108ce967cf3fdc9.php:140
 msgid "Small"
 msgstr "Маленьке"
 
 #. line 45
 #. line 38
+#. line 34
 #: ../../../../templates/cache/41/57/9143de5f74d921965e5ff24e0f1ce44a18317fd4937f5d8d65f56337acf3.php:138
 #: ../../../../templates/cache/41/57/9143de5f74d921965e5ff24e0f1ce44a18317fd4937f5d8d65f56337acf3.php:121
+#: ../../../../templates/cache/9e/9e079e296ec86427e108ce967cf3fdc9.php:144
 msgid "Large"
 msgstr "Велике"
 
@@ -3468,40 +3737,41 @@ msgstr "Цільовий допис"
 msgid "Post deletion is not allowed!"
 msgstr "Видалення допису не дозволено!"
 
-#: ../../../../post.php:385
+#: ../../../../post.php:385 ../../../../post.php:468
 msgid "Unrecognized file size determination method."
 msgstr "Невідомий метод визначення розміру файла."
 
-#: ../../../../post.php:519
+#: ../../../../post.php:519 ../../../../post.php:612
 msgid "Invalid flag selection!"
 msgstr "Неправильний вибір позначок!"
 
-#: ../../../../post.php:631 ../../../../post.php:633
+#: ../../../../post.php:631 ../../../../post.php:633 ../../../../post.php:749
 msgid "exiftool failed!"
 msgstr "exiftool не спрацювала!"
 
-#: ../../../../post.php:641 ../../../../post.php:643
+#: ../../../../post.php:641 ../../../../post.php:643 ../../../../post.php:759
 msgid "Could not auto-orient image!"
 msgstr "Не вдалося автоматично обернути зображення!"
 
-#: ../../../../post.php:695 ../../../../post.php:697
+#: ../../../../post.php:695 ../../../../post.php:697 ../../../../post.php:815
 msgid "Could not strip EXIF metadata!"
 msgstr "Не вдалося очистити файл від даних EXIF!"
 
 #: ../../../../inc/config.php:1049 ../../../../inc/config.php:1052
 #: ../../../../inc/config.php:1053 ../../../../inc/config.php:1055
-#: ../../../../inc/config.php:1056
+#: ../../../../inc/config.php:1056 ../../../../inc/config.php:1156
+#: ../../../../inc/config.php:1157
 msgid "There was a problem processing your webm."
 msgstr "Під час обробки вашої webm сталася помилка."
 
 #. Is this error used anywhere ?
 #: ../../../../inc/config.php:1050 ../../../../inc/config.php:1054
-#: ../../../../inc/config.php:1057
+#: ../../../../inc/config.php:1057 ../../../../inc/config.php:1158
 msgid "Invalid webm uploaded."
 msgstr "Завантажено хибну webm."
 
 #: ../../../../inc/config.php:1051 ../../../../inc/config.php:1055
-#: ../../../../inc/config.php:1058
+#: ../../../../inc/config.php:1058 ../../../../inc/config.php:1159
 msgid ""
 "The uploaded webm contains an audio or another type of additional stream."
 msgstr "Завантажена webm містить аудіо або ще один потік даних іншого типу."
@@ -3517,15 +3787,20 @@ msgid "Go to top"
 msgstr "На початок сторінки"
 
 #: ../../../../templates/cache/cf/63/151e140d85df674832f4ede3f3e7811b97d4efa91cac6086ca7e8ce65d25.php:80
+#: ../../../../templates/cache/5f/5fdd89ab369529abff6de6e9bea75be1.php:114
 msgid "Don't show my flag"
 msgstr "Не показувати мої позначки"
 
 #. line 36
+#. line 32
 #: ../../../../templates/cache/41/57/9143de5f74d921965e5ff24e0f1ce44a18317fd4937f5d8d65f56337acf3.php:113
+#: ../../../../templates/cache/9e/9e079e296ec86427e108ce967cf3fdc9.php:136
 msgid "Very small"
 msgstr "Дуже маленький"
 
 #: ../../../../templates/themes/recent/theme.php:99
+#: ../../../../templates/themes/index/theme.php:113
+#: ../../../../templates/themes/recent/theme.php:108
 msgid "(no comment)"
 msgstr "(коментар відсутній)"
 
@@ -3534,9 +3809,142 @@ msgid "There are no active posts."
 msgstr "Немає активних дописів."
 
 #: ../../../../templates/cache/ba/55/2553cc018aecf7d29a62331aec4bedc71b646817c7e4c4e7d1a885263676.php:49
+#: ../../../../templates/cache/e2/e28d7ce7636f0a860707ec80707bf75f.php:64
 msgid "Show only bans from boards I moderate"
 msgstr "Показати блокування тільки з тих дошок, які я модерую"
 
 #: ../../../../templates/cache/ba/55/2553cc018aecf7d29a62331aec4bedc71b646817c7e4c4e7d1a885263676.php:55
+#: ../../../../templates/cache/e2/e28d7ce7636f0a860707ec80707bf75f.php:70
 msgid "Show only active bans"
 msgstr "Показати тільки чинні блокування"
+
+#: ../../../../banned.php:8
+msgid "Not banned!"
+msgstr ""
+
+#: ../../../../inc/config.php:1148
+msgid "The reason was too long."
+msgstr "Причина була занадто довгою."
+
+#: ../../../../inc/config.php:1152
+msgid ""
+"Upload failure (file #%index%): Error code %code%. Refer to <a href=\"http://"
+"php.net/manual/en/features.file-upload.errors.php\">http://php.net/manual/en/"
+"features.file-upload.errors.php</a>; post discarded."
+msgstr ""
+
+#: ../../../../inc/config.php:1160
+#, php-format
+msgid "The uploaded webm is longer than %d seconds."
+msgstr "Тривалість завантаженого webm перевищує %d секунд."
+
+#: ../../../../inc/config.php:1167
+#, php-format
+msgid "The flag %s is undefined, your PHP version is too old!"
+msgstr ""
+
+#: ../../../../inc/config.php:1168
+#, php-format
+msgid "defined_flags_accumulate(): The flag %s is of the wrong type!"
+msgstr ""
+
+#: ../../../../inc/functions.php:1149
+msgid "That post has no files."
+msgstr ""
+
+#: ../../../../inc/image.php:370
+msgid "Details: "
+msgstr ""
+
+#: ../../../../inc/mod/pages.php:684
+msgid "Board log"
+msgstr ""
+
+#: ../../../../inc/mod/pages.php:952
+msgid "Edit ban"
+msgstr ""
+
+#: ../../../../inc/mod/pages.php:2779
+msgid "Could not find the page you are trying to edit."
+msgstr ""
+
+#: ../../../../inc/mod/pages.php:2796
+msgid "Unrecognized page markup method."
+msgstr ""
+
+#: ../../../../inc/mod/pages.php:2817
+msgid "Failed to mark up your input for some reason..."
+msgstr ""
+
+#: ../../../../inc/mod/pages.php:2838
+#, php-format
+msgid "Editing static page: %s"
+msgstr ""
+
+#: ../../../../inc/mod/pages.php:2867
+#, php-format
+msgid "Sorry, this site only allows %d pages per board."
+msgstr "На жаль, цей форум дозволяє лише %d сторінок на дошку."
+
+#: ../../../../inc/mod/pages.php:2870
+msgid ""
+"Page names must be < 255 chars and may only contain lowercase letters A-Z "
+"and digits 1-9."
+msgstr ""
+
+#: ../../../../inc/mod/pages.php:2874
+msgid "Refusing to create a new page with the same name as an existing one."
+msgstr ""
+
+#: ../../../../inc/mod/pages.php:2892
+msgid "Pages"
+msgstr "Сторінки"
+
+#: ../../../../index.php:11
+msgid "404 Not Found"
+msgstr "404 Сторінка не знайдена"
+
+#: ../../../../install.php:29
+msgid "Misconfigured system: OpenSSL returning weak salts. Cannot continue."
+msgstr ""
+
+#: ../../../../post.php:193
+msgid "Close window"
+msgstr "Закрити вікно"
+
+#: ../../../../post.php:193
+msgid "Report submitted!"
+msgstr "Репорт відправлено!"
+
+#: ../../../../post.php:1056
+msgid "Important message from Moderation"
+msgstr "Важливе повідомлення від Модератора"
+
+#: ../../../../report.php:9
+msgid "Bad request."
+msgstr "Поганий запит."
+
+#: ../../../../search.php:196
+msgid "Find your thread"
+msgstr "Знайди свій тред"
+
+#: ../../../../stats.php:5
+msgid "Stats is disabled"
+msgstr "Статистика ввімкнена"
+
+#: ../../../../stats.php:73
+msgid "Statistics"
+msgstr "Статистика"
+
+#: ../../../../stats.php:74
+msgid "Board Statistics"
+msgstr "Статистика дошок"
+
+#: ../../../../templates/themes/catalog/theme.php:50
+#, php-format
+msgid "Board %s doesn't exist"
+msgstr ""
+
+#: ../../../../templates/themes/index/theme.php:62
+msgid "Can't build the Index theme, because there are no boards to be fetched."
+msgstr ""
