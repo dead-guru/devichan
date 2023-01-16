@@ -3,6 +3,7 @@ declare(strict_types=1);
 function init_locale($locale, $error='error') {
     if (extension_loaded('gettext')) {
         echo 'ext' . PHP_EOL;
+        putenv("LANG=".$locale);
         if (setlocale(LC_ALL, $locale) === false) {
             echo('The specified locale (' . $locale . ') does not exist on your platform!');
         }

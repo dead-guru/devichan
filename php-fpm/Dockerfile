@@ -18,6 +18,7 @@ RUN apt-get update && apt-get install -y \
         libmagickwand-dev \
         gifsicle \
         graphicsmagick \
+        gettext \
         imagemagick \
         locales locales-all \
         libmagickwand-dev \
