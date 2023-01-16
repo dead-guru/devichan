@@ -1565,7 +1565,7 @@ msgstr "Файл:"
 #: ../../../../templates/cache/5f/5fdd89ab369529abff6de6e9bea75be1.php:274
 #: ../../../../templates/cache/b2/b2cfb747d8ce766e39dea332da8ee38c.php:102
 msgid "Spoiler Image"
-msgstr "Спойлерне зображення"
+msgstr "Спойлер"
 
 #. line 47
 #: ../../../../templates/cache/d8/f2/7780eb1adcdbda7e332659e3fb4f.php:530
@@ -3954,3 +3954,9 @@ msgstr "Додати Відповідь"
 
 msgid "Start a New Thread"
 msgstr "Створити Новий Тред"
+
+msgid "Options"
+msgstr "Опції"
+
+msgid "Catalog"
+msgstr "Каталог"

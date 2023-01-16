@@ -2,7 +2,7 @@
  * catalog-search.js
  *   - Search and filters threads when on catalog view
  *   - Optional shortcuts 's' and 'esc' to open and close the search.
- * 
+ *
  * Usage:
  *   $config['additional_javascript'][] = 'js/jquery.min.js';
  *   $config['additional_javascript'][] = 'js/comment-toolbar.js';
@@ -43,14 +43,14 @@ if (active_page == 'catalog') {
 				$('#search_field').focus();
 			} else {
 				button.removeData('expanded');
-				button.text('Search');
+				button.text(_('Search'));
 				$('.catalog_search').children().last().remove();
 				$('div[id="Grid"]>.mix').each(function () { $(this).css('display', 'inline-block'); });
 			}
 		}
 
 		$('.threads').before('<span class="catalog_search">[<a id="catalog_search_button" style="text-decoration:none; cursor:pointer;"></a>]</span>');
-		$('#catalog_search_button').text('Search');
+		$('#catalog_search_button').text(_('Search'));
 
 		$('#catalog_search_button').on('click', searchToggle);
 		$('.catalog_search').on('keyup', 'input#search_field', function (e) {
@@ -63,7 +63,7 @@ if (active_page == 'catalog') {
 			$('body').on('keydown', function (e) {
 				if (e.which === 83 && e.target.tagName === 'BODY' && !(e.ctrlKey || e.altKey || e.shiftKey)) {
 					e.preventDefault();
-					if ($('#search_field').length !== 0) { 
+					if ($('#search_field').length !== 0) {
 						$('#search_field').focus();
 					} else {
 						searchToggle();

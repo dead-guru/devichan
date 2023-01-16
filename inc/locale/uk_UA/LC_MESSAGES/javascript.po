@@ -1168,3 +1168,43 @@ msgstr "ОК"
 #: ../../../../templates/main.js:96
 msgid "Cancel"
 msgstr "Відміна"
+
+msgid "Wrap"
+msgstr "Огорнути"
+
+msgid "Just now"
+msgstr "Тільки що"
+
+msgid "Just now"
+msgstr "Тільки що"
+
+
+msgid " minute ago"
+msgstr " хвилину назад"
+
+msgid " minutes ago"
+msgstr " хвилин назад"
+
+msgid " hour ago"
+msgstr " годину назад"
+
+msgid " hours ago"
+msgstr " годин назад"
+
+msgid " day ago"
+msgstr " день назад"
+
+msgid " days ago"
+msgstr " днів назад"
+
+msgid " month ago"
+msgstr " місяць назад"
+
+msgid " months ago"
+msgstr " місяців назад"
+
+msgid " year ago"
+msgstr " рік назад"
+
+msgid " years ago"
+msgstr " років назад"

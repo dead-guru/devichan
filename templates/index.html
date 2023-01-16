@@ -69,7 +69,7 @@
 	<!-- Start Search Form -->
 	<form class="index-search" action="/search.php">
 		<p>
-			<input type="text" class="index-search-input" name="search" placeholder="{{ board.uri }} search [Enter]">
+			<input type="text" class="index-search-input" name="search" placeholder="{{ board.uri }} {% trans %}search{% endtrans %} [Enter]">
 			<input type="hidden" name="board" value="{{ board.uri }}">
 		</p>
 	</form>
