@@ -57,10 +57,11 @@ $(document).ready(function(){
 				thread_container.find(fields_to_hide).hide();
 
 				var hidden_div = thread_container.find('div.post.op > p.intro').clone();
+				thread_container.addClass('hidden_thread'); //TODO: use only one class for thread
 				hidden_div.addClass('thread-hidden');
-				hidden_div.find('a[href]:not([href$=".html"]),input').remove();
-				hidden_div.html(hidden_div.html().replace(' [] ', ' '));
-				hidden_div.html(hidden_div.html().replace(' [] ', ' '));
+				//hidden_div.find('a[href]:not([href$=".html"]),input').remove();
+				/*hidden_div.html(hidden_div.html().replace(' [] ', ' '));
+				hidden_div.html(hidden_div.html().replace(' [] ', ' '));*/
 
 				$('<a class="unhide-thread-link" style="float:left;margin-right:5px;margin-left:0px;" href="javascript:void(0)"><i class="fa-solid fa-square-plus"></i></a><span> </span>')
 					.insertBefore(hidden_div.find(':first'))
@@ -71,6 +72,7 @@ $(document).ready(function(){
 						thread_container.find(".hidden").hide();
 						$(this).remove();
 						hidden_div.remove();
+						thread_container.removeClass('hidden_thread');
 					});
 
 				hidden_div.insertAfter(thread_container.find(':not(h2,h2 *):first'));

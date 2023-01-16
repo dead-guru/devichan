@@ -576,7 +576,24 @@ div.post.reply a:hover {
     padding: 0;
     font-size: .7rem;
     border: none;
-    cursor: pointer
+    cursor: pointer;
+    border-radius: 0;
+    margin-left: 0;
+    height: auto;
+    font-weight: normal;
+}
+.dropbtn:hover {
+    background-color: transparent;
+    display: inline;
+    color: #acacac;
+    padding: 0;
+    font-size: .7rem;
+    border: none;
+    cursor: pointer;
+    border-radius: 0;
+    margin-left: 0;
+    height: auto;
+    font-weight: normal;
 }
 
 .dropdown {
@@ -981,4 +998,22 @@ div.subtitle {
 .paragraph {
     font-weight: bold;
     font-size: 1.1rem;
+}
+
+.intro.thread-hidden {
+    margin: 0;
+    background-color: #ddd;
+    padding: 10px;
+    color: #bbb;
+}
+
+.intro.thread-hidden .reply-thread {
+    display: none;
+}
+.intro.thread-hidden span.name, .intro.thread-hidden span.subject {
+    color: #bbb;
+}
+
+.hidden_thread .new-posts {
+    display: none;
 }
