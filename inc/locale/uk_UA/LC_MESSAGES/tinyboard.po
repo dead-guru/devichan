@@ -3960,3 +3960,6 @@ msgstr "Опції"
 
 msgid "Catalog"
 msgstr "Каталог"
+
+msgid "search"
+msgstr "пошук"
