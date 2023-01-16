@@ -20,7 +20,9 @@ function init_locale($locale, $error='error') {
         _textdomain('tinyboard');
     }
 }
+
 echo locale_get_default() . PHP_EOL;
 init_locale('uk_UA.utf8');
 echo locale_get_default() . PHP_EOL;
+var_dump($_ENV['HTTP_ACCEPT_LANGUAGE']);
 echo gettext("Start a New Thread");
