@@ -1135,3 +1135,8 @@ table.fileboard td, table.fileboard th {
 .dropdown:hover .dropbtn {
     color: #212121
 }
+
+#alert_close, #options_close {
+    margin-right: 13px;
+    margin-top: 5px;
+}

@@ -69,7 +69,7 @@
 			<td>
 				<div class="postarea">
 					<textarea name="body" placeholder="{% trans %}Comment{% endtrans %}" id="body" rows="5" class="text_body"></textarea>
-					<div class="postform__limits" title="Post/reply limits">{{ config.max_filesize | format_bytes(0) }} / {{ config.max_images }} files / <span class="postform__len">{{config.max_body}}</span></div>
+					<div class="postform__limits" title="Post/reply limits">{{ config.max_filesize | format_bytes(0) }} / {{ config.max_images }} {% trans %}files{% endtrans %} / <span class="postform__len">{{config.max_body}}</span></div>
 				</div>
 
 				{{ antibot.html() }}

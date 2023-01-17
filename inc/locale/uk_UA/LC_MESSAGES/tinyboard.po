@@ -3820,7 +3820,7 @@ msgstr "Показати тільки чинні блокування"
 
 #: ../../../../banned.php:8
 msgid "Not banned!"
-msgstr ""
+msgstr "Не заблоковано"
 
 #: ../../../../inc/config.php:1148
 msgid "The reason was too long."
@@ -3850,19 +3850,19 @@ msgstr ""
 
 #: ../../../../inc/functions.php:1149
 msgid "That post has no files."
-msgstr ""
+msgstr "Цей пост не має файлів."
 
 #: ../../../../inc/image.php:370
 msgid "Details: "
-msgstr ""
+msgstr "Деталі: "
 
 #: ../../../../inc/mod/pages.php:684
 msgid "Board log"
-msgstr ""
+msgstr "Лог дошки"
 
 #: ../../../../inc/mod/pages.php:952
 msgid "Edit ban"
-msgstr ""
+msgstr "Редагувати бан"
 
 #: ../../../../inc/mod/pages.php:2779
 msgid "Could not find the page you are trying to edit."
@@ -3943,7 +3943,7 @@ msgstr "Статистика дошок"
 #: ../../../../templates/themes/catalog/theme.php:50
 #, php-format
 msgid "Board %s doesn't exist"
-msgstr ""
+msgstr "Дошка %s не існує"
 
 #: ../../../../templates/themes/index/theme.php:62
 msgid "Can't build the Index theme, because there are no boards to be fetched."
@@ -3969,6 +3969,5 @@ msgstr "Каталог"
 msgid "search"
 msgstr "пошук"
 
-#: ../../../../templates/themes/index/theme.php:62
-msgid "search1"
-msgstr "пошук1"
+msgid "files"
+msgstr "файли"

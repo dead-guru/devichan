@@ -1025,3 +1025,11 @@ div.subtitle {
 .hidden_thread .new-posts {
     display: none;
 }
+#options_div {
+    border-radius: 7px;
+}
+
+#alert_div {
+    width: 500px;
+    border-radius: 7px;
+}
