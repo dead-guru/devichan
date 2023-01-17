@@ -9,7 +9,7 @@ if (active_page === "catalog" || active_page === "thread" || active_page === "in
     $(document).ready(function () {
         if (window.Options && Options.get_tab('general')) {
             Options.extend_tab("general",
-                "<fieldset><legend>Image hover</legend>"
+                "<fieldset><legend>" + _('Image hover') + "</legend>"
                 + ("<label class='image-hover' id='imageHover'><input type='checkbox' /> " + _('Image hover') + "</label>")
                 + ("<label class='image-hover' id='catalogImageHover'><input type='checkbox' /> " + _('Image hover on catalog') + "</label>")
                 + ("<label class='image-hover' id='imageHoverFollowCursor'><input type='checkbox' /> " + _('Image hover should follow cursor') + "</label>")
@@ -146,7 +146,8 @@ if (active_page === "catalog" || active_page === "thread" || active_page === "in
 
             if ($this.parent().attr("href")) { //.match("src")
                 fullUrl = $this.parent().attr("href");
-            } else if (isOnCatalog()) {
+            }
+            if (isOnCatalog()) {
                 fullUrl = $this.attr("data-fullimage");
                 if (!isImage(getFileExtension(fullUrl))) {
                     fullUrl = $this.attr("src");

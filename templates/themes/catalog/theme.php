@@ -90,11 +90,12 @@
 								$post['file'] = $config['image_deleted'];
 							}
 						}
-						else if($files[0]->thumb == 'spoiler') {
+						else if($files[0]->thumb === 'spoiler') {
 							$post['file'] = $config['root'] . $config['spoiler_image'];
 						}
 						else {
-							$post['file'] = $config['uri_thumb'] . $files[0]->thumb;
+                            $post['orig_file'] = $config['uri_img'] . $files[0]->file;
+                            $post['file'] = $config['uri_thumb'] . $files[0]->thumb;
 						}
 					}
 				} else {

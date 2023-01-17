@@ -782,6 +782,11 @@ div.post.reply.highlighted {
     background: #eedacb;
 }
 
+.theme-catalog div.thread:hover {
+    background: #eedacb;
+    border-color: #ecd2bf;
+}
+
 .mentioned {
     font-size: 80%;
     white-space: pre-wrap;

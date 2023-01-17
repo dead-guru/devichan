@@ -49,14 +49,14 @@
                                 <div class="thread grid-li grid-size-small">
                                         <a href="{{post.link}}">
 						{% if post.youtube %}
-							<img src="//img.youtube.com/vi/{{ post.youtube }}/0.jpg"
+							<img src="//img.youtube.com/vi/{{ post.youtube }}/0.jpg" data-fullimage="//img.youtube.com/vi/{{ post.youtube }}/0.jpg"
 						{% else %}
-							<img src="{{post.file}}"
+							<img src="{{post.file}}" data-fullimage="{{post.orig_file}}"
 						{% endif %}
                                                  id="img-{{ post.id }}" data-subject="{% if post.subject %}{{ post.subject|e }}{% endif %}" data-name="{{ post.name|e }}" data-muhdifference="{{ post.muhdifference }}" class="{{post.board}} thread-image" title="{{post.bump|date('%b %d %H:%M')}}">
                                         </a>
                                                 <div class="replies">
-                                                        <strong>R: {{ post.reply_count }} / I: {{ post.image_count }}{% if post.sticky %} (sticky){% endif %}</strong>
+                                                        <strong>{% trans %}R{% endtrans %}: {{ post.reply_count }} / {% trans %}I{% endtrans %}: {{ post.image_count }}{% if post.sticky %} (sticky){% endif %}</strong>
                                                         {% if post.subject %}
 								<p class="intro">
 									<span class="subject">
