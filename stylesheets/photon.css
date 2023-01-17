@@ -629,7 +629,8 @@ div.post.reply a:hover {
     color: #212121
 }
 div.post p.fileinfo {
-    padding-left: 5px;
+    width: fit-content;
+    padding-left: 0;
     margin: 0;
 }
 

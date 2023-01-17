@@ -179,7 +179,7 @@ p.fileinfo {
 }
 
 div.post p.fileinfo {
-    padding-left: 5px
+    padding-left: 0
 }
 
 div.banner {
@@ -803,7 +803,7 @@ pre {
 #options_tablist {
     padding: 0 5px;
     left: 0;
-    width: 90px;
+    width: 100px;
     top: 0;
     bottom: 0;
     height: 100%;
