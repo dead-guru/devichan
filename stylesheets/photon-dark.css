@@ -792,6 +792,7 @@ span.public_ban, span.toolong {
     }
 
     div.post.op > div.body {
+        word-break: break-word;
         padding: 30px 16px 16px 0
     }
 
