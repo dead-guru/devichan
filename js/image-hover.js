@@ -7,6 +7,10 @@
 
 if (active_page === "catalog" || active_page === "thread" || active_page === "index") {
     $(document).ready(function () {
+        if(!localStorage.imageHover) localStorage.imageHover = "true";
+        if(!localStorage.catalogImageHover) localStorage.catalogImageHover = "true";
+        if(!localStorage.imageHoverFollowCursor) localStorage.imageHoverFollowCursor = "true";
+
         if (window.Options && Options.get_tab('general')) {
             Options.extend_tab("general",
                 "<fieldset><legend>" + _('Image hover') + "</legend>"

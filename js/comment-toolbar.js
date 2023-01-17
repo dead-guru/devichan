@@ -7,61 +7,69 @@
  *   $config['additional_javascript'][] = 'js/jquery.min.js';
  *   $config['additional_javascript'][] = 'js/comment-toolbar.js';
  */
-if (active_page == 'thread' || active_page == 'index') {
+if (active_page === 'thread' || active_page === 'index') {
+	if(!localStorage.formatText_toolbar_1) localStorage.formatText_toolbar_1 = "true";
 	var formatText = (function($){
 		"use strict";
 		var self = {};
 		self.rules = {
-			spoiler: {
-				text: _('Spoiler'),
-				key: 's',
-				multiline: false,
-				exclusiveline: false,
-				prefix:'**',
-				suffix:'**'
-			},
-			italics: {
-				text: _('Italics'),
-				key: 'i',
-				multiline: false,
-				exclusiveline: false,
-				prefix: "''",
-				suffix: "''"
-			},
 			bold: {
 				text: _('Bold'),
+				short: _('B'),
 				key: 'b',
 				multiline: false,
 				exclusiveline: false,
-				prefix: "'''",
-				suffix: "'''"
+				prefix: "[b]",
+				suffix: "[/b]"
+			},
+			italics: {
+				text: _('Italics'),
+				short: _('I'),
+				key: 'i',
+				multiline: false,
+				exclusiveline: false,
+				prefix: "[i]",
+				suffix: "[/i]"
 			},
 			underline: {
 				text: _('Underline'),
+				short: _('U'),
 				key: 'u',
 				multiline: false,
 				exclusiveline: false,
 				prefix:'__',
 				suffix:'__'
 			},
-			code: {
-				text: _('Code'),
-				key: 'f',
-				multiline: true,
-				exclusiveline: false,
-				prefix: '[code]',
-				suffix: '[/code]'
-			},
 			strike: {
 				text: _('Strike'),
+				short: _('Str'),
 				key: 'd',
 				multiline:false,
 				exclusiveline:false,
 				prefix:'~~',
 				suffix:'~~'
 			},
+			spoiler: {
+				text: _('Spoiler'),
+				short: _('S'),
+				key: 's',
+				multiline: false,
+				exclusiveline: false,
+				prefix:'**',
+				suffix:'**'
+			},
+			code: {
+				text: _('Code'),
+				short: _('C'),
+				key: 'f',
+				multiline: true,
+				exclusiveline: false,
+				prefix: '```',
+				suffix: '```'
+			},
 			heading: {
 				text: _('Heading'),
+				short: _('H'),
 				key: 'r',
 				multiline:false,
 				exclusiveline:true,
@@ -72,14 +80,18 @@ if (active_page == 'thread' || active_page == 'index') {
 
 		self.toolbar_wrap = function(node) {
 			var parent = $(node).parents('form[name="post"]');
-			self.wrap(parent.find('#body')[0],'textarea[name="body"]', parent.find('.format-text > select')[0].value, false);
+			var ty = $(node).data('action');
+			if(typeof ty === 'undefined') {
+				ty = parent.find('.format-text > select')[0].value
+			}
+			self.wrap(parent.find('#body')[0],'textarea[name="body"]', ty, false);
 		};
 
 		self.wrap = function(ref, target, option, expandedwrap) {
 			// clean and validate arguments
 			if (ref == null) return;
 			var settings = {multiline: false, exclusiveline: false, prefix:'', suffix: null};
-			$.extend(settings,JSON.parse(localStorage.formatText_rules)[option]);
+			$.extend(settings,JSON.parse(localStorage.formatText_rules_1)[option]);
 
 			// resolve targets into array of proper node elements
 			// yea, this is overly verbose, oh well.
@@ -160,23 +172,29 @@ if (active_page == 'thread' || active_page == 'index') {
 		};
 
 		self.build_toolbars = function(){
-			if (localStorage.formatText_toolbar == 'true'){
+			if (localStorage.formatText_toolbar_1 == 'true'){
 				// remove existing toolbars
 				if ($('.format-text').length > 0) $('.format-text').remove();
 
 				// Place toolbar above each textarea input
-				var name, options = '', rules = JSON.parse(localStorage.formatText_rules);
+				var name, options = '', rules = JSON.parse(localStorage.formatText_rules_1);
+				var buttons = '';
 				for (var index in rules) {
 					if (!rules.hasOwnProperty(index)) continue;
 					name = rules[index].text;
 
+					var hotkey = '';
 					//add hint if key exists
 					if (rules[index].key) {
-						name += ' (CTRL + '+ rules[index].key.toUpperCase() +')';
+						hotkey = ' (CTRL + '+ rules[index].key.toUpperCase() +')'
+						name += hotkey;
 					}
 					options += '<option value="'+ index +'">'+ name +'</option>';
+					buttons += '<button type="button" title="'+ name +'" onclick="formatText.toolbar_wrap(this);" data-action="'+ index +'">'+ rules[index].short +'</button>'
+
 				}
-				$('[name="body"]').before('<div class="format-text"><a href="javascript:;" onclick="formatText.toolbar_wrap(this);">Wrap</a><select>'+ options +'</select></div>');
+				$('[name="body"]').before('<div class="format-text">'+buttons+'</div>');
+
 				$('body').append('<style>#quick-reply .format-text>a{width:15%;display:inline-block;text-align:center;}#quick-reply .format-text>select{width:85%;};</style>');
 			}
 		};
@@ -184,6 +202,7 @@ if (active_page == 'thread' || active_page == 'index') {
 		self.add_rule = function(rule, index){
 			if (rule === undefined) rule = {
 				text: 'New Rule',
+				short: '',
 				key: '',
 				multiline:false,
 				exclusiveline:false,
@@ -193,7 +212,7 @@ if (active_page == 'thread' || active_page == 'index') {
 
 			// generate an id for the rule
 			if (index === undefined) {
-				var rules = JSON.parse(localStorage.formatText_rules);
+				var rules = JSON.parse(localStorage.formatText_rules_1);
 				while (rules[index] || index === undefined) {
 					index = ''
 					index +='abcdefghijklmnopqrstuvwxyz'.substr(Math.floor(Math.random()*26),1);
@@ -204,6 +223,7 @@ if (active_page == 'thread' || active_page == 'index') {
 			if (window.Options && Options.get_tab('formatting')){
 				var html = $('<div class="format_rule" name="'+ index +'"></div>').html('\
 				<input type="text" name="text" class="format_option" size="10" value=\"'+ rule.text.replace(/"/g, '&quot;') +'\">\
+				<input type="text" name="short" class="format_option" size="10" value=\"'+ rule.short.replace(/"/g, '&quot;') +'\">\
 				<input type="checkbox" name="multiline" class="format_option" '+ (rule.multiline ? 'checked' : '') +'>\
 				<input type="checkbox" name="exclusiveline" class="format_option" '+ (rule.exclusiveline ? 'checked' : '') +'>\
 				<input type="text" name="prefix" class="format_option" size="8" value=\"'+ (rule.prefix ? rule.prefix.replace(/"/g, '&quot;') : '') +'\">\
@@ -226,6 +246,7 @@ if (active_page == 'thread' || active_page == 'index') {
 				rule = $(rules[index]);
 				newrules[rule.attr('name')] = {
 					text: rule.find('[name="text"]').val(),
+					short: rule.find('[name="short"]').val(),
 					key: rule.find('[name="key"]').val(),
 					prefix: rule.find('[name="prefix"]').val(),
 					suffix: rule.find('[name="suffix"]').val(),
@@ -233,7 +254,7 @@ if (active_page == 'thread' || active_page == 'index') {
 					exclusiveline: rule.find('[name="exclusiveline"]').is(':checked')
 				};
 			}
-			localStorage.formatText_rules = JSON.stringify(newrules);
+			localStorage.formatText_rules_1 = JSON.stringify(newrules);
 			self.build_toolbars();
 		};
 
@@ -241,7 +262,7 @@ if (active_page == 'thread' || active_page == 'index') {
 			$('.format_rule').remove();
 			var rules;
 			if (to_default) rules = self.rules;
-			else rules = JSON.parse(localStorage.formatText_rules);
+			else rules = JSON.parse(localStorage.formatText_rules_1);
 			for (var index in rules){
 				if (!rules.hasOwnProperty(index)) continue;
 				self.add_rule(rules[index], index);
@@ -249,7 +270,7 @@ if (active_page == 'thread' || active_page == 'index') {
 		};
 
 		// setup default rules for customizing
-		if (!localStorage.formatText_rules) localStorage.formatText_rules = JSON.stringify(self.rules);
+		if (!localStorage.formatText_rules_1) localStorage.formatText_rules_1 = JSON.stringify(self.rules);
 
 		// setup code to be ran when page is ready (work around for main.js compilation).
 		$(document).ready(function(){
@@ -303,16 +324,17 @@ if (active_page == 'thread' || active_page == 'index') {
 
 				// Descriptor row
 				Options.extend_tab('formatting', '\
-					<span class="format_option" style="margin-left:25px;">Name</span>\
-					<span class="format_option" style="margin-left:45px;" title="Multi-line: Allow formatted area to contain linebreaks.">ML</span>\
-					<span class="format_option" style="margin-left:0px;" title="Exclusive-line: Require formatted area to start after and end before a linebreak.">EL</span>\
-					<span class="format_option" style="margin-left:25px;" title="Text injected at the start of a format area.">Prefix</span>\
-					<span class="format_option" style="margin-left:60px;" title="Text injected at the end of a format area.">Suffix</span>\
-					<span class="format_option" style="margin-left:40px;" title="Optional keybind value to allow keyboard shortcut access.">Key</span>\
+					<span class="format_option" style="margin-left:25px; font-weight: bold">Name</span>\
+					<span class="format_option" style="margin-left:45px; font-weight: bold">Short</span>\
+					<span class="format_option" style="margin-left:25px; font-weight: bold" title="Multi-line: Allow formatted area to contain linebreaks.">ML</span>\
+					<span class="format_option" style="margin-left:0px; font-weight: bold" title="Exclusive-line: Require formatted area to start after and end before a linebreak.">EL</span>\
+					<span class="format_option" style="margin-left:15px; font-weight: bold" title="Text injected at the start of a format area.">Prefix</span>\
+					<span class="format_option" style="margin-left:25px; font-weight: bold" title="Text injected at the end of a format area.">Suffix</span>\
+					<span class="format_option" style="margin-left:15px; font-weight: bold" title="Optional keybind value to allow keyboard shortcut access.">Key</span>\
 				');
 
 				// Rule rows
-				var rules = JSON.parse(localStorage.formatText_rules);
+				var rules = JSON.parse(localStorage.formatText_rules_1);
 				for (var index in rules){
 					if (!rules.hasOwnProperty(index)) continue;
 					self.add_rule(rules[index], index);
@@ -322,11 +344,11 @@ if (active_page == 'thread' || active_page == 'index') {
 			// setting for enabling formatting keybinds
 			$(s1).on(e, function(e) {
 				console.log('Keybind');
-				if (!localStorage.formatText_keybinds || localStorage.formatText_keybinds == 'false') {
-					localStorage.formatText_keybinds = 'true';
+				if (!localStorage.formatText_keybinds_1 || localStorage.formatText_keybinds_1 == 'false') {
+					localStorage.formatText_keybinds_1 = 'true';
 					if (window.Options && Options.get_tab('general')) e.target.checked = true;
 				} else {
-					localStorage.formatText_keybinds = 'false';
+					localStorage.formatText_keybinds_1 = 'false';
 					if (window.Options && Options.get_tab('general')) e.target.checked = false;
 				}
 			});
@@ -334,12 +356,12 @@ if (active_page == 'thread' || active_page == 'index') {
 			// setting for toolbar injection
 			$(s2).on(e, function(e) {
 				console.log('Toolbar');
-				if (!localStorage.formatText_toolbar || localStorage.formatText_toolbar == 'false') {
-					localStorage.formatText_toolbar = 'true';
+				if (!localStorage.formatText_toolbar_1 || localStorage.formatText_toolbar_1 == 'false') {
+					localStorage.formatText_toolbar_1 = 'true';
 					if (window.Options && Options.get_tab('general')) e.target.checked = true;
 					formatText.build_toolbars();
 				} else {
-					localStorage.formatText_toolbar = 'false';
+					localStorage.formatText_toolbar_1 = 'false';
 					if (window.Options && Options.get_tab('general')) e.target.checked = false;
 					$('.format-text').remove();
 				}
@@ -347,9 +369,9 @@ if (active_page == 'thread' || active_page == 'index') {
 
 			// make sure the tab settings are switch properly at loadup
 			if (window.Options && Options.get_tab('general')) {
-				if (localStorage.formatText_keybinds == 'true') $(s1)[0].checked = true;
+				if (localStorage.formatText_keybinds_1 == 'true') $(s1)[0].checked = true;
 				else $(s1)[0].checked = false;
-				if (localStorage.formatText_toolbar == 'true') $(s2)[0].checked = true;
+				if (localStorage.formatText_toolbar_1 == 'true') $(s2)[0].checked = true;
 				else $(s2)[0].checked = false;
 			}
 
@@ -358,9 +380,9 @@ if (active_page == 'thread' || active_page == 'index') {
 
 			//attach listener to <body> so it also works on quick-reply box
 			$('body').on('keydown', '[name="body"]', function(e) {
-				if (!localStorage.formatText_keybinds || localStorage.formatText_keybinds == 'false') return;
+				if (!localStorage.formatText_keybinds_1 || localStorage.formatText_keybinds_1 == 'false') return;
 				var key = String.fromCharCode(e.which).toLowerCase();
-				var rules = JSON.parse(localStorage.formatText_rules);
+				var rules = JSON.parse(localStorage.formatText_rules_1);
 				for (var index in rules) {
 					if (!rules.hasOwnProperty(index)) continue;
 					if (key === rules[index].key && e.ctrlKey) {

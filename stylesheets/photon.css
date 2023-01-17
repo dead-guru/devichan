@@ -1033,3 +1033,21 @@ div.subtitle {
     width: 500px;
     border-radius: 7px;
 }
+
+.postarea .format-text button {
+    margin-left: 0;
+    margin-right: 5px;
+    border: 1px dotted #fff;
+    font-weight: normal;
+    padding: 0 15px;
+    height: 20px;
+    color: #fff;
+    background-color: #a7a7a7;
+    cursor: pointer;
+    border-radius: 3px;
+}
+
+.hljs {
+    background: transparent;
+    color: #444;
+}

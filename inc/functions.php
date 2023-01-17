@@ -2307,9 +2307,9 @@ function markup(&$body, $track_cites = false, $op = false) {
 	if ($config['markup_code']) {
 		foreach ($code_markup as $id => $val) {
 			$code = isset($val[2]) ? $val[2] : $val[1];
-			$code_lang = isset($val[2]) ? $val[1] : "";
+			$code_lang = isset($val[2]) ? $val[1] : "cpp";
 
-			$code = "<pre class='code lang-$code_lang'>".str_replace(array("\n","\t"), array("&#10;","&#9;"), htmlspecialchars($code))."</pre>";
+			$code = "<pre class='code'><code class='language-$code_lang'>".str_replace(array("\n","\t"), array("&#10;","&#9;"), $code)."</code></pre>";
 
 			$body = str_replace("<code $id>", $code, $body);
 		}

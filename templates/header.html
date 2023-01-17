@@ -1,3 +1,9 @@
+		{% if config.code_highlight %}
+		<link rel="stylesheet"
+			  href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/default.min.css">
+		<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+		<script>hljs.highlightAll();</script>
+		{% endif %}
 		<link rel="stylesheet" media="screen" href="{{ config.url_stylesheet|ccss }}">
 		{% if config.url_favicon %}<link rel="shortcut icon" href="{{ config.url_favicon }}">{% endif %}
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
