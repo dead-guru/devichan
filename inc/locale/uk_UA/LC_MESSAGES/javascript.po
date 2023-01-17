@@ -1208,3 +1208,6 @@ msgstr " рік назад"
 
 msgid " years ago"
 msgstr " років назад"
+
+msgid "Search"
+msgstr "Пошук"

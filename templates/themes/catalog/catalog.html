@@ -78,11 +78,7 @@
 	<hr/>
 	{% include 'footer.html' %}
 	<script type="text/javascript">{% verbatim %}
-		var styles = {
-			{% endverbatim %}
-			{% for name, uri in config.stylesheets %}{% verbatim %}'{% endverbatim %}{{ name|addslashes }}{% verbatim %}' : '{% endverbatim %}/stylesheets/{{ uri|addslashes }}{% verbatim %}',
-			{% endverbatim %}{% endfor %}{% verbatim %}
-		}; onready(init);
+	   onready(init);
 	{% endverbatim %}</script>
 
 	<script type="text/javascript">{% verbatim %}
