@@ -44,7 +44,8 @@
 
         tab.id = id;
         tab.name = name;
-        tab.icon = $("<div class='options_tab_icon'><i class='fa fa-" + icon + "'></i><div>" + name + "</div></div>");
+        //<i class=""></i>
+        tab.icon = $("<div class='options_tab_icon'><i class='" + icon + "'></i><div>" + name + "</div></div>");
         tab.content = $("<div class='options_tab'></div>").css("display", "none");
 
         tab.content.appendTo(options_div);

@@ -11,7 +11,7 @@
 
 +function(){
 
-var tab = Options.add_tab("user-js", "code", _("User JS"));
+var tab = Options.add_tab("user-js", "fa fa-code", _("User JS"));
 
 var textarea = $("<textarea></textarea>").css({
   "font-size": 12,

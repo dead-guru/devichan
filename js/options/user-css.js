@@ -11,7 +11,7 @@
 
 +function(){
 
-var tab = Options.add_tab("user-css", "css3", _("User CSS"));
+var tab = Options.add_tab("user-css", "fa-brands fa-css3", _("User CSS"));
 
 var textarea = $("<textarea></textarea>").css({
   "font-size": 12,

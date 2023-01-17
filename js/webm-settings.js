@@ -38,7 +38,7 @@ function changeSetting(name, value) {
 var settingsMenu = document.createElement("div");
 var prefix = "", suffix = "", style = "";
 if (window.Options) {
-  var tab = Options.add_tab("webm", "video-camera", _("WebM"));
+  var tab = Options.add_tab("webm", "fa fa-video-camera", _("WebM"));
   $(settingsMenu).appendTo(tab.content);
 }
 else {

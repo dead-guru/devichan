@@ -469,7 +469,7 @@ msgstr "Поле %s занадто довге."
 #: ../../../../inc/config.php:1023 ../../../../inc/config.php:1026
 #: ../../../../inc/config.php:1125
 msgid "The body was too long."
-msgstr "Вміст допису занадто довге."
+msgstr "Вміст допису занадто довгий."
 
 #: ../../../../inc/config.php:871 ../../../../inc/config.php:976
 #: ../../../../inc/config.php:967 ../../../../inc/config.php:969

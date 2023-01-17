@@ -12,7 +12,7 @@
 
 +function(){
 
-var tab = Options.add_tab("general", "home", _("General"));
+var tab = Options.add_tab("general", "fa fa-home", _("General"));
 
 $(function(){
   var stor = $("<div>"+_("Storage: ")+"</div>");

@@ -24,19 +24,19 @@ function addBoard(){
 } //This adds the text inside the textbox to favorites, localStorage.favorites and the page
 
 var favorites = JSON.parse(localStorage.favorites);
-Options.add_tab('fav-tab','star',_("Favorites"));
+Options.add_tab('fav-tab','fa fa-star',_("Favorites"));
 
-//Pregenerating list of boards 
+//Pregenerating list of boards
 var favList = $('<div id="sortable" style="cursor: pointer; display: inline-block">');
 for(var i=0; i<favorites.length; i++){
     favList.append( $('<div>'+favorites[i]+'</div>') );
-} 
+}
 
 //Creating list of minus symbols to remove unwanted boards
 var minusList = $('<div id="minusList" style="color: #0000FF; display: inline-block">');
 for(var i=0; i<favorites.length; i++){
     minusList.append( $('<div data-board="'+i+'" style="cursor: pointer; margin-right: 5px">-</div>').on('click', function(e){removeBoard($(this).data('board'));}) );
-} 
+}
 
 //Help message so people understand how sorting boards works
 $("<span>"+_("Drag the boards to sort them.")+"</span><br><br>").appendTo(Options.get_tab('fav-tab').content);
@@ -65,7 +65,7 @@ addDiv.appendTo(Options.get_tab('fav-tab').content); //Adding the plus button
 
 favList.sortable(); //Making boards with sortable id use the sortable jquery function
 favList.on('sortstop', function() {
-	favorites = generateList();	
+	favorites = generateList();
 	localStorage.favorites = JSON.stringify(favorites);
 	add_favorites();
 });
