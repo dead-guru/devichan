@@ -15,7 +15,7 @@ if (active_page === 'thread' || active_page === 'index') {
 		self.rules = {
 			bold: {
 				text: _('Bold'),
-				short: _('B'),
+				short: '<b>'+ _('B') + '</b>',
 				key: 'b',
 				multiline: false,
 				exclusiveline: false,
@@ -24,7 +24,7 @@ if (active_page === 'thread' || active_page === 'index') {
 			},
 			italics: {
 				text: _('Italics'),
-				short: _('I'),
+				short: '<i>'+ _('I') + '</i>',
 				key: 'i',
 				multiline: false,
 				exclusiveline: false,
@@ -33,7 +33,7 @@ if (active_page === 'thread' || active_page === 'index') {
 			},
 			underline: {
 				text: _('Underline'),
-				short: _('U'),
+				short: '<u>'+ _('U') + '</u>',
 				key: 'u',
 				multiline: false,
 				exclusiveline: false,
@@ -42,7 +42,7 @@ if (active_page === 'thread' || active_page === 'index') {
 			},
 			strike: {
 				text: _('Strike'),
-				short: _('Str'),
+				short: '<s>'+ _('St') + '</s>',
 				key: 'd',
 				multiline:false,
 				exclusiveline:false,
