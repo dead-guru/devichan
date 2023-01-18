@@ -748,7 +748,9 @@ form table tr th {
 
 
 @media only screen and (max-device-width: 960px) {
-
+    form table {
+        width: 100%;
+    }
     .intro {
         font-size: 0.8em;
         display: flex;
@@ -959,4 +961,8 @@ textarea, input, button, select { font-family: inherit; }
 
 form[name="post"] {
     margin-bottom: 20px;
+}
+
+.postarea {
+    width: fit-content;
 }
