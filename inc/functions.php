@@ -687,7 +687,7 @@ function file_write($path, $data, $simple = false, $skip_purge = false) {
 	 *
 	 * This is useful with nginx with gzip_static on.
 	 */
-	if ($config['gzip_static']) {
+	if ($config['gzip_static'] && !str_contains($path, 'package.json')) {
 		$gzpath = "$path.gz";
 
 		if ($bytes & ~0x3ff) {  // if ($bytes >= 1024)
