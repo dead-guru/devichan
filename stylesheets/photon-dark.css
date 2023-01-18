@@ -101,11 +101,6 @@ form {
     margin-bottom: 0px;
 }
 
-
-form {
-    margin-bottom: 0px;
-}
-
 span.heading {
     color: #FFAB3F;
     display: block;
@@ -960,3 +955,8 @@ div.subtitle {
     color: #444;
 }
 textarea, input, button, select { font-family: inherit; }
+
+
+form[name="post"] {
+    margin-bottom: 20px;
+}

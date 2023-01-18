@@ -1056,3 +1056,7 @@ div.subtitle {
     background: transparent;
     color: #444;
 }
+
+form[name="post"] {
+    margin-bottom: 20px;
+}
