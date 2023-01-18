@@ -1055,3 +1055,4 @@ div.subtitle {
     background: transparent;
     color: #444;
 }
+textarea, input, button, select { font-family: inherit; font-size: inherit; }
