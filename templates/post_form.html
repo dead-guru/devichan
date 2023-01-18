@@ -100,7 +100,7 @@
 			<td>
 				<script>load_captcha("{{ config.captcha.provider_get }}", "{{ config.captcha.extra }}");</script>
 				<noscript>
-					<input class='captcha_text' type='text' name='captcha_text' style="width: 50%; height: 20px" maxlength='6' autocomplete='off'>
+					<input class='captcha_text' placeholder="{% trans %}Verification{% endtrans %}" type='text' name='captcha_text' style="width: 50%; height: 20px" maxlength='6' autocomplete='off'>
 					<div class="captcha_html">
 						<img src="/{{ config.captcha.provider_get }}?mode=get&raw=1">
 					</div>
