@@ -551,6 +551,32 @@ function setupBoard($array) {
 	if (!file_exists($board['dir'] . $config['dir']['res']))
 		@mkdir($board['dir'] . $config['dir']['res'], 0777)
 			or error("Couldn't create " . $board['dir'] . $config['dir']['img'] . ". Check permissions.", true);
+    // Create Archive Folders
+    if (!file_exists($board['dir'] . $config['dir']['archive']))
+        @mkdir($board['dir'] . $config['dir']['archive'], 0777)
+        or error("Couldn't create " . $board['dir'] . $config['dir']['archive'] . ". Check permissions.", true);
+    if (!file_exists($board['dir'] . $config['dir']['archive'] . $config['dir']['img']))
+        @mkdir($board['dir'] . $config['dir']['archive'] . $config['dir']['img'], 0777)
+        or error("Couldn't create " . $board['dir'] . $config['dir']['archive'] . $config['dir']['img'] . ". Check permissions.", true);
+    if (!file_exists($board['dir'] . $config['dir']['archive'] . $config['dir']['thumb']))
+        @mkdir($board['dir'] . $config['dir']['archive'] . $config['dir']['thumb'], 0777)
+        or error("Couldn't create " . $board['dir'] . $config['dir']['archive'] . $config['dir']['img'] . ". Check permissions.", true);
+    if (!file_exists($board['dir'] . $config['dir']['archive'] . $config['dir']['res']))
+        @mkdir($board['dir'] . $config['dir']['archive'] . $config['dir']['res'], 0777)
+        or error("Couldn't create " . $board['dir'] . $config['dir']['archive'] . $config['dir']['img'] . ". Check permissions.", true);
+    // Create Featured threads Folders
+    if (!file_exists($board['dir'] . $config['dir']['featured']))
+        @mkdir($board['dir'] . $config['dir']['featured'], 0777)
+        or error("Couldn't create " . $board['dir'] . $config['dir']['featured'] . ". Check permissions.", true);
+    if (!file_exists($board['dir'] . $config['dir']['featured'] . $config['dir']['img']))
+        @mkdir($board['dir'] . $config['dir']['featured'] . $config['dir']['img'], 0777)
+        or error("Couldn't create " . $board['dir'] . $config['dir']['featured'] . $config['dir']['img'] . ". Check permissions.", true);
+    if (!file_exists($board['dir'] . $config['dir']['featured'] . $config['dir']['thumb']))
+        @mkdir($board['dir'] . $config['dir']['featured'] . $config['dir']['thumb'], 0777)
+        or error("Couldn't create " . $board['dir'] . $config['dir']['featured'] . $config['dir']['img'] . ". Check permissions.", true);
+    if (!file_exists($board['dir'] . $config['dir']['featured'] . $config['dir']['res']))
+        @mkdir($board['dir'] . $config['dir']['featured'] . $config['dir']['res'], 0777)
+        or error("Couldn't create " . $board['dir'] . $config['dir']['featured'] . $config['dir']['img'] . ". Check permissions.", true);
 }
 
 function openBoard($uri) {
@@ -1311,6 +1337,11 @@ function deletePost($id, $error_if_doesnt_exist=true, $rebuild_after=true) {
 
 function clean($pid = false) {
 	global $board, $config;
+    
+    // If we are doing the archiving in cron leave cleaning of overflow for now
+    if($config['archive']['cron_job']['archiving'])
+        return;
+    
 	$offset = round($config['max_pages']*$config['threads_per_page']);
 
 	// I too wish there was an easier way of doing this...
@@ -1319,8 +1350,14 @@ function clean($pid = false) {
 
 	$query->execute() or error(db_error($query));
 	while ($post = $query->fetch(PDO::FETCH_ASSOC)) {
-		deletePost($post['id'], false, false);
-		if ($pid) modLog("Automatically deleting thread #{$post['id']} due to new thread #{$pid}");
+        if($config['archive']['threads']) {
+            Archive::archiveThread($post['id']);
+            deletePost($post['id'], false, false);
+            if ($pid) modLog("Automatically archived thread #{$post['id']} due to new thread #{$pid}");
+        } else {
+            deletePost($post['id'], false, false);
+            if ($pid) modLog("Automatically deleting thread #{$post['id']} due to new thread #{$pid}");
+        }
 	}
 
 	// Bump off threads with X replies earlier, spam prevention method
@@ -1340,6 +1377,10 @@ function clean($pid = false) {
 
 		while ($post = $query->fetch(PDO::FETCH_ASSOC)) {
 			if ($post['reply_count'] < $page*$config['early_404_replies']) {
+                if($config['archive']['threads']) {
+                    Archive::archiveThread($post['thread_id']);
+                    if ($pid) modLog("Automatically archived thread #{$post['thread_id']} due to new thread #{$pid} (early 404 is set, #{$post['thread_id']} had {$post['reply_count']} replies)");
+                }
 				deletePost($post['thread_id'], false, false);
 				if ($pid) modLog("Automatically deleting thread #{$post['thread_id']} due to new thread #{$pid} (early 404 is set, #{$post['thread_id']} had {$post['reply_count']} replies)");
 			}
@@ -1844,6 +1885,8 @@ function buildIndex($global_api = "yes") {
 			file_write($jsonFilename, $json);
 		}
 	}
+    
+    Archive::RebuildArchiveIndexes();
 
 	if ($config['try_smarter'])
 		$build_pages = array();
@@ -2337,6 +2380,16 @@ function markup(&$body, $track_cites = false, $op = false) {
 	$body = str_replace("\t", '		', $body);
 
 	return $tracked_cites;
+}
+
+function archive_list_markup(&$body) {
+    
+    $body = str_replace("\r", '', $body);
+    $body = utf8tohtml($body);
+    
+    $body = preg_replace("/^\s*&gt;.*$/m", '<span class="quote">$0</span>', $body);
+    // replace tabs with 8 spaces
+    $body = str_replace("\t", '		', $body);
 }
 
 function escape_markup_modifiers($string) {
@@ -3129,4 +3182,21 @@ function uncloak_mask($mask) {
 	}
 
 	return $mask;
+}
+
+// Scramble the Json name for files
+function json_scrambler($id_name, $append_extention = false)
+{
+    global $board, $config;
+    
+    if(!$config['json_scrambler']['scramble']){
+        if($append_extention)
+            return sprintf('%d.json', $id_name);
+        return $id_name;
+    }
+    
+    $hash = crypt($board['uri'] . $id_name, "$2y$05$" . $config['json_scrambler']['salt'] . "$");
+    if($append_extention)
+        return str_replace(array("/", "."), "_", substr($hash, 29)) . ".json";
+    return str_replace(array("/", "."), "_", substr($hash, 29));
 }

@@ -64,6 +64,8 @@
 	<form name="postcontrols" action="{{ config.post_url }}" method="post">
 		<input type="hidden" name="board" value="{{ board.uri }}" />
 		{% if mod %}<input type="hidden" name="mod" value="1" />{% endif %}
+		{% if config.archive.threads %} &nbsp; <a id="unimportant" href="{{ config.root }}{{ board.dir }}{{ config.dir.archive }}">[{% trans %}Archive{% endtrans %}]</a>{% endif %}
+		{% if config.feature.threads and config.feature.link_post_page %} &nbsp; <a id="unimportant" href="{{ config.root }}{{ board.dir }}{{ config.dir.featured }}">[{% trans %}Featured{% endtrans %}]</a>{% endif %}
 
 		{{ body }}
 

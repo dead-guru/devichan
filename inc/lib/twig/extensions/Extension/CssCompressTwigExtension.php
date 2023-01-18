@@ -23,9 +23,13 @@ class CssCompressTwigExtension extends Twig\Extension\AbstractExtension
         return 'ccss';
     }
     
-    public function cssComp(string $filepath): string
+    public function cssComp(?string $filepath): string
     {
         global $config;
+        
+        if(null === $filepath) {
+            return '';
+        }
         
         if($config['minify_css'] === false) {
             return $filepath;

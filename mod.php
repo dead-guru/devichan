@@ -72,6 +72,9 @@ $pages = array(
 	'/search'				=> 'search_redirect',		// search
 	'/search/(posts|IP_notes|bans|log)/(.+)/(\d+)'	=> 'search',		// search
 	'/search/(posts|IP_notes|bans|log)/(.+)'	=> 'search',		// search
+    
+    '/(\%b)/archive/'					=> 'secure_POST view_archive', 					// View Archive
+    '/(\%b)/featured/'					=> 'secure_POST view_archive_featured', 		// View Featured Archive
 
 	'/(\%b)/ban(&delete)?/(\d+)'		=> 'secure_POST ban_post', 	// ban poster
 	'/(\%b)/move/(\d+)'			=> 'secure_POST move',		// move thread

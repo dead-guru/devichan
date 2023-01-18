@@ -806,8 +806,15 @@ div.post.reply.highlighted {
 .mentioned a:hover {
     color: #a74300;
 }
+form table tr th {
+    display: none;
+}
 
 @media only screen and (max-device-width: 960px) {
+
+
+
+
     .intro {
         font-size: 0.8em;
         display: flex;
@@ -1051,3 +1058,5 @@ div.subtitle {
     background: transparent;
     color: #444;
 }
+
+

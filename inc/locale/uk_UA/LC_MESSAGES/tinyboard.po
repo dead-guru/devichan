@@ -3971,3 +3971,6 @@ msgstr "пошук"
 
 msgid "files"
 msgstr "файли"
+
+msgid "Create"
+msgstr "Створити"

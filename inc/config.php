@@ -1297,6 +1297,13 @@
 	$config['dir']['thumb'] = 'thumb/';
 	$config['dir']['res'] = 'res/';
 
+    // Directory for archived threads
+    $config['dir']['archive'] = 'archive/';
+    // Directory for "Featured Threads" (threads makred for permanent storage)
+    $config['dir']['featured'] = 'featured/';
+    // Directory for "Featured Threads" (threads makred for permanent storage)
+    $config['dir']['mod_archive'] = 'mod_archive/';
+
 	// For load balancing, having a seperate server (and domain/subdomain) for serving static content is
 	// possible. This can either be a directory or a URL. Defaults to $config['root'] . 'static/'.
 	// $config['dir']['static'] = 'http://static.example.org/';
@@ -1335,6 +1342,32 @@
 	
 	// Try not to build pages when we shouldn't have to.
 	$config['try_smarter'] = true;
+
+/*
+ * ====================
+ *  Archive settings
+ * ====================
+ */
+
+// Indicate if threads should be archived
+$config['archive']['threads'] = true;
+// Indicate if it is possible to mark threads as featured (stored forever)
+$config['feature']['threads'] = true;
+// Indicate if link to featured archive should be shown on post and thread page
+$config['feature']['link_post_page'] = false;
+
+// Days to keep archived threads before deletion (ex. "60 minutes", "6 hours", "1 day", "1 week"), if set to false all archived threads are kept forever
+$config['archive']['lifetime'] = false;
+
+// Number of chars in snippet
+$config['archive']['snippet_len'] = 400;
+
+// If any is set to run in crom both will be run in cron regardless
+// Archiving is run in cron job
+$config['archive']['cron_job']['archiving'] = false;
+// Purging of archive is run in cron job
+$config['archive']['cron_job']['purge'] = false;
+
 
 /*
  * ====================
@@ -1565,6 +1598,12 @@
 	$config['mod']['show_ip'] = MOD;
 	// Delete a post
 	$config['mod']['delete'] = JANITOR;
+
+    // Feature Archived Threads
+    $config['mod']['feature_archived_threads'] = JANITOR;
+    // Delete Featured Archived Threads
+    $config['mod']['delete_featured_archived_threads'] = MOD;
+    
 	// Ban a user for a post
 	$config['mod']['ban'] = MOD;
 	// Ban and delete (one click; instant)
