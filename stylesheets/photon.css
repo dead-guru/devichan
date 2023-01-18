@@ -813,6 +813,11 @@ form table tr th {
 }
 
 @media only screen and (max-device-width: 960px) {
+
+    form table {
+        width: 100%;
+    }
+
     .intro {
         font-size: 0.8em;
         display: flex;
@@ -1059,4 +1064,7 @@ div.subtitle {
 
 form[name="post"] {
     margin-bottom: 20px;
+}
+.postarea {
+    width: fit-content;
 }
