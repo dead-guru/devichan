@@ -23,7 +23,7 @@ function actually_load_captcha(provider, extra) {
 
 function load_captcha(provider, extra) {
   $(function() {
-    $(".captcha>td").html("<input class='captcha_text' type='text' name='captcha_text' style='width: 50%; height: 20px' maxlength='6' autocomplete='off'>"+
+    $(".captcha>td").html("<input class='captcha_text' placeholder='"+_('Verification')+"' type='text' name='captcha_text' style='width: 50%; height: 20px' maxlength='6' autocomplete='off'>"+
 			  "<input class='captcha_cookie' name='captcha_cookie' type='hidden'>"+
 			  "<div class='captcha_html'><img style='width: 50%' src='/static/clickme.gif'></div>");
 

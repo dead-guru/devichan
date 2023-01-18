@@ -15,7 +15,7 @@
 	{% if config.report_captcha %}
 		<p>{% trans %}To submit your report, please fill out the CAPTCHA below.{% endtrans %}</p>
 		{{ captcha['html'] }}<br/>
-		<input class="captcha_text" name="captcha_text" size="25" maxlength="6" autocomplete="off" type="text" value="">
+		<input class="captcha_text" placeholder="{% trans %}Verification{% endtrans %}" name="captcha_text" size="25" maxlength="6" autocomplete="off" type="text" value="">
 		<input class="captcha_cookie" name="captcha_cookie" type="hidden" autocomplete="off" value="{{ captcha['cookie']|e }}"><br/>
 	{% endif %}
 	<input name="report" value="{% trans %}Submit{% endtrans %}" type="submit">
