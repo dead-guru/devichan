@@ -1211,3 +1211,12 @@ msgstr " років назад"
 
 msgid "Search"
 msgstr "Пошук"
+
+msgid "Auto update"
+msgstr "Автоматичне оновлення"
+
+msgid "Auto update thread"
+msgstr "Автоматично оновлювати тред"
+
+msgid "Show desktop notifications on all replies"
+msgstr "Показувати сповіщення робочого стола для всіх відповідей"
