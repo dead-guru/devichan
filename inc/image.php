@@ -6,6 +6,27 @@
 
 defined('TINYBOARD') or exit;
 
+class ImageWEBP extends ImageBase
+{
+    public function from()
+    {
+        $this->image = @imagecreatefromwebp($this->src);
+    }
+    
+    public function to($src)
+    {
+        imagewebp($this->image, $src);
+    }
+    
+    public function resize()
+    {
+        $this->GD_create();
+        imagecolortransparent($this->image, imagecolorallocatealpha($this->image, 0, 0, 0, 0));
+        imagesavealpha($this->image, true);
+        imagealphablending($this->image, false);
+        $this->GD_copyresampled();
+    }
+}
 class Image {
 	public $src, $format, $image, $size;
 	public function __construct($src, $format = false, $size = false) {
@@ -84,7 +105,7 @@ class Image {
 		}
 		
 		$thumb->_resize($this->image->image, $width, $height);
-				
+		
 		return $thumb;
 	}
 	
@@ -114,7 +135,7 @@ class ImageGD {
 }
 
 class ImageBase extends ImageGD {
-	public $image, $src, $original, $original_width, $original_height, $width, $height;		
+	public $image, $src, $original, $original_width, $original_height, $width, $height;
 	public function valid() {
 		return (bool)$this->image;
 	}
@@ -223,7 +244,7 @@ class ImageImagick extends ImageBase {
 					$this->image->addImage($frame->getImage());
 				}
 				$i++;
-			}		
+			}
 		} else {
 			$this->image = clone $this->original;
 			$this->image->scaleImage($this->width, $this->height, false);

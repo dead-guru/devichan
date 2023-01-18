@@ -792,6 +792,7 @@
 	$config['allowed_ext'][] = 'gif';
 	$config['allowed_ext'][] = 'png';
 	// $config['allowed_ext'][] = 'svg';
+    // $config['allowed_ext'][] = 'webp';
 
 	// Allowed extensions for OP. Inherits from the above setting if set to false. Otherwise, it overrides both allowed_ext and
 	// allowed_ext_files (filetypes for downloadable files should be set in allowed_ext_files as well). This setting is useful

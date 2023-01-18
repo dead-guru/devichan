@@ -3130,3 +3130,22 @@ function uncloak_mask($mask) {
 
 	return $mask;
 }
+
+// Returns hashed version of IP address
+function get_ip_hash($ip)
+{
+    global $config;
+    static $ip_hash;
+    
+    if (!$config['bcrypt_ip_addresses'])
+        return $ip;
+    if (isset($ip_hash[$ip]))
+        return $ip_hash[$ip];
+    
+    // Generate BCrypt Hash and remove $2a$[cost]$[salt_22_char]$ header info - leaving 31 char hash
+    $hash = crypt($ip, "$2y$" . $config['bcrypt_ip_cost'] . "$" . $config['bcrypt_ip_salt'] . "$");
+    $hash = str_replace("/", "_", substr($hash, 29));
+    $ip_hash[$ip] = $hash;
+    
+    return $hash;
+}
