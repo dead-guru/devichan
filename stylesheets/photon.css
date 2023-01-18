@@ -175,6 +175,7 @@ textarea#body, textarea.text_body {
     height: 136px;
     width: 518px
 }
+textarea, input, button, select { font-family: inherit; }
 
 body, html {
     background: #eee;
@@ -1055,4 +1056,3 @@ div.subtitle {
     background: transparent;
     color: #444;
 }
-textarea, input, button, select { font-family: inherit; font-size: inherit; }
