@@ -11,7 +11,7 @@
 if (active_page == 'thread' || active_page == 'index' || active_page == 'ukko') {
 $(document).on('menu_ready', function(){
 var Menu = window.Menu;
-	
+
 if ($('#delete-fields #password').length) {
 	Menu.add_item("delete_post_menu", _("Delete post"));
 	Menu.add_item("delete_file_menu", _("Delete file"));
@@ -25,7 +25,7 @@ if ($('#delete-fields #password').length) {
 		$buf.find('#delete_post_menu,#delete_file_menu').click(function(e) {
 			e.preventDefault();
 			$('#delete_'+postId).prop('checked', 'checked');
-		
+
 			if ($(this).attr('id') === 'delete_file_menu') {
 				$('#delete_file').prop('checked', 'checked');
 			} else {
@@ -52,7 +52,7 @@ Menu.onclick(function(e, $buf) {
 		} else {
 			var global = '';
 		}
-		window.open(configRoot+'report.php?board='+board_name+'&post=delete_'+postId+global, "", (global?"width=600, height=575":"width=500, height=275"));
+		window.open(configRoot+'report/?board='+board_name+'&post=delete_'+postId+global, "", (global?"width=600, height=575":"width=500, height=275"));
 	});
 });
 
