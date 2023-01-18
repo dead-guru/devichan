@@ -746,6 +746,12 @@ span.public_ban, span.toolong {
     padding: 15px 0px 6px;
 }
 
+
+form table tr th {
+    display: none;
+}
+
+
 @media only screen and (max-device-width: 960px) {
 
     .intro {
