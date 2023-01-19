@@ -15,7 +15,6 @@
 [![Stargazers][stars-shield]][stars-url]
 [![Issues][issues-shield]][issues-url]
 [![MIT License][license-shield]][license-url]
-[![LinkedIn][linkedin-shield]][linkedin-url]
 
 
 
@@ -208,6 +207,6 @@ Use this space to list resources you find helpful and would like to give credit 
 [stars-url]: https://github.com/dead-guru/devichan/stargazers
 [issues-shield]: https://img.shields.io/github/issues/dead-guru/devichan.svg?style=for-the-badge
 [issues-url]: https://github.com/dead-guru/devichan/issues
-[license-shield]: https://img.shields.io/github/license/dead-guru/devichan.svg?style=for-the-badge
+[license-shield]: https://img.shields.io/badge/License-GPLv3-blue.svg?style=for-the-badge
 [license-url]: https://github.com/dead-guru/devichan/blob/master/LICENSE.txt
 [product-screenshot]: https://user-images.githubusercontent.com/1472664/211690585-1732c076-4889-447f-88ff-8912b18b4a05.png
