@@ -8,6 +8,8 @@
 /*/config.php
 /*.html
 
+*.webmanifest
+
 # include some files though
 !/templates/*.html
 !/inc/config.php
