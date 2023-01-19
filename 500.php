@@ -6,6 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Oops.. Something Went Wrong</title>
     <link rel="stylesheet" media="screen" href="<?php echo $config['url_stylesheet'] ?>">
+    <link rel="stylesheet" media="screen" href="<?php echo $config['uri_stylesheets'] . $config['default_stylesheet'][0] ?>">
     <script type="text/javascript">
         var active_page = "error";
     </script>
@@ -20,7 +21,7 @@
 <h1>Oops... Something Went Wrong</h1>
 <a style="display: block; text-align: center; padding-top: 20px;" href="<?php echo $config['root'] ?>">Homepage</a>
 <code style="display: none"><?php
-    //$message = substr($message, 0, strpos($message, "Stack trace:"));
+    $message = substr($message, 0, strpos($message, "Stack trace:"));
     echo $message;
     ?></code>
 </body>
