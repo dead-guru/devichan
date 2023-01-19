@@ -86,6 +86,8 @@ So, **DeVichan** - is a hard fork of vichan where we try to fix some stuff.
 * Statistics page (`/stats/` or `stats.php`)
 * Removed lot of dead code
 * Tons of small fixes of js and templates
+* CSS(main style.css and all configured themes) and JS minification
+* photon and photon-dark are main supported themes
 
 Of course, it is very difficult to fix code written in PHP5 times many years ago. But we can keep this legacy code safe and minimally up-to-date. Moreover, the conservative position of the original vichan developers worsens the situation even more. I wonder what we can get out of this venture
 
