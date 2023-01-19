@@ -1,121 +1,213 @@
-devichan - A Dockerized lightweight and full featured PHP imageboard based on vichan 
-========================================================
-
-Real board: https://4.dead.guru/
-
-<img width="500" alt="image" src="https://user-images.githubusercontent.com/1472664/211690585-1732c076-4889-447f-88ff-8912b18b4a05.png">
+<a name="readme-top"></a>
 
 
 
+<!-- PROJECT SHIELDS -->
+<!--
+*** I'm using markdown "reference style" links for readability.
+*** Reference links are enclosed in brackets [ ] instead of parentheses ( ).
+*** See the bottom of this document for the declaration of the reference variables
+*** for contributors-url, forks-url, etc. This is an optional, concise syntax you may use.
+*** https://www.markdownguide.org/basic-syntax/#reference-style-links
+-->
+[![Contributors][contributors-shield]][contributors-url]
+[![Forks][forks-shield]][forks-url]
+[![Stargazers][stars-shield]][stars-url]
+[![Issues][issues-shield]][issues-url]
+[![MIT License][license-shield]][license-url]
+[![LinkedIn][linkedin-shield]][linkedin-url]
 
-New Features
-------------
-* docker-compose
-* Updated twig (1 -> 3), jquery (2 -> 3)
-* add 404 and 500 error pages
+
+
+<!-- PROJECT LOGO -->
+<br />
+<div align="center">
+  <a href="https://github.com/dead-guru/devichan">
+    <img src="images/logo.png" alt="Logo" width="80" height="80">
+  </a>
+
+<h3 align="center">DeVichan</h3>
+
+  <p align="center">
+    Dead Vichan - A Dockerized lightweight and full featured PHP imageboard based on vichan
+    <br />
+    <a href="https://github.com/dead-guru/devichan/wiki"><strong>Explore the docs »</strong></a>
+    <br />
+    <br />
+    <a href="https://4.dead.guru/">View Demo</a>
+    ·
+    <a href="https://github.com/dead-guru/devichan/issues">Report Bug</a>
+    ·
+    <a href="https://github.com/dead-guru/devichan/issues">Request Feature</a>
+  </p>
+</div>
+
+
+
+<!-- TABLE OF CONTENTS -->
+<details>
+  <summary>Table of Contents</summary>
+  <ol>
+    <li>
+      <a href="#about-the-project">About The Project</a>
+    </li>
+    <li>
+      <a href="#getting-started">Getting Started</a>
+      <ul>
+        <li><a href="#prerequisites">Prerequisites</a></li>
+        <li><a href="#installation">Installation</a></li>
+      </ul>
+    </li>
+    <li><a href="#upgrade">Upgrade</a></li>
+    <li><a href="#roadmap">Roadmap</a></li>
+    <li><a href="#contributing">Contributing</a></li>
+    <li><a href="#license">License</a></li>
+    <li><a href="#acknowledgments">Acknowledgments</a></li>
+  </ol>
+</details>
+
+
+
+<!-- ABOUT THE PROJECT -->
+## About The Project
+
+[![Product Name Screen Shot][product-screenshot]](https://user-images.githubusercontent.com/1472664/211690585-1732c076-4889-447f-88ff-8912b18b4a05.png)
+
+**vichan** is a free light-weight, fast, highly configurable and user-friendly imageboard software package. It is written in PHP and has few dependencies.
+
+**But is old, bad and dead**
+
+So, **DeVichan** - is a hard fork of vichan where we try to fix some stuff.
+
+**New features**:
+* All-in-one `docker-compose.yml`
+* Updated twig (`1 -> 3`), jquery (`2 -> 3`) and lot others deps
+* 404 and 500 error pages
 * Banners for each board
-* statistics page (stats.php)
+* Statistics page (`/stats/` or `stats.php`)
 * Removed lot of dead code
-* tons of small fixes of js and templates
+* Tons of small fixes of js and templates
 
-About
-------------
-vichan is a free light-weight, fast, highly configurable and user-friendly
-imageboard software package. It is written in PHP and has few dependencies.
+Of course, it is very difficult to fix code written in PHP5 times many years ago. But we can keep this legacy code safe and minimally up-to-date. Moreover, the conservative position of the original vichan developers worsens the situation even more. I wonder what we can get out of this venture
 
-While there is currently no active development besides fixing security problems, we don't exclude the possibility to refactor the code in order to meet today's standards and continue our work from the point where [@czaks](https://github.com/czaks) retired in 2017.
-Before this milestone is achieved though, we strongly urge you to consider other imageboard packages. It is the opinion of the vichan development team that no new vichan imageboards should be deployed at the moment, and other imageboard packages used instead.
-
-Some documentation may be found on vichan [wiki](https://github.com/vichan-devel/vichan/wiki). (feel free to contribute)
-
-History
-------------
-devichan is a fork of (now defunc'd) [vichan](https://github.com/vichan-devel/vichan),
-a great imageboard package, actively building on it and adding a lot of features and other
-improvements.
-
-Requirements
-------------
-1. Docker
-2. Docker Compose
-
-Contributing
-------------
-You can contribute to devichan by:
-*	Developing patches/improvements/translations and using GitHub to submit pull requests
-*	Providing feedback and suggestions
-*	Writing/editing documentation
-
-Configuration
--------------
-1. For configuration create `inc/secrets.php`.
-2. Advanced awesome configuration example: https://gist.github.com/assada/e551d4de17218d50cc1549c8cd6c2c09
-
-Installation
--------------
-1. Download and extract devichan to your web directory or get the latest
-    development version with:
-
-        git clone git@github.com:dead-guru/devichan.git
-
-2. run ```docker-compose build``` inside the directory	
-3. run ```docker-compose exec cphp composer install``` inside the directory	
-4. Navigate to ```http://localhost/install.php``` in your web browser and follow the
-    prompts.
-5. devichan should now be installed. Log in to ```mod.php``` with the
-    default username and password combination: **admin / password**.
-6. You can install some "themes" on `/mod.php?/themes`
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
-!!!Please remember to change the administrator account password.
+<!-- GETTING STARTED -->
+## Getting Started
 
-See also: vichan [Configuration Basics](https://github.com/vichan-devel/vichan/wiki/config).
+This is an example of how you may give instructions on setting up your devichan locally.
+To get a local copy up and running follow these simple example steps.
 
-Upgrade
--------
+### Prerequisites
+
+1) Install Docker
+2) Install docker-compose
+
+### Installation
+
+1. Clone the repo
+   ```sh
+   git clone git@github.com:dead-guru/devichan.git
+   ```
+2. Run docker-compose
+   ```sh
+   docker-compose up -d
+   ```
+3. Install Composer packages
+   ```sh
+   docker-compose exec cphp composer install
+   ```
+4. Navigate to `http://localhost/install.php` in your web browser and follow the prompts.
+5. devichan should now be installed. Log in to `/mod/` with the default username and password combination: `admin` / `password`.
+6. You can install some "themes" on `/mod/?/themes`
+
+**!!!Please remember to change the administrator account password.**
+
+**See also**: [Configuration](https://github.com/dead-guru/devichan/wiki/Configuraion).
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
+
+<!-- Upgrade details -->
+## Upgrade
+
 To upgrade from any version of Tinyboard or vichan or devichan:
 
-Either run ```git pull``` to update your files, if you used git, or
-backup your ```inc/instance-config.php```, replace all your files in place
-(don't remove boards etc.), then put ```inc/instance-config.php``` back and
-finally run ```install.php```.
+Either run `git pull` to update your files, if you used git, or backup your `inc/instance-config.php`, replace all your files in place (don't remove boards etc.), then put `inc/instance-config.php` back and finally run `install.php`.
 
-Support
---------
-devichan is still beta software -- there are bound to be bugs. If you find a
-bug, please report it.
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-CLI tools
------------------
-There are a few command line interface tools, based on Tinyboard-Tools. These need
-to be launched from a Unix shell account (SSH, or something). They are located in a ```tools/```
-directory.
 
-You actually don't need these tools for your imageboard functioning, they are aimed
-at the power users. You won't be able to run these from shared hosting accounts
-(i.e. all free web servers).
 
-Oekaki
-------
-vichan makes use of [wPaint](https://github.com/websanova/wPaint) for oekaki. After you pull the repository, however, you will need to download wPaint separately using git's `submodule` feature. Use the following commands:
+<!-- ROADMAP -->
+## Roadmap
 
-```
-git submodule init
-git submodule update
-```
+- [x] Add Changelog
+- [x] Add back to top links
+- [ ] Add Additional Templates w/ Examples
+- [ ] Add "components" document to easily copy & paste sections of the readme
+- [ ] Multi-language Support
+    - [ ] Chinese
+    - [ ] Spanish
 
-To enable oekaki, add all the scripts listed in `js/wpaint.js` to your `instance-config.php`.
+See the [open issues](https://github.com/dead-guru/devichan/issues) for a full list of proposed features (and known issues).
 
-WebM support
-------------
-Read `inc/lib/webm/README.md` for information about enabling webm.
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-vichan API
-----------
-vichan provides by default a 4chan-compatible JSON API. For documentation on this, see:
-https://github.com/vichan-devel/vichan-API/ .
 
-License
---------
-See [LICENSE.md](http://github.com/vichan-devel/vichan/blob/master/LICENSE.md).
 
+<!-- CONTRIBUTING -->
+## Contributing
+
+Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+
+If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
+Don't forget to give the project a star! Thanks again!
+
+1. Fork the Project
+2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the Branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
+
+<!-- LICENSE -->
+## License
+
+Distributed under the GNU General Public Licens. See `LICENSE.md` for more information.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
+<!-- ACKNOWLEDGMENTS -->
+## Acknowledgments
+
+Use this space to list resources you find helpful and would like to give credit to.
+
+* [vichan](https://github.com/vichan-devel/vichan)
+* [Tinyboard](https://github.com/savetheinternet/Tinyboard)
+* [Twig](https://twig.symfony.com/doc/2.x/)
+
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
+
+<!-- MARKDOWN LINKS & IMAGES -->
+<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
+[contributors-shield]: https://img.shields.io/github/contributors/dead-guru/devichan.svg?style=for-the-badge
+[contributors-url]: https://github.com/dead-guru/devichan/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/dead-guru/devichan.svg?style=for-the-badge
+[forks-url]: https://github.com/dead-guru/devichan/network/members
+[stars-shield]: https://img.shields.io/github/stars/dead-guru/devichan.svg?style=for-the-badge
+[stars-url]: https://github.com/dead-guru/devichan/stargazers
+[issues-shield]: https://img.shields.io/github/issues/dead-guru/devichan.svg?style=for-the-badge
+[issues-url]: https://github.com/dead-guru/devichan/issues
+[license-shield]: https://img.shields.io/github/license/dead-guru/devichan.svg?style=for-the-badge
+[license-url]: https://github.com/dead-guru/devichan/blob/master/LICENSE.txt
+[product-screenshot]: https://user-images.githubusercontent.com/1472664/211690585-1732c076-4889-447f-88ff-8912b18b4a05.png
