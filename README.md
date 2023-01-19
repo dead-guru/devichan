@@ -22,7 +22,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/dead-guru/devichan">
-    <img src="images/logo.png" alt="Logo" width="80" height="80">
+    <img src="https://i.imgur.com/pzQwvyq.gif" alt="Logo" width="80" height="80">
   </a>
 
 <h3 align="center">DeVichan</h3>
@@ -143,13 +143,11 @@ Either run `git pull` to update your files, if you used git, or backup your `inc
 <!-- ROADMAP -->
 ## Roadmap
 
-- [x] Add Changelog
-- [x] Add back to top links
-- [ ] Add Additional Templates w/ Examples
-- [ ] Add "components" document to easily copy & paste sections of the readme
-- [ ] Multi-language Support
-    - [ ] Chinese
-    - [ ] Spanish
+- [x] Dockerize
+- [x] Update deps
+- [ ] Archive Feature (https://github.com/dead-guru/devichan/tree/feature/arhcive1)
+- [ ] Cloak IP and hash ip to db
+- [ ] migrate to php 8.2
 
 See the [open issues](https://github.com/dead-guru/devichan/issues) for a full list of proposed features (and known issues).
 
