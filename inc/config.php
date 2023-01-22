@@ -1812,7 +1812,12 @@
 	// Extra fields in to be shown in the array that are not in the 4chan-API. You can get these by taking a
 	// look at the schema for posts_ tables. The array should be formatted as $db_column => $translated_name.
 	// Example: Adding the pre-markup post body to the API as "com_nomarkup".
-	// $config['api']['extra_fields'] = array('body_nomarkup' => 'com_nomarkup');
+	$config['api']['extra_fields'] = array('body_nomarkup' => 'com_nomarkup');
+
+    $config['api']['auth_keys'] = [
+//        'GCOnnUXiyNg18isqP8xqiRTPB7kYrsBReN_rXgE' //CHANGE THIS TO RANDOM STRING!!!11
+    ];
+
 
 
 /*

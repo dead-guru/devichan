@@ -7,6 +7,8 @@ require_once 'inc/bootstrap.php';
 
 $dropped_post = false;
 
+$fromApi = $config['api']['enabled'] && array_key_exists('api', $_POST) && in_array($_POST['api'], $config['api']['auth_keys'], true);
+
 session_start();
 if (!isset($_POST['captcha_cookie']) && isset($_SESSION['captcha_cookie'])) {
 	$_POST['captcha_cookie'] = $_SESSION['captcha_cookie'];
@@ -107,7 +109,7 @@ if (isset($_POST['delete'])) {
 	rebuildThemes('post-delete', $board['uri']);
 
 } elseif (isset($_POST['report'])) {
-	if (!isset($_POST['board'], $_POST['reason']))
+    if (!isset($_POST['board'], $_POST['reason']))
 		error($config['error']['bot']);
 	
 	$report = array();
@@ -195,8 +197,8 @@ if (isset($_POST['delete'])) {
 		header('Content-Type: text/json');
 		echo json_encode(array('success' => true));
 	}
-} elseif (isset($_POST['post']) || $dropped_post) {
-	if (!isset($_POST['body'], $_POST['board']) && !$dropped_post)
+} elseif (isset($_POST['post']) || $dropped_post || $fromApi) {
+    if (!isset($_POST['body'], $_POST['board']) && !$dropped_post && !$fromApi)
 		error($config['error']['bot']);
 
 	$post = array('board' => $_POST['board'], 'files' => array());
@@ -234,7 +236,7 @@ if (isset($_POST['delete'])) {
 		checkBan($board['uri']);
 
 		// Check for CAPTCHA right after opening the board so the "return" link is in there
-		if ($config['recaptcha']) {
+		if ($config['recaptcha'] && !$fromApi) {
 			if (!isset($_POST['g-recaptcha-response']))
 				error($config['error']['bot']);
 
@@ -249,7 +251,7 @@ if (isset($_POST['delete'])) {
 			}
 		}
 		// Same, but now with our custom captcha provider
- 		if (($config['captcha']['enabled']) || (($post['op']) && ($config['new_thread_capt'])) ) {
+ 		if ((($config['captcha']['enabled']) || (($post['op']) && ($config['new_thread_capt']))) && !$fromApi ) {
 		$ch = curl_init($config['domain'].'/'.$config['captcha']['provider_check'] . "?" . http_build_query([
 			'mode' => 'check',
 			'text' => $_POST['captcha_text'],
@@ -266,12 +268,12 @@ if (isset($_POST['delete'])) {
 	}
 
 		if (!(($post['op'] && $_POST['post'] == $config['button_newtopic']) ||
-			(!$post['op'] && $_POST['post'] == $config['button_reply'])))
+			(!$post['op'] && $_POST['post'] == $config['button_reply'])) && !$fromApi)
 			error($config['error']['bot']);
 	
 		// Check the referrer
 		if ($config['referer_match'] !== false &&
-			(!isset($_SERVER['HTTP_REFERER']) || !preg_match($config['referer_match'], rawurldecode($_SERVER['HTTP_REFERER']))))
+			(!isset($_SERVER['HTTP_REFERER']) || !preg_match($config['referer_match'], rawurldecode($_SERVER['HTTP_REFERER']))) && !$fromApi)
 			
             error($config['referer_match'] . ' - ' . $_SERVER['HTTP_REFERER']);
 	
@@ -297,7 +299,7 @@ if (isset($_POST['delete'])) {
 				error($config['error']['noaccess']);
 		}
 		
-		if (!$post['mod']) {
+		if (!$post['mod'] && !$fromApi) {
 			$post['antispam_hash'] = checkSpam(array($board['uri'], isset($post['thread']) ? $post['thread'] : ($config['try_smarter'] && isset($_POST['page']) ? 0 - (int)$_POST['page'] : null)));
 			if ($post['antispam_hash'] === true)
 				error($config['error']['spam']);
@@ -694,7 +696,7 @@ if (isset($_POST['delete'])) {
 		}
 	}
 
-	if (!hasPermission($config['mod']['bypass_filters'], $board['uri']) && !$dropped_post) {
+	if (!hasPermission($config['mod']['bypass_filters'], $board['uri']) && !$dropped_post && !$fromApi) {
 		require_once 'inc/filters.php';
 
 		do_filters($post);
@@ -900,11 +902,11 @@ if (isset($_POST['delete'])) {
 		}
 	
 	// Do filters again if OCRing
-	if ($config['tesseract_ocr'] && !hasPermission($config['mod']['bypass_filters'], $board['uri']) && !$dropped_post) {
+	if ($config['tesseract_ocr'] && !hasPermission($config['mod']['bypass_filters'], $board['uri']) && !$dropped_post && !$fromApi) {
 		do_filters($post);
 	}
 
-	if (!hasPermission($config['mod']['postunoriginal'], $board['uri']) && $config['robot_enable'] && checkRobot($post['body_nomarkup']) && !$dropped_post) {
+	if (!hasPermission($config['mod']['postunoriginal'], $board['uri']) && $config['robot_enable'] && checkRobot($post['body_nomarkup']) && !$dropped_post && !$fromApi) {
 		undoImage($post);
 		if ($config['robot_mute']) {
 			error(sprintf($config['error']['muted'], mute()));
