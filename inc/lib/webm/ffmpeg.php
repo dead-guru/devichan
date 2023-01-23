@@ -15,26 +15,33 @@ function get_webm_info($filename) {
   
   $webminfo['error'] = is_valid_webm($ffprobe_out);
   if(empty($webminfo['error'])) {
-    $webminfo['width'] = $ffprobe_out['streams'][0]['width'];
-    $webminfo['height'] = $ffprobe_out['streams'][0]['height'];
+    
+    [$streamVideoId, $streamAudioId] = getChannels($ffprobe_out);
+    
+    $webminfo['width'] = $ffprobe_out['streams'][$streamVideoId]['width'];
+    $webminfo['height'] = $ffprobe_out['streams'][$streamVideoId]['height'];
     $webminfo['duration'] = $ffprobe_out['format']['duration'];
   }
   return $webminfo;
 }
-function is_valid_webm($ffprobe_out) {
-  global $board, $config;
-    
-    $streamVideoId = 0;
-    $streamAudioId = 0;
+
+function getChannels(array $ffprobe_out) {
+    $streams = [
+        'video' => 0,
+        'audio' => 0
+    ];
     
     foreach ($ffprobe_out['streams'] as $key => $stream) {
-        if($stream['codec_type'] === 'audio') {
-            $streamAudioId = $key;
-        }
-        if($stream['codec_type'] === 'video') {
-            $streamVideoId = $key;
-        }
+        $streams[$stream['codec_type']] = $key;
     }
+    
+    return $streams;
+}
+
+function is_valid_webm($ffprobe_out) {
+  global $board, $config;
+  
+  [$streamVideoId, $streamAudioId] = getChannels($ffprobe_out);
   
   if (empty($ffprobe_out))
     return array('code' => 1, 'msg' => $config['error']['genwebmerror']);
