@@ -16,7 +16,8 @@ function get_webm_info($filename) {
   $webminfo['error'] = is_valid_webm($ffprobe_out);
   if(empty($webminfo['error'])) {
     
-    [$streamVideoId, $streamAudioId] = getChannels($ffprobe_out);
+      $chans = getChannels($ffprobe_out);
+      $streamVideoId = $chans['video'];//TODO: PURE SHIT, sor for that
     
     $webminfo['width'] = $ffprobe_out['streams'][$streamVideoId]['width'];
     $webminfo['height'] = $ffprobe_out['streams'][$streamVideoId]['height'];
@@ -41,7 +42,9 @@ function getChannels(array $ffprobe_out) {
 function is_valid_webm($ffprobe_out) {
   global $board, $config;
   
-  [$streamVideoId, $streamAudioId] = getChannels($ffprobe_out);
+  $chans = getChannels($ffprobe_out);
+  $streamVideoId = $chans['video'];
+  $streamAudioId = $chans['audio']; //TODO: PURE SHIT, sor for that
   
   if (empty($ffprobe_out))
     return array('code' => 1, 'msg' => $config['error']['genwebmerror']);
