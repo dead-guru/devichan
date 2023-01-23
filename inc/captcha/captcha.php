@@ -33,6 +33,11 @@ class CzaksCaptcha
         return '<img style="width: 50%" src="data:image/jpg;base64,' . $base64Image . '" title="Click for regenerate" alt="captcha">';
     }
     
+    public function to_image(): string
+    {
+        return $this->generate($this->text, $this->width, $this->height);
+    }
+    
     private function rand_color()
     {
         return sprintf('#%06X', random_int(0, 0xFFFFFF));

@@ -28,6 +28,8 @@ case "get":
   $extra = $_GET['extra'];
 
   require_once("config.php");
+  
+  $fromApi = $config['api']['enabled'] && array_key_exists('api', $_GET) && in_array($_GET['api'], $config['api']['auth_keys'], true);
 
   $text = rand_string($length, $extra);
 
@@ -36,11 +38,12 @@ case "get":
   $cookie = rand_string(20, "abcdefghijklmnopqrstuvwxyz");
 
   $html = $captcha->to_html();
+  $img = $captcha->to_image();
 
   $query = $pdo->prepare("INSERT INTO `captchas` (`cookie`, `extra`, `text`, `created_at`) VALUES (?, ?, ?, ?)");
   $query->execute(                               [$cookie,  $extra,  $text,  time()]);
 
-  echo json_encode(["cookie" => $cookie, "captchahtml" => $html, "expires_in" => $expires_in]);
+  echo json_encode(["cookie" => $cookie, "captchahtml" => $html, "image" => $img, "expires_in" => $expires_in]);
   
   break;
 
