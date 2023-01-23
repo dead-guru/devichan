@@ -1162,6 +1162,7 @@
 	$config['error']['genwebmerror']	= _('There was a problem processing your webm.');
 	$config['error']['webmerror'] 		= _('There was a problem processing your webm.');//Is this error used anywhere ?
 	$config['error']['invalidwebm'] 	= _('Invalid webm uploaded.');
+	$config['error']['invalidmp4'] 	    = _('Invalid mp4 uploaded. Looks like iPhone .mov as mp4.');
 	$config['error']['webmhasaudio'] 	= _('The uploaded webm contains an audio or another type of additional stream.');
 	$config['error']['webmtoolong']		=_('The uploaded webm is longer than %d seconds.');
 	$config['error']['fileexists']		= _('That file <a href="%s">already exists</a>!');

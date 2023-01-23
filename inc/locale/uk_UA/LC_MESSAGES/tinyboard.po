@@ -3770,6 +3770,9 @@ msgstr "Під час обробки вашої webm сталася помилк
 msgid "Invalid webm uploaded."
 msgstr "Завантажено хибну webm."
 
+msgid "Invalid mp4 uploaded. Looks like iPhone .mov as mp4."
+msgstr "Завантажено хибну mp4. Виглядає наче iPhone .mov файл"
+
 #: ../../../../inc/config.php:1051 ../../../../inc/config.php:1055
 #: ../../../../inc/config.php:1058 ../../../../inc/config.php:1159
 msgid ""
