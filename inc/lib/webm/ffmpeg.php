@@ -11,6 +11,8 @@ function get_webm_info($filename) {
   $webminfo = array();
   exec("$ffprobe -v quiet -print_format json -show_format -show_streams $filename", $ffprobe_out);
   $ffprobe_out = json_decode(implode("\n", $ffprobe_out), 1);
+  
+  
   $webminfo['error'] = is_valid_webm($ffprobe_out);
   if(empty($webminfo['error'])) {
     $webminfo['width'] = $ffprobe_out['streams'][0]['width'];
@@ -21,6 +23,19 @@ function get_webm_info($filename) {
 }
 function is_valid_webm($ffprobe_out) {
   global $board, $config;
+    
+    $streamVideoId = 0;
+    $streamAudioId = 0;
+    
+    foreach ($ffprobe_out['streams'] as $key => $stream) {
+        if($stream['codec_type'] === 'audio') {
+            $streamAudioId = $key;
+        }
+        if($stream['codec_type'] === 'video') {
+            $streamVideoId = $key;
+        }
+    }
+  
   if (empty($ffprobe_out))
     return array('code' => 1, 'msg' => $config['error']['genwebmerror']);
   $extension = pathinfo($ffprobe_out['format']['filename'], PATHINFO_EXTENSION);
@@ -28,14 +43,14 @@ function is_valid_webm($ffprobe_out) {
     if ($ffprobe_out['format']['format_name'] != 'matroska,webm')
       return array('code' => 2, 'msg' => $config['error']['invalidwebm']);
   } elseif ($extension === 'mp4') {
-    if (($ffprobe_out['streams'][0]['codec_name'] != 'h264' || $ffprobe_out['streams'][0]['codec_name'] != 'h265') && $ffprobe_out['streams'][1]['codec_name'] != 'aac')
-      return array('code' => 2, 'msg' => $config['error']['invalidmp4'] . ' Codec: ' . $ffprobe_out['streams'][0]['codec_name'] . '-' . $ffprobe_out['streams'][1]['codec_name']);
+    if (($ffprobe_out['streams'][$streamVideoId]['codec_name'] != 'h264' || $ffprobe_out['streams'][$streamVideoId]['codec_name'] != 'h265') && $ffprobe_out['streams'][$streamAudioId]['codec_name'] != 'aac')
+      return array('code' => 2, 'msg' => $config['error']['invalidmp4'] . ' Codec: ' . $ffprobe_out['streams'][$streamVideoId]['codec_name'] . '-' . $ffprobe_out['streams'][$streamAudioId]['codec_name']);
   } else {
     return array('code' => 1, 'msg' => $config['error']['genwebmerror']);
   }
   if ((count($ffprobe_out['streams']) > 1) && (!$config['webm']['allow_audio']))
     return array('code' => 3, 'msg' => $config['error']['webmhasaudio']);
-  if (empty($ffprobe_out['streams'][0]['width']) || (empty($ffprobe_out['streams'][0]['height'])))
+  if (empty($ffprobe_out['streams'][$streamVideoId]['width']) || (empty($ffprobe_out['streams'][$streamVideoId]['height'])))
     return array('code' => 2, 'msg' => $config['error']['invalidwebm']);
   if ($ffprobe_out['format']['duration'] > $config['webm']['max_length'])
     return array('code' => 4, 'msg' => sprintf($config['error']['webmtoolong'], $config['webm']['max_length']));
