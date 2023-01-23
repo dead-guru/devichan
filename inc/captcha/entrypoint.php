@@ -28,8 +28,6 @@ case "get":
   $extra = $_GET['extra'];
 
   require_once("config.php");
-  
-  $fromApi = array_key_exists('api', $_GET);
 
   $text = rand_string($length, $extra);
 
