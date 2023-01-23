@@ -29,7 +29,7 @@ case "get":
 
   require_once("config.php");
   
-  $fromApi = $config['api']['enabled'] && array_key_exists('api', $_GET) && in_array($_GET['api'], $config['api']['auth_keys'], true);
+  $fromApi = array_key_exists('api', $_GET);
 
   $text = rand_string($length, $extra);
 
