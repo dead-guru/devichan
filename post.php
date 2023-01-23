@@ -251,7 +251,7 @@ if (isset($_POST['delete'])) {
 			}
 		}
 		// Same, but now with our custom captcha provider
- 		if ((($config['captcha']['enabled']) || (($post['op']) && ($config['new_thread_capt']))) && !$fromApi ) {
+ 		if ((($config['captcha']['enabled']) || (($post['op']) && ($config['new_thread_capt']))) ) {
 		$ch = curl_init($config['domain'].'/'.$config['captcha']['provider_check'] . "?" . http_build_query([
 			'mode' => 'check',
 			'text' => $_POST['captcha_text'],
