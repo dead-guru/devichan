@@ -29,7 +29,7 @@ function is_valid_webm($ffprobe_out) {
       return array('code' => 2, 'msg' => $config['error']['invalidwebm']);
   } elseif ($extension === 'mp4') {
     if (($ffprobe_out['streams'][0]['codec_name'] != 'h264' || $ffprobe_out['streams'][0]['codec_name'] != 'h265') && $ffprobe_out['streams'][1]['codec_name'] != 'aac')
-      return array('code' => 2, 'msg' => $config['error']['invalidwebm']);
+      return array('code' => 2, 'msg' => $config['error']['invalidmp4']);
   } else {
     return array('code' => 1, 'msg' => $config['error']['genwebmerror']);
   }
