@@ -166,6 +166,16 @@ class RecentPosts
             $stats['active_content'] += array_sum($matches[1]);
         }
         
+        $recent_posts = array_map(function ($post) {
+            unset($post['ip'], $post['password'], $post['trip'], $post['capcode']);
+            return $post;
+        }, $recent_posts);
+        
+        $recent_images = array_map(function ($post) {
+            unset($post['ip'], $post['password'], $post['trip'], $post['capcode']);
+            return $post;
+        }, $recent_images);
+        
         file_write(
             'recent.json',
             json_encode([
