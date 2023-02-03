@@ -168,11 +168,19 @@ class RecentPosts
         
         $recent_posts = array_map(function ($post) {
             unset($post['ip'], $post['password'], $post['trip'], $post['capcode']);
+            if (array_key_exists('files', $post)) {
+                $post['files'] = json_decode($post['files'], true, 512, JSON_THROW_ON_ERROR);
+            }
+            
             return $post;
         }, $recent_posts);
         
         $recent_images = array_map(function ($post) {
             unset($post['ip'], $post['password'], $post['trip'], $post['capcode']);
+            if (array_key_exists('files', $post)) {
+                $post['files'] = json_decode($post['files'], true, 512, JSON_THROW_ON_ERROR);
+            }
+            
             return $post;
         }, $recent_images);
         
