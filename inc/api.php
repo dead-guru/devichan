@@ -99,6 +99,10 @@ class Api {
 		else if (isset ($post->filehash) && $post->filehash) {
 			$apiPost['md5'] = base64_encode(hex2bin($post->filehash));
 		}
+		
+        if (isset ($file->blurhash) && $file->blurhash) {
+			$apiPost['blurhash'] = $file->blurhash;
+		}
 	}
 
 	private function translatePost($post, $threadsPage = false) {

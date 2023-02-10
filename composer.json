@@ -18,7 +18,8 @@
     "ext-imagick": "*",
     "mrclay/jsmin-php": "^2.4",
     "matthiasmullie/minify": "^1.3",
-    "ezyang/htmlpurifier": "^4.16"
+    "ezyang/htmlpurifier": "^4.16",
+    "bepsvpt/blurhash": "^2.1"
   },
   "autoload": {
     "classmap": [

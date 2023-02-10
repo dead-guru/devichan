@@ -550,7 +550,7 @@ if (isset($_POST['delete'])) {
 		}
 
 		// Check for too many files
-		if (sizeof($post['files']) > $config['max_images'])
+		if (count($post['files']) > $config['max_images'])
 			error($config['error']['toomanyimages']);
 	}
 
@@ -776,6 +776,10 @@ if (isset($_POST['delete'])) {
 			
 			$file['width'] = $image->size->width;
 			$file['height'] = $image->size->height;
+            
+            $blurHash = new \Bepsvpt\Blurhash\BlurHash();
+            
+            $file['blurhash'] = $blurHash->encode($file['tmp_name']);
 			
 			if ($config['spoiler_images'] && isset($_POST['spoiler'])) {
 				$file['thumb'] = 'spoiler';
@@ -940,7 +944,7 @@ if (isset($_POST['delete'])) {
 
 	if ($post['files'])
 		$post['files'] = $post['files'];
-	$post['num_files'] = sizeof($post['files']);
+	$post['num_files'] = count($post['files']);
 	
 	$post['id'] = $id = post($post);
 	$post['slug'] = slugify($post);
