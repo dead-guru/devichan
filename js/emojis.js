@@ -19,6 +19,7 @@ $(window).ready(function () {
             showRecents: false,
             showSearch: false,
             showVariants: false,
+            showPreview: false,
             showCategoryTabs: false,
             categories: ['custom'],
             visibleRows: 4,
