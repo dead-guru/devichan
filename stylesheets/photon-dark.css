@@ -656,10 +656,10 @@ div.post i.fa {
     color: #b0b0b0;
 }
 
-#expand-all-images, #watch-board, #watch-pin, #watch-thread, .tree-view-cntrl {
+#expand-all-images, #shrink-all-images, #watch-board, #watch-pin, #watch-thread, .tree-view-cntrl {
     display: inline;
     padding: 0 5px;
-    font-size: .7rem;
+    font-size: .7rem
 }
 
 .fileinfo, .no-new-threads, .unimportant, .unimportant * {
@@ -965,4 +965,11 @@ form[name="post"] {
 
 .postarea {
     width: fit-content;
+}
+
+.post_file_zip, .post_file_pdf {
+    border: 3px dotted #cccccc;
+    padding: 10px;
+    width: 128px !important;
+    height: 128px !important;
 }

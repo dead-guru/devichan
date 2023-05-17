@@ -682,7 +682,56 @@
     //enable code highlighting via highlight.js
     $config['code_highlight'] = false;
 
-	// Repair markup with HTML Tidy. This may be slower, but it solves nesting mistakes. vichan, at the
+    //enable emoji selector via emojis.js
+    $config['emojis_enabled'] = true;
+    
+    $config['emojis'] = [
+        [
+            'emoji' => ':billy_smile:',
+            'label' => 'Billy Smile',
+            'url' => '/static/emojis/billy_smile.png',
+            'tags' => ['billy', 'smile'],
+            'data' => ['id' => 1],
+        ],
+        [
+            'emoji' => ':peka:',
+            'label' => 'Peka',
+            'url' => '/static/emojis/peka.png',
+            'tags' => ['peka', 'smile'],
+            'data' => ['id' => 2],
+        ],
+        [
+            'emoji' => ':peka_lol:',
+            'label' => 'Peka Lol',
+            'url' => '/static/emojis/peka_lol.png',
+            'tags' => ['peka', 'lol', 'smile'],
+            'data' => ['id' => 3],
+        ],
+        [
+            'emoji' => ':pepe_cry:',
+            'label' => 'Pepe Cry',
+            'url' => '/static/emojis/pepe-cry.png',
+            'tags' => ['pepe', 'sad', 'cry'],
+            'data' => ['id' => 4],
+        ],
+        [
+            'emoji' => ':pepe:',
+            'label' => 'Pepe Sad',
+            'url' => '/static/emojis/pepe_sad.png',
+            'tags' => ['pepe', 'sad'],
+            'data' => ['id' => 5],
+        ],
+        [
+            'emoji' => ':peka_virus:',
+            'label' => 'Peka Virus',
+            'url' => '/static/emojis/pepe_sad.png',
+            'tags' => ['peka', 'virus'],
+            'data' => ['id' => 6],
+        ],
+    ];
+
+
+// Repair markup with HTML Tidy. This may be slower, but it solves nesting mistakes. vichan, at the
 	// time of writing this, can not prevent out-of-order markup tags (eg. "**''test**'') without help from
 	// HTML Tidy.
 	$config['markup_repair_tidy'] = false;

@@ -36,7 +36,7 @@ onready(function(){
 			});
 
 			if (!$('#shrink-all-images').length) {
-				$('hr:first').before('<div id="shrink-all-images" style="text-align:right"><a class="unimportant" href="javascript:void(0)"></a></div>');
+				$('#expand-all-images').hide().before('<div id="shrink-all-images" style="text-align:right"><a class="unimportant" href="javascript:void(0)"></a></div>');
 			}
 
 			$('div#shrink-all-images a')
@@ -46,7 +46,8 @@ onready(function(){
 						if ($(this).parent().data('expanded'))
 							$(this).parent().click();
 					});
-					$(this).parent().remove();
+					$('#shrink-all-images').remove();
+					$('#expand-all-images').show();
 				});
 		});
 });

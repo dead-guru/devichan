@@ -23,6 +23,7 @@ function load_twig() {
 	$twig->addExtension(new Twig_Extensions_Extension_I18n());
 	$twig->addExtension(new ByteConversionTwigExtension());
 	$twig->addExtension(new CssCompressTwigExtension());
+	$twig->addExtension(new EmojiExtension());
 }
 
 function Element($templateFile, array $options) {

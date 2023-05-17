@@ -18,6 +18,13 @@
 			var modRoot="{{ config.root }}"+(inMod ? "mod.php?/" : "");
 		</script>
 		{% if not nojavascript %}
+			{% if config.emojis_enabled %}
+			<script type="text/javascript">
+				window.emo = {{ config.emojis|json_encode(constant('JSON_PRETTY_PRINT')) }};
+			</script>
+			<script src="https://unpkg.com/picmo@latest/dist/umd/index.js"></script>
+			<script src="https://unpkg.com/@picmo/popup-picker@latest/dist/umd/index.js"></script>
+			{% endif %}
 			<script type="text/javascript" src="{{ config.url_javascript }}{% if config.minify_js_hash != false %}?v={{ config.minify_js_hash }}{% endif %}"></script>
 			{% if not config.additional_javascript_compile %}
 			{% for javascript in config.additional_javascript %}<script type="text/javascript" src="{{ config.additional_javascript_url }}{{ javascript }}"></script>{% endfor %}

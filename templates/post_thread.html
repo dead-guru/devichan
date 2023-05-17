@@ -60,7 +60,7 @@
 	</p>
 	{% include 'post/fileinfo.html' %}
 	<div class="body">
-		{% endfilter %}{% if index %}{{ post.body|truncate_body(post.link) }}{% else %}{{ post.body }}{% endif %}{% filter remove_whitespace %}
+		{% endfilter %}{% if index %}{{ post.body|truncate_body(post.link)|emoji }}{% else %}{{ post.body|emoji }}{% endif %}{% filter remove_whitespace %}
 		{% if post.modifiers['ban message'] %}
 			{{ config.mod.ban_message|sprintf(post.modifiers['ban message']) }}
 		{% endif %}
