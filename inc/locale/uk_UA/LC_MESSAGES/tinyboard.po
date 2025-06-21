@@ -577,7 +577,7 @@ msgstr "Виявлено флуд — опис відхилено."
 #: ../../../../inc/config.php:1036 ../../../../inc/config.php:1039
 #: ../../../../inc/config.php:1138
 msgid "Your request looks automated; Post discarded."
-msgstr "Ваш запит схожий на автоматизований— допис відхилено."
+msgstr "Ваш запит схожий на автоматизований — допис відхилено."
 
 #: ../../../../inc/config.php:883 ../../../../inc/config.php:988
 #: ../../../../inc/config.php:979 ../../../../inc/config.php:981

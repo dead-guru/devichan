@@ -455,6 +455,8 @@ class Thread {
 	public string $slug;
 	public bool $hr;
 	public array $modifiers;
+    
+    public ?string $board;
 
 	public int $images;
 	public int $replies;

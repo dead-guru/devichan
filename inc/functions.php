@@ -12,6 +12,8 @@ if (realpath($_SERVER['SCRIPT_FILENAME']) == str_replace('\\', '/', __FILE__)) {
 	exit;
 }
 
+use DeVichan\Functions\Hide;
+
 $microtime_start = microtime(true);
 
 // the user is not currently logged in as a moderator
@@ -261,7 +263,7 @@ function loadConfig() {
 		$config['version'] = $__version;
 
 		if ($config['allow_roll']) {
-			event_handler('post', 'diceRoller');
+			event_handler('post', 'email_dice_roll');
 		}
 
 		if (in_array('webm', $config['allowed_ext_files']) ||
@@ -423,12 +425,6 @@ function define_groups() {
 	}
 	
 	ksort($config['mod']['groups']);
-}
-
-function create_antibot($board, $thread = null) {
-	require_once dirname(__FILE__) . '/anti-bot.php';
-
-	return _create_antibot($board, $thread);
 }
 
 function rebuildThemes($action, $boardname = false) {
@@ -671,14 +667,8 @@ function file_write($path, $data, $simple = false, $skip_purge = false) {
 	global $config, $debug;
 
 	if (preg_match('/^remote:\/\/(.+)\:(.+)$/', $path, $m)) {
-		if (isset($config['remote'][$m[1]])) {
-			require_once 'inc/remote.php';
-
-			$remote = new Remote($config['remote'][$m[1]]);
-			$remote->write($data, $m[2]);
-			return;
-		} else {
-			error('Invalid remote server: ' . $m[1]);
+		if (isset($config['remote'])) {
+            error('Remote server support has been removed');
 		}
 	}
 
@@ -763,7 +753,7 @@ function file_unlink($path) {
 	if (file_exists($path)) {
 		$ret = @unlink($path);
 	} else {
-		$ret = false;
+		$ret = true;
 	}
 
 	if ($config['gzip_static']) {
@@ -826,30 +816,32 @@ function hasPermission(?int $action = null, ?string $board = null, $_mod = null)
 }
 
 function listBoards($just_uri = false) {
-	global $config;
+    global $config;
 
-	$just_uri ? $cache_name = 'all_boards_uri' : $cache_name = 'all_boards';
+    $cache_name = $just_uri ? 'all_boards_uri' : 'all_boards';
 
-	if ($config['cache']['enabled'] && ($boards = cache::get($cache_name)))
-		return $boards;
+    if ($config['cache']['enabled'] && ($boards = cache::get($cache_name))) {
+        return $boards;
+    }
 
-	if (!$just_uri) {
-		$query = query("SELECT * FROM ``boards`` ORDER BY `uri`") or error(db_error());
-		$boards = $query->fetchAll();
-	} else {
-		$boards = [];
-		$query = query("SELECT `uri` FROM ``boards``") or error(db_error());
-		while ($board = $query->fetchColumn()) {
-			$boards[] = $board;
-		}
-	}
- 
-	if ($config['cache']['enabled'])
-		cache::set($cache_name, $boards);
+    if (!$just_uri) {
+        $query = query('SELECT * FROM ``boards`` ORDER BY `uri`');
+        $boards = $query->fetchAll();
+    } else {
+        $query = query('SELECT `uri` FROM ``boards``');
+        $boards = $query->fetchAll(\PDO::FETCH_COLUMN);
+    }
 
-	return $boards;
+    if ($config['cache']['enabled']) {
+        cache::set($cache_name, $boards);
+    }
+
+    return $boards;
 }
 
+/**
+ * @deprecated 
+ */
 function until($timestamp) {
 	$difference = $timestamp - time();
 	switch(TRUE){
@@ -1053,6 +1045,9 @@ function threadExists($id): bool {
 	return false;
 }
 
+/**
+ * @deprecated 
+ */
 function insertFloodPost(array $post): void {
 	global $board;
 	
@@ -1492,7 +1487,16 @@ function index(int $page, array|bool $mod = false, bool $brief = false) {
 	}
 
 	if ($config['file_board']) {
-		$body = Element($config['file_fileboard'], ['body' => $body, 'mod' => $mod]);
+        $options = [
+            'body' => $body,
+            'mod' => $mod
+        ];
+
+        if ($mod) {
+            $options['pm'] = create_pm_header();
+        }
+
+        $body = Element($config['file_fileboard'], $options);
 	}
 
 	return [
@@ -1717,96 +1721,66 @@ function checkMute(): void {
 	}
 }
 
-function _create_antibot(string $board, ?int $thread): AntiBot {
-	global $config, $purged_old_antispam;
-
-	$antibot = new AntiBot([$board, $thread]);
-
-	if (!isset($purged_old_antispam)) {
-		$purged_old_antispam = true;
-		query('DELETE FROM ``antispam`` WHERE `expires` < UNIX_TIMESTAMP()') or error(db_error());
-	}
-
-	if ($thread !== null) {
-		$query = prepare('UPDATE ``antispam`` SET `expires` = UNIX_TIMESTAMP() + :expires WHERE `board` = :board AND `thread` = :thread AND `expires` IS NULL');
-	} else {
-		$query = prepare('UPDATE ``antispam`` SET `expires` = UNIX_TIMESTAMP() + :expires WHERE `board` = :board AND `thread` IS NULL AND `expires` IS NULL');
-	}
-
-	$query->bindValue(':board', $board);
-	if ($thread !== null) {
-		$query->bindValue(':thread', $thread);
-	}
-	$query->bindValue(':expires', $config['spam']['hidden_inputs_expire']);
-	$query->execute() or error(db_error($query));
-
-	$query = prepare('INSERT INTO ``antispam`` VALUES (:board, :thread, :hash, UNIX_TIMESTAMP(), NULL, 0)');
-	$query->bindValue(':board', $board);
-	$query->bindValue(':thread', $thread);
-	$query->bindValue(':hash', $antibot->hash());
-	$query->execute() or error(db_error($query));
-
-	return $antibot;
+function purge_old_antispam() {
+    $query = prepare('DELETE FROM ``antispam`` WHERE `expires` < UNIX_TIMESTAMP()');
+    $query->execute() or error(db_error());
+    return $query->rowCount();
 }
 
-/**
- * @bad-function
- * @return bool|mixed|string
- */
-function checkSpam(array $extra_salt = []) {
-	global $config, $pdo;
+function checkSpam(array $extra_salt = array()) {
+    global $config, $pdo;
 
-	if (!isset($_POST['hash']))
-		return true;
+    if (!isset($_POST['hash']))
+        return true;
 
-	$hash = $_POST['hash'];
+    $hash = $_POST['hash'];
 
-	if (!empty($extra_salt)) {
-		// create a salted hash of the "extra salt"
-		$extra_salt = implode(':', $extra_salt);
-	} else {
-		$extra_salt = '';
-	}
+    if (!empty($extra_salt)) {
+        // create a salted hash of the "extra salt"
+        $extra_salt = implode(':', $extra_salt);
+    } else {
+        $extra_salt = '';
+    }
 
-	// Reconsturct the $inputs array
-	$inputs = [];
+    // Reconsturct the $inputs array
+    $inputs = array();
 
-	foreach ($_POST as $name => $value) {
-		if (in_array($name, $config['spam']['valid_inputs']))
-			continue;
+    foreach ($_POST as $name => $value) {
+        if (in_array($name, $config['spam']['valid_inputs']))
+            continue;
 
-		$inputs[$name] = $value;
-	}
+        $inputs[$name] = $value;
+    }
 
-	// Sort the inputs in alphabetical order (A-Z)
-	ksort($inputs);
+    // Sort the inputs in alphabetical order (A-Z)
+    ksort($inputs);
 
-	$_hash = '';
+    $_hash = '';
 
-	// Iterate through each input
-	foreach ($inputs as $name => $value) {
-		$_hash .= $name . '=' . $value;
-	}
+    // Iterate through each input
+    foreach ($inputs as $name => $value) {
+        $_hash .= $name . '=' . $value;
+    }
 
-	// Add a salt to the hash
-	$_hash .= $config['cookies']['salt'];
+    // Add a salt to the hash
+    $_hash .= $config['cookies']['salt'];
 
-	// Use SHA1 for the hash
-	$_hash = sha1($_hash . $extra_salt);
+    // Use SHA1 for the hash
+    $_hash = sha1($_hash . $extra_salt);
 
-	if ($hash != $_hash) {
-		return true;
-	}
+    if ($hash != $_hash) {
+        return true;
+    }
 
-	$query = prepare('SELECT `passed` FROM ``antispam`` WHERE `hash` = :hash');
-	$query->bindValue(':hash', $hash);
-	$query->execute() or error(db_error($query));
-	if ((($passed = $query->fetchColumn(0)) === false) || ($passed > $config['spam']['hidden_inputs_max_pass'])) {
-		// there was no database entry for this hash. most likely expired.
-		return true;
-	}
+    $query = prepare('SELECT `passed` FROM ``antispam`` WHERE `hash` = :hash');
+    $query->bindValue(':hash', $hash);
+    $query->execute() or error(db_error($query));
+    if ((($passed = $query->fetchColumn(0)) === false) || ($passed > $config['spam']['hidden_inputs_max_pass'])) {
+        // there was no database entry for this hash. most likely expired.
+        return true;
+    }
 
-	return $hash;
+    return $hash;
 }
 
 function incrementSpamHash(string $hash): void {
@@ -1815,104 +1789,115 @@ function incrementSpamHash(string $hash): void {
 	$query->execute() or error(db_error($query));
 }
 
-function buildIndex(string $global_api = "yes"): void {
-	global $board, $config, $build_pages;
+function buildIndex($global_api = "yes") {
+    global $board, $config, $build_pages, $mod;
 
-	$catalog_api_action = generation_strategy('sb_api', [$board['uri']]);
+    $catalog_api_action = generation_strategy('sb_api', array($board['uri']));
 
-	$pages = null;
-	$antibot = null;
+    $pages = null;
 
-	if ($config['api']['enabled']) {
-		$api = new Api();
-		$catalog = [];
-	}
+    if ($config['api']['enabled']) {
+        $api = new Api(
+            $config['show_filename'],
+            $config['hide_email'],
+            $config['country_flags']
+        );
+        $catalog = array();
+    }
 
-	for ($page = 1; $page <= $config['max_pages']; $page++) {
-		$filename = $board['dir'] . ($page == 1 ? $config['file_index'] : sprintf($config['file_page'], $page));
-		$jsonFilename = $board['dir'] . ($page - 1) . '.json'; // pages should start from 0
+    for ($page = 1; $page <= $config['max_pages']; $page++) {
+        $filename = $board['dir'] . ($page == 1 ? $config['file_index'] : sprintf($config['file_page'], $page));
+        $jsonFilename = $board['dir'] . ($page - 1) . '.json'; // pages should start from 0
 
-		$wont_build_this_page = $config['try_smarter'] && isset($build_pages) && !empty($build_pages) && !in_array($page, $build_pages);
+        $wont_build_this_page = $config['try_smarter'] && isset($build_pages) && !empty($build_pages) && !in_array($page, $build_pages);
 
-		if ((!$config['api']['enabled'] || $global_api == "skip") && $wont_build_this_page)
-			continue;
+        if ((!$config['api']['enabled'] || $global_api == "skip") && $wont_build_this_page)
+            continue;
 
-		$action = generation_strategy('sb_board', [$board['uri'], $page]);
-		if ($action == 'rebuild' || $catalog_api_action == 'rebuild') {
-			$content = index($page, false, $wont_build_this_page);
-			if (!$content)
-				break;
+        $action = generation_strategy('sb_board', array($board['uri'], $page));
+        if ($action == 'rebuild' || $catalog_api_action == 'rebuild') {
+            $content = index($page, false, $wont_build_this_page);
+            if (!$content)
+                break;
 
-			// json api
-			if ($config['api']['enabled']) {
-				$threads = $content['threads'];
-				$json = json_encode($api->translatePage($threads));
-				file_write($jsonFilename, $json);
+            // Tries to avoid rebuilding if the body is the same as the one in cache.
+            if ($config['cache']['enabled']) {
+                $contentHash = md5(json_encode($content['body']));
+                $contentHashKey = '_index_hashed_'. $board['uri'] . '_' . $page;
+                $cachedHash = cache::get($contentHashKey);
+                if ($cachedHash == $contentHash){
+                    if ($config['api']['enabled']) {
+                        // this is needed for the thread.json and catalog.json rebuilding below, which includes all pages.
+                        $catalog[$page-1] = $content['threads'];
+                    }
+                    continue;
+                }
+                cache::set($contentHashKey, $contentHash, 3600);
+            }
 
-				$catalog[$page-1] = $threads;
+            // json api
+            if ($config['api']['enabled']) {
+                $threads = $content['threads'];
+                $json = json_encode($api->translatePage($threads));
+                file_write($jsonFilename, $json);
 
-				if ($wont_build_this_page) continue;
-			}
+                $catalog[$page-1] = $threads;
 
-			if ($config['try_smarter']) {
-				$antibot = create_antibot($board['uri'], 0 - $page);
-				$content['current_page'] = $page;
-			}
-			elseif (!$antibot) {
-				$antibot = create_antibot($board['uri']);
-			}
-			$antibot->reset();
-			if (!$pages) {
-				$pages = getPages();
-			}
-			$content['pages'] = $pages;
-			$content['pages'][$page-1]['selected'] = true;
-			$content['btn'] = getPageButtons($content['pages']);
-			$content['antibot'] = $antibot;
+                if ($wont_build_this_page) continue;
+            }
 
-			file_write($filename, Element($config['file_board_index'], $content));
-		}
-		elseif ($action == 'delete' || $catalog_api_action == 'delete') {
-			file_unlink($filename);
-			file_unlink($jsonFilename);
-		}
-	}
+            if (!$pages) {
+                $pages = getPages();
+            }
+            $content['pages'] = $pages;
+            $content['pages'][$page-1]['selected'] = true;
+            $content['btn'] = getPageButtons($content['pages']);
+            if ($mod) {
+                $content['pm'] = create_pm_header();
+            }
 
-	// $action is an action for our last page
-	if (($catalog_api_action == 'rebuild' || $action == 'rebuild' || $action == 'delete') && $page < $config['max_pages']) {
-		for (;$page<=$config['max_pages'];$page++) {
-			$filename = $board['dir'] . ($page==1 ? $config['file_index'] : sprintf($config['file_page'], $page));
-			file_unlink($filename);
+            file_write($filename, Element($config['file_board_index'], $content));
+        }
+        elseif ($action == 'delete' || $catalog_api_action == 'delete') {
+            file_unlink($filename);
+            file_unlink($jsonFilename);
+        }
+    }
 
-			if ($config['api']['enabled']) {
-				$jsonFilename = $board['dir'] . ($page - 1) . '.json';
-				file_unlink($jsonFilename);
-			}
-		}
-	}
+    // $action is an action for our last page
+    if (($catalog_api_action == 'rebuild' || $action == 'rebuild' || $action == 'delete') && $page < $config['max_pages']) {
+        for (;$page<=$config['max_pages'];$page++) {
+            $filename = $board['dir'] . ($page==1 ? $config['file_index'] : sprintf($config['file_page'], $page));
+            file_unlink($filename);
 
-	// json api catalog
-	if ($config['api']['enabled'] && $global_api != "skip") {
-		if ($catalog_api_action == 'delete') {
-			$jsonFilename = $board['dir'] . 'catalog.json';
-			file_unlink($jsonFilename);
-			$jsonFilename = $board['dir'] . 'threads.json';
-			file_unlink($jsonFilename);
-		}
-		elseif ($catalog_api_action == 'rebuild') {
-			$json = json_encode($api->translateCatalog($catalog));
-			$jsonFilename = $board['dir'] . 'catalog.json';
-			file_write($jsonFilename, $json);
+            if ($config['api']['enabled']) {
+                $jsonFilename = $board['dir'] . ($page - 1) . '.json';
+                file_unlink($jsonFilename);
+            }
+        }
+    }
 
-			$json = json_encode($api->translateCatalog($catalog, true));
-			$jsonFilename = $board['dir'] . 'threads.json';
-			file_write($jsonFilename, $json);
-		}
-	}
+    // json api catalog
+    if ($config['api']['enabled'] && $global_api != "skip") {
+        if ($catalog_api_action == 'delete') {
+            $jsonFilename = $board['dir'] . 'catalog.json';
+            file_unlink($jsonFilename);
+            $jsonFilename = $board['dir'] . 'threads.json';
+            file_unlink($jsonFilename);
+        }
+        elseif ($catalog_api_action == 'rebuild') {
+            $json = json_encode($api->translateCatalog($catalog));
+            $jsonFilename = $board['dir'] . 'catalog.json';
+            file_write($jsonFilename, $json);
 
-	if ($config['try_smarter']) {
-		$build_pages = [];
-	}
+            $json = json_encode($api->translateCatalog($catalog, true));
+            $jsonFilename = $board['dir'] . 'threads.json';
+            file_write($jsonFilename, $json);
+        }
+    }
+
+    if ($config['try_smarter'])
+        $build_pages = array();
 }
 
 function buildJavascript(): void {
@@ -1994,67 +1979,6 @@ function buildJavascript(): void {
     }
 
 	file_write($config['file_script'], $script);
-}
-
-function checkDNSBL(): void {
-	global $config;
-
-	if (isIPv6())
-		return; // No IPv6 support yet.
-
-	if (!isset($_SERVER['REMOTE_ADDR']))
-		return; // Fix your web server configuration
-
-	if (preg_match("/^(::(ffff:)?)?(127\.|192\.168\.|10\.|172\.(1[6-9]|2[0-9]|3[0-1])\.|0\.|255\.)/", $_SERVER['REMOTE_ADDR']))
-		return; // It's pointless to check for local IP addresses in dnsbls, isn't it?
-
-	if (in_array($_SERVER['REMOTE_ADDR'], $config['dnsbl_exceptions']))
-		return;
-
-	$ipaddr = ReverseIPOctets($_SERVER['REMOTE_ADDR']);
-
-	foreach ($config['dnsbl'] as $blacklist) {
-		if (!is_array($blacklist)) {
-			$blacklist = [$blacklist];
-		}
-
-		if (($lookup = str_replace('%', $ipaddr, $blacklist[0])) == $blacklist[0]) {
-			$lookup = $ipaddr . '.' . $blacklist[0];
-		}
-
-		if (!$ip = DNS($lookup)) {
-			continue; // not in list
-		}
-
-		$blacklist_name = isset($blacklist[2]) ? $blacklist[2] : $blacklist[0];
-
-		if (!isset($blacklist[1])) {
-			// If you're listed at all, you're blocked.
-			error(sprintf($config['error']['dnsbl'], $blacklist_name));
-		} elseif (is_array($blacklist[1])) {
-			foreach ($blacklist[1] as $octet) {
-				if ($ip == $octet || $ip == '127.0.0.' . $octet) {
-					error(sprintf($config['error']['dnsbl'], $blacklist_name));
-				}
-			}
-		} elseif (is_callable($blacklist[1])) {
-			if ($blacklist[1]($ip)) {
-				error(sprintf($config['error']['dnsbl'], $blacklist_name));
-			}
-		} else {
-			if ($ip == $blacklist[1] || $ip == '127.0.0.' . $blacklist[1]) {
-				error(sprintf($config['error']['dnsbl'], $blacklist_name));
-			}
-		}
-	}
-}
-
-function isIPv6(): bool {
-	return strstr($_SERVER['REMOTE_ADDR'], ':') !== false;
-}
-
-function ReverseIPOctets(string $ip): string {
-	return implode('.', array_reverse(explode('.', $ip)));
 }
 
 function wordfilters(string &$body): void {
@@ -2152,267 +2076,276 @@ function extract_modifiers(string $body): array {
 	return $modifiers;
 }
 
-function remove_modifiers(string $body): string {
-	return preg_replace('@<tinyboard ([\w\s]+)>(.+?)</tinyboard>@usm', '', $body);
+function remove_modifiers($body) {
+    return $body ? preg_replace('@<tinyboard ([\w\s]+)>(.+?)</tinyboard>@usm', '', $body) : null;
+
 }
 
-function markup(string &$body, bool $track_cites = false, bool $op = false): array {
-	global $board, $config, $markup_urls;
-	
-	$modifiers = extract_modifiers($body);
-	
-	$body = preg_replace('@<tinyboard (?!escape )([\w\s]+)>(.+?)</tinyboard>@us', '', $body);
-	$body = preg_replace('@<(tinyboard) escape ([\w\s]+)>@i', '<$1 $2>', $body);
-	
-	if (isset($modifiers['raw html']) && $modifiers['raw html'] == '1') {
-		return [];
-	}
+function markup(&$body, $track_cites = false) {
+    global $board, $config, $markup_urls;
 
-	$body = str_replace("\r", '', $body);
-	$body = utf8tohtml($body);
+    $modifiers = extract_modifiers($body);
 
-	if (mysql_version() < 50503) {
-		$body = mb_encode_numericentity($body, [0x010000, 0xffffff, 0, 0xffffff], 'UTF-8');
-	}
+    $body = preg_replace('@<tinyboard (?!escape )([\w\s]+)>(.+?)</tinyboard>@us', '', $body);
+    $body = preg_replace('@<(tinyboard) escape ([\w\s]+)>@i', '<$1 $2>', $body);
 
-	if ($config['markup_code']) {
-		$code_markup = [];
-		$body = preg_replace_callback($config['markup_code'], function($matches) use (&$code_markup) {
-			$d = count($code_markup);
-			$code_markup[] = $matches;
-			return "<code $d>";
-		}, $body);
-	}
+    if (isset($modifiers['raw html']) && $modifiers['raw html'] == '1') {
+        return array();
+    }
 
-	foreach ($config['markup'] as $markup) {
-		if (is_string($markup[1])) {
-			$body = preg_replace($markup[0], $markup[1], $body);
-		} elseif (is_callable($markup[1])) {
-			$body = preg_replace_callback($markup[0], $markup[1], $body);
-		}
-	}
+    $body = str_replace("\r", '', $body);
+    $body = utf8tohtml($body);
 
-	if ($config['markup_urls']) {
-		$markup_urls = [];
+    if (mysql_version() < 50503)
+        $body = mb_encode_numericentity($body, array(0x010000, 0xffffff, 0, 0xffffff), 'UTF-8');
 
-		$body = preg_replace_callback(
-				'/((?:https?:\/\/|ftp:\/\/|irc:\/\/)[^\s<>()"]+?(?:\([^\s<>()"]*?\)[^\s<>()"]*?)*)((?:\s|<|>|"|\.||\]|!|\?|,|&#44;|&quot;)*(?:[\s<>()"]|$))/',
-				'markup_url',
-				$body,
-				-1,
-				$num_links);
+    if ($config['markup_code']) {
+        $code_markup = array();
+        $body = preg_replace_callback($config['markup_code'], function($matches) use (&$code_markup) {
+            $d = count($code_markup);
+            $code_markup[] = $matches;
+            return "<code $d>";
+        }, $body);
+    }
 
-		if ($num_links > $config['max_links']) {
-			error($config['error']['toomanylinks']);
-		}
-	}
+    foreach ($config['markup'] as $markup) {
+        if (is_string($markup[1])) {
+            $body = preg_replace($markup[0], $markup[1], $body);
+        } elseif (is_callable($markup[1])) {
+            $body = preg_replace_callback($markup[0], $markup[1], $body);
+        }
+    }
 
-	if ($config['markup_repair_tidy']) {
-		$body = str_replace('  ', ' &nbsp;', $body);
-	}
+    if ($config['markup_urls']) {
+        $markup_urls = array();
 
-	if ($config['auto_unicode']) {
-		$body = unicodify($body);
+        $body = preg_replace_callback(
+            '/((?:https?:\/\/|ftp:\/\/|irc:\/\/)[^\s<>()"]+?(?:\([^\s<>()"]*?\)[^\s<>()"]*?)*)((?:\s|<|>|"|\.||\]|!|\?|,|&#44;|&quot;)*(?:[\s<>()"]|$))/',
+            'markup_url',
+            $body,
+            -1,
+            $num_links);
 
-		if ($config['markup_urls']) {
-			foreach ($markup_urls as &$url) {
-				$body = str_replace(unicodify($url), $url, $body);
-			}
-		}
-	}
+        if ($num_links > $config['max_links'])
+            error($config['error']['toomanylinks']);
+    }
 
-	$tracked_cites = [];
+//    if ($config['markup_repair_tidy'])
+//        $body = str_replace('  ', ' &nbsp;', $body);
 
-	// Cites
-	if (isset($board) && preg_match_all('/(^|\s)&gt;&gt;(\d+?)((?=[\s,.)?!])|$)/m', $body, $cites, PREG_SET_ORDER | PREG_OFFSET_CAPTURE)) {
-		if (count($cites[0]) > $config['max_cites']) {
-			error($config['error']['toomanycites']);
-		}
+    if ($config['auto_unicode']) {
+        $body = unicodify($body);
 
-		$skip_chars = 0;
-		$body_tmp = $body;
+        if ($config['markup_urls']) {
+            foreach ($markup_urls as &$url) {
+                $body = str_replace(unicodify($url), $url, $body);
+            }
+        }
+    }
 
-		$search_cites = [];
-		foreach ($cites as $matches) {
-			$search_cites[] = '`id` = ' . $matches[2][0];
-		}
-		$search_cites = array_unique($search_cites);
-		
-		$query = query(sprintf('SELECT `thread`, `id` FROM ``posts_%s`` WHERE ' .
-			implode(' OR ', $search_cites), $board['uri'])) or error(db_error());
+    $tracked_cites = array();
 
-		$cited_posts = [];
-		while ($cited = $query->fetch(PDO::FETCH_ASSOC)) {
-			$cited_posts[$cited['id']] = $cited['thread'] ? $cited['thread'] : false;
-		}
-	
-		foreach ($cites as $matches) {
-			$cite = $matches[2][0];
+    // Cites
+    if (isset($board) && preg_match_all('/(^|[\s(])&gt;&gt;(\d+?)((?=[\s,.)?!])|$)/m', $body, $cites, PREG_SET_ORDER | PREG_OFFSET_CAPTURE)) {
+        if (count($cites[0]) > $config['max_cites']) {
+            error($config['error']['toomanycites']);
+        }
 
-			// preg_match_all is not multibyte-safe
-			foreach ($matches as &$match) {
-				$match[1] = mb_strlen(substr($body_tmp, 0, $match[1]));
-			}
+        $skip_chars = 0;
+        $body_tmp = $body;
 
-			if (isset($cited_posts[$cite])) {
-				$replacement = sprintf('<a onclick="highlightReply(\'%s\', event);" href="%s%s%s#%s">%s</a>', $cite, $config['root'], $board['dir'], $config['dir']['res'], link_for(['id' => $cite, 'thread' => $cited_posts[$cite]]), $cite);
-				$body = mb_substr_replace($body, $matches[1][0] . $replacement . $matches[3][0], $matches[0][1] + $skip_chars, mb_strlen($matches[0][0]));
-				$skip_chars += mb_strlen($matches[1][0] . $replacement . $matches[3][0]) - mb_strlen($matches[0][0]);
+        $search_cites = array();
+        foreach ($cites as $matches) {
+            $search_cites[] = '`id` = ' . $matches[2][0];
+        }
+        $search_cites = array_unique($search_cites);
 
-				if ($track_cites && $config['track_cites']) {
-					$tracked_cites[] = [$board['uri'], $cite];
-				}
-			}
-		}
-	}
+        $query = query(sprintf('SELECT `thread`, `id` FROM ``posts_%s`` WHERE ' .
+            implode(' OR ', $search_cites), $board['uri'])) or error(db_error());
 
-	// Cross-board linking
-	if (preg_match_all('/(^|\s)&gt;&gt;&gt;\/(' . $config['board_regex'] . 'f?)\/(\d+)?((?=[\s,.)?!])|$)/um', $body, $cites, PREG_SET_ORDER | PREG_OFFSET_CAPTURE)) {
-		if (count($cites[0]) > $config['max_cites']) {
-			error($config['error']['toomanycross']);
-		}
+        $cited_posts = array();
+        while ($cited = $query->fetch(PDO::FETCH_ASSOC)) {
+            $cited_posts[$cited['id']] = $cited['thread'] ? $cited['thread'] : false;
+        }
 
-		$skip_chars = 0;
-		$body_tmp = $body;
+        foreach ($cites as $matches) {
+            $cite = $matches[2][0];
 
-		if (isset($cited_posts)) {
-			// Carry found posts from local board >>X links
-			foreach ($cited_posts as $cite => $thread) {
-				$cited_posts[$cite] = $config['root'] . $board['dir'] . $config['dir']['res'] .
-					($thread ? $thread : $cite) . '.html#' . $cite;
-			}
+            // preg_match_all is not multibyte-safe
+            foreach ($matches as &$match) {
+                $match[1] = mb_strlen(substr($body_tmp, 0, $match[1]));
+            }
 
-			$cited_posts = [
-				$board['uri'] => $cited_posts
-			];
-		} else {
-			$cited_posts = [];
-		}
-		
-		$crossboard_indexes = [];
-		$search_cites_boards = [];
-		
-		foreach ($cites as $matches) {
-			$_board = $matches[2][0];
-			$cite = @$matches[3][0];
-			
-			if (!isset($search_cites_boards[$_board])) {
-				$search_cites_boards[$_board] = [];
-			}
-				
-			$search_cites_boards[$_board][] = $cite;
-		}
-		
-		$tmp_board = $board['uri'];
-		
-		foreach ($search_cites_boards as $_board => $search_cites) {
-			$clauses = [];
-			foreach ($search_cites as $cite) {
-				if (!$cite || isset($cited_posts[$_board][$cite])) {
-					continue;
-				}
-				$clauses[] = '`id` = ' . $cite;
-			}
-			$clauses = array_unique($clauses);
-			
-			if ($board['uri'] != $_board) {
-				if (!openBoard($_board)) {
-					continue; // Unknown board
-				}
-			}
-			
-			if (!empty($clauses)) {
-				$cited_posts[$_board] = [];
-				
-				$query = query(sprintf('SELECT `thread`, `id`, `slug` FROM ``posts_%s`` WHERE %s', $board['uri'], implode(' OR ', $clauses))) or error(db_error());
-				
-				while ($cite = $query->fetch(PDO::FETCH_ASSOC)) {
-					$cited_posts[$_board][$cite['id']] = sprintf('%s%s%s%s#%s', $config['root'], $board['dir'], $config['dir']['res'], link_for($cite), $cite['id']);
-				}
-			}
-			
-			$crossboard_indexes[$_board] = $config['root'] . $board['dir'] . $config['file_index'];
-		}
-		
-		// Restore old board
-		if ($board['uri'] != $tmp_board) {
-			openBoard($tmp_board);
-		}
+            if (isset($cited_posts[$cite])) {
+                $replacement = '<a onclick="highlightReply(\''.$cite.'\', event);" href="' .
+                    $config['root'] . $board['dir'] . $config['dir']['res'] .
+                    link_for(array('id' => $cite, 'thread' => $cited_posts[$cite])) . '#' . $cite . '">' .
+                    '&gt;&gt;' . $cite .
+                    '</a>';
+            } else {
+                $replacement = "<s>&gt;&gt;$cite</s>";
+            }
 
-		foreach ($cites as $matches) {
-			$_board = $matches[2][0];
-			$cite = @$matches[3][0];
+            $body = mb_substr_replace($body, $matches[1][0] . $replacement . $matches[3][0], $matches[0][1] + $skip_chars, mb_strlen($matches[0][0]));
+            $skip_chars += mb_strlen($matches[1][0] . $replacement . $matches[3][0]) - mb_strlen($matches[0][0]);
 
-			// preg_match_all is not multibyte-safe
-			foreach ($matches as &$match) {
-				$match[1] = mb_strlen(substr($body_tmp, 0, $match[1]));
-			}
+            if ($track_cites && $config['track_cites']) {
+                $tracked_cites[] = array($board['uri'], $cite);
+            }
+        }
+    }
 
-			if ($cite) {
-				if (isset($cited_posts[$_board][$cite])) {
-					$link = $cited_posts[$_board][$cite];
-					
-					$replacement = sprintf('<a %shref="%s">&gt;&gt;&gt;/%s/%s</a>', $_board == $board['uri'] ? 'onclick="highlightReply(\'%s\', event);" ' : '', $link, $_board, $cite);
+    // Cross-board linking
+    if (preg_match_all('/(^|[\s(])&gt;&gt;&gt;\/(' . $config['board_regex'] . 'f?)\/(\d+)?((?=[\s,.)?!])|$)/um', $body, $cites, PREG_SET_ORDER | PREG_OFFSET_CAPTURE)) {
+        if (count($cites[0]) > $config['max_cites']) {
+            error($config['error']['toomanycross']);
+        }
 
-					$body = mb_substr_replace($body, $matches[1][0] . $replacement . $matches[4][0], $matches[0][1] + $skip_chars, mb_strlen($matches[0][0]));
-					$skip_chars += mb_strlen($matches[1][0] . $replacement . $matches[4][0]) - mb_strlen($matches[0][0]);
+        $skip_chars = 0;
+        $body_tmp = $body;
 
-					if ($track_cites && $config['track_cites']) {
-						$tracked_cites[] = [$_board, $cite];
-					}
-				}
-			} elseif(isset($crossboard_indexes[$_board])) {
-				$replacement = sprintf('<a href="%s">&gt;&gt;&gt;/%s/</a>', $crossboard_indexes[$_board], $_board);
-				$body = mb_substr_replace($body, $matches[1][0] . $replacement . $matches[4][0], $matches[0][1] + $skip_chars, mb_strlen($matches[0][0]));
-				$skip_chars += mb_strlen($matches[1][0] . $replacement . $matches[4][0]) - mb_strlen($matches[0][0]);
-			}
-		}
-	}
-	
-	$tracked_cites = array_unique($tracked_cites, SORT_REGULAR);
+        if (isset($cited_posts)) {
+            // Carry found posts from local board >>X links
+            foreach ($cited_posts as $cite => $thread) {
+                $cited_posts[$cite] = $config['root'] . $board['dir'] . $config['dir']['res'] .
+                    ($thread ? $thread : $cite) . '.html#' . $cite;
+            }
 
-	$body = preg_replace("/^\s*&gt;.*$/m", '<span class="quote">$0</span>', $body);
+            $cited_posts = array(
+                $board['uri'] => $cited_posts
+            );
+        } else
+            $cited_posts = array();
 
-	if ($config['strip_superfluous_returns']) {
-		$body = preg_replace('/\s+$/', '', $body);
-	}
+        $crossboard_indexes = array();
+        $search_cites_boards = array();
 
-	$body = preg_replace("/\n/", '<br/>', $body);
+        foreach ($cites as $matches) {
+            $_board = $matches[2][0];
+            $cite = @$matches[3][0];
 
-	// Fix code markup
-	if ($config['markup_code']) {
-		foreach ($code_markup as $id => $val) {
-			$code = isset($val[2]) ? $val[2] : $val[1];
-			$code_lang = isset($val[2]) ? $val[1] : "cpp";
+            if (!isset($search_cites_boards[$_board]))
+                $search_cites_boards[$_board] = array();
+            $search_cites_boards[$_board][] = $cite;
+        }
 
-			$code = sprintf('<pre class="code"><code class="language-%s">%s</code></pre>', $code_lang, str_replace(["\n", "\t"], ["&#10;", "&#9;"], $code));
+        $tmp_board = $board['uri'];
 
-			$body = str_replace("<code $id>", $code, $body);
-		}
-	}
+        foreach ($search_cites_boards as $_board => $search_cites) {
+            $clauses = array();
+            foreach ($search_cites as $cite) {
+                if (!$cite || isset($cited_posts[$_board][$cite]))
+                    continue;
+                $clauses[] = '`id` = ' . $cite;
+            }
+            $clauses = array_unique($clauses);
 
-	// if ($config['markup_repair_tidy']) {
-	// 	$tidy = new tidy();
-	// 	$body = str_replace("\t", '&#09;', $body);
-	// 	$body = $tidy->repairString($body, array(
-	// 		'doctype' => 'omit',
-	// 		'bare' => $config['markup_repair_tidy_bare'],
-	// 		'literal-attributes' => true,
-	// 		'indent' => false,
-	// 		'show-body-only' => true,
-	// 		'wrap' => 0,
-	// 		'output-bom' => false,
-	// 		'output-html' => true,
-	// 		'newline' => 'LF',
-	// 		'quiet' => true,
-	// 	), 'utf8');
-	// 	$body = str_replace("\n", '', $body);
-	// }
+            if ($board['uri'] != $_board) {
+                if (!openBoard($_board))
+                    continue; // Unknown board
+            }
 
-	// replace tabs with 8 spaces
-	$body = str_replace("\t", '		', $body);
+            if (!empty($clauses)) {
+                $cited_posts[$_board] = array();
 
-	return $tracked_cites;
+                $query = query(sprintf('SELECT `thread`, `id`, `slug` FROM ``posts_%s`` WHERE ' .
+                    implode(' OR ', $clauses), $board['uri'])) or error(db_error());
+
+                while ($cite = $query->fetch(PDO::FETCH_ASSOC)) {
+                    $cited_posts[$_board][$cite['id']] = $config['root'] . $board['dir'] . $config['dir']['res'] .
+                        link_for($cite) . '#' . $cite['id'];
+                }
+            }
+
+            $crossboard_indexes[$_board] = $config['root'] . $board['dir'] . $config['file_index'];
+        }
+
+        // Restore old board
+        if ($board['uri'] != $tmp_board)
+            openBoard($tmp_board);
+
+        foreach ($cites as $matches) {
+            $_board = $matches[2][0];
+            $cite = @$matches[3][0];
+
+            // preg_match_all is not multibyte-safe
+            foreach ($matches as &$match) {
+                $match[1] = mb_strlen(substr($body_tmp, 0, $match[1]));
+            }
+
+            if ($cite) {
+                if (isset($cited_posts[$_board][$cite])) {
+                    $link = $cited_posts[$_board][$cite];
+
+                    $replacement = '<a ' .
+                        ($_board == $board['uri'] ?
+                            'onclick="highlightReply(\''.$cite.'\', event);" '
+                            : '') . 'href="' . $link . '">' .
+                        '&gt;&gt;&gt;/' . $_board . '/' . $cite .
+                        '</a>';
+
+                    if ($track_cites && $config['track_cites']) {
+                        $tracked_cites[] = array($_board, $cite);
+                    }
+                } else {
+                    $replacement = "<s>&gt;&gt;&gt;/$_board/$cite</s>";
+                }
+            } elseif(isset($crossboard_indexes[$_board])) {
+                $replacement = '<a href="' . $crossboard_indexes[$_board] . '">' .
+                    '&gt;&gt;&gt;/' . $_board . '/' .
+                    '</a>';
+            } else {
+                $replacement = "<s>&gt;&gt;&gt;/$_board/$cite</s>";
+            }
+
+            $body = mb_substr_replace($body, $matches[1][0] . $replacement . $matches[4][0], $matches[0][1] + $skip_chars, mb_strlen($matches[0][0]));
+            $skip_chars += mb_strlen($matches[1][0] . $replacement . $matches[4][0]) - mb_strlen($matches[0][0]);
+        }
+    }
+
+    $tracked_cites = array_unique($tracked_cites, SORT_REGULAR);
+
+    $body = preg_replace("/^\s*&gt;.*$/m", '<span class="quote">$0</span>', $body);
+
+    if ($config['strip_superfluous_returns'])
+        $body = preg_replace('/\s+$/', '', $body);
+
+    $body = preg_replace("/\n/", '<br/>', $body);
+
+    // Fix code markup
+    if ($config['markup_code']) {
+        foreach ($code_markup as $id => $val) {
+            $code = isset($val[2]) ? $val[2] : $val[1];
+            $code_lang = isset($val[2]) ? $val[1] : "";
+
+            $code = "<pre class='code lang-$code_lang'>".str_replace(array("\n","\t"), array("&#10;","&#9;"), htmlspecialchars($code))."</pre>";
+
+            $body = str_replace("<code $id>", $code, $body);
+        }
+    }
+
+//    if ($config['markup_repair_tidy']) {
+//        $tidy = new tidy();
+//        $body = str_replace("\t", '&#09;', $body);
+//        $body = $tidy->repairString($body, array(
+//            'doctype' => 'omit',
+//            'bare' => $config['markup_repair_tidy_bare'],
+//            'literal-attributes' => true,
+//            'indent' => false,
+//            'show-body-only' => true,
+//            'wrap' => 0,
+//            'output-bom' => false,
+//            'output-html' => true,
+//            'newline' => 'LF',
+//            'quiet' => true,
+//        ), 'utf8');
+//        $body = str_replace("\n", '', $body);
+//    }
+
+    // replace tabs with 8 spaces
+    $body = str_replace("\t", '		', $body);
+
+    return $tracked_cites;
 }
 
 function escape_markup_modifiers(string $string): string {
@@ -2438,12 +2371,9 @@ function defined_flags_accumulate(array $desired_flags): int {
 	return $output_flags;
 }
 
-function utf8tohtml(?string $utf8): string {
-	if (is_null($utf8)) {
-		return '';
-	}
-	$flags = defined_flags_accumulate(['ENT_QUOTES', 'ENT_SUBSTITUTE', 'ENT_DISALLOWED']);
-	return htmlspecialchars($utf8, $flags, 'UTF-8');
+function utf8tohtml($utf8) {
+    $flags = defined_flags_accumulate(['ENT_NOQUOTES', 'ENT_SUBSTITUTE', 'ENT_DISALLOWED']);
+    return $utf8 ? htmlspecialchars($utf8, $flags, 'UTF-8') : '';
 }
 
 function ordutf8(string $string, int &$offset): int {
@@ -2471,20 +2401,10 @@ function ordutf8(string $string, int &$offset): int {
 	return $code;
 }
 
-function strip_combining_chars(string $str): string {
-	$chars = preg_split('//u', $str, -1, PREG_SPLIT_NO_EMPTY);
-	$str = '';
-	foreach ($chars as $char) {
-		$o = 0;
-		$ord = ordutf8($char, $o);
-
-		if ( ($ord >= 768 && $ord <= 879) || ($ord >= 1536 && $ord <= 1791) || ($ord >= 3655 && $ord <= 3659) || ($ord >= 7616 && $ord <= 7679) || ($ord >= 8400 && $ord <= 8447) || ($ord >= 65056 && $ord <= 65071)) {
-			continue;
-		}
-
-		$str .= $char;
-	}
-	return $str;
+function strip_combining_chars($str) {
+    global $config;
+    $limit = strval($config['max_combining_chars']+1);
+    return preg_replace('/(\p{Me}|\p{Mn}){'.$limit.',}/u','', $str);
 }
 
 function buildThread(int $id, bool $return = false, bool|array $mod = false) {
@@ -2525,7 +2445,6 @@ function buildThread(int $id, bool $return = false, bool|array $mod = false) {
 			error($config['error']['nonexistant']);
 	
 		$hasnoko50 = $thread->postCount() >= $config['noko50_min'];
-		$antibot = $mod || $return ? false : create_antibot($board['uri'], $id);
 
 		$body = Element($config['file_thread'], [
 			'board' => $board,
@@ -2536,7 +2455,6 @@ function buildThread(int $id, bool $return = false, bool|array $mod = false) {
 			'mod' => $mod,
 			'hasnoko50' => $hasnoko50,
 			'isnoko50' => false,
-			'antibot' => $antibot,
 			'boardlist' => createBoardlist($mod),
 			'return' => ($mod ? '?' . $board['url'] . $config['file_index'] : $config['root'] . $board['dir'] . $config['file_index'])
 		]);
@@ -2564,20 +2482,16 @@ function buildThread(int $id, bool $return = false, bool|array $mod = false) {
 	} elseif ($action == 'rebuild') {
 		$noko50fn = $board['dir'] . $config['dir']['res'] . link_for($thread, true);
 		if ($hasnoko50 || file_exists($noko50fn)) {
-			buildThread50($id, $return, $mod, $thread, $antibot);
+			buildThread50($id, $return, $mod, $thread);
 		}
 
 		file_write($board['dir'] . $config['dir']['res'] . link_for($thread), $body);
 	}
 }
 
-function buildThread50(int $id, bool $return = false, bool $mod = false, ?Thread $thread = null, ?AntiBot $antibot = null) {
+function buildThread50(int $id, bool $return = false, bool $mod = false, ?Thread $thread = null) {
 	global $board, $config, $build_pages;
 	$id = round($id);
-	
-	if ($antibot !== null) {
-		$antibot->reset();
-	}
 		
 	if (!$thread) {
 		$query = prepare(sprintf("SELECT * FROM ``posts_%s`` WHERE (`thread` IS NULL AND `id` = :id) OR `thread` = :id ORDER BY `thread`,`id` DESC LIMIT :limit", $board['uri']));
@@ -2642,7 +2556,6 @@ function buildThread50(int $id, bool $return = false, bool $mod = false, ?Thread
 		'mod' => $mod,
 		'hasnoko50' => $hasnoko50,
 		'isnoko50' => true,
-		'antibot' => $mod ? false : ($antibot ? $antibot : create_antibot($board['uri'], $id)),
 		'boardlist' => createBoardlist($mod),
 		'return' => ($mod ? '?' . $board['url'] . $config['file_index'] : $config['root'] . $board['dir'] . $config['file_index'])
 	]);
@@ -2674,11 +2587,11 @@ function rrmdir(string $dir): void {
 function poster_id(string $ip, int $thread): bool|string {
 	global $config;
 
-	if ($id = event('poster-id', $ip, $thread))
-		return $id;
-
-	// Confusing, hard to brute-force, but simple algorithm
-	return substr(sha1(sha1($ip . $config['secure_trip_salt'] . $thread) . $config['secure_trip_salt']), 0, $config['poster_id_length']);
+	if ($id = event('poster-id', $ip, $thread)) {
+        return $id;
+    }
+    
+    return \substr(Hide\secure_hash($ip . $config['secure_trip_salt'] . $thread . $config['secure_trip_salt'], false), 0, $config['poster_id_length']);
 }
 
 function generate_tripcode(string $name) {
@@ -2706,7 +2619,7 @@ function generate_tripcode(string $name) {
 		if (isset($config['custom_tripcode']["##{$trip}"])) {
 			$trip = $config['custom_tripcode']["##{$trip}"];
 		} else {
-			$trip = '!!' . substr(crypt($trip, str_replace('+', '.', '_..A.' . substr(base64_encode(sha1($trip . $config['secure_trip_salt'], true)), 0, 4))), -10);
+            $trip = '!!' . substr(crypt($trip, str_replace('+', '.', '_..A.' . substr(Hide\secure_hash($trip . $config['secure_trip_salt'], false), 0, 4))), -10);
 		}
 	} else {
 		if (isset($config['custom_tripcode']["#{$trip}"])) {
@@ -2791,63 +2704,6 @@ function undoImage(array $post): void {
 	}
 }
 
-function rDNS(string $ip_addr): string {
-	global $config;
-
-	if ($config['cache']['enabled'] && ($host = cache::get('rdns_' . $ip_addr))) {
-		return $host;
-	}
-
-	if (!$config['dns_system']) {
-		$host = gethostbyaddr($ip_addr);
-	} else {
-		$resp = shell_exec_error('host -W 3 ' . $ip_addr);
-		if (preg_match('/domain name pointer ([^\s]+)$/', $resp, $m)) {
-			$host = $m[1];
-		} else {
-			$host = $ip_addr;
-		}
-	}
-
-	$isip = filter_var($host, FILTER_VALIDATE_IP);
-
-	if ($config['fcrdns'] && !$isip && DNS($host) != $ip_addr) {
-		$host = $ip_addr;
-	}
-
-	if ($config['cache']['enabled'])
-		cache::set('rdns_' . $ip_addr, $host);
-
-	return $host;
-}
-
-function DNS(string $host): bool|string {
-	global $config;
-
-	if ($config['cache']['enabled'] && ($ip_addr = cache::get('dns_' . $host))) {
-		return $ip_addr != '?' ? $ip_addr : false;
-	}
-
-	if (!$config['dns_system']) {
-		$ip_addr = gethostbyname($host);
-		if ($ip_addr == $host) {
-			$ip_addr = false;
-		}
-	} else {
-		$resp = shell_exec_error('host -W 1 ' . $host);
-		if (preg_match('/has address ([^\s]+)$/', $resp, $m)) {
-			$ip_addr = $m[1];
-		} else {
-			$ip_addr = false;
-		}
-	}
-
-	if ($config['cache']['enabled'])
-		cache::set('dns_' . $host, $ip_addr !== false ? $ip_addr : '?');
-
-	return $ip_addr;
-}
-
 function shell_exec_error($command, $suppress_stdout = false) {
 	global $config, $debug;
 
@@ -2871,65 +2727,6 @@ function shell_exec_error($command, $suppress_stdout = false) {
 	}
 
 	return $return === 'TB_SUCCESS' ? false : $return;
-}
-
-/* Die rolling:
- * If "dice XdY+/-Z" is in the email field (where X or +/-Z may be
- * missing), X Y-sided dice are rolled and summed, with the modifier Z
- * added on.  The result is displayed at the top of the post.
- */
-function diceRoller(Post $post): void {
-	global $config;
-	if(strpos(strtolower($post->email), 'dice%20') === 0) {
-		$dicestr = str_split(substr($post->email, strlen('dice%20')));
-
-		// Get params
-		$diceX = '';
-		$diceY = '';
-		$diceZ = '';
-
-		$curd = 'diceX';
-		for($i = 0; $i < count($dicestr); $i ++) {
-			if(is_numeric($dicestr[$i])) {
-				$$curd .= $dicestr[$i];
-			} else if($dicestr[$i] == 'd') {
-				$curd = 'diceY';
-			} else if($dicestr[$i] == '-' || $dicestr[$i] == '+') {
-				$curd = 'diceZ';
-				$$curd = $dicestr[$i];
-			}
-		}
-
-		// Default values for X and Z
-		if($diceX == '') {
-			$diceX = '1';
-		}
-
-		if($diceZ == '') {
-			$diceZ = '+0';
-		}
-
-		// Intify them
-		$diceX = intval($diceX);
-		$diceY = intval($diceY);
-		$diceZ = intval($diceZ);
-
-		// Continue only if we have valid values
-		if($diceX > 0 && $diceY > 0) {
-			$dicerolls = [];
-			$dicesum = $diceZ;
-			for($i = 0; $i < $diceX; $i++) {
-				$roll = rand(1, $diceY);
-				$dicerolls[] = $roll;
-				$dicesum += $roll;
-			}
-
-			// Prepend the result to the post body
-			$modifier = ($diceZ != 0) ? ((($diceZ < 0) ? ' - ' : ' + ') . abs($diceZ)) : '';
-			$dicesum = ($diceX > 1) ? ' = ' . $dicesum : '';
-			$post->body = '<table class="diceroll"><tr><td><img src="'.$config['dir']['static'].'d10.svg" alt="Dice roll" width="24"></td><td>Rolled ' . implode(', ', $dicerolls) . $modifier . $dicesum . '</td></tr></table><br/>' . $post->body;
-		}
-	}
 }
 
 function slugify(array $post): string {
@@ -3063,26 +2860,38 @@ function markdown(string $s): string {
 	return $pd->text($s);
 }
 
-function generation_strategy(string $fun, array $array=[]): string|bool {
-	global $config;
-	$action = false;
+function generation_strategy($fun, $array=array()) { global $config;
+    $action = false;
 
-	foreach ($config['generation_strategies'] as $s) {
-		if ($action = $s($fun, $array)) {
-			break;
-		}
-	}
+    foreach ($config['generation_strategies'] as $s) {
+        if ($action = $s($fun, $array)) {
+            break;
+        }
+    }
 
-	switch ($action[0]) {
-		case 'immediate':
-			return 'rebuild';
-		case 'defer':
-			// Ok, it gets interesting here :)
-			get_queue('generate')->push(serialize(['build', $fun, $array, $action]));
-			return 'ignore';
-		case 'build_on_load':
-			return 'delete';
-	}
+    switch ($action[0]) {
+        case 'immediate':
+            return 'rebuild';
+        case 'defer':
+            // Ok, it gets interesting here :)
+            $queue = Queues::get_queue($config, 'generate');
+            if ($queue === false) {
+                if ($config['syslog']) {
+                    _syslog(LOG_ERR, "Could not initialize generate queue, falling back to immediate rebuild strategy");
+                }
+                return 'rebuild';
+            }
+            $ret = $queue->push(serialize(array('build', $fun, $array, $action)));
+            if ($ret === false) {
+                if ($config['syslog']) {
+                    _syslog(LOG_ERR, "Could not push item in the queue, falling back to immediate rebuild strategy");
+                }
+                return 'rebuild';
+            }
+            return 'ignore';
+        case 'build_on_load':
+            return 'delete';
+    }
 }
 
 function strategy_immediate(string $fun, array $array): array {
@@ -3187,7 +2996,7 @@ function cloak_ip(string $ip): string {
 		$ipbytes = substr($ipbytes, 0, 16);
 	}
 
-	$cyphertext = openssl_encrypt($ipbytes, 'rc4-40', $ipcrypt_key, OPENSSL_RAW_DATA);
+	$cyphertext = openssl_encrypt($ipbytes, 'aes-256-ctr', $ipcrypt_key, OPENSSL_RAW_DATA, "----ipcrypt-----");
 
 	$ret = $config['ipcrypt_prefix'].':' . base32_encode($cyphertext);
 	if (isset($tld) && !empty($tld)) {
@@ -3211,7 +3020,7 @@ function uncloak_ip(string $ip): string|bool {
 	}
 
 	if (substr($ip, 0, strlen($config['ipcrypt_prefix']) + 1) === $config['ipcrypt_prefix'].':') {
-		$plaintext = openssl_decrypt(base32_decode($juice), 'rc4-40', $ipcrypt_key, OPENSSL_RAW_DATA);
+		$plaintext = openssl_decrypt(base32_decode($juice), 'aes-256-ctr', $ipcrypt_key, OPENSSL_RAW_DATA);
 
 		if ($plaintext === false || strlen($plaintext) == 0) {
 			return '#ERROR';
@@ -3237,36 +3046,59 @@ function cloak_mask(string $mask): string {
 	return $mask;
 }
 
-function uncloak_mask(string $mask): string {
-	list($addr, $block) = array_pad(explode('/', $mask, 2), 2, null);
-	$mask = uncloak_ip($addr);
-	if ($mask === '#ERROR') {
-		$mask = $addr;
-	}
-	if ($block) {
-		$mask .= '/'.$block;
-	}
+function uncloak_mask($mask) {
+    list($addr, $block) = array_pad(explode('/', $mask, 2), 2, null);
+    $mask = uncloak_ip($addr);
+    if ($mask === '#ERROR') {
+        $mask = $addr;
+    }
+    if ($block) {
+        $mask .= '/'.$block;
+    }
 
-	return $mask;
+    return $mask;
 }
 
-// Returns hashed version of IP address
-function get_ip_hash(string $ip): string
-{
+function check_thread_limit($post) {
+    global $config, $board;
+    if (!isset($config['max_threads_per_hour']) || !$config['max_threads_per_hour']) return false;
+
+    if ($post['op']) {
+        $query = prepare(sprintf('SELECT COUNT(*) AS `count` FROM ``posts_%s`` WHERE `thread` IS NULL AND FROM_UNIXTIME(`time`) > DATE_SUB(NOW(), INTERVAL 1 HOUR);', $board['uri']));
+        $query->execute() or error(db_error($query));
+        $r = $query->fetch(PDO::FETCH_ASSOC);
+
+        return $r['count'] >= $config['max_threads_per_hour'];
+    }
+}
+
+function hashPassword($password) {
     global $config;
-    static $ip_hash;
-    
-    if (!$config['bcrypt_ip_addresses']) {
-        return $ip;
-    }
-    if (isset($ip_hash[$ip])) {
-        return $ip_hash[$ip];
-    }
-    
-    // Generate BCrypt Hash and remove $2a$[cost]$[salt_22_char]$ header info - leaving 31 char hash
-    $hash = crypt($ip, "$2y$" . $config['bcrypt_ip_cost'] . "$" . $config['bcrypt_ip_salt'] . "$");
-    $hash = str_replace("/", "_", substr($hash, 29));
-    $ip_hash[$ip] = $hash;
-    
-    return $hash;
+
+    return hash('sha3-256', $password . $config['secure_password_salt']);
+}
+
+// Thanks to https://gist.github.com/marijn/3901938
+function trace_url($url) {
+    $ch = curl_init($url);
+    curl_setopt_array($ch, array(
+        CURLOPT_FOLLOWLOCATION => TRUE,  // the magic sauce
+        CURLOPT_RETURNTRANSFER => TRUE,
+        CURLOPT_SSL_VERIFYHOST => FALSE, // suppress certain SSL errors
+        CURLOPT_SSL_VERIFYPEER => FALSE,
+        CURLOPT_TIMEOUT => 30,
+    ));
+    curl_exec($ch);
+    $url = curl_getinfo($ch, CURLINFO_EFFECTIVE_URL);
+    curl_close($ch);
+    return $url;
+}
+
+// Thanks to https://stackoverflow.com/questions/10002227/linkify-regex-function-php-daring-fireball-method/10002262#10002262
+function get_urls($body) {
+    $regex = '(?xi)\b((?:https?://|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:\'".,<>?«»“”‘’]))';
+
+    $result = preg_match_all("#$regex#i", $body, $match);
+
+    return $match[0];
 }

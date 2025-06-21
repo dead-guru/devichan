@@ -11,7 +11,7 @@ $board = $argv[1];
 
 $q = query(sprintf("SELECT `id`, `bump`, `time` FROM ``posts_%s``
                     WHERE `thread` IS NULL", $board));
-while ($val = $q->fetch()) {
+while ($val = $q->fetch(PDO::FETCH_ASSOC)) {
         $lc = prepare(sprintf('SELECT MAX(`time`) AS `aq` FROM ``posts_%s``
                                WHERE ((`thread` = :thread and
 			       `email` != "sage" ) OR `id` = :thread', $board));
