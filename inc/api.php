@@ -9,6 +9,10 @@ defined('TINYBOARD') or exit;
  * Class for generating json API compatible with 4chan API
  */
 class Api {
+    public array $config;
+    public array $postFields;
+    public array $threadsPageFields;
+    public array $fileFields;
 	function __construct(){
 		global $config;
 		/**

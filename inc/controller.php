@@ -8,13 +8,13 @@
 defined('TINYBOARD') or exit;
 
 function sb_board($b, $page = 1) { global $config, $build_pages; $page = (int)$page;
-  if ($page < 1) return false;
-  if (!openBoard($b)) return false;
-  if ($page > $config['max_pages']) return false;
-  $config['try_smarter'] = true;
-  $build_pages = array($page);
-  buildIndex("skip");
-  return true;
+    if ($page < 1) return false;
+    if (!openBoard($b)) return false;
+    if ($page > $config['max_pages']) return false;
+    $config['try_smarter'] = true;
+    $build_pages = array($page);
+    buildIndex("skip");
+    return true;
 }
 
 function sb_api_board($b, $page = 0) { $page = (int)$page;
@@ -85,24 +85,24 @@ function sb_api($b) { global $config, $build_pages;
 }
 
 function sb_ukko() {
-  rebuildTheme("ukko", "post-thread");
-  return true;
+    DeVichan\Functions\Theme\rebuild_theme("ukko", "post-thread");
+    return true;
 }
 
 function sb_catalog($b) {
-  if (!openBoard($b)) return false;
+    if (!openBoard($b)) return false;
 
-  rebuildTheme("catalog", "post-thread", $b); 
-  return true;
+    DeVichan\Functions\Theme\rebuild_theme("catalog", "post-thread", $b);
+    return true;
 }
 
 function sb_recent() {
-  rebuildTheme("recent", "post-thread");
-  return true;
+    DeVichan\Functions\Theme\rebuild_theme("recent", "post-thread");
+    return true;
 }
 
 function sb_sitemap() {
-  rebuildTheme("sitemap", "all");
-  return true;
+    DeVichan\Functions\Theme\rebuild_theme("sitemap", "all");
+    return true;
 }
 

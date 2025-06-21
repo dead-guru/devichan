@@ -2,6 +2,36 @@
  * burichan.css
  * For 55ch adapted from kusaba by sinuca
  */
+
+ :root {
+    --theme_default_bg: #EEE;
+    --theme_default_postbg: #DDD;
+    --theme_default_postbghighlight: #EEDACB;
+    --theme_default_spectext: #005c9a;
+    --theme_default_postnum: #789922;
+    --theme_default_border: #d2d2d266;
+    --theme_default_text: #333;
+    --theme_default_alttext: #5d5d5d;
+    --theme_default_link: #0099ff;
+    --theme_default_hover: #008ae6;
+    --theme_default_title: #005c9a;
+    --theme_default_drag: #ccc;
+    --theme_default_spoiler: #BBB;
+    --theme_default_icon: #9e9e9e;
+    --theme_default_btntext: #333;
+    --theme_default_btnbg: #EAEAEA;
+    --theme_default_btnborder: #e0e0e0;
+    --theme_default_altbtnbg: #f5f5f5;
+    --theme_default_btnbghover: #CACACA;
+    --theme_default_altbtnbghover: #fff;
+    --theme_default_inputtext: #333;
+    --theme_nmswitch: #9e9e9e;
+    --theme_mpborder: rgb(85, 85, 85);
+    --theme_mubtn: #cccccc;
+    --theme_sbthumb: #ddd;
+    --theme_sbtrack: #EEE;
+}
+
 body {
 	font-family: serif;
 	background: #EEF2FF;
@@ -19,6 +49,7 @@ header div.subtitle {
 	font-size: 16px;
 	font-weight: bold;
 	margin: 1em 0;
+	font-family: 'Open Sans', sans-serif;
 }
 
 a, a:visited {
@@ -88,4 +119,93 @@ div#playerW {
 
 img.board_image {
 	border:0px;
+}
+
+
+.video-pop {
+    float: none !important
+}
+
+#expand-all-images, #shrink-all-images, #watch-board, #watch-pin, #watch-thread, .tree-view-cntrl {
+    display: inline;
+    padding: 0 5px;
+    font-size: .7rem
+}
+
+.new-threads {
+    text-align: left;
+    display: inline;
+    padding: 0 5px
+}
+
+#thread_stats {
+    padding: 5px 0
+}
+
+#thread-interactions, #thread-interactions_header, #thread_stats, #updater {
+    display: inline;
+    font-size: .7rem;
+    color: var(--theme_default_icon)
+}
+
+#thread-links a, #thread-links_header a {
+    color: var(--theme_default_icon)
+}
+
+.index-search {
+    display: inline-block;
+    margin: 0
+}
+
+.index-search > p {
+    margin: 0
+}
+
+div.pages {
+    background: var(--theme_default_border) !important;
+    width: auto;
+    display: block;
+    margin-top: 45px;
+    color: var(--theme_default_alttext) !important;
+    border: none
+}
+
+form table tr td div {
+    padding-left: 0
+}
+
+.open-form a {
+    color: var(--theme_default_link);
+    margin: 0 10px;
+    transition: all .09s;
+}
+
+.open-form a:hover {
+    margin: 0 5px;
+    color: var(--theme_default_hover);
+}
+
+.open-form {
+    font-size: 16pt
+}
+
+.recaptchatable .recaptcha_image_cell {
+    padding: 0 !important
+}
+input, select {
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box
+}
+.postform__limits {
+    position: absolute;
+    bottom: 4px;
+    right: 10px;
+    opacity: .6;
+    font-size: .8rem
+}
+
+.fileinfo, .no-new-threads, .unimportant, .unimportant * {
+    font-size: .7rem;
+    color: var(--theme_default_icon)
 }

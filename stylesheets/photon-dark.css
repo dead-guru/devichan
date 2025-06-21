@@ -1,6 +1,39 @@
 /*https://github.com/turanga/Tinyboard/blob/efe78b81c1ffca32bcf9601d0e3877bb65c70df1/stylesheets/photon.css*/
 
 
+:root {
+    --theme_default_bg: rgb(21, 32, 43);
+    --theme_default_postbg: #192734;
+    --theme_default_postbghighlight: rgb(19 29 40);
+    --theme_default_spectext: #800080;
+    --theme_default_postnum: #789922;
+    --theme_default_border: #38444d66;
+    --theme_default_text: #ccc;
+    --theme_default_alttext: #7d7d7d;
+    --theme_default_link: #c3672a;
+    --theme_default_hover: #a74300;
+    --theme_default_title: #6995c5;
+    --theme_default_drag: rgb(76, 96, 116);
+    --theme_default_spoiler: #000000;
+    --theme_default_icon: #565656;
+    --theme_default_btntext: #ccc;
+    --theme_default_btnbg: #192734;
+    --theme_default_btnborder: rgb(56, 68, 77);
+    --theme_default_altbtnbg: #192734;
+    --theme_default_btnbghover: rgb(21, 32, 43);
+    --theme_default_altbtnbghover: rgb(21, 32, 43);
+    --theme_default_inputtext: #ccc;
+    --theme_nmswitch: #c3672a;
+    --theme_mpborder: rgb(13, 20, 27);
+    --theme_mubtn: #333d46;
+    --theme_sbthumb: #223546;
+    --theme_sbtrack: rgb(21, 32, 43);
+}
+
+div.post.reply.highlighted {
+    background: var(--theme_default_postbghighlight);
+}
+
 html[data-theme=nightmode] {
     --theme_default_bg: rgb(21, 32, 43);
     --theme_default_postbg: #192734;
@@ -107,17 +140,6 @@ span.heading {
     font-size: 12pt;
     font-weight: bold;
 }
-
-textarea#body {
-    height: 136px;
-    width: 518px;
-}
-
-textarea.text_body {
-    height: 136px;
-    width: 518px;
-}
-
 
 html, body {
     background: none;
@@ -406,9 +428,13 @@ h1 {
 }
 
 .pages {
-    background: rgba(204, 204, 204, 0.32) !important;
-    width: 100%;
-    color: #707070 !important;
+    background: var(--theme_default_border) !important;
+    width: auto !important;
+    display: block !important;
+    margin-top: 45px !important;
+    color: var(--theme_default_alttext) !important;
+    border: none !important;
+    border-radius: 5px !important;
 }
 
 div.banner {
@@ -741,12 +767,6 @@ span.public_ban, span.toolong {
     padding: 15px 0px 6px;
 }
 
-
-form table tr th {
-    display: none;
-}
-
-
 @media only screen and (max-device-width: 960px) {
     form table {
         width: 100%;
@@ -849,11 +869,12 @@ div.ban {
 }
 
 div.ban:hover {
-    background-color: #e3e3e3;
+    background-color: var(--theme_default_postbg);
     cursor: pointer;
     -webkit-box-shadow: 0 0 18px -3px rgb(0 0 0 / 14%);
     box-shadow: 0 0 18px -3px rgb(0 0 0 / 14%);
 }
+
 div.ban h2 {
     background: none;
     font-size: 11pt;
@@ -866,22 +887,22 @@ div.ban h2 {
 }
 
 button, input[type=button], input[type=submit] {
-    border: 1px dotted #ccc;
+    border: 1px dotted var(--theme_default_btnborder);
     font-weight: 700;
     padding: 0 15px;
     height: 20px;
-    color: #f60;
-    background-color: #ddd;
+    color: var(--theme_default_btntext);
+    background-color: var(--theme_default_btnbg);
     cursor: pointer;
     border-radius: 3px;
     margin-left: 5px;
 }
 
 button:hover, input[type=button]:hover, input[type=submit]:hover {
-    border: 1px solid #ccc;
+    border: 1px solid var(--theme_default_btnborder);
     font-weight: 800;
-    color: #ff7920;
-    background-color: #d7d7d7;
+    color: var(--theme_default_btntext);
+    background-color: var(--theme_default_btnbghover);
     cursor: pointer;
 }
 
@@ -972,4 +993,14 @@ form[name="post"] {
     padding: 10px;
     width: 128px !important;
     height: 128px !important;
+}
+
+#quick-reply table {
+    border-collapse: collapse;
+    background: var(--theme_default_postbg) !important;
+    border-style: solid;
+    border-width: 1px;
+    border-color: var(--theme_default_border) !important;
+    margin: 0;
+    width: 100%;
 }

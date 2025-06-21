@@ -87,7 +87,7 @@ foreach($boards as &$board) {
 	
 	if($options['full']) {
 		$query = query(sprintf("SELECT `id` FROM ``posts_%s``", $board['uri'])) or error(db_error());
-		while($post = $query->fetch()) {
+		while($post = $query->fetch(PDO::FETCH_ASSOC)) {
 			if(!$options['quiet'])
 				echo "Rebuilding #{$post['id']}...\n";
 			rebuildPost($post['id']);
@@ -95,7 +95,7 @@ foreach($boards as &$board) {
 	}
 	
 	$query = query(sprintf("SELECT `id` FROM ``posts_%s`` WHERE `thread` IS NULL", $board['uri'])) or error(db_error());
-	while($post = $query->fetch()) {
+	while($post = $query->fetch(PDO::FETCH_ASSOC)) {
 		if(!$options['quiet'])
 			echo "Rebuilding #{$post['id']}...\n";
 		buildThread($post['id']);

@@ -28,7 +28,10 @@ class ImageWEBP extends ImageBase
     }
 }
 class Image {
-	public $src, $format, $image, $size;
+	public string $src;
+	public string|false $format;
+	public ImageBase $image;
+	public object $size;
 	public function __construct($src, $format = false, $size = false) {
 		global $config;
 		
@@ -122,6 +125,12 @@ class Image {
 }
 
 class ImageGD {
+	public int $width = 0;
+	public int $height = 0;
+	public int $original_width = 0;
+	public int $original_height = 0;
+	public mixed $original = null;
+	public mixed $image = null;
 	public function GD_create() {
 		$this->image = imagecreatetruecolor($this->width, $this->height);
 	}
@@ -135,7 +144,8 @@ class ImageGD {
 }
 
 class ImageBase extends ImageGD {
-	public $image, $src, $original, $original_width, $original_height, $width, $height;
+	public string $src = '';
+	public string|false $format = false;
 	public function valid() {
 		return (bool)$this->image;
 	}
@@ -254,7 +264,9 @@ class ImageImagick extends ImageBase {
 
 
 class ImageConvert extends ImageBase {
-	public $width, $height, $temp, $gm = false, $gifsicle = false;
+	public ?string $temp = null;
+	public bool $gm = false;
+	public bool $gifsicle = false;
 	
 	public function init() {
 		global $config;
@@ -321,7 +333,9 @@ class ImageConvert extends ImageBase {
 		return $this->height;
 	}
 	public function destroy() {
-		@unlink($this->temp);
+		if (file_exists($this->temp)) {
+			@unlink($this->temp);
+		}
 		$this->temp = false;
 	}
 	public function resize() {

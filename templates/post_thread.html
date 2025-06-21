@@ -1,6 +1,3 @@
-{% filter remove_whitespace %}
-{# tabs and new lines will be ignored #}
-
 <div class="thread" id="thread_{{ post.id }}" data-board="{{ board.uri }}">
 {% if not index %}<a id="{{ post.id }}" class="post_anchor"></a>{% endif %}
 
@@ -60,7 +57,7 @@
 	</p>
 	{% include 'post/fileinfo.html' %}
 	<div class="body">
-		{% endfilter %}{% if index %}{{ post.body|truncate_body(post.link)|emoji }}{% else %}{{ post.body|emoji }}{% endif %}{% filter remove_whitespace %}
+		{% if index %}{{ post.body|truncate_body(post.link)|emoji }}{% else %}{{ post.body|emoji }}{% endif %}
 		{% if post.modifiers['ban message'] %}
 			{{ config.mod.ban_message|sprintf(post.modifiers['ban message']) }}
 		{% endif %}
@@ -88,7 +85,7 @@
 	{% endif %}
 {% if not index %}
 {% endif %}
-</div>{% endfilter %}
+</div>
 {% set hr = post.hr %}
 {% for post in post.posts %}
 	{% include 'post_reply.html' %}

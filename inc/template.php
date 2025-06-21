@@ -11,16 +11,19 @@ $twig = false;
 
 function load_twig() {
 	global $twig, $config;
+
+	$cache_dir = "{$config['dir']['template']}/cache";
+
 	$loader = new \Twig\Loader\FilesystemLoader($config['dir']['template']);
 	$loader->setPaths($config['dir']['template']);
-	$twig = new \Twig\Environment($loader, array(
+	$twig = new Twig\Environment($loader, array(
 		'autoescape' => false,
-		'cache' => is_writable('templates') || (is_dir('templates/cache') && is_writable('templates/cache')) ?
-			"{$config['dir']['template']}/cache" : false,
-		'debug' => $config['debug']
+		'cache' => is_writable('templates/') || (is_dir($cache_dir) && is_writable($cache_dir)) ?
+			new TinyboardFilesystem($cache_dir) : false,
+		'debug' => $config['debug'],
 	));
 	$twig->addExtension(new Twig_Extensions_Extension_Tinyboard());
-	$twig->addExtension(new Twig_Extensions_Extension_I18n());
+	$twig->addExtension(new I18nExtension());
 	$twig->addExtension(new ByteConversionTwigExtension());
 	$twig->addExtension(new CssCompressTwigExtension());
 	$twig->addExtension(new EmojiExtension());
@@ -49,8 +52,8 @@ function Element($templateFile, array $options) {
 			$_debug['build_pages'] = $build_pages;
 		$_debug['included'] = get_included_files();
 		$_debug['memory'] = round(memory_get_usage(true) / (1024 * 1024), 2) . ' MiB';
-		$_debug['time']['db_queries'] = '~' . round($_debug['time']['db_queries'] * 1000, 2) . 'ms';
-		$_debug['time']['exec'] = '~' . round($_debug['time']['exec'] * 1000, 2) . 'ms';
+		$_debug['time']['db_queries'] = '~' . round($_debug['time']['db_queries'] ?? 0 * 1000, 2) . 'ms';
+		$_debug['time']['exec'] = '~' . round($_debug['time']['exec'] ?? 0 * 1000, 2) . 'ms';
 		$options['body'] .=
 			'<h3>Debug</h3><pre style="white-space: pre-wrap;font-size: 10px;">' .
 				str_replace("\n", '<br/>', utf8tohtml(print_r($_debug, true))) .
@@ -58,7 +61,7 @@ function Element($templateFile, array $options) {
 	}
 	
 	// Read the template file
-	if (@file_get_contents("{$config['dir']['template']}/${templateFile}")) {
+	if (@file_get_contents("{$config['dir']['template']}/{$templateFile}")) {
         $body = $twig->render($templateFile, $options);
         
         if ($config['minify_html'] && preg_match('/\.html$/', $templateFile)) {
@@ -67,7 +70,7 @@ function Element($templateFile, array $options) {
 		
 		return $body;
 	} else {
-		throw new Exception("Template file '${templateFile}' does not exist or is empty in '{$config['dir']['template']}'!");
+		throw new Exception(sprintf("Template file '%s' does not exist or is empty in '%s'!", $templateFile, $config['dir']['template']));
 	}
 }
 

@@ -31,7 +31,7 @@
 		#quick-reply {\
 			position: fixed;\
 			right: 5%;\
-			top: 5%;\
+			top: 15%;\
 			float: right;\
 			display: block;\
 			padding: 0 0 0 0;\
@@ -118,7 +118,9 @@
 		}\
 		@media screen and (max-width: 400px) {\
 			#quick-reply {\
-				display: none !important;\
+				top: 20%;\
+				right: 2%;\
+				width: 280px;\
 			}\
 		}\
 		</style>').appendTo($('head'));
@@ -349,11 +351,87 @@
             });
             $postForm.find('th .handle').css('cursor', 'move');
         }
+        
+        // Add touch support for mobile devices
+        var isDragging = false;
+        var startX, startY, startTop, startRight;
+        
+        $postForm.find('th .handle').on('touchstart', function(e) {
+            // Don't start dragging if touching the close button
+            if ($(e.target).hasClass('close-btn') || $(e.target).closest('.close-btn').length > 0) {
+                return;
+            }
+            
+            isDragging = true;
+            var touch = e.originalEvent.touches[0];
+            startX = touch.clientX;
+            startY = touch.clientY;
+            startTop = parseInt($postForm.css('top'));
+            startRight = parseInt($postForm.css('right'));
+            e.preventDefault();
+        });
+        
+        $(document).on('touchmove', function(e) {
+            if (!isDragging) return;
+            
+            var touch = e.originalEvent.touches[0];
+            var deltaX = startX - touch.clientX;
+            var deltaY = touch.clientY - startY;
+            
+            var newTop = startTop + deltaY;
+            var newRight = startRight + deltaX;
+            
+            // More lenient bounds checking for mobile
+            var minRight = -50; // Allow some overflow to the right
+            var maxRight = $(window).width() - 100; // Keep at least 100px visible
+            var minTop = 0;
+            var maxTop = Math.max($(window).height() - 100, 100); // Keep at least 100px visible
+            
+            if (newTop < minTop) newTop = minTop;
+            if (newRight < minRight) newRight = minRight;
+            if (newTop > maxTop) newTop = maxTop;
+            if (newRight > maxRight) newRight = maxRight;
+            
+            $postForm.css({
+                'top': newTop + 'px',
+                'right': newRight + 'px',
+                'left': 'auto'
+            });
+            
+            e.preventDefault();
+        });
+        
+        $(document).on('touchend', function(e) {
+            if (isDragging) {
+                isDragging = false;
+                // Save position
+                var offset = {
+                    top: parseInt($postForm.css('top')),
+                    right: parseInt($postForm.css('right'))
+                };
+                localStorage.quickReplyPosition = JSON.stringify(offset);
+            }
+        });
 
         $postForm.find('th .close-btn').click(function () {
             $origPostForm.find('textarea[name="body"]').attr('id', 'body');
             $postForm.remove();
             floating_link();
+        });
+        
+        // Add touch support for close button on mobile
+        $postForm.find('th .close-btn').on('touchstart', function(e) {
+            e.stopPropagation(); // Prevent dragging from starting
+        });
+        
+        $postForm.find('th .close-btn').on('touchend', function(e) {
+            if (!isDragging) {
+                $origPostForm.find('textarea[name="body"]').attr('id', 'body');
+                $postForm.remove();
+                floating_link();
+                e.preventDefault();
+                e.stopPropagation();
+            }
         });
 
         // Fix bug when table gets too big for form. Shouldn't exist, but crappy CSS etc.
@@ -382,6 +460,43 @@
                 if ($('link#stylesheet').attr('href')) {
                     $('link#stylesheet')[0].onload = do_css;
                 }
+            });
+            
+            // Handle virtual keyboard appearance/disappearance more intelligently
+            var initialHeight = $(window).height();
+            $(window).on('resize', function() {
+                var currentHeight = $(window).height();
+                var heightDifference = initialHeight - currentHeight;
+                
+                // Only adjust position if height changed significantly (keyboard appeared)
+                // and we're on mobile
+                if ($(window).width() <= 500 && heightDifference > 150 && localStorage.quickReplyPosition) {
+                    setTimeout(function() {
+                        var savedOffset = JSON.parse(localStorage.quickReplyPosition);
+                        // Keep form visible when keyboard appears
+                        var maxTop = currentHeight - 100;
+                        if (savedOffset.top > maxTop) {
+                            $postForm.css({
+                                'top': maxTop + 'px',
+                                'right': savedOffset.right + 'px',
+                                'left': 'auto'
+                            });
+                        }
+                    }, 100);
+                } else if (heightDifference < -100) {
+                    // Keyboard disappeared, restore original position
+                    if (localStorage.quickReplyPosition) {
+                        setTimeout(function() {
+                            var savedOffset = JSON.parse(localStorage.quickReplyPosition);
+                            $postForm.css({
+                                'top': savedOffset.top + 'px',
+                                'right': savedOffset.right + 'px',
+                                'left': 'auto'
+                            });
+                        }, 100);
+                    }
+                }
+                initialHeight = currentHeight;
             });
         });
     };

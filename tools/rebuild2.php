@@ -92,7 +92,7 @@ function doboard($board) {
 	
 	if($options['postmarkup']) {
 		$query = query(sprintf("SELECT `id` FROM ``posts_%s``", $board['uri'])) or error(db_error());
-		while($post = $query->fetch()) {
+		while($post = $query->fetch(PDO::FETCH_ASSOC)) {
 			echo "(/{$board['uri']}/) Rebuilding #{$post['id']}...\n";
 			rebuildPost($post['id']);
 		}
@@ -100,7 +100,7 @@ function doboard($board) {
 	
 	if ($options['threads']) {
 		$query = query(sprintf("SELECT `id` FROM ``posts_%s`` WHERE `thread` IS NULL", $board['uri'])) or error(db_error());
-		while($post = $query->fetch()) {
+		while($post = $query->fetch(PDO::FETCH_ASSOC)) {
 			echo "(/{$board['uri']}/) Rebuilding #{$post['id']}...\n";
 			@buildThread($post['id']);
 		}

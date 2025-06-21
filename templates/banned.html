@@ -1,5 +1,3 @@
-{% filter remove_whitespace %}
-{# Automatically removes unnecessary whitespace #}
 <div class="ban">
 	{% if ban.expires and time() >= ban.expires %}
 		<h2>{% trans %}You were banned! ;_;{% endtrans %}</h2>
@@ -141,4 +139,3 @@
 		{% endif %}
 	{% endif %}
 </div>
-{% endfilter %}

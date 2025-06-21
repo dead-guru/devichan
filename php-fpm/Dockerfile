@@ -1,5 +1,5 @@
 FROM composer AS composer
-FROM php:8.1-fpm-bullseye
+FROM php:8.4-fpm-bullseye
 COPY --from=composer /usr/bin/composer /usr/bin/composer
 RUN apt-get update && apt-get install -y \
         zlib1g-dev libicu-dev g++ \

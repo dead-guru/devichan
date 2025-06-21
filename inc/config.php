@@ -61,6 +61,26 @@
 	// Use syslog() for logging all error messages and unauthorized login attempts.
 	$config['syslog'] = false;
 
+    $config['log_system'] = [
+        /*
+         * Log all error messages and unauthorized login attempts.
+         * Can be "syslog", "error_log" (default), "file", or "stderr".
+         */
+        'type' => 'error_log',
+        // The application name used by the logging system. Defaults to "tinyboard" for backwards compatibility.
+        'name' => 'tinyboard',
+        /*
+         * Only relevant if 'log_system' is set to "syslog". If true, double print the logs also in stderr. Defaults to
+         * false.
+         */
+        'syslog_stderr' => false,
+        /*
+         * Only relevant if "log_system" is set to `file`. Sets the file that vichan will log to. Defaults to
+         * '/var/log/vichan.log'.
+         */
+        'file_path' => '/var/log/vichan.log',
+    ];
+
 	// Use `host` via shell_exec() to lookup hostnames, avoiding query timeouts. May not work on your system.
 	// Requires safe_mode to be disabled.
 	$config['dns_system'] = false;
@@ -134,7 +154,12 @@
 	// Redis server to use. Location, port, password, database id.
 	// Note that vichan may clear the database at times, so you may want to pick a database id just for
 	// vichan to use.
-	$config['cache']['redis'] = array('localhost', 6379, '', 1);
+    $config['cache']['redis'] = array(
+        'host' => 'localhost',
+        'port' => 6379,
+        'password' => '',
+        'database' => 1
+    );
 
 	// EXPERIMENTAL: Should we cache configs? Warning: this changes board behaviour, i'd say, a lot.
 	// If you have any lambdas/includes present in your config, you should move them to instance-functions.php
@@ -154,29 +179,41 @@
  */
 
 	// Used for moderation login.
-	$config['cookies']['mod'] = 'mod';
-
-	// Used for communicating with Javascript; telling it when posts were successful.
-	$config['cookies']['js'] = 'serv';
-
-	// Cookies path. Defaults to $config['root']. If $config['root'] is a URL, you need to set this. Should
-	// be '/' or '/board/', depending on your installation.
-	// $config['cookies']['path'] = '/';
-	// Where to set the 'path' parameter to $config['cookies']['path'] when creating cookies. Recommended.
-	$config['cookies']['jail'] = true;
-
-	// How long should the cookies last (in seconds). Defines how long should moderators should remain logged
-	// in (0 = browser session).
-	$config['cookies']['expire'] = 60 * 60 * 24 * 30 * 6; // ~6 months
-
-	// Make this something long and random for security.
-	$config['cookies']['salt'] = 'abcdefghijklmnopqrstuvwxyz09123456789!@#$%^&*()';
-
-	// Whether or not you can access the mod cookie in JavaScript. Most users should not need to change this.
-	$config['cookies']['httponly'] = true;
-
-	// Used to salt secure tripcodes ("##trip") and poster IDs (if enabled).
-	$config['secure_trip_salt'] = ')(*&^%$#@!98765432190zyxwvutsrqponmlkjihgfedcba';
+    // Used for moderation login.
+    $config['cookies']['mod'] = 'mod';
+    
+    // Used for communicating with Javascript; telling it when posts were successful.
+    $config['cookies']['js'] = 'serv';
+    
+    // Cookies path. Defaults to $config['root']. If $config['root'] is a URL, you need to set this. Should
+    // be '/' or '/board/', depending on your installation.
+    // $config['cookies']['path'] = '/';
+    // Where to set the 'path' parameter to $config['cookies']['path'] when creating cookies. Recommended.
+    $config['cookies']['jail'] = true;
+    
+    // How long should the cookies last (in seconds). Defines how long should moderators should remain logged
+    // in (0 = browser session).
+    $config['cookies']['expire'] = 60 * 60 * 24 * 7; // 1 week.
+    
+    // Make this something long and random for security.
+    $config['cookies']['salt'] = 'abcdefghijklmnopqrstuvwxyz09123456789!@#$%^&*()';
+    
+    // Whether or not you can access the mod cookie in JavaScript. Most users should not need to change this.
+    $config['cookies']['httponly'] = true;
+    
+    // Do not allow logins via unsecure connections.
+    // 0 = off. Allow logins on unencrypted HTTP connections. Should only be used in testing environments.
+    // 1 = on, trust HTTP headers. Allow logins on (at least reportedly partial) HTTPS connections. Use this only if you
+    // use a proxy, CDN or load balancer via an unencrypted connection. Be sure to filter 'HTTP_X_FORWARDED_PROTO' in
+    // the remote server, since an attacker could inject the header from the client.
+    // 2 = on, do not trust HTTP headers. Secure default, allow logins only on HTTPS connections.
+    $config['cookies']['secure_login_only'] = 2;
+    
+    // Used to salt secure tripcodes ("##trip") and poster IDs (if enabled).
+    $config['secure_trip_salt'] = ')(*&^%$#@!98765432190zyxwvutsrqponmlkjihgfedcba';
+    
+    // Used to salt poster passwords.
+    $config['secure_password_salt'] = 'wKJSb7M5SyzMcFWD2gPO3j2RYUSO9B789!@#$%^&*()';
 
 /*
  * ====================
@@ -483,6 +520,9 @@
 	$config['strip_superfluous_returns'] = true;
 	// Strip combining characters from Unicode strings (eg. "Zalgo").
 	$config['strip_combining_chars'] = true;
+    // Maximum number of combining characters in a row allowed in Unicode strings so that they can still be used in moderation.
+    // Requires $config['strip_combining_chars'] = true;
+    $config['max_combining_chars'] = 3;
 
 	// Maximum post body length.
 	$config['max_body'] = 1800;
@@ -734,12 +774,12 @@
 // Repair markup with HTML Tidy. This may be slower, but it solves nesting mistakes. vichan, at the
 	// time of writing this, can not prevent out-of-order markup tags (eg. "**''test**'') without help from
 	// HTML Tidy.
-	$config['markup_repair_tidy'] = false;
+	//$config['markup_repair_tidy'] = false;
 
 	// Use 'bare' config option of tidy::repairString.
 	// This option replaces some punctuation marks with their ASCII counterparts.
 	// Dashes are replaced with (single) hyphens, for example.
-	$config['markup_repair_tidy_bare'] = true;
+	//$config['markup_repair_tidy_bare'] = true;
 
 	// Always regenerate markup. This isn't recommended and should only be used for debugging; by default,
 	// vichan only parses post markup when it needs to, and keeps post-markup HTML in the database. This
@@ -954,6 +994,9 @@
 
 	// Number of reports you can create at once.
 	$config['report_limit'] = 3;
+
+    // Maximum number of characters per report.
+    $config['report_max_length'] = 30;
 
 	// Allow unfiltered HTML in board subtitle. This is useful for placing icons and links.
 	$config['allow_subtitle_html'] = false;
@@ -1264,6 +1307,9 @@
 	// If you use the CLI tools, it would be wise to override this setting.
 	$config['domain'] = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') ? 'https://' : 'http://';
 	$config['domain'] .= isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : 'localhost';
+	
+	// Override domain for internal Docker container communication
+	$config['internal_domain'] = 'http://cnginx';
 
 	// If for some reason the folders and static HTML index files aren't in the current working direcotry,
 	// enter the directory path here. Otherwise, keep it false.

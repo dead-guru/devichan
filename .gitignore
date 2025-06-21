@@ -8,6 +8,10 @@
 /*/config.php
 /*.html
 
+.cache
+
+*.gz
+
 *.webmanifest
 
 # include some files though

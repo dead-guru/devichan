@@ -27,7 +27,7 @@ class CssCompressTwigExtension extends Twig\Extension\AbstractExtension
     {
         global $config;
         
-        if($config['minify_css'] === false) {
+        if(!array_key_exists('minify_css', $config) or $config['minify_css'] === false) {
             return $filepath;
         }
         

@@ -16,7 +16,7 @@ print("\n");
 
 
 $q = query("SELECT uri FROM ``boards``");
-while ($f = $q->fetch()) {
+while ($f = $q->fetch(PDO::FETCH_ASSOC)) {
 	printf("%10s || ", $f['uri']);
 	foreach ($variants as $iter) {
 		list($term, $time) = $iter;
