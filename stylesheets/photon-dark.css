@@ -141,17 +141,6 @@ span.heading {
     font-weight: bold;
 }
 
-textarea#body {
-    height: 136px;
-    width: 518px;
-}
-
-textarea.text_body {
-    height: 136px;
-    width: 518px;
-}
-
-
 html, body {
     background: none;
     background-color: #15202B;
@@ -439,9 +428,13 @@ h1 {
 }
 
 .pages {
-    background: rgba(204, 204, 204, 0.32) !important;
-    width: 100%;
-    color: #707070 !important;
+    background: var(--theme_default_border) !important;
+    width: auto !important;
+    display: block !important;
+    margin-top: 45px !important;
+    color: var(--theme_default_alttext) !important;
+    border: none !important;
+    border-radius: 5px !important;
 }
 
 div.banner {
@@ -876,11 +869,12 @@ div.ban {
 }
 
 div.ban:hover {
-    background-color: #e3e3e3;
+    background-color: var(--theme_default_postbg);
     cursor: pointer;
     -webkit-box-shadow: 0 0 18px -3px rgb(0 0 0 / 14%);
     box-shadow: 0 0 18px -3px rgb(0 0 0 / 14%);
 }
+
 div.ban h2 {
     background: none;
     font-size: 11pt;

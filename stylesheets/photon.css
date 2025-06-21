@@ -457,7 +457,8 @@ div.pages {
     display: block;
     margin-top: 45px;
     color: var(--theme_default_alttext) !important;
-    border: none
+    border: none;
+    border-radius: 5px;
 }
 
 div.banner {

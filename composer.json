@@ -8,6 +8,7 @@
     "ext-gd": ">=8.4",
     "ext-curl": ">=8.4",
     "ext-pdo": ">=8.4",
+    "ext-openssl": ">=8.4",
     "ext-fileinfo": ">=8.4",
     "twig/twig": "^3",
     "lifo/ip": "^1.1",
@@ -35,7 +36,6 @@
       "inc/mod/auth.php",
       "inc/lock.php",
       "inc/queue.php",
-      "inc/polyfill.php",
       "inc/functions.php"
     ]
   },

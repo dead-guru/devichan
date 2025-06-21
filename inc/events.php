@@ -1,12 +1,13 @@
 <?php
 
+declare(strict_types=1);
 /*
  *  Copyright (c) 2010-2013 Tinyboard Development Group
  */
 
 defined('TINYBOARD') or exit;
 
-function event() {
+function event(...$args): bool|string {
 	global $events;
 	
 	$args = func_get_args();
@@ -28,18 +29,17 @@ function event() {
 	return false;
 }
 
-function event_handler($event, $callback) {
+function event_handler(string $event, callable|string $callback): void {
 	global $events;
 	
 	if (!isset($events[$event]))
-		$events[$event] = array();
+		$events[$event] = [];
 	
 	$events[$event][] = $callback;
 }
 
-function reset_events() {
+function reset_events(): void {
 	global $events;
 	
-	$events = array();
+	$events = [];
 }
-

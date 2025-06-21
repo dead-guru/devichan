@@ -734,12 +734,12 @@
 // Repair markup with HTML Tidy. This may be slower, but it solves nesting mistakes. vichan, at the
 	// time of writing this, can not prevent out-of-order markup tags (eg. "**''test**'') without help from
 	// HTML Tidy.
-	$config['markup_repair_tidy'] = false;
+	//$config['markup_repair_tidy'] = false;
 
 	// Use 'bare' config option of tidy::repairString.
 	// This option replaces some punctuation marks with their ASCII counterparts.
 	// Dashes are replaced with (single) hyphens, for example.
-	$config['markup_repair_tidy_bare'] = true;
+	//$config['markup_repair_tidy_bare'] = true;
 
 	// Always regenerate markup. This isn't recommended and should only be used for debugging; by default,
 	// vichan only parses post markup when it needs to, and keeps post-markup HTML in the database. This
@@ -1264,6 +1264,9 @@
 	// If you use the CLI tools, it would be wise to override this setting.
 	$config['domain'] = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') ? 'https://' : 'http://';
 	$config['domain'] .= isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : 'localhost';
+	
+	// Override domain for internal Docker container communication
+	$config['internal_domain'] = 'http://cnginx';
 
 	// If for some reason the folders and static HTML index files aren't in the current working direcotry,
 	// enter the directory path here. Otherwise, keep it false.
