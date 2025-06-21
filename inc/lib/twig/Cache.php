@@ -1,7 +1,5 @@
 <?php
 
-namespace Vichan\Twig\FilesystemCache;
-
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use Twig\Cache\FilesystemCache;

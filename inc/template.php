@@ -19,7 +19,7 @@ function load_twig() {
 	$twig = new Twig\Environment($loader, array(
 		'autoescape' => false,
 		'cache' => is_writable('templates/') || (is_dir($cache_dir) && is_writable($cache_dir)) ?
-			new Vichan\Twig\FilesystemCache\TinyboardFilesystem($cache_dir) : false,
+			new TinyboardFilesystem($cache_dir) : false,
 		'debug' => $config['debug'],
 	));
 	$twig->addExtension(new Twig_Extensions_Extension_Tinyboard());
