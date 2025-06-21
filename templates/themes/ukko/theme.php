@@ -46,7 +46,7 @@
 
 			$count = 0;
 			$threads = array();
-			while($post = $query->fetch()) {
+			while($post = $query->fetch(PDO::FETCH_ASSOC)) {
 
 				if(!isset($threads[$post['board']])) {
 					$threads[$post['board']] = 1;

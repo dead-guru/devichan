@@ -47,7 +47,7 @@ msgstr "показати"
 #: ../../../../js/toggle-locked-threads.js:53
 #: ../../../../js/toggle-locked-threads.js:70
 msgid "Show locked threads"
-msgstr "Показати закріплені нитки"
+msgstr "Показати закріплені треди"
 
 #: ../../../../js/toggle-locked-threads.js:39
 #: ../../../../js/toggle-locked-threads.js:54
@@ -59,7 +59,7 @@ msgstr "Показати закріплені нитки"
 #: ../../../../js/toggle-locked-threads.js:53
 #: ../../../../js/toggle-locked-threads.js:70
 msgid "Hide locked threads"
-msgstr "Приховати закріплені нитки"
+msgstr "Приховати закріплені треди"
 
 #: ../../../../js/upload-selection.js:32 ../../../../js/upload-selection.js:45
 #: ../../../../js/upload-selection.js:53 ../../../../js/upload-selection.js:55
@@ -132,7 +132,7 @@ msgstr "Повідомити адміністрацію"
 #: ../../../../js/expand.js:20 ../../../../js/expand.js:22
 #: ../../../../js/own-board.js:97
 msgid "Click reply to view."
-msgstr "Натисніть «Відповісти», щоб переглянути нитку повністю"
+msgstr "Натисніть «Відповісти», щоб переглянути тред повністю"
 
 #: ../../../../js/expand.js:20 ../../../../js/expand.js:22
 #: ../../../../js/live-index.js:72 ../../../../js/live-index.js:83
@@ -313,7 +313,7 @@ msgstr "{0} користувачів"
 #: ../../../../templates/themes/ukko/ukko.js:52
 #: ../../../../templates/themes/ukko/ukko.js:63
 msgid "(hide threads from this board)"
-msgstr "(приховати нитки цієї дошки)"
+msgstr "(приховати треди цієї дошки)"
 
 #: ../../../../templates/themes/ukko/ukko.js:32
 #: ../../../../templates/themes/ukko/ukko.js:44
@@ -322,13 +322,13 @@ msgstr "(приховати нитки цієї дошки)"
 #: ../../../../templates/themes/ukko/ukko.js:56
 #: ../../../../templates/themes/ukko/ukko.js:68
 msgid "(show threads from this board)"
-msgstr "(показати нитки цієї дошки)"
+msgstr "(показати треди цієї дошки)"
 
 #: ../../../../templates/themes/ukko/ukko.js:57
 #: ../../../../templates/themes/ukko/ukko.js:58
 #: ../../../../templates/themes/ukko/ukko.js:81
 msgid "No more threads to display"
-msgstr "Було показано всі нитки"
+msgstr "Було показано всі треди"
 
 #: ../../../../templates/themes/ukko/ukko.js:79
 #: ../../../../templates/themes/ukko/ukko.js:80
@@ -406,7 +406,7 @@ msgstr "Швидка відповідь"
 #: ../../../../js/watch.js:361 ../../../../js/watch.js:362
 #: ../../../../js/watch.js:357 ../../../../js/watch.js:358
 msgid "Stop watching this thread"
-msgstr "Припинити стеження за ниткою"
+msgstr "Припинити стеження за тредом"
 
 #: ../../../../js/watch.js:249 ../../../../js/watch.js:250
 #: ../../../../js/watch.js:288 ../../../../js/watch.js:289
@@ -414,7 +414,7 @@ msgstr "Припинити стеження за ниткою"
 #: ../../../../js/watch.js:361 ../../../../js/watch.js:362
 #: ../../../../js/watch.js:357 ../../../../js/watch.js:358
 msgid "Watch this thread"
-msgstr "Стежити за ниткою"
+msgstr "Стежити за тредом"
 
 #: ../../../../js/watch.js:260 ../../../../js/watch.js:261
 #: ../../../../js/watch.js:269 ../../../../js/watch.js:299
@@ -836,7 +836,7 @@ msgstr "Оновлення…"
 #: ../../../../js/auto-reload.js:183 ../../../../js/auto-reload.js:190
 #, python-brace-format
 msgid "Thread updated with {0} new post(s)"
-msgstr "Нитку оновлено, зʼявилось {0} допис(ів)"
+msgstr "Тред оновлено, зʼявилось {0} допис(ів)"
 
 #: ../../../../js/auto-reload.js:185 ../../../../js/auto-reload.js:192
 msgid "No new posts found"
@@ -845,7 +845,7 @@ msgstr "Нових дописів немає"
 # Що мається на увазі під «pruned»?
 #: ../../../../js/auto-reload.js:191 ../../../../js/auto-reload.js:198
 msgid "Thread deleted or pruned"
-msgstr "Нитку видалено або вилучено"
+msgstr "Тред видалено або вилучено"
 
 #: ../../../../js/auto-reload.js:199 ../../../../js/auto-reload.js:206
 msgid "Error: "

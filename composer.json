@@ -3,17 +3,17 @@
   "description": "devichan imageboard",
   "type": "project",
   "require": {
-    "php": ">=8.1",
-    "ext-mbstring": ">=8.1",
-    "ext-gd": ">=8.1",
-    "ext-curl": ">=8.1",
-    "ext-pdo": ">=8.1",
-    "ext-fileinfo": ">=8.1",
-    "twig/twig": "^2",
+    "php": ">=8.4",
+    "ext-mbstring": ">=8.4",
+    "ext-gd": ">=8.4",
+    "ext-curl": ">=8.4",
+    "ext-pdo": ">=8.4",
+    "ext-fileinfo": ">=8.4",
+    "twig/twig": "^3",
     "lifo/ip": "^1.1",
     "gettext/gettext": "^1.0",
     "geoip/geoip": "^1.17",
-    "dapphp/securimage": "^4.0",
+    "dapphp/securimage": "dev-nextgen",
     "ext-gettext": "*",
     "ext-imagick": "*",
     "mrclay/jsmin-php": "^2.4",
@@ -39,6 +39,12 @@
       "inc/functions.php"
     ]
   },
+  "repositories": [
+      {
+          "type": "vcs",
+          "url": "https://github.com/alex300/securimage.git"
+      }
+  ],
   "license": "Tinyboard + vichan",
   "authors": [
     {

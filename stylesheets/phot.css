@@ -84,7 +84,7 @@ a {
     cursor: pointer;
 }
 
-a:hover {
+a:hover, a:visited:hover {
     color: var(--theme_default_hover);
 }
 
@@ -94,7 +94,7 @@ a[href*="youtube.com"] {
 }
 
 a, a:visited {
-    color: var(--theme_default_alttext);
+    color: var(--theme_default_link);
 }
 
 div.ban, div.boardlist {
@@ -163,7 +163,7 @@ div.blotter {
 }
 
 #thread-links a:hover, #thread-links_header a:hover, .intro a.post_no:hover, .logo, .options_tab_icon.active, a:hover, h2 {
-    color: var(--theme_default_link);
+    color: var(--theme_default_hover);
 }
 
 div.title, form {
@@ -842,6 +842,10 @@ div.post.reply.highlighted {
     color: var(--theme_default_hover);
 }
 
+form table tr th {
+    display: none;
+}
+
 @media only screen and (max-device-width: 960px) {
 
     form table {
@@ -1004,11 +1008,9 @@ button:hover, input[type=button]:hover, input[type=submit]:hover {
 }
 
 .boards__title {
-     color: var(--theme_default_hover);
+     color: var(--theme_default_alttext);
     padding: 0 0 8px 0;
     font-weight: 700;
-    font-size: 1.1rem;
-    text-transform: uppercase;
 }
 
 .boards__ul a {
@@ -1113,15 +1115,5 @@ form[name="post"] {
     padding: 10px;
     width: 128px !important;
     height: 128px !important;
-}
-
-#quick-reply table {
-    border-collapse: collapse;
-    background: var(--theme_default_postbg) !important;
-    border-style: solid;
-    border-width: 1px;
-    border-color: var(--theme_default_border) !important;
-    margin: 0;
-    width: 100%;
 }
 

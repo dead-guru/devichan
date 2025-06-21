@@ -31,6 +31,8 @@ $(function(){
         $(v).val('');
     });
 
+    $("#upload_embed > td > input").val("");
+
     if (enabled_oekaki) {
       if (window.oekaki.initialized) {
         window.oekaki.deinit();

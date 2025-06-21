@@ -163,7 +163,7 @@ function loadConfig() {
 			$config['post_url'] = $config['root'] . $config['file_post'];
 
 
-		if (!isset($config['referer_match']))
+		if (!isset($config['referer_match'])) {
 			if (isset($_SERVER['HTTP_HOST'])) {
                 $host = array_key_exists('raw_host', $config) ? $config['raw_host'] : $_SERVER['HTTP_HOST'];
 				$config['referer_match'] = '/^' .
@@ -192,6 +192,7 @@ function loadConfig() {
 				// CLI mode
 				$config['referer_match'] = '//';
 			}
+		}
 		if (!isset($config['cookies']['path']))
 			$config['cookies']['path'] = &$config['root'];
 
@@ -380,12 +381,12 @@ function verbose_error_handler($errno, $errstr, $errfile, $errline) {
 	if ($errno == E_DEPRECATED && !$config['deprecation_errors'])
 		return false;
 
-	error(utf8tohtml($errstr), true, array(
+	error(utf8tohtml($errstr), true, [
 		'file' => $errfile . ':' . $errline,
 		'errno' => $errno,
 		'error' => $errstr,
 		'backtrace' => array_slice(debug_backtrace(), 1)
-	));
+    ]);
 }
 
 function define_groups() {
@@ -697,7 +698,9 @@ function file_write($path, $data, $simple = false, $skip_purge = false) {
 			//	error("Unable to touch file: $gzpath");
 		}
 		else {
-			@unlink($gzpath);
+			if (file_exists($gzpath)) {
+				@unlink($gzpath);
+			}
 		}
 	}
 
@@ -731,13 +734,17 @@ function file_unlink($path) {
 			$debug['unlink'] = array();
 		$debug['unlink'][] = $path;
 	}
+	if (file_exists($path)) {
+		$ret = @unlink($path);
+	} else {
+		$ret = false;
+	}
 
-	$ret = @unlink($path);
-
-        if ($config['gzip_static']) {
-                $gzpath = "$path.gz";
-
-		@unlink($gzpath);
+	if ($config['gzip_static']) {
+		$gzpath = "$path.gz";
+		if (file_exists($gzpath)) {
+			@unlink($gzpath);
+		}
 	}
 
 	if (isset($config['purge']) && $path[0] != '/' && isset($_SERVER['HTTP_HOST'])) {
@@ -1628,7 +1635,7 @@ function checkMute() {
 
 	if ($config['cache']['enabled']) {
 		// Cached mute?
-		if (($mute = cache::get("mute_${_SERVER['REMOTE_ADDR']}")) && ($mutetime = cache::get("mutetime_${_SERVER['REMOTE_ADDR']}"))) {
+		if (($mute = cache::get("mute_{$_SERVER['REMOTE_ADDR']}")) && ($mutetime = cache::get("mutetime_{$_SERVER['REMOTE_ADDR']}"))) {
 			error(sprintf($config['error']['youaremuted'], $mute['time'] + $mutetime - time()));
 		}
 	}
@@ -1647,8 +1654,8 @@ function checkMute() {
 
 		if ($mute['time'] + $mutetime > time()) {
 			if ($config['cache']['enabled']) {
-				cache::set("mute_${_SERVER['REMOTE_ADDR']}", $mute, $mute['time'] + $mutetime - time());
-				cache::set("mutetime_${_SERVER['REMOTE_ADDR']}", $mutetime, $mute['time'] + $mutetime - time());
+				cache::set("mute_{$_SERVER['REMOTE_ADDR']}", $mute, $mute['time'] + $mutetime - time());
+				cache::set("mutetime_{$_SERVER['REMOTE_ADDR']}", $mutetime, $mute['time'] + $mutetime - time());
 			}
 			// Not expired yet
 			error(sprintf($config['error']['youaremuted'], $mute['time'] + $mutetime - time()));
@@ -2360,6 +2367,9 @@ function defined_flags_accumulate($desired_flags) {
 }
 
 function utf8tohtml($utf8) {
+	if (is_null($utf8)) {
+		return '';
+	}
 	$flags = defined_flags_accumulate(['ENT_QUOTES', 'ENT_SUBSTITUTE', 'ENT_DISALLOWED']);
 	return htmlspecialchars($utf8, $flags, 'UTF-8');
 }
@@ -2765,6 +2775,9 @@ function shell_exec_error($command, $suppress_stdout = false) {
 			'time' => '~' . round($time * 1000, 2) . 'ms',
 			'response' => $return ? $return : null
 		);
+        if (!array_key_exists('exec', $debug['time'])) { // Dirty fix. Need to figure out where this is set initially.
+            $debug['time']['exec'] = 0;
+        }
 		$debug['time']['exec'] += $time;
 	}
 

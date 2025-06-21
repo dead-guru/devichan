@@ -2773,7 +2773,7 @@ function mod_edit_page($id) {
 	$query = prepare('SELECT * FROM ``pages`` WHERE `id` = :id');
 	$query->bindValue(':id', $id);
 	$query->execute() or error(db_error($query));
-	$page = $query->fetch();
+	$page = $query->fetch(PDO::FETCH_ASSOC);
 	
 	if (!$page)
 		error(_('Could not find the page you are trying to edit.'));

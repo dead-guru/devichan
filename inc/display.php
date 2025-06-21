@@ -71,63 +71,63 @@ function createBoardlist($mod=false) {
 	);
 }
 
-function error($message, $priority = true, $debug_stuff = false) {
-	global $board, $mod, $config, $db_error;
-	
-	if ($config['syslog'] && $priority !== false) {
-		// Use LOG_NOTICE instead of LOG_ERR or LOG_WARNING because most error message are not significant.
-		_syslog($priority !== true ? $priority : LOG_NOTICE, $message);
-	}
-	
-	if (defined('STDIN')) {
-		// Running from CLI
-		echo('Error: ' . $message . "\n");
-		debug_print_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
-		die();
-	}
+function error($message, $priority = true, $debug_stuff = []) {
+    global $board, $mod, $config, $db_error;
 
-	if ($config['debug'] && isset($db_error)) {
-		$debug_stuff = array_combine(array('SQLSTATE', 'Error code', 'Error message'), $db_error);
-	}
+    if ($config['syslog'] && $priority !== false) {
+        // Use LOG_NOTICE instead of LOG_ERR or LOG_WARNING because most error message are not significant.
+        _syslog($priority !== true ? $priority : LOG_NOTICE, $message);
+    }
 
-	if ($config['debug']) {
-		$debug_stuff['backtrace'] = debug_backtrace();
-	}
+    if (defined('STDIN')) {
+        // Running from CLI
+        echo('Error: ' . $message . "\n");
+        debug_print_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
+        die();
+    }
 
-	if (isset($_POST['json_response'])) {
-		header('Content-Type: text/json; charset=utf-8');
-		die(json_encode(array(
-			'error' => $message
-		)));
-	} else {
-		header($_SERVER['SERVER_PROTOCOL'] . ' 500 Internal Server Error', true, 500);
-        die(require '500.php');
-	}
+    if ($config['debug'] && isset($db_error)) {
+        $debug_stuff = array_combine(array('SQLSTATE', 'Error code', 'Error message'), $db_error);
+    }
 
-	$pw = $config['db']['password'];
-	$debug_callback = function($item) use (&$debug_callback, $pw) {
-		if (is_array($item)) {
-			$item = array_filter($item, $debug_callback);
-		}
-		return ($item !== $pw || !$pw);
-	};
+    if ($config['debug']) {
+        $debug_stuff['backtrace'] = debug_backtrace();
+    }
+
+    if (isset($_POST['json_response'])) {
+        header('Content-Type: text/json; charset=utf-8');
+        die(json_encode(array(
+            'error' => $message
+        )));
+    }
+    else {
+        header($_SERVER['SERVER_PROTOCOL'] . ' 400 Bad Request');
+    }
+
+    $pw = $config['db']['password'];
+    $debug_callback = function($item) use (&$debug_callback, $pw) {
+        if (is_array($item)) {
+            $item = array_filter($item, $debug_callback);
+        }
+        return ($item !== $pw || !$pw);
+    };
 
 
-	if ($debug_stuff)
-		$debug_stuff = array_filter($debug_stuff, $debug_callback);
+    if ($debug_stuff)
+        $debug_stuff = array_filter($debug_stuff, $debug_callback);
 
-	die(Element($config['file_page_template'], array(
-		'config' => $config,
-		'title' => _('Error'),
-		'subtitle' => _('An error has occured.'),
-		'body' => Element($config['file_error'], array(
-			'config' => $config,
-			'message' => $message,
-			'mod' => $mod,
-			'board' => isset($board) ? $board : false,
-			'debug' => $config['debug'] ? (is_array($debug_stuff) ? str_replace("\n", '&#10;', utf8tohtml(print_r($debug_stuff, true))) : utf8tohtml($debug_stuff)) : null
-		))
-	)));
+    die(Element($config['file_page_template'], array(
+        'config' => $config,
+        'title' => _('Error'),
+        'subtitle' => _('An error has occured.'),
+        'body' => Element($config['file_error'], array(
+            'config' => $config,
+            'message' => $message,
+            'mod' => $mod,
+            'board' => isset($board) ? $board : false,
+            'debug' => $config['debug'] ? (is_array($debug_stuff) ? str_replace("\n", '&#10;', utf8tohtml(print_r($debug_stuff, true))) : utf8tohtml($debug_stuff)) : null
+        ))
+    )));
 }
 
 function loginForm($error=false, $username=false, $redirect=false) {
@@ -339,6 +339,33 @@ function embed_html($link) {
 }
 
 class Post {
+	public int $id;
+	public ?string $subject;
+	public string $name;
+	public string $body;
+	public string $body_nomarkup;
+	public ?string $embed;
+	public $mod;
+	public string $root;
+	public null|array|string $files;
+	public array $modifiers;
+	public ?string $filehash;
+	public ?int $thread;
+	public ?string $email;
+	public ?string $trip;
+	public ?string $capcode;
+	public string $time;
+	public string $ip;
+	public ?string $slug;
+	public bool $hr;
+	public bool $bump;
+	public bool $sticky;
+	public bool $locked;
+	public bool $sage;
+	public int $cycle;
+	public ?string $password;
+	public int $num_files;
+	
 	public function __construct($post, $root=null, $mod=false) {
 		global $config;
 		if (!isset($root))
@@ -399,6 +426,39 @@ class Post {
 };
 
 class Thread {
+	public ?int $thread;
+	public int $id;
+	public ?string $subject;
+	public string $name;
+	public string $body;
+	public string $body_nomarkup;
+	public ?string $embed;
+	public $mod;
+	public string $root;
+	public ?string $email;
+	public ?string $trip;
+	public ?string $capcode;
+	public array $posts;
+	public int $omitted;
+	public int $omitted_images;
+	public null|array|string $files;
+	public int $time;
+	public bool $bump;
+	public bool $sticky;
+	public bool $locked;
+	public bool $sage;
+	public int $cycle;
+	public int $num_files;
+	public ?string $filehash;
+	public string $password;
+	public string $ip;
+	public string $slug;
+	public bool $hr;
+	public array $modifiers;
+
+	public int $images;
+	public int $replies;
+
 	public function __construct($post, $root = null, $mod = false, $hr = true) {
 		global $config;
 		if (!isset($root))

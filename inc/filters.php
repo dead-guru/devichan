@@ -10,6 +10,14 @@ class Filter {
 	public $flood_check;
 	private $condition;
 	private $post;
+
+	public $add_note;
+	public $action;
+	public $message;
+	public $expires;
+	public $reject;
+	public $all_boards;
+	public $reason;
 	
 	public function __construct(array $arr) {
 		foreach ($arr as $key => $value)
@@ -158,7 +166,7 @@ class Filter {
 
 				if ($this->reject) {
 					if (isset($this->message))
-						error($message);
+						error($this->message);
 					
 					checkBan($board['uri']);
 					exit;

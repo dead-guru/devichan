@@ -275,7 +275,7 @@ if (isset($_POST['delete'])) {
 		if ($config['referer_match'] !== false &&
 			(!isset($_SERVER['HTTP_REFERER']) || !preg_match($config['referer_match'], rawurldecode($_SERVER['HTTP_REFERER']))) && !$fromApi)
 			
-            error($config['referer_match'] . ' - ' . $_SERVER['HTTP_REFERER']);
+            error("Referer check failed: " . $config['referer_match'] . ' - ' . $_SERVER['HTTP_REFERER']);
 	
 		checkDNSBL();
 		
@@ -707,7 +707,7 @@ if (isset($_POST['delete'])) {
 		if ($file['is_an_image']) {
 			if ($config['ie_mime_type_detection'] !== false) {
 				// Check IE MIME type detection XSS exploit
-				$buffer = file_get_contents($upload, null, null, null, 255);
+				$buffer = file_get_contents($upload, false, null, 0, 255);
 				if (preg_match($config['ie_mime_type_detection'], $buffer)) {
 					undoImage($post);
 					error($config['error']['mime_exploit']);
@@ -814,7 +814,7 @@ if (isset($_POST['delete'])) {
 
 			$dont_copy_file = false;
 			
-			if ($config['redraw_image'] || (!@$file['exif_stripped'] && $config['strip_exif'] && ($file['extension'] == 'jpg' || $file['extension'] == 'jpeg'))) {
+			if ($config['redraw_image'] || (!(array_key_exists('exif_stripped', $file) && $file['exif_stripped']) && $config['strip_exif'] && ($file['extension'] == 'jpg' || $file['extension'] == 'jpeg'))) {
 				if (!$config['redraw_image'] && $config['use_exiftool']) {
 					if($error = shell_exec_error('exiftool -overwrite_original -ignoreMinorErrors -q -q -all= ' .
 						escapeshellarg($file['tmp_name'])))
@@ -987,7 +987,15 @@ if (isset($_POST['delete'])) {
 		// Tell it to delete the cached post for referer
 		$js->{$_SERVER['HTTP_REFERER']} = true;
 		// Encode and set cookie
-		setcookie($config['cookies']['js'], json_encode($js), 0, $config['cookies']['jail'] ? $config['cookies']['path'] : '/', null, false, false);
+		setcookie(
+			$config['cookies']['js'],
+			 json_encode($js),
+			  0,
+			   $config['cookies']['jail'] ? $config['cookies']['path'] : '/',
+			    false,
+				 false,
+				  false
+				);
 	}
 	
 	$root = $post['mod'] ? $config['root'] . $config['file_mod'] . '?/' : $config['root'];

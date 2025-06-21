@@ -1,5 +1,3 @@
-{% filter remove_whitespace %}
-{# tabs and new lines will be ignored #}
 <div class="post reply" id="reply_{{ post.id }}">
 <p class="intro">
 	{% if not index %}<a id="{{ post.id }}" class="post_anchor"></a>{% endif %}
@@ -18,11 +16,10 @@
     {% include 'post/fileinfo.html' %}
     {% include 'post/post_controls.html' %}
 	<div class="body" {% if post.files|length > 1 %}style="clear:both"{% endif %}>
-		{% endfilter %}{% if index %}{{ post.body|truncate_body(post.link)|emoji }}{% else %}{{ post.body|emoji }}{% endif %}{% filter remove_whitespace %}
+		{% if index %}{{ post.body|truncate_body(post.link)|emoji }}{% else %}{{ post.body|emoji }}{% endif %}
 		{% if post.modifiers['ban message'] %}
 			{{ config.mod.ban_message|sprintf(post.modifiers['ban message']) }}
 		{% endif %}
 	</div>
 </div>
 <br/>
-{% endfilter %}

@@ -78,7 +78,22 @@ function twig_remove_whitespace_filter($data) {
 }
 
 function twig_date_filter($date, $format) {
-	return gmstrftime($format, $date);
+	global $config;
+
+	$ts = $date instanceof DateTimeInterface ? $date->getTimestamp() : $date;
+    $loc = $config['locale'] ?? 'en_US_POSIX';
+
+    $map = [
+        '%Y'=>'yyyy','%y'=>'yy','%m'=>'MM','%d'=>'dd','%e'=>'d',
+        '%B'=>'LLLL','%b'=>'LLL','%h'=>'LLL','%A'=>'cccc','%a'=>'ccc',
+        '%H'=>'HH','%I'=>'hh','%M'=>'mm','%S'=>'ss','%p'=>'a',
+        '%j'=>'DDD','%V'=>'ww','%u'=>'e','%z'=>'XX','%Z'=>'z','%%'=>'%',
+    ];
+    $pattern = strtr($format, $map);
+
+    $f = new IntlDateFormatter($loc, 0, 0, $config['timezone'] ?? 'UTC', IntlDateFormatter::GREGORIAN, $pattern);
+    if (!$f) throw new RuntimeException('intl fault');
+    return $f->format($ts);
 }
 
 function twig_hasPermission_filter($mod, $permission, $board = null) {
