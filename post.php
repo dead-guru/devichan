@@ -142,20 +142,36 @@ if (isset($_POST['delete'])) {
 		error($config['error']['bot']);
 	}
 
-	if ($config['report_captcha']) {
-		$ch = curl_init($config['domain'].'/'.$config['captcha']['provider_check'] . "?" . http_build_query([
-			'mode' => 'check',
-			'text' => $_POST['captcha_text'],
-			'extra' => $config['captcha']['extra'],
-			'cookie' => $_POST['captcha_cookie']
-		]));
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-		$resp = curl_exec($ch);
+    if ($config['report_captcha']) {
+        $ch = curl_init(sprintf('%s/%s?%s', $config['internal_domain'] ?? $config['domain'], $config['captcha']['provider_check'], http_build_query([
+            'mode' => 'check',
+            'text' => $_POST['captcha_text'],
+            'extra' => $config['captcha']['extra'],
+            'cookie' => $_POST['captcha_cookie']
+        ])));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
+        curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (compatible; Tinyboard)');
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
 
-		if ($resp !== '1') {
-                        error($config['error']['captcha']);
-		}
-	}
+        $resp = curl_exec($ch);
+
+        if ($resp === false) {
+            $error = curl_error($ch);
+            $errno = curl_errno($ch);
+            curl_close($ch);
+            error(sprintf("%s (cURL Error %d: %s)", $config['error']['captcha'], $errno, $error));
+        }
+
+        curl_close($ch);
+
+        if ($resp !== '1') {
+            error($config['error']['captcha']);
+        }
+    }
 	
 	$reason = escape_markup_modifiers($_POST['reason']);
 	markup($reason);
@@ -251,21 +267,37 @@ if (isset($_POST['delete'])) {
 			}
 		}
 		// Same, but now with our custom captcha provider
- 		if ((($config['captcha']['enabled']) || (($post['op']) && ($config['new_thread_capt']))) ) {
-		$ch = curl_init($config['domain'].'/'.$config['captcha']['provider_check'] . "?" . http_build_query([
-			'mode' => 'check',
-			'text' => $_POST['captcha_text'],
-			'extra' => $config['captcha']['extra'],
-			'cookie' => $_POST['captcha_cookie']
-		]));
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-		$resp = curl_exec($ch);
+        if ((($config['captcha']['enabled']) || (($post['op']) && ($config['new_thread_capt']))) ) {
+            $ch = curl_init(sprintf('%s/%s?%s', $config['internal_domain'], $config['captcha']['provider_check'], http_build_query([
+                'mode' => 'check',
+                'text' => $_POST['captcha_text'],
+                'extra' => $config['captcha']['extra'],
+                'cookie' => $_POST['captcha_cookie']
+            ])));
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+            curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+            curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
+            curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (compatible; Tinyboard)');
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
 
-		if ($resp !== '1') {
-                        error($config['error']['captcha'] .
-			'<script>if (actually_load_captcha !== undefined) actually_load_captcha("'.$config['captcha']['provider_get'].'", "'.$config['captcha']['extra'].'");</script>');
-		}
-	}
+            $resp = curl_exec($ch);
+
+            if ($resp === false) {
+                $error = curl_error($ch);
+                $errno = curl_errno($ch);
+                curl_close($ch);
+                error(sprintf("%s (cURL Error %d: %s)", $config['error']['captcha'], $errno, $error));
+            }
+
+            curl_close($ch);
+
+            if ($resp !== '1') {
+                error($config['error']['captcha'] .
+                    '<script>if (actually_load_captcha !== undefined) actually_load_captcha("'.$config['captcha']['provider_get'].'", "'.$config['captcha']['extra'].'");</script>');
+            }
+        }
 
 		if (!(($post['op'] && $_POST['post'] == $config['button_newtopic']) ||
 			(!$post['op'] && $_POST['post'] == $config['button_reply'])) && !$fromApi)
@@ -707,7 +739,7 @@ if (isset($_POST['delete'])) {
 		if ($file['is_an_image']) {
 			if ($config['ie_mime_type_detection'] !== false) {
 				// Check IE MIME type detection XSS exploit
-				$buffer = file_get_contents($upload, null, null, null, 255);
+				$buffer = file_get_contents($upload, false, null, 0, 255);
 				if (preg_match($config['ie_mime_type_detection'], $buffer)) {
 					undoImage($post);
 					error($config['error']['mime_exploit']);
@@ -813,8 +845,8 @@ if (isset($_POST['delete'])) {
 			}
 
 			$dont_copy_file = false;
-			
-			if ($config['redraw_image'] || (!@$file['exif_stripped'] && $config['strip_exif'] && ($file['extension'] == 'jpg' || $file['extension'] == 'jpeg'))) {
+
+            if ($config['redraw_image'] || (!(array_key_exists('exif_stripped', $file) && $file['exif_stripped']) && $config['strip_exif'] && ($file['extension'] == 'jpg' || $file['extension'] == 'jpeg'))) {
 				if (!$config['redraw_image'] && $config['use_exiftool']) {
 					if($error = shell_exec_error('exiftool -overwrite_original -ignoreMinorErrors -q -q -all= ' .
 						escapeshellarg($file['tmp_name'])))
@@ -987,7 +1019,12 @@ if (isset($_POST['delete'])) {
 		// Tell it to delete the cached post for referer
 		$js->{$_SERVER['HTTP_REFERER']} = true;
 		// Encode and set cookie
-		setcookie($config['cookies']['js'], json_encode($js), 0, $config['cookies']['jail'] ? $config['cookies']['path'] : '/', null, false, false);
+		setcookie(
+            $config['cookies']['js'],
+            json_encode($js),
+            0,
+            $config['cookies']['jail'] ? $config['cookies']['path'] : '/',
+            $config['raw_host'] ?? '', false, false);
 	}
 	
 	$root = $post['mod'] ? $config['root'] . $config['file_mod'] . '?/' : $config['root'];

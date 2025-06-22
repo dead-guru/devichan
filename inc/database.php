@@ -141,6 +141,11 @@ function query($query) {
 			'explain' => isset($explain) ? $explain->fetchAll(PDO::FETCH_ASSOC) : null,
 			'time' => '~' . round($time * 1000, 2) . 'ms'
 		);
+
+        if(false === array_key_exists('db_queries', $debug['time'])) { // Dirty fix. Need to figure where it init.
+            $debug['time']['db_queries'] = 0;
+        }
+        
 		$debug['time']['db_queries'] += $time;
 		return $query;
 	}

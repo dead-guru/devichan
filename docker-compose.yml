@@ -39,8 +39,8 @@ services:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
       - ./nginx/sites/:/etc/nginx/sites-available
       - ./nginx/conf.d/:/etc/nginx/conf.d
-    #ports:
-    #  - "80:80"
+    ports:
+      - "80:80"
     depends_on:
       - cphp
     networks:

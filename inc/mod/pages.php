@@ -38,7 +38,6 @@ function mod_login($redirect = false) {
 		} elseif (!login($_POST['username'], $_POST['password'])) {
 			if ($config['syslog'])
 				_syslog(LOG_WARNING, 'Unauthorized login attempt!');
-			
 			$args['error'] = $config['error']['invalid'];
 		} else {
 			modLog('Logged in');

@@ -1265,6 +1265,9 @@
 	$config['domain'] = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') ? 'https://' : 'http://';
 	$config['domain'] .= isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : 'localhost';
 
+    // Override domain for internal Docker container communication
+    $config['internal_domain'] = 'http://cnginx';
+
 	// If for some reason the folders and static HTML index files aren't in the current working direcotry,
 	// enter the directory path here. Otherwise, keep it false.
 	$config['root_file'] = false;

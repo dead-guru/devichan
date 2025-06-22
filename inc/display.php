@@ -91,6 +91,9 @@ function error($message, $priority = true, $debug_stuff = false) {
 	}
 
 	if ($config['debug']) {
+        $_debug_stuff = $debug_stuff;
+        $debug_stuff = [];
+        $debug_stuff[0] = $_debug_stuff;
 		$debug_stuff['backtrace'] = debug_backtrace();
 	}
 

@@ -49,8 +49,8 @@ function Element($templateFile, array $options) {
 			$_debug['build_pages'] = $build_pages;
 		$_debug['included'] = get_included_files();
 		$_debug['memory'] = round(memory_get_usage(true) / (1024 * 1024), 2) . ' MiB';
-		$_debug['time']['db_queries'] = '~' . round($_debug['time']['db_queries'] * 1000, 2) . 'ms';
-		$_debug['time']['exec'] = '~' . round($_debug['time']['exec'] * 1000, 2) . 'ms';
+		$_debug['time']['db_queries'] = '~' . round($_debug['time']['db_queries'] ?? 0 * 1000, 2) . 'ms';
+		$_debug['time']['exec'] = '~' . round($_debug['time']['exec'] ?? 0 * 1000, 2) . 'ms';
 		$options['body'] .=
 			'<h3>Debug</h3><pre style="white-space: pre-wrap;font-size: 10px;">' .
 				str_replace("\n", '<br/>', utf8tohtml(print_r($_debug, true))) .
