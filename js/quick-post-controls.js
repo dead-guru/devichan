@@ -21,7 +21,7 @@ $(document).ready(function(){
 		
 		if(this.checked) {
 			var post_form = $('<form class="post-actions" method="post" style="margin:10px 0 0 0">' +
-				'<div style="text-align:right">' +
+				'<div style="text-align:left">' +
 					(!thread ? '<hr>' : '') +
 					
 					'<input type="hidden" name="delete_' + id + '">' +
