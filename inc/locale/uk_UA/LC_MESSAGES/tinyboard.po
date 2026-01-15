@@ -3619,7 +3619,7 @@ msgstr "Заховати файл під спойлер"
 #: ../../../../templates/cache/41/57/9143de5f74d921965e5ff24e0f1ce44a18317fd4937f5d8d65f56337acf3.php:90
 #: ../../../../templates/cache/9e/9e079e296ec86427e108ce967cf3fdc9.php:113
 msgid "Bump order"
-msgstr "порядком підіймання"
+msgstr "порядком бампу"
 
 #. line 27
 #. line 36

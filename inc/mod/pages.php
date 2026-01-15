@@ -35,7 +35,10 @@ function mod_login($redirect = false) {
 		// Check if inputs are set and not empty
 		if (!isset($_POST['username'], $_POST['password']) || $_POST['username'] == '' || $_POST['password'] == '') {
 			$args['error'] = $config['error']['invalid'];
-		} elseif (!login($_POST['username'], $_POST['password'])) {
+        }
+        elseif (strlen($_POST['password']) > 128 || strlen($_POST['username']) > 128) {
+            $args['error'] = $config['error']['infotoolong'];
+        } elseif (!login($_POST['username'], $_POST['password'])) {
 			if ($config['syslog'])
 				_syslog(LOG_WARNING, 'Unauthorized login attempt!');
 			$args['error'] = $config['error']['invalid'];
@@ -2212,13 +2215,18 @@ function mod_rebuild() {
 				$log[] = 'Flushing cache';
 				Cache::flush();
 			}
-			
+
 			$log[] = 'Clearing template cache';
 			load_twig();
             $cache = $twig->getCache();
             if(is_string($cache) && is_dir($cache)) {
                 rrmdir($cache);
             }
+
+			if (!empty($config['secret_boards'])) {
+				$log[] = 'Syncing Caddy secret board routes';
+				@shell_exec('php ' . escapeshellarg(__DIR__ . '/../../tools/sync-caddy-routes.php') . ' 2>&1');
+			}
 		}
 		
 		if (isset($_POST['rebuild_themes'])) {

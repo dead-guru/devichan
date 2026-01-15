@@ -37,7 +37,7 @@ div.ban h2, form table tr th, table.test tr.h th {
 }
 
 body {
-    background: url('img/fade-blue.png') 50% 0 repeat-x #eef2ff;
+    background: #EEE;
     color: #000;
     font-family: arial, helvetica, sans-serif;
     font-size: 10pt;
@@ -244,6 +244,16 @@ div.post.op hr {
 
 input.delete {
     margin: 1px 6px 0 0
+}
+
+.intro label {
+    display: inline-block;
+    margin-right: 10px;
+    cursor:pointer !important;
+}
+
+input[type="checkbox"].delete {
+    display: none;
 }
 
 .new-posts, span.omitted {
@@ -892,9 +902,10 @@ span.pln {
 }
 
 div.boardlist {
-    margin-top: 3px;
     color: #89a;
-    font-size: 9pt
+    font-size: 9pt;
+    width: 100%;
+    left: 0;
 }
 
 div.boardlist.bottom {
@@ -1147,4 +1158,347 @@ table.fileboard td, table.fileboard th {
     padding: 0 0.15em;
     margin: 0 .05em 0 .1em;
     display: inline-block;
+}
+
+
+#expand-all-images, #shrink-all-images, #watch-board, #watch-pin, #watch-thread, .tree-view-cntrl {
+    display: inline;
+    padding: 0 5px;
+    font-size: .7rem
+}
+
+.new-threads {
+    text-align: left;
+    display: inline;
+    padding: 0 5px
+}
+
+#thread-interactions, #thread-interactions_header, #thread_stats, #updater {
+    display: inline;
+    font-size: .7rem;
+}
+
+.index-search {
+    display: inline-block;
+    margin: 0
+}
+
+.file:not(.multifile) {
+    float: left
+}
+
+.boardlist:not(.compact-boardlist) #watch-pinned::before {
+    content: " ";
+}
+
+.boardlist:not(.compact-boardlist) #watch-pinned::after {
+    content: " ";
+}
+
+div.post.op, div.post.reply {
+    /*word-break: break-word;
+    word-wrap: break-word;*/
+    position: relative;
+    /*margin-left: 15px;*/
+    min-width: fit-content;
+}
+
+
+span.public_ban, span.toolong {
+    margin-left: 0 ;
+}
+
+.files {
+    height: max-content;
+}
+
+p.intro {
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+}
+
+.files {
+    float: left;
+    display: flex;
+    flex-flow: row wrap;
+}
+
+.fileinfo, .no-new-threads, .unimportant, .unimportant * {
+    font-size: .7rem;
+}
+
+.index-search-input {
+    height: 1.5rem;
+}
+
+div.post p.fileinfo {
+    width: fit-content;
+    padding-left: 0;
+    margin: 0;
+}
+
+
+div.post.reply:before {
+    content: '...';
+    position: absolute;
+    top: -5px;
+    left: -21px;
+}
+div.post.reply.post-hover:before {
+    content: '';
+}
+
+div.post i.fa {
+    font-size: .7rem
+}
+
+.video-pop {
+    float: none !important
+}
+div.post.reply div.body {
+    word-break: break-word;
+    word-wrap: break-word;
+    margin-left: 0;
+    margin-top: 0;
+    margin-right: 0;
+    padding-right: 3em;
+    padding-bottom: 0;
+}
+
+.files {
+    float: left;
+    display: flex;
+    flex-flow: row wrap;
+}
+
+p.intro {
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+}
+
+.intro {
+    font-size: .9em;
+}
+
+.open-form {
+    font-size: 16pt;
+}
+
+input[type=password], input[type=text], select, textarea
+ {
+    border: none;
+    outline: 0;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+}
+
+.search-box {
+    max-width: 700px;
+    margin: 20px auto 30px
+}
+
+.search-box-inner {
+    display: block;
+    max-width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important
+}
+
+.search-box-inner:before {
+    display: none !important
+}
+
+.search-title-wrap {
+    width: 100%;
+    margin: 0
+}
+
+.search-box-title {
+    display: block;
+    padding: 10px 15px;
+    font-weight: 700;
+    font-size: 11pt;
+    margin: 0;
+    background: rgba(128, 128, 128, .15)
+}
+
+.search-box form {
+    margin: 0;
+    padding: 15px
+}
+
+.search-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center
+}
+
+.search-row input[type=text],
+.search-row select,
+.search-row input[type=submit] {
+    height: auto !important;
+    line-height: 1.4 !important;
+    padding: 8px 12px !important;
+    vertical-align: middle
+}
+
+.search-row input[type=text] {
+    flex: 1;
+    min-width: 200px;
+    font-size: 10pt
+}
+
+.search-row input[type=text]:focus {
+    outline: none;
+    box-shadow: 0 0 5px rgba(128, 128, 128, .3)
+}
+
+.search-row select {
+    min-width: 140px;
+    cursor: pointer
+}
+
+.search-row input[type=submit] {
+    padding: 8px 20px !important;
+    cursor: pointer;
+    font-weight: 700
+}
+
+.search-help {
+    margin: 15px 0 0 0;
+    padding: 12px 15px;
+    font-size: 9pt;
+    background: rgba(128, 128, 128, .08);
+    border-top: 1px solid rgba(128, 128, 128, .2)
+}
+
+.search-help details {
+    cursor: pointer
+}
+
+.search-help summary {
+    text-decoration: underline;
+    padding: 3px 0
+}
+
+.search-help summary:hover {
+    opacity: .7
+}
+
+.search-help ul {
+    margin: 12px 0 5px 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 8px 25px
+}
+
+.search-help li {
+    padding: 4px 0;
+    border-bottom: 1px dotted rgba(128, 128, 128, .3)
+}
+
+.search-help li:before {
+    content: "› ";
+    opacity: .5
+}
+
+.search-help code {
+    background: rgba(128, 128, 128, .15);
+    padding: 2px 6px;
+    font-family: monospace;
+    font-size: 9pt
+}
+
+.search-results {
+    max-width: 900px;
+    margin: 25px auto
+}
+
+.search-results-header-wrap {
+    margin: 0 0 10px 0
+}
+
+.search-results-header {
+    display: block;
+    padding: 10px 15px;
+    font-weight: 700;
+    font-size: 11pt;
+    background: rgba(128, 128, 128, .15)
+}
+
+.search-results-header a {
+    color: inherit;
+    text-decoration: none
+}
+
+.search-results-header a:hover {
+    text-decoration: underline
+}
+
+.search-results-body {
+    display: block;
+    max-width: 100%
+}
+
+.search-result-item {
+    display: block;
+    margin-bottom: 10px !important;
+    max-width: 100% !important
+}
+
+.search-result-item:before {
+    display: none !important
+}
+
+.search-result-item .intro {
+    margin-top: 0
+}
+
+.search-result-item hr {
+    display: none
+}
+
+.search-no-results {
+    display: block;
+    max-width: 700px;
+    margin: 30px auto;
+    text-align: center;
+    padding: 50px 20px;
+    font-size: 11pt
+}
+
+.search-no-results:before {
+    content: "¯\\_(ツ)_/¯";
+    display: block;
+    font-size: 28pt;
+    margin-bottom: 20px;
+    opacity: .4
+}
+
+.search-highlight {
+    background: #ff0;
+    color: #000;
+    padding: 1px 3px
+}
+
+.thread {
+    contain: layout style paint;
+}
+
+div.post.reply {
+    contain: layout style;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
 }

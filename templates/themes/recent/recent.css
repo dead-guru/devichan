@@ -1,108 +1,141 @@
-.box-wrap {
-    max-width: 670px;
-    min-width: 332px;
+.portal-wrap {
+    display: grid;
+    grid-template-columns: 1fr 2.5fr 1fr;
+    gap: 20px;
+
+    max-width: 1400px;
     margin: 30px auto;
-    overflow: auto;
+    padding: 0 15px;
+    box-sizing: border-box;
+}
+.portal-column-left,
+.portal-column-main,
+.portal-column-right {
+    min-width: 0;
+}
+.box {
+    background: #dddddd;
+    color: #333333;
+    border: 2px dashed rgba(187, 187, 187, 0.31);
+    border-radius: 7px;
     padding: 0;
+    margin-bottom: 20px;
 }
 
-.box {
-    background: white;
-    border: 1px solid #98E;
-    width: 330px;
-    margin: 8px 0;
-    padding: 0;
+.box h2 {
+    padding: 10px 15px;
+    font-size: 12pt;
+    color: #005c9a;
+    background: #dddddd;
+    margin: 0;
+    border-bottom: 2px dashed rgba(187, 187, 187, 0.31);
 }
 
 .box ul {
-    padding: 2px 15px;
+    padding: 15px;
+    margin: 0;
 }
-
 .box ul li {
     list-style: none;
     margin: 0;
 }
 
-ul.recent {
-    padding: 2px 15px;
+ul.list-news li {
+    margin-bottom: 15px;
+}
+ul.list-news strong {
+    font-size: 1.1em;
+    color: #333;
+}
+.news-body {
+    padding-top: 5px;
+    font-size: 0.9em;
+    color: #444;
+}
+
+ul.list-stats li {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 0;
+}
+ul.list-stats li span {
+    color: #111;
+    font-weight: bold;
+}
+ul.list-stats li a {
+    font-weight: bold;
+}
+
+ul.list-threads li {
+    display: flex;
+    align-items: baseline;
+    gap: 5px;
+
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+}
+ul.list-threads li:last-child {
+    border-bottom: none;
+}
+ul.list-threads .board-name {
+    width: 120px;
+    font-weight: bold;
+    color: #005c9a;
+    flex-shrink: 0;
+}
+
+ul.list-threads li a {
+    flex-grow: 1;
+    flex-shrink: 1;
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+ul.list-images {
     display: flex;
     flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
 }
-
-.box.left {
-    min-height: 677px;
-    background: #dddddd;
-    color: #333333;
-    border: 2px dashed rgba(187, 187, 187, 0.31);
-    float: left;
-    border-radius: 7px;
+ul.list-images li {
+    padding: 0;
+    margin: 0;
+    width: 70px;
+    height: 70px;
+    overflow: hidden;
+    border-radius: 4px;
 }
-
-.box.left img {
-    display: inline;
-    max-width: 230px;
-    max-height: 150px;
-    width: auto;
-    height: auto;
+ul.list-images img {
+    display: block;
+    width: 100%;
+    height: 100%;
     object-fit: cover;
+    margin: 0;
+    transition: transform 0.2s ease-in-out;
+}
+ul.list-images img:hover {
+    transform: scale(1.2);
 }
 
-.box.left img:hover {
-    scale: 1.2;
-}
-
-.box.left:hover {
-    background: #dddddd;
-    cursor: pointer;
-    -webkit-box-shadow: 0px 0px 18px -3px rgba(0, 0, 0, 0.14);
-    box-shadow: 0px 0px 18px -3px rgba(0, 0, 0, 0.14);
-}
-
-.box.right {
-    background: #dddddd;
-    color: #333333;
-    border: 2px dashed rgba(187, 187, 187, 0.31);
-    float: right;
-    border-radius: 7px;
-}
-
-.box.right:hover {
-    background: #dddddd;
-    cursor: pointer;
-    -webkit-box-shadow: 0px 0px 18px -3px rgba(0, 0, 0, 0.14);
-    box-shadow: 0px 0px 18px -3px rgba(0, 0, 0, 0.14);
-}
-
-.box h2 {
-    padding: 3px 7px;
-    font-size: 12pt;
-}
-
-.box.left h2 {
-    background: #dddddd;
-    color: #AF0A0F;
-}
-
-.box.right h2 {
-    background: #dddddd;
-    color: #AF0A0F;
-}
-
-.box img {
-    float: none;
-    margin: 10px auto;
-}
-
-@media screen and (max-width: 696px) {
-    .box-wrap {
-        overflow: visible;
+@media screen and (max-width: 900px) {
+    .portal-wrap {
+        grid-template-columns: 1fr;
+    }
+    
+    .portal-column-main {
+        order: -3;
+    }
+    .portal-column-left {
+        order: -2;
+    }
+    .portal-column-right {
+        order: -1;
     }
 
-    .box {
-        width: 100%;
-    }
-
-    .box ul {
-        text-align: center;
+    ul.list-images li {
+        width: 80px;
+        height: 80px;
     }
 }

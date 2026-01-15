@@ -1,7 +1,7 @@
 $(document).ready(function() {
-    if(localStorage.version !== '1') {
+    if(localStorage.version !== '3') {
+        console.log('Clearing localStorage');
         localStorage.clear();
-        localStorage.version = '1';
-        console.log('Storage Set: ' + '1');
+        localStorage.version = '3';
     }
 });

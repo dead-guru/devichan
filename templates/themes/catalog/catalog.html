@@ -1,8 +1,8 @@
-{% filter remove_whitespace %}
+
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ru" lang="ru">
+<html lang="{{ config.locale|default('en')|slice(0, 2) }}">
 <head>
-	<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+	<meta charset="utf-8">
 	<script type='text/javascript'>
 		var active_page = "catalog"
 		  , board_name = "{{ board }}";
@@ -53,7 +53,7 @@
 						{% else %}
 							<img src="{{post.file}}" data-fullimage="{{post.orig_file}}"
 						{% endif %}
-                                                 id="img-{{ post.id }}" data-subject="{% if post.subject %}{{ post.subject|e }}{% endif %}" data-name="{{ post.name|e }}" data-muhdifference="{{ post.muhdifference }}" class="{{post.board}} thread-image" title="{{post.bump|date('%b %d %H:%M')}}">
+                                                 id="img-{{ post.id }}" data-subject="{% if post.subject %}{{ post.subject|e }}{% endif %}" data-name="{{ post.name|e }}" data-muhdifference="{{ post.muhdifference }}" class="{{post.board}} thread-image" title="{{post.bump|date('%b %d %H:%M')}}" loading="lazy" decoding="async" alt="">
                                         </a>
                                                 <div class="replies">
                                                         <strong>{% trans %}R{% endtrans %}: {{ post.reply_count }} / {% trans %}I{% endtrans %}: {{ post.image_count }}{% if post.sticky %} (sticky){% endif %}</strong>
@@ -86,4 +86,3 @@
 	{% endverbatim %}</script>
 </body>
 </html>
-{% endfilter %}

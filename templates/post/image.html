@@ -53,7 +53,7 @@ class="file"
 						{{ config.uri_thumb }}{{ post.thumb }}
 					{% endif %}
 				"
-     style="width:{{ post.thumbwidth }}px;height:{{ post.thumbheight }}px" alt="Preview"
+     width="{{ post.thumbwidth }}" height="{{ post.thumbheight }}" loading="lazy" decoding="async" alt=""
 />
 {% endif %}
 </a>

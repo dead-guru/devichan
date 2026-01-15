@@ -343,7 +343,6 @@ if (active_page === 'thread' || active_page === 'index') {
 
 			// setting for enabling formatting keybinds
 			$(s1).on(e, function(e) {
-				console.log('Keybind');
 				if (!localStorage.formatText_keybinds_1 || localStorage.formatText_keybinds_1 == 'false') {
 					localStorage.formatText_keybinds_1 = 'true';
 					if (window.Options && Options.get_tab('general')) e.target.checked = true;
@@ -355,7 +354,6 @@ if (active_page === 'thread' || active_page === 'index') {
 
 			// setting for toolbar injection
 			$(s2).on(e, function(e) {
-				console.log('Toolbar');
 				if (!localStorage.formatText_toolbar_1 || localStorage.formatText_toolbar_1 == 'false') {
 					localStorage.formatText_toolbar_1 = 'true';
 					if (window.Options && Options.get_tab('general')) e.target.checked = true;

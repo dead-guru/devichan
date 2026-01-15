@@ -14,26 +14,30 @@ $(window).ready(function () {
         });
         formatText.appendChild(button);
 
-        window.picker = picmoPopup.createPopup({
-            animate: true,
-            showRecents: false,
-            showSearch: false,
-            showVariants: false,
-            showPreview: false,
-            showCategoryTabs: false,
-            categories: ['custom'],
-            visibleRows: 4,
-            custom: window.emo,
-        }, {
-            referenceElement: button,
-            triggerElement: button,
-            position: 'bottom-start',
-            showCloseButton: false,
+        if (typeof picmoPopup !== 'undefined') {
+            window.picker = picmoPopup.createPopup({
+                animate: true,
+                showRecents: false,
+                showSearch: false,
+                showVariants: false,
+                showPreview: false,
+                showCategoryTabs: false,
+                categories: ['custom'],
+                visibleRows: 4,
+                custom: window.emo,
+            }, {
+                referenceElement: button,
+                triggerElement: button,
+                position: 'bottom-start',
+                showCloseButton: false,
 
-        });
+            });
 
-        window.picker.addEventListener('emoji:select', selection => {
-            $('#body').val($('#body').val() + selection.emoji + ' ').focus().trigger('keyup');
-        });
+            window.picker.addEventListener('emoji:select', selection => {
+                $('#body').val($('#body').val() + selection.emoji + ' ').focus().trigger('keyup');
+            });
+        } else {
+            console.log('picmoPopup is not defined, skipping emoji picker');
+        }
     }
 });

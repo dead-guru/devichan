@@ -63,3 +63,18 @@ tb_settings['auto-reload'] = {
 	// Reset the delay to the minimum upon focussing the window.
 	reset_focus: true
 };
+
+
+// image-viewer.js
+tb_settings['image-viewer'] = {
+	// Enable image viewer
+	iv_enable: 'true',
+	// Enable scroll zoom
+	iv_scroll_zoom: 'true',
+	// Enable drag
+	iv_drag: 'false',
+	// Minimum zoom
+	iv_zoom_min: '0.1',
+	// Maximum zoom
+	iv_zoom_max: '20'
+};

@@ -1,36 +1,64 @@
-		{% if config.code_highlight %}
-		<link rel="stylesheet"
-			  href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/default.min.css">
-		<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
-		<script>hljs.highlightAll();</script>
-		{% endif %}
-		<link rel="stylesheet" media="screen" href="{{ config.url_stylesheet|ccss }}">
-		{% if config.url_favicon %}<link rel="shortcut icon" href="{{ config.url_favicon }}">{% endif %}
-		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=yes">
+		<meta name="referrer" content="same-origin">
+		<meta name="format-detection" content="telephone=no, date=no, email=no, address=no">
+		{% if config.meta_description %}<meta name="description" content="{{ config.meta_description }}">{% endif %}
 		{% if config.meta_keywords %}<meta name="keywords" content="{{ config.meta_keywords }}">{% endif %}
-		{% if config.default_stylesheet.1 != '' %}<link rel="stylesheet" type="text/css" id="stylesheet" href="{{ (config.uri_stylesheets ~ config.default_stylesheet.1) | ccss }}">{% endif %}
+		{% if config.meta_robots %}<meta name="robots" content="{{ config.meta_robots }}">{% endif %}
+		{% if config.theme_color %}<meta name="theme-color" content="{{ config.theme_color }}">{% endif %}
+		<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+		<link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+		<link rel="preconnect" href="https://unpkg.com" crossorigin>
+		<link rel="dns-prefetch" href="https://unpkg.com">
+		{% if config.url_favicon %}<link rel="icon" href="{{ config.url_favicon }}">{% endif %}
+		<script type="speculationrules">{"prefetch":[{"source":"document","where":{"href_matches":"/*"},"eagerness":"moderate"}]}</script>
+		{% if config.default_stylesheet.1 != '' %}
+		<style>html:not(.style-ready){visibility:hidden}</style>
+		{% endif %}
+		{% if config.code_highlight %}
+		<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/default.min.css">
+		<script defer src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js" onload="hljs.highlightAll()"></script>
+		{% endif %}
+		<link rel="stylesheet" media="screen" href="{{ config.url_stylesheet|ccss }}" fetchpriority="high">
+		{% if config.default_stylesheet.1 != '' %}
+		<script>
+		(function(){
+			var b='{{ config.uri_stylesheets }}';
+			var m={{ config.stylesheets|json_encode|raw }};
+			var d='{{ config.default_stylesheet.1 }}';
+			var s=localStorage.getItem('stylesheet');
+			var f=(s&&m[s])?m[s]:d;
+			document.write('<link rel="stylesheet" id="stylesheet" href="'+b+f+'" onload="document.documentElement.classList.add(\'style-ready\')">');
+		})();
+		</script>
+		<noscript>
+			<style>html{visibility:visible!important}</style>
+			<link rel="stylesheet" type="text/css" id="stylesheet" href="{{ (config.uri_stylesheets ~ config.default_stylesheet.1) | ccss }}">
+		</noscript>
+		{% endif %}
 		{% if config.font_awesome %}<link rel="stylesheet" href="{{ config.root }}{{ config.font_awesome_css }}">{% endif %}
 		{% if config.country_flags_condensed %}<link rel="stylesheet" href="{{ config.root }}{{ config.country_flags_condensed_css }}">{% endif %}
-		<script type="text/javascript">
+		<script>
 			var configRoot="{{ config.root }}";
 			var inMod = {% if mod %}true{% else %}false{% endif %};
 			var modRoot="{{ config.root }}"+(inMod ? "mod.php?/" : "");
 		</script>
 		{% if not nojavascript %}
 			{% if config.emojis_enabled %}
-			<script type="text/javascript">
-				window.emo = {{ config.emojis|json_encode(constant('JSON_PRETTY_PRINT')) }};
-			</script>
-			<script src="https://unpkg.com/picmo@latest/dist/umd/index.js"></script>
-			<script src="https://unpkg.com/@picmo/popup-picker@latest/dist/umd/index.js"></script>
+			<script>window.emo = {{ config.emojis|json_encode(constant('JSON_PRETTY_PRINT')) }};</script>
+			<script defer src="https://unpkg.com/picmo@latest/dist/umd/index.js"></script>
+			<script defer src="https://unpkg.com/@picmo/popup-picker@latest/dist/umd/index.js"></script>
 			{% endif %}
-			<script type="text/javascript" src="{{ config.url_javascript }}{% if config.minify_js_hash != false %}?v={{ config.minify_js_hash }}{% endif %}"></script>
+			<script src="{{ config.url_javascript }}{% if config.minify_js_hash != false %}?v={{ config.minify_js_hash }}{% endif %}"></script>
 			{% if not config.additional_javascript_compile %}
-			{% for javascript in config.additional_javascript %}<script type="text/javascript" src="{{ config.additional_javascript_url }}{{ javascript }}"></script>{% endfor %}
+			{% for javascript in config.additional_javascript %}<script src="{{ config.additional_javascript_url }}{{ javascript }}"></script>{% endfor %}
 			{% endif %}
 		{% endif %}
-		{% if config.recaptcha %}<script src="//www.recaptcha.net/recaptcha/api.js"></script>
+		{% set month = time()|date("%m") %}
+		{% if month == "12" or month == "01" or month == "02" %}
+		<script src="/js/lib/snowstorm-min.js"></script>
+		<script>try { snowStorm.followMouse = false; } catch(e) {}</script>
+		{% endif %}
+		{% if config.recaptcha %}<script async src="//www.recaptcha.net/recaptcha/api.js"></script>
 		<style type="text/css">{% verbatim %}
 			#recaptcha_area {
 				float: none !important;

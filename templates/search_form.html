@@ -1,19 +1,33 @@
-<div class="ban">
-	<h2>{% trans %}Search{% endtrans %}</h2>
-	<form style="display:inline" action="" method="get">
-		<p>
-			<label style="display:inline" for="search">{% trans %}Phrase:{% endtrans %}</label> 
-			<input id="search" name="search" type="text" size="40" value="{{ search }}">
-			<select name="board">
-				<option value="none">{% trans %}Select board{% endtrans %}&hellip;</option>
-				{% for b in boards %}
-					<option value="{{ b }}"{% if b == board %} selected{% endif %}>/{{ b }}/</option>
-				{% endfor %}
-			</select>
-			<input type="submit" value="{% trans %}Search{% endtrans %}" />
-		</p>
-	</form>
-	<p style="font-size:8pt;margin:5px">
-		{% trans %}Search is case-insensitive and based on keywords. To match exact phrases, use "quotes". Use an asterisk (*) for wildcard.</p><p style="font-size:8pt;margin:5px">You may apply the following filters to your searches: <strong>id</strong>, <strong>thread</strong>, <strong>subject</strong>, and <strong>name</strong>. To apply a filter, simply add to your query, for example, <em>name:Anonymous</em> or <em>subject:"Some Thread"</em>. Wildcards cannot be used in filters.{% endtrans %}
-	</p>
+<div class="search-box">
+	<div class="post reply search-box-inner">
+		<div class="search-title-wrap">
+			<div class="search-box-title">{% trans %}Search{% endtrans %}</div>
+		</div>
+		<form action="" method="get">
+			<div class="search-row">
+				<input id="search" name="search" type="text" placeholder="{% trans %}Enter search query...{% endtrans %}" value="{{ search }}" autocomplete="off">
+				<select name="board">
+					<option value="none"{% if not board %} selected{% endif %}>{% trans %}Select board{% endtrans %}</option>
+					{% for b2 in boards %}
+						<option value="{{ b2 }}"{% if b2 == board %} selected{% endif %}>/{{ b2 }}/</option>
+					{% endfor %}
+				</select>
+				<input type="submit" value="{% trans %}Search{% endtrans %}">
+			</div>
+		</form>
+		<div class="search-help">
+			<details>
+				<summary>{% trans %}How to search{% endtrans %}</summary>
+				<ul>
+					<li><code>"exact phrase"</code> {% trans %}match exact text{% endtrans %}</li>
+					<li><code>word*</code> {% trans %}wildcard search{% endtrans %}</li>
+					<li><code>name:Anonymous</code> {% trans %}filter by poster name{% endtrans %}</li>
+					<li><code>subject:"Thread"</code> {% trans %}filter by subject{% endtrans %}</li>
+					<li><code>id:12345</code> {% trans %}find by post ID{% endtrans %}</li>
+					<li><code>thread:123</code> {% trans %}posts in thread{% endtrans %}</li>
+					{% if flags_enabled %}<li><code>flag:UA</code> {% trans %}filter by flag{% endtrans %}</li>{% endif %}
+				</ul>
+			</details>
+		</div>
+	</div>
 </div>

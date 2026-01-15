@@ -14,6 +14,9 @@
  */
 
 onready(function(){
+	if (active_page !== 'thread' && active_page !== 'index' && active_page !== 'ukko') {
+		return;
+	}
 	var dont_fetch_again = [];
 	init_hover = function() {
 		var $link = $(this);
@@ -32,8 +35,11 @@ onready(function(){
 		}
 
 		var board = $(this);
-		while (board.data('board') === undefined) {
+		while (board.data('board') === undefined && board.length > 0) {
 			board = board.parent();
+		}
+		if (board.length === 0 || board.data('board') === undefined) {
+			return;
 		}
 		var threadid;
 		if ($link.is('[data-thread]')) threadid = 0;
@@ -65,14 +71,6 @@ onready(function(){
 					$newPost.find('div.mentioned').remove();
 					$newPost.find('a.post_anchor').remove();
 
-					let to = $link.parent().parent();
-					console.log(to.attr("class").split(/\s+/))
-
-					if(to.hasClass('body')) {
-						to = to.parent();
-					}
-					console.log(to.attr("class").split(/\s+/))
-
 					$newPost
 						.attr('id', 'post-hover-' + id)
 						.attr('data-board', board)
@@ -84,7 +82,7 @@ onready(function(){
 						.css('font-style', 'normal')
 						.css('z-index', '100')
 						.addClass('reply').addClass('post')
-						.insertAfter(to);
+						.appendTo('body');
 
 					$link.trigger('mousemove');
 				}

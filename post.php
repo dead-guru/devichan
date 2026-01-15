@@ -973,9 +973,7 @@ if (isset($_POST['delete'])) {
 		error($error);
 	}
 	$post = (array)$post;
-
-	if ($post['files'])
-		$post['files'] = $post['files'];
+    
 	$post['num_files'] = count($post['files']);
 	
 	$post['id'] = $id = post($post);

@@ -51,7 +51,13 @@ $(document).ready(function() {
     var $root = $(this).closest('.post')
     var targetNum = this.textContent.slice(2)
 
-    var srcOP = $root.closest('[id^=thread]').attr('id').match(/\d+/)[0]
+    var $thread = $root.closest('[id^=thread]')
+    if (!$thread.length) return
+    var threadId = $thread.attr('id')
+    if (!threadId) return
+    var srcOPMatch = threadId.match(/\d+/)
+    if (!srcOPMatch) return
+    var srcOP = srcOPMatch[0]
 
     var node, targetOP
     var isBacklink = !!this.className
@@ -62,7 +68,9 @@ $(document).ready(function() {
       node = $(this)
 
       var to_search = inMod ? this.search : this.pathname;
-      targetOP = to_search.match(/(\d+).html/)[1]
+      var targetOPMatch = to_search.match(/(\d+).html/)
+      if (!targetOPMatch) return
+      targetOP = targetOPMatch[1]
     }
 
     var link = {

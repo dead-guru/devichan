@@ -15,6 +15,9 @@
  */
 
 $(document).ready(function(){
+	if (active_page !== 'thread' && active_page !== 'index' && active_page !== 'ukko') {
+		return;
+	}
 	var showOPLinks = function() {
 		var OP;
 		

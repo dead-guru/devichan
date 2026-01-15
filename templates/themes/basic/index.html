@@ -1,19 +1,37 @@
-{% filter remove_whitespace %}
+
 <!doctype html>
-<html>
+<html lang="{{ config.locale|default('en') }}">
 <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=yes">
+    <meta name="referrer" content="same-origin">
+    <meta name="format-detection" content="telephone=no, date=no, email=no, address=no">
     <title>{{ settings.head_title }} - {{ settings.subtitle }}</title>
     {% if config.meta_keywords %}
     <meta name="keywords" content="{{ config.meta_keywords }}">
     {% endif %}
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=yes">
     {% if config.url_favicon %}
-    <link rel="shortcut icon" href="{{ config.url_favicon }}">
+    <link rel="icon" href="{{ config.url_favicon }}">
+    {% endif %}
+    {% if config.default_stylesheet.1 != '' %}
+    <style>html:not(.style-ready){visibility:hidden}</style>
     {% endif %}
     <link rel="stylesheet" media="screen" href="{{ config.url_stylesheet|ccss }}">
     {% if config.default_stylesheet.1 != '' %}
-    <link rel="stylesheet" type="text/css" id="stylesheet" href="{{ (config.uri_stylesheets ~ config.default_stylesheet.1) | ccss }}">
+    <script>
+    (function(){
+        var b='{{ config.uri_stylesheets }}';
+        var m={{ config.stylesheets|json_encode|raw }};
+        var d='{{ config.default_stylesheet.1 }}';
+        var s=localStorage.getItem('stylesheet');
+        var f=(s&&m[s])?m[s]:d;
+        document.write('<link rel="stylesheet" id="stylesheet" href="'+b+f+'" onload="document.documentElement.classList.add(\'style-ready\')">');
+    })();
+    </script>
+    <noscript>
+        <style>html{visibility:visible!important}</style>
+        <link rel="stylesheet" type="text/css" id="stylesheet" href="{{ (config.uri_stylesheets ~ config.default_stylesheet.1) | ccss }}">
+    </noscript>
     {% endif %}
     {% if config.font_awesome %}
     <link rel="stylesheet" href="{{ config.root }}{{ config.font_awesome_css }}">
@@ -64,4 +82,4 @@
 {% include 'footer.html' %}
 </body>
 </html>
-{% endfilter %}
+

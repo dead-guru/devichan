@@ -85,10 +85,10 @@ if (isset($_GET['search']) && !empty($_GET['search']) && isset($_GET['board']) &
     
     if (!preg_match('/[^*^\s]/', $phrase) && empty($filters)) {
         _syslog(LOG_WARNING, 'Query too broad.');
-        $body .= '<p class="unimportant" style="text-align:center">(Query too broad.)</p>';
+        $body .= '<div class="post reply search-no-results">' . _('Query too broad. Be more specific.') . '</div>';
         echo Element($config['file_page_template'], array(
             'config' => $config,
-            'title' => 'Search',
+            'title' => _('Search'),
             'body' => $body,
         ));
         exit;
@@ -151,42 +151,49 @@ if (isset($_GET['search']) && !empty($_GET['search']) && isset($_GET['board']) &
     
     if ($query->rowCount() == $search_limit) {
         _syslog(LOG_WARNING, 'Query too broad.');
-        $body .= '<p class="unimportant" style="text-align:center">(' . _('Query too broad.') . ')</p>';
+        $body .= '<div class="post reply search-no-results">' . sprintf(_('Too many results (limit: %d). Try a more specific query.'), $search_limit) . '</div>';
         echo Element($config['file_page_template'], array(
             'config' => $config,
-            'title' => 'Search',
+            'title' => _('Search'),
             'body' => $body,
         ));
         exit;
     }
     
+    $resultCount = $query->rowCount();
     $temp = '';
+    
     while ($post = $query->fetch()) {
         if (!$post['thread']) {
             $po = new Thread($post);
         } else {
             $po = new Post($post);
         }
-        $temp .= $po->build(true) . '<hr/>';
+        $temp .= '<div class="post reply search-result-item">' . $po->build(true) . '</div>';
     }
     
     if (!empty($temp)) {
-        $_body .= '<fieldset><legend>' .
-            sprintf(
-                ngettext('%d result in', '%d results in', $query->rowCount()),
-                $query->rowCount()
-            ) . ' <a href="/' .
-            sprintf($config['board_path'], $board['uri']) . $config['file_index'] .
-            '">' .
-            sprintf($config['board_abbreviation'], $board['uri']) . ' - ' . $board['title'] .
-            '</a></legend>' . $temp . '</fieldset>';
+        $_body .= '<div class="search-results">';
+        $_body .= '<div class="search-results-header-wrap">';
+        $_body .= '<div class="search-results-header">';
+        $_body .= sprintf(
+            ngettext('%d result in', '%d results in', $resultCount),
+            $resultCount
+        );
+        $_body .= ' <a href="/' . sprintf($config['board_path'], $board['uri']) . $config['file_index'] . '">';
+        $_body .= sprintf($config['board_abbreviation'], $board['uri']) . ' - ' . $board['title'];
+        $_body .= '</a>';
+        $_body .= '</div></div>';
+        $_body .= '<div class="search-results-body">';
+        $_body .= $temp;
+        $_body .= '</div>';
+        $_body .= '</div>';
     }
     
-    $body .= '<hr/>';
     if (!empty($_body)) {
         $body .= $_body;
     } else {
-        $body .= '<p style="text-align:center" class="unimportant">(' . _('No results.') . ')</p>';
+        $body .= '<div class="post reply search-no-results">' . _('No results found.') . '</div>';
     }
 }
 

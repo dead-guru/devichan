@@ -1,3 +1,9 @@
+<noscript>
+<style>
+form[name="post"] { display: block !important; }
+.open-form { display: none !important; }
+</style>
+</noscript>
 
 <h1 class="open-form">[<a href="#" onclick="toggle('form[name=post]'); return false">
 {% if not id %}
@@ -198,5 +204,7 @@
 </form>
 
 <script type="text/javascript">{% verbatim %}
-	rememberStuff();
+	document.addEventListener('DOMContentLoaded', function() {
+		rememberStuff();
+	});
 {% endverbatim %}</script>

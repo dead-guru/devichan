@@ -297,13 +297,13 @@ class ImageConvert extends ImageBase {
 		
 		if (!$this->temp) {
 			if ($config['strip_exif']) {
-				if($error = shell_exec_error(($this->gm ? 'gm ' : '') . 'convert ' .
+				if($error = shell_exec_error(($this->gm ? 'gm convert ' : 'magick ') .
 						escapeshellarg($this->src) . ' -auto-orient -strip ' . escapeshellarg($src))) {
 					$this->destroy();
 					error(_('Failed to redraw image!'), null, $error);
 				}
 			} else {
-				if($error = shell_exec_error(($this->gm ? 'gm ' : '') . 'convert ' .
+				if($error = shell_exec_error(($this->gm ? 'gm convert ' : 'magick ') .
 						escapeshellarg($this->src) . ' -auto-orient ' . escapeshellarg($src))) {
 					$this->destroy();
 					error(_('Failed to redraw image!'), null, $error);
@@ -352,7 +352,7 @@ class ImageConvert extends ImageBase {
 				else
 					$convert_args = &$config['convert_args'];
 
-				if (($error = shell_exec_error(($this->gm ? 'gm ' : '') . 'convert ' .
+				if (($error = shell_exec_error(($this->gm ? 'gm convert ' : 'magick ') .
 					sprintf($convert_args,
 						$this->width,
 						$this->height,
@@ -375,7 +375,7 @@ class ImageConvert extends ImageBase {
 				$convert_args = str_replace('-auto-orient', '', $config['convert_args']);
 			else
 				$convert_args = &$config['convert_args'];
-			if (($error = shell_exec_error(($this->gm ? 'gm ' : '') . 'convert ' .
+			if (($error = shell_exec_error(($this->gm ? 'gm convert ' : 'magick ').
 				sprintf($convert_args,
 					$this->width,
 					$this->height,

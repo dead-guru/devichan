@@ -1241,6 +1241,7 @@
 	$config['error']['invalidtheme']	= _('That theme doesn\'t exist!');
 	$config['error']['csrf']		= _('Invalid security token! Please go back and try again.');
 	$config['error']['badsyntax']		= _('Your code contained PHP syntax errors. Please go back and correct them. PHP says: ');
+    $config['error']['infotoolong']		=  _('Username and/or password contains too many characters.');
 
 /*
  * =========================
@@ -1878,6 +1879,25 @@
  *  Other/uncategorized
  * ====================
  */
+
+	// Secret boards configuration
+	// Boards listed here require password authentication
+	// Key = board URI, Value = array of password hashes (use password_hash())
+	//
+	// Generate hash: docker-compose exec cphp php -r "echo password_hash('your_password', PASSWORD_DEFAULT) . PHP_EOL;"
+	//
+	// Example:
+	// $config['secret_boards'] = [
+	//     'secret' => ['$2y$10$...hash1...', '$2y$10$...masterpass...'],
+	//     'vip'    => ['$2y$10$...hash2...', '$2y$10$...masterpass...'],
+	// ];
+	$config['secret_boards'] = [];
+
+	// TTL for secret board authentication in seconds (default: 24 hours)
+	$config['secret_boards_ttl'] = 86400;
+
+	// Caddy Admin API URL for syncing secret board routes
+	$config['caddy_admin_url'] = 'http://caddy:2019';
 
 	// Meta keywords. It's probably best to include these in per-board configurations.
 	// $config['meta_keywords'] = 'chan,anonymous discussion,imageboard,vichan';

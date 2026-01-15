@@ -1,0 +1,18 @@
+<div class="search-box">
+    <div class="post reply search-box-inner">
+        <div class="search-title-wrap">
+            <div class="search-box-title">/{{ board }}/ - {% trans %}Access Required{% endtrans %}</div>
+        </div>
+        {% if error %}
+        <div class="ban">{% trans %}Invalid password{% endtrans %}</div>
+        {% endif %}
+        <form action="" method="post">
+            <input type="hidden" name="board" value="{{ board }}">
+            <input type="hidden" name="redirect" value="{{ redirect }}">
+            <div class="search-row">
+                <input type="password" name="password" placeholder="{% trans %}Enter password...{% endtrans %}" autofocus>
+                <input type="submit" value="{% trans %}Enter{% endtrans %}">
+            </div>
+        </form>
+    </div>
+</div>

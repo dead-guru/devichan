@@ -1,0 +1,587 @@
+body {
+	background:#0000ff;
+	color:#ffffff;
+    font-family:courier;
+	font-size:15px;
+}
+a:link, a:visited, .intro a.email span.name {
+	color:#ffffff;
+	text-decoration: none;
+    font-family:courier;
+		font-size:15px;
+}
+a:hover {
+	color:#ffffff;
+	text-decoration: underline;
+    font-family:courier;
+		font-size:15px;
+}
+.reflink{
+    /* WTF is this? */
+	font-weight: bold;
+    font-family:courier;
+}
+.reflink a:hover{
+	/* WTF is this? */
+	font-weight: bold;
+    font-family:courier;
+}
+.adminbar {
+	/* WTF is this? */   
+	text-align:right;
+	clear:both;
+	float:right;
+}
+
+
+
+header div.boardname,h1 {
+	/* board name, such as "/a/ - anime" */
+    font-size:30px;
+	text-align: center;
+	color: #ffffff;
+	border:solid 2px #ffffff ;
+	text-decoration: none;
+	padding: 4px;
+    font-family:courier;
+	
+	
+ }
+ 
+header div.subtitle {
+	/* the text bellow the board name */
+	color:#ffffff;
+    font-family:courier;
+    font-size:15px;
+	border:solid 2px #ffffff ;
+	border-top:solid 0px #ffffff ;
+	padding: 4px;
+}
+
+
+div.banner {
+		/* posting mode bar at the top of the page */ 
+	color: #FFFFFF;
+	font-weight: bold;
+	font-size: 110%;
+	background:#ff0000;
+	padding: 3px;
+}
+
+div.banner a {
+		/* WTF is this? */ 
+	color: #000000;
+}
+
+img.board_image
+{
+		/* this is the banner */
+	padding: 4px;		
+    border:solid 2px #ffffff ;
+	    filter: grayscale(100%); /* Current draft standard */
+    -webkit-filter: grayscale(100%); /* New WebKit */
+    -moz-filter: grayscale(100%);
+    -ms-filter: grayscale(100%); 
+    -o-filter: grayscale(100%); /* Not yet supported in Gecko, Opera or IE */ 
+    filter: url(resources.svg#desaturate); /* Gecko */
+    filter: gray; /* IE */
+    -webkit-filter: grayscale(1); /* Old WebKit */
+}
+
+
+.catalogmode {
+		/* it's the catalog */ 
+	background:#0000ff;
+	text-align:center;
+	padding:2px;
+	color:#FFFFFF;
+	width:100%;
+}
+.postarea {
+}
+
+.rules {
+	margin-left: 1em;
+	/*text-indent: 0em;*/
+	
+}
+.rules li {
+	margin-left: 1em;
+	/*text-indent: 0em;*/
+}
+
+.postblock {
+    /* boxes such as name email and comment next to new post text input boxes */ 
+	background:#0000ff;
+	color: #ffffff;
+    border:0px solid #ffffff;
+    font-size:10pt;
+    font-weight:bold;
+	padding: 1px;
+    font-family:courier;
+}
+
+.postform
+{
+	background: #0000ff;
+	color: #ffffff;
+    border:2px solid #ffffff;
+    font-size:10pt;
+    font-weight:bold;
+	padding: 1px;
+    font-family:courier;
+}
+
+.postbuttons {
+	/* WTF is this? */  
+}
+
+.unimportant, .unimportant * {
+	/* details about the a file posted, such as 294.84 KB, 666x950, 96874706_p0.jpg */  
+        font-family:courier;
+			font-size:10px;
+}
+
+.footer {
+	text-align:center;
+	font-size:15px;
+	font-family:serif;
+}
+.passvalid {
+	background:#0000ff;
+	text-align:center;
+	width:100%;
+	color:#ffffff;
+}
+.dellist {
+	font-weight: bold;
+	text-align:center;
+}
+.delbuttons {
+	text-align:center;
+	padding-bottom:4px;
+
+}
+.managehead {
+	background:#0000ff;
+	color:#ffffff;
+	padding:0px;
+}
+.postlists {
+	background:#0000ff;
+	color:#ffffff;
+}
+.row1 {
+	background:#0000ff;
+	color:#ffffff;
+}
+.row2 {
+	background:#0000ff;
+	color:#ffffff;
+}
+.unkfunc {
+	background:inherit;
+	color:#789922;
+}
+.filesize {
+	text-decoration:none;
+}
+.intro span.subject {
+		/* This is where the subject of a post or thread goes */ 
+	background:#0000ff;
+	color:#ff0000;
+}
+.intro span.name {
+		/* This is a users name, typicaly Anonymous */ 
+	color:#ffffff !important;
+	font-weight: bold;
+}
+.postertrip {
+	color:#338099 !important
+}
+.oldpost {
+	color:#CC1105;
+	font-weight:800;
+}
+.omittedposts {
+	color:#707070;
+}
+div.post.reply {
+	/* This is the comment or reply box found in a thread responding to the OP */ 
+	background: #0000ff;
+	color: #ffffff;
+	border: 2px solid #ffffff;
+	width: 100% !important;
+}
+
+
+div.post.reply.highlighted {
+		/* This is the comment or reply box WHEN HIGHLIGHTED */ 
+	background: #0000ff;
+	color: #ffffff;
+	border: 2px solid #ff0000;
+	width: 100% !important;
+}
+
+div.post.reply div.body a:link, div.post.reply div.body a:visited {
+	color: #69ddd9;
+}
+div.post.reply div.body a:link:hover, div.post.reply div.body a:visited:hover {
+	color: #0000ff;
+}
+
+
+.doubledash {
+	color:#E5E5E5;
+	padding-right: 3px;
+	vertical-align: top;
+}
+.replytitle {
+	font-size: 1.2em;
+	color:#CC1105;
+	font-weight:800;
+}
+.commentpostername {
+			/* WTF is this? might be garbage */ 
+	color:#ff00ff;
+	font-weight:800;
+}
+.thumbnailmsg {
+	font-size: small;
+	color:#0000ff;
+}
+
+.abbrev {
+	color:#707070;
+}
+.highlight {
+background-color:#00ff00 !important;
+padding:3px !important;
+
+}
+
+#watchedthreads {
+	background-color: #0000ff !important;
+        border: 2px dotted #ffffff;
+}
+
+.reflinkpreview {
+	background-color: #0000ff !important;
+
+}
+
+input[type="text"], textarea, select {
+	/* text input boxes for making a new post */
+
+	background:#0000ff;
+	color:#ffffff;
+	font-weight:none;
+	padding:1px;
+	border: 2px solid #ffffff;
+}
+
+input[type="button"] {
+/* noko sage and BB code buttons around post box * also try class="btn"  */
+	color:#ffffff; 
+    font-family:courier;
+	background-color:#0000ff; 
+	border: 0px solid; 
+	padding:4px;
+
+}
+
+input[type="submit" i]{
+/* submit button ONLY next to post box*/
+	color:#ffffff; 
+    font-family:courier;
+	background-color:#0000ff; 
+	border: 0px solid; 
+	padding:4px;
+
+}
+
+.boardinfo
+{
+font-weight:none;
+font-size: 10pt;
+color: #ffffff;
+text-align: left;
+padding:5px;
+}
+
+.hl
+{
+font-weight:bold;
+font-size:10pt;
+background-image:url(' ');
+background-color: #0000ff !important;
+padding:5px;
+border: 2px solid #ffffff;  
+}
+
+/* Stats box on the front page. */
+.mainBox h2 {
+    background: #0000ff;
+    color: #ffffff;
+	border: 2px solid #ffffff;  
+}
+
+.tablesub, .mainBox
+{
+font-weight:none;
+color: #ffffff;
+border:2px solid #ffffff;
+background-color: #0000ff;
+padding:5px;
+}
+
+.tablesub:hover 
+{
+font-weight:none;
+background-image:url(' ');
+color:#0000ff;
+background-color: #D6DAF0 !important;
+font-size:10pt;
+padding:5px;
+border: 2px solid #ffffff; 
+ 
+}
+
+
+.picslot
+{
+font-weight:none;
+background-image:url(' ');
+background-color: #0000ff;
+padding:4px;
+border: 1px solid #000000;  
+border-top: 1px solid #000000;
+}
+
+
+.picitself
+{
+img-position: center top !important;
+filter:alpha(opacity=60);
+opacity:0.9;
+max-width:200px;
+max-height:120px;
+display: block;
+margin-left: auto;
+margin-right: auto
+}
+
+.banner
+{ 
+background: url(' '); 
+background-position:center;
+background-repeat:no-repeat !important;
+padding: 0 6px 7px 0;
+}
+
+.fpfooter
+{
+background: url(' ');  
+background-position:left; 
+background-repeat:no-repeat !important;
+height:60px;
+top:30px;
+padding-top:50px;
+padding-bottom:-60px; 
+margin-bottom:-50px;
+
+}
+
+/* ///////////////////// staff page elements bellow here ////////////////////////// */
+
+
+/* rebuild page */ 
+div.ban h2 {
+    background: #0000ff;
+    color: #E5E5E5;
+    font-size: 12pt;
+	font-weight: bold;
+	border:2px solid #fffff;
+}
+
+form table tr th {
+/* bars on the top and side of the config editor page but also affects .postblock, use !important; on the post block so this doesn't effect that too */
+border:2px solid #ffffff;
+background-color: #0000ff!important;
+}
+
+table.mod.config-editor td {
+/* devider line on config editor page */
+    text-align: left;
+    padding: 5px;
+    border-bottom: 2px solid #ffffff;
+}
+
+
+table.modlog tr th {
+/*bar on top of the mod/users page that lists off staff */
+border:2px solid #ffffff;
+background-color: #0000ff!important;
+}
+
+th.sortable {  
+/*bar on top of the ban list page */
+border:2px solid #ffffff;
+background-color: #0000ff!important;
+}
+
+ .tabletop
+ /* on the front page, this will be the bar that says boardmap recent images and so on. */
+{
+border:2px solid #ffffff;
+font-weight:bold;
+background-color: #0000ff !important;
+color: #ffffff;
+padding:5px;
+}
+ .tabletop2
+{
+    /* on the front page, this will be the bar that says recent posts. */  
+border:2px solid #ffffff;
+font-weight:bold;
+background-color: #0000ff !important;
+color: #ffffff;
+padding:5px;
+}
+
+.tablesub
+    /* on the front page, this is where the boards are listed as well as the recent posts */  
+{
+border:2px solid #ffffff;
+font-weight:bold;
+background-color: #0000ff !important;
+padding:5px;
+}
+
+ .tablesub:hover 
+     /* This is the tablesub element when you hover over it whith your mouse. */  
+{
+border:2px solid #ffffff;
+font-weight:bold;
+background-color: #0000ff !important;
+color: #ffffff;
+padding:5px;
+}
+
+.picslot
+{
+					/* space around recent image thumbnails on the front page */ 
+border:2px solid #ffffff;
+font-weight:none;
+background-color: #0000ff;
+padding:4px;
+}
+
+.picitself
+					/* this can be used for adding effects to the recent image thumbnail, such as making it transparent */ 
+{
+    filter: grayscale(100%); /* Current draft standard */
+    -webkit-filter: grayscale(100%); /* New WebKit */
+    -moz-filter: grayscale(100%);
+    -ms-filter: grayscale(100%); 
+    -o-filter: grayscale(100%); /* Not yet supported in Gecko, Opera or IE */ 
+    filter: url(resources.svg#desaturate); /* Gecko */
+    filter: gray; /* IE */
+    -webkit-filter: grayscale(1); /* Old WebKit */
+}
+
+.reply blockquote, blockquote
+{
+margin-bottom:0;
+padding-bottom:10px;
+}
+
+
+.NewsMenuCurrent
+{
+						/* currently selected tab on the front page, which doesn't work with main for some reason */ 
+	background: #0000ff ;
+    border: 2px solid #ffffff;
+	border-bottom: 0px;
+	padding-top: 3px; 
+	padding-bottom: 2px; 
+	padding-left: 10px; 
+	padding-right: 10px; 
+}	
+
+.NewsMenu
+{
+					/* tabs on the front page */ 
+	border: 2px solid #ffffff;  
+    border-bottom: 0px solid #ffffff;  
+	padding-top: 3px; 
+	padding-bottom: 2px; 
+	padding-left: 10px; 
+	padding-right: 10px; 
+	background-color: #0000ff ;	
+}
+
+.NewsTitleStrip
+{
+				/* bar on the front page that says main */ 
+	background: #0000ff ;
+    border: 2px solid #ffffff;
+	font-weight: bold;
+	color: #ffffff;
+	padding: 3px;
+	padding-left: 5px;
+	font-size: 80%;
+}
+
+.NewsContent
+{
+	color: #ffffff;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	font-size: 10pt;
+}
+
+hr {
+			/* Divider line between posts */ 
+	border-top: 1px solid #ffffff;
+    color:#ffffff;	
+    height: 1px;
+	margin-top: 5px;
+	margin-bottom: 15px;
+	font-size: 0px; 
+}
+
+div.pages {
+		/* board pages box on the bottom of a board page which also has the catalog link */ 
+	color: #ffffff;
+	background: #0000ff;
+	border: #ffffff 0px solid;
+	font-family: sans-serif;
+	font-weight: bold;
+	font-size: 10pt;
+	border-radius: 5px;
+    box-shadow:         0px 0px 6px #e3e3e3;
+}
+div.pages a.selected {
+	color:#2ac5e3;
+}
+
+input
+{ 
+		/* box with the choose file button and no file selected text */
+font-weight:bold;
+background:#0000ff; 
+padding:1px;
+border: 2px solid #ffffff; 
+color:#ffffff;
+}
+
+.comment
+{ 
+
+font-weight:none;
+background:#0000ff url( ) repeat scroll left top; 
+padding:1px;
+border: 2px solid #ffffff; 
+color:#E5E5E5;
+}

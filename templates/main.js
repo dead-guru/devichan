@@ -234,9 +234,13 @@ function highlightReply(id) {
 	}
 	if (id) {
 		var post = document.getElementById('reply_'+id);
-		if (post)
+		if (post){
+			console.log('post found', post);
 			post.className += ' highlighted';
-			window.location.hash = id;
+		}
+		else {
+			console.log('post not found', id);
+		}
 	}
 	return true;
 }
@@ -287,13 +291,14 @@ function show(selector) {
 }
 
 function citeReply(id, with_link) {
-		console.log(with_link)
 	var textarea = document.getElementById('body');
+
+	highlightReply(id);
+	scrollToReply(id);
 
 	if (!textarea) return false;
 
 	show('form[name=post]');
-	highlightReply(id);
 
 	if (document.selection) {
 		// IE
@@ -341,8 +346,10 @@ function rememberStuff() {
 		if (localStorage.email && document.forms.post.elements['email'])
 			document.forms.post.elements['email'].value = localStorage.email;
 
-		if (window.location.hash.indexOf('q') == 1)
+		if (window.location.hash.indexOf('q') == 1) {
 			citeReply(window.location.hash.substring(2), true);
+		}
+			
 
 		if (sessionStorage.body) {
 			var saved = JSON.parse(sessionStorage.body);
@@ -379,6 +386,12 @@ var script_settings = function(script_name) {
 	}
 };
 
+function scrollToReply(id) {
+	setTimeout(function () {
+		$(document).scrollTop($('#reply_' + id).offset().top - 50);
+	}, 100);
+}
+
 function init() {
 	init_stylechooser();
 
@@ -393,12 +406,7 @@ function init() {
 		if (window.location.hash.indexOf('q') != 1 && window.location.hash.substring(1)) {
 			let id = window.location.hash.substring(1);
 			highlightReply(id);
-
-			setTimeout(function () {
-				$(document).scrollTop($('#reply_' + id).offset().top - 50);
-			}, 100);
-
-
+			scrollToReply(id);
 		}
 	});
 
@@ -423,6 +431,7 @@ function ready() {
 
 var post_date = "{{ config.post_date }}";
 var max_images = {{ config.max_images }};
+var allow_delete = {{ config.allow_delete ? 'true' : 'false' }};
 
 onready(init);
 

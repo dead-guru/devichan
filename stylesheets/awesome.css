@@ -1,0 +1,108 @@
+/*
+ Awesome (legacy) theme rebuilt on top of Photon
+ - Reuses Photon structure and components
+ - Preserves old colors, fonts, and background images
+*/
+
+@import url('./photon.css');
+
+/* Color system overrides to emulate old theme palette */
+:root {
+    --theme_default_bg: #000000;
+    --theme_default_postbg: #000000;
+    --theme_default_postbghighlight: #0f0f0f;
+    --theme_default_text: #00ff00;
+    --theme_default_alttext: #00ff00;
+    --theme_default_link: #ffff00;
+    --theme_default_hover: #ff0000;
+    --theme_default_title: #ffff00;
+    --theme_default_border: #646464;
+    --theme_default_icon: #00ff00;
+    --theme_default_btntext: #00ff00;
+    --theme_default_btnbg: #000000;
+    --theme_default_btnborder: #646464;
+    --theme_default_altbtnbg: #000000;
+    --theme_default_btnbghover: #111111;
+    --theme_default_altbtnbghover: transparent;
+}
+
+/* Typography */
+html, body {
+    font-family: 'Comic Sans MS', cursive, sans-serif;
+}
+
+/* Legacy background imagery on body */
+body {
+    background-image: url('http://tohno-chan.org/stylesheets/img/awesome/Osaka_Dance.gif'), url('http://tohno-chan.org/stylesheets/img/awesome/universe.gif');
+    background-position: center bottom, left top;
+    background-repeat: repeat-x, repeat;
+    background-color: #000000;
+    background-attachment: fixed, scroll;
+    color: var(--theme_default_text);
+}
+
+/* Links */
+a, a:visited {
+    color: var(--theme_default_link);
+    text-decoration: none;
+}
+a:hover {
+    color: var(--theme_default_hover);
+    text-decoration: underline;
+}
+
+/* Headings and subtitle styling reminiscent of legacy */
+h1, div.subtitle {
+    color: #ffff00;
+}
+
+/* Banner uses the animated code background from legacy */
+div.banner {
+    background-image: url('http://tohno-chan.org/stylesheets/img/awesome/code.gif');
+    background-repeat: repeat;
+    border: 4px outset #00ff00;
+    color: #00ff00;
+}
+
+/* Pages bar textured background */
+div.pages {
+    background-image: url('http://tohno-chan.org/stylesheets/img/awesome/code.gif');
+    background-repeat: repeat;
+    border: 2px inset #646464;
+}
+
+/* Reply highlight callback to firewall texture */
+div.post.reply.highlighted {
+    background-image: url('https://www.tohno-chan.org/stylesheets/img/awesome/firewall.jpg');
+    background-repeat: repeat;
+    border: 2px outset #ff0000;
+}
+
+/* Inputs and textarea keep the legacy feel */
+input {
+    background-color: #ffff00;
+    padding: 1px;
+    border: 2px outset #646464;
+}
+
+textarea {
+    background-image: url('http://tohno-chan.org/stylesheets/img/awesome/animedance.gif');
+    background-color: #ff6b94;
+    background-repeat: no-repeat;
+    background-position: center;
+    padding: 1px;
+    border: 2px outset #646464;
+}
+
+/* Boards hover effect with dragon background */
+.boards:hover {
+    background-image: url('http://tohno-chan.org/stylesheets/img/awesome/dragon.gif');
+    background-repeat: no-repeat;
+    background-position: center;
+    border: 2px inset #ff0000;
+}
+
+/* Keep quoted text neon green like legacy */
+.unkfunc { /* > quoted text */
+    color: #00ff00;
+}

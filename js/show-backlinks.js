@@ -14,6 +14,9 @@
  */
 
 onready(function(){
+	if (active_page !== 'thread' && active_page !== 'index' && active_page !== 'ukko') {
+		return;
+	}
 	var showBackLinks = function() {
 		var reply_id = $(this).attr('id').replace(/(^reply_)|(^op_)/, '');
 

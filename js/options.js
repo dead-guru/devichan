@@ -89,7 +89,6 @@
         }
         var tab = options_tabs[id];
         options_current_tab = tab;
-        console.log(options_tabs)
         options_current_tab.icon.addClass("active");
         tab.content[quick ? "show" : "fadeIn"]();
 

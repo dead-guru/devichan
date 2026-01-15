@@ -1,0 +1,82 @@
+{
+    admin 0.0.0.0:2019
+    auto_https off
+}
+
+:80 {
+    root * /var/www
+    encode gzip
+
+    header {
+        X-Frame-Options "SAMEORIGIN"
+        X-Content-Type-Options "nosniff"
+    }
+
+    request_body {
+        max_size 2GB
+    }
+
+    @static path *.jpg *.jpeg *.gif *.png *.ico *.cur *.svg *.svgz *.mp4 *.ogg *.ogv *.webm *.htc *.gz
+    header @static Cache-Control "public, max-age=2592000"
+
+    @assets path *.css *.js
+    header @assets Cache-Control "public, max-age=31536000"
+
+    @html path *.html
+    header @html Cache-Control "no-cache, no-store, must-revalidate"
+
+    @favicon path /favicon.ico /robots.txt
+    handle @favicon {
+        file_server
+    }
+
+    route {
+        @rewrite_search path_regexp ^/search(/.*)?$
+        rewrite @rewrite_search /search.php?{query}
+
+        @rewrite_mod path_regexp ^/mod(/.*)?$
+        rewrite @rewrite_mod /mod.php?{query}
+
+        @rewrite_stats path_regexp ^/stats(/.*)?$
+        rewrite @rewrite_stats /stats.php?{query}
+
+        @rewrite_post path_regexp ^/post(/.*)?$
+        rewrite @rewrite_post /post.php?{query}
+
+        @rewrite_report path_regexp ^/report(/.*)?$
+        rewrite @rewrite_report /report.php?{query}
+
+        @rewrite_log path_regexp ^/log(/.*)?$
+        rewrite @rewrite_log /log.php?{query}
+
+        @rewrite_banner path_regexp ^/banner(/.*)?$
+        rewrite @rewrite_banner /b.php?{query}
+
+        @rewrite_banned path_regexp ^/banned(/.*)?$
+        rewrite @rewrite_banned /banned.php?{query}
+
+        @rewrite_auth_login path /auth/login /auth/login/
+        rewrite @rewrite_auth_login /auth/login.php?{query}
+        
+        @rewrite_auth_check path /auth/check /auth/check/
+        rewrite @rewrite_auth_check /auth/check.php?{query}
+        
+        @rewrite_auth path_regexp ^/auth/?$
+        rewrite @rewrite_auth /auth/login.php?{query}
+
+        try_files {path} {path}/index.html {path}/index.php /index.php?{query}
+
+        @phpFiles path *.php
+        php_fastcgi @phpFiles cphp:9000 {
+            trusted_proxies private_ranges
+            env REMOTE_ADDR {header.CF-Connecting-IP}
+            read_timeout 600s
+        }
+
+        file_server
+    }
+
+    handle_errors {
+        respond "{err.status_code} {err.status_text}"
+    }
+}

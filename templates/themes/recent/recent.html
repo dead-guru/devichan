@@ -1,24 +1,13 @@
-{% filter remove_whitespace %}
 <!doctype html>
-<html lang="en">
+<html lang="{{ config.locale|default('en')|slice(0, 2) }}">
 <head>
-    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8">
     <title>{{ settings.title }}</title>
     <script type="text/javascript">
         var active_page = "recent";
     </script>
-    <link rel="stylesheet" media="screen" href="{{ config.url_stylesheet }}" />
-    <link rel="stylesheet" media="screen" href="{{ config.root }}{{ settings.css }}" />
-    {% if config.url_favicon %}
-    <link rel="shortcut icon" href="{{ config.url_favicon }}" />
-    {% endif %}
-    {% if config.default_stylesheet.1 != '' %}
-    <link rel="stylesheet" type="text/css" id="stylesheet" href="{{ config.uri_stylesheets }}{{ config.default_stylesheet.1 }}">
-    {% endif %}
-    {% if config.font_awesome %}
-    <link rel="stylesheet" href="{{ config.root }}{{ config.font_awesome_css }}">
-    {% endif %}
     {% include 'header.html' %}
+    <link rel="stylesheet" media="screen" href="{{ config.root }}{{ settings.css }}" />
 </head>
 <body>
 {{ boardlist.top }}
@@ -27,46 +16,84 @@
     <div class="subtitle">{{ settings.subtitle }}</div>
 </header>
 
-<div class="box-wrap">
-    <div class="box left">
-        <h2>Recent Images</h2>
-        <ul class="recent">
-            {% for post in recent_images %}
-            <li>
-                <a href="{{ post.link }}" title="{{ post.link }}">
-                    <img src="{{ post.src }}" alt="">
-                </a>
-            </li>
-            {% endfor %}
-        </ul>
+<div class="portal-wrap">
+
+    <div class="portal-column-left">
+
+        <div class="box">
+            <h2>News</h2>
+            <ul class="list-news">
+                {% for item in stats.latest_news %}
+                <li>
+                    <strong>{{ item.subject }}</strong>
+                    <div class="news-body">{{ item.body|raw }}</div>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="box">
+            <h2>Board Top (7 days)</h2>
+            <ul class="list-stats">
+                {% for board in stats.top_boards %}
+                <li>
+                    <a href="{{ config.root }}{{ board.uri }}/">/{{ board.uri }}/ - {{ board.name }}</a>
+                    <span>{{ board.count }} posts</span>
+                </li>
+                {% else %}
+                <li>No activity...</li>
+                {% endfor %}
+            </ul>
+        </div>
+
     </div>
-    <div class="box right">
-        <h2>Latest Posts</h2>
-        <ul>
-            {% for post in recent_posts %}
-            <li>
-                <strong>{{ post.board_name }}</strong>:
-                <a href="{{ post.link }}">
-                    {{ post.snippet }}
-                </a>
-            </li>
-            {% endfor %}
-        </ul>
+
+    <div class="portal-column-main">
+        <div class="box">
+            <h2>Latest active threads</h2>
+            <ul class="list-threads">
+                {% for post in recent_posts %}
+                <li>
+                    <span class="board-name">[{{ post.board_name }}]</span>
+                    <a href="{{ post.link }}">
+                        {{ post.snippet }}
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
     </div>
-    <div class="box right">
-        <h2>Stats</h2>
-        <ul>
-            <li><strong>Total posts:</strong> {{ stats.total_posts }}</li>
-            <li><strong>Unique posters:</strong> {{ stats.unique_posters }}</li>
-            <li><strong>Active content:</strong> {{ stats.active_content|filesize }}</li>
-        </ul>
+
+    <div class="portal-column-right">
+        <div class="box">
+            <h2>Stats</h2>
+            <ul class="list-stats">
+                <li><strong>Posts (All Time):</strong> <span>{{ stats.total_posts }}</span></li>
+                <li><strong>Threads (All Time):</strong> <span>{{ stats.total_threads }}</span></li>
+                <li><strong>Posts (24h):</strong> <span>{{ stats.posts_today }}</span></li>
+                <li><strong>Anonymous (All Time):</strong> <span>{{ stats.unique_posters }}</span></li>
+                <li><strong>Anonymous (24h):</strong> <span>{{ stats.unique_posters_today }}</span></li>
+                <li><strong>Data:</strong> <span>{{ stats.active_content|filesize }}</span></li>
+            </ul>
+        </div>
+
+        <div class="box">
+            <h2>Latest images</h2>
+            <ul class="list-images">
+                {% for post in recent_images %}
+                <li>
+                    <a href="{{ post.link }}" title="{{ post.link }}">
+                        <img src="{{ post.src }}" loading="lazy" decoding="async" alt="">
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
     </div>
+
 </div>
 
 <hr />
-
 {% include 'footer.html' %}
-
 </body>
 </html>
-{% endfilter %}

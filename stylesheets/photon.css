@@ -1,4 +1,4 @@
-@import url(https://fonts.googleapis.com/css2?family=PT+Sans:wght@400;700&display=swap);
+/* @import url(https://fonts.googleapis.com/css2?family=PT+Sans:wght@400;700&display=swap); */
 
 :root {
     --theme_default_bg: #EEE;
@@ -475,7 +475,7 @@ form table tr td div {
 .open-form a {
     color: var(--theme_default_link);
     margin: 0 10px;
-    transition: all .09s;
+    /* transition: all .09s; */
 }
 
 .open-form a:hover {
@@ -507,7 +507,7 @@ div.ban h2 {
     padding-top: 15px;
     padding-bottom: 10px;
     border: 2px dashed var(--theme_default_border);
-    transition: all .09s;
+    /* transition: all .09s; */
 }
 
 .news > .post:hover {
@@ -591,7 +591,7 @@ div.post .post-image {
 a.reply-thread {
     color: var(--theme_default_link);
     font-weight: 700;
-    transition: all .09s;
+    /* transition: all .09s; */
 }
 
 a.reply-thread:hover {
@@ -732,7 +732,7 @@ input, input[type=password], input[type=text], select, textarea {
     border: none;
     outline: 0;
     background-color: var(--theme_default_altbtnbg);
-    transition: background-color .2s;
+    /* transition: background-color .2s; */
     box-sizing: border-box;
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box
@@ -941,7 +941,7 @@ div.ban {
     padding-top: 15px;
     padding-bottom: 10px;
     border: 2px dashed var(--theme_default_border);
-    transition: all .09s;
+    /* transition: all .09s; */
     padding-left: 20px;
 }
 
@@ -1089,7 +1089,7 @@ div.subtitle {
     background-color: var(--theme_default_btnbg);
     cursor: pointer;
     border-radius: 3px;
-    transition: all .09s;
+    /* transition: all .09s; */
 }
 
 .postarea .format-text button:hover {
@@ -1124,4 +1124,20 @@ form[name="post"] {
     border-color: var(--theme_default_border) !important;
     margin: 0;
     width: 100%;
+}
+
+.thread {
+    contain: layout style paint;
+}
+
+div.post.reply {
+    contain: layout style;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
 }

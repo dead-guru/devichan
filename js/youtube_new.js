@@ -54,9 +54,10 @@ $(document).ready(function () {
         }
 
         $('div.video-container a', tag).click(function () {
+            var params = $(this.parentNode).data('params') || '';
             $(this.parentNode).append('<iframe style="float:left;margin: 10px 20px" type="text/html" ' +
-                'width="' + our_yt.width + '" height="' + our_yt.height + '" src="https://www.youtube.com/embed/' + $(this.parentNode).data('video') +
-                '?autoplay=1&html5=1' + $(this.parentNode).data('params') + '" allowfullscreen frameborder="0"/>');
+                'width="' + our_yt.width + '" height="' + our_yt.height + '" src="https://www.youtube-nocookie.com/embed/' + $(this.parentNode).data('video') +
+                '?autoplay=1' + params + '" allowfullscreen frameborder="0" referrerpolicy="strict-origin-when-cross-origin"/>');
             $(this).remove();
             return false;
         });

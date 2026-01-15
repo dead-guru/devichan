@@ -33,7 +33,7 @@
     <a href="https://github.com/dead-guru/devichan/wiki"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://4.dead.guru/">View Demo</a>
+    <a href="https://deada.ch/">View Demo</a>
     ·
     <a href="https://github.com/dead-guru/devichan/issues">Report Bug</a>
     ·
@@ -80,6 +80,12 @@ So, **DeVichan** - is a hard fork of vichan where we try to fix some stuff.
 
 **New features**:
 * All-in-one `docker-compose.yml`
+* i2pd support
+* Secret boards with password authentication
+* Updated themes with new templates
+* api for mobile apps
+* emoji picker
+* snow at christmas time
 * Updated twig (`1 -> 3`), jquery (`2 -> 3`) and lot others deps
 * 404 and 500 error pages
 * Banners for each board

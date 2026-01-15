@@ -20,25 +20,24 @@ $(document).ready(function(){
 		var submitButton;
 		
 		if(this.checked) {
-			var post_form = $('<form class="post-actions" method="post" style="margin:10px 0 0 0">' +
-				'<div style="text-align:left">' +
-					(!thread ? '<hr>' : '') +
-					
-					'<input type="hidden" name="delete_' + id + '">' +
-					
-					'<label for="password_' + id + '">'+_("Password")+'</label>: ' +
-					'<input id="password_' + id + '" type="password" name="password" size="11" maxlength="18">' +
-					'<input title="'+_('Delete file only')+'" type="checkbox" name="file" id="delete_file_' + id + '">' +
-						'<label for="delete_file_' + id + '">'+_('File')+'</label>' +
-					' <input type="submit" name="delete" value="'+_('Delete')+'">' +
-				
-					'<br>' +
-				
-					'<label for="reason_' + id + '">'+_('Reason')+'</label>: ' +
-					'<input id="reason_' + id + '" type="text" name="reason" size="20" maxlength="100">' +
-					' <input type="submit" name="report" value="'+_('Report')+'">' +
-				'</div>' +
-			'</form>');
+		var deleteSection = (typeof allow_delete !== 'undefined' && allow_delete) ? 
+			'<input type="hidden" name="delete_' + id + '">' +
+			'<label for="password_' + id + '">'+_("Password")+'</label>: ' +
+			'<input id="password_' + id + '" type="password" name="password" size="11" maxlength="18">' +
+			'<input title="'+_('Delete file only')+'" type="checkbox" name="file" id="delete_file_' + id + '">' +
+				'<label for="delete_file_' + id + '">'+_('File')+'</label>' +
+			' <input type="submit" name="delete" value="'+_('Delete')+'">' +
+			'<br>' : '';
+		
+		var post_form = $('<form class="post-actions" method="post" style="margin:10px 0 0 0">' +
+			'<div style="text-align:left">' +
+				(!thread ? '<hr>' : '') +
+				deleteSection +
+				'<label for="reason_' + id + '">'+_('Reason')+'</label>: ' +
+				'<input id="reason_' + id + '" type="text" name="reason" size="20" maxlength="100">' +
+				' <input type="submit" name="report" value="'+_('Report')+'">' +
+			'</div>' +
+		'</form>');
 			post_form
 				.attr('action', $('form[name="post"]:first').attr('action'))
 				.append($('input[name=board]:first').clone())
