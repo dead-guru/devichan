@@ -1280,7 +1280,7 @@
 	$config['file_page50'] = '%d+50.html';
 	$config['file_page_slug'] = '%d-%s.html';
 	$config['file_page50_slug'] = '%d-%s+50.html';
-	$config['file_mod'] = 'mod.php';
+	$config['file_mod'] = 'mod';
 	$config['file_post'] = 'post.php';
 	$config['file_script'] = 'main.js';
 
