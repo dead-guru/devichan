@@ -7,12 +7,13 @@
     root * /var/www
     encode gzip
 
-    @blocked path /.env /.env.* /.git/* /inc/secrets.php /inc/instance-config.php /docker-compose.yml /composer.* /*.sql
-    respond @blocked 403
-
     header {
         X-Frame-Options "SAMEORIGIN"
         X-Content-Type-Options "nosniff"
+        -Server
+        -X-Powered-By
+        -X-AspNet-Version
+        -X-AspNetMvc-Version
     }
 
     request_body {
@@ -31,6 +32,14 @@
     @favicon path /favicon.ico /robots.txt
     handle @favicon {
         file_server
+    }
+
+    @blocked {
+        path /.env /.env.* /.git /.git/* /inc/* /docker-compose.yml /composer.json /composer.lock /*.sql /*.sql.gz /php-fpm/* /caddy/* /nginx/* /i2p/* /tools/*
+        not path /inc/captcha/entrypoint.php
+    }
+    handle @blocked {
+        respond 404
     }
 
     route {
