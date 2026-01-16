@@ -13,6 +13,9 @@ session_start();
 if (!isset($_POST['captcha_cookie']) && isset($_SESSION['captcha_cookie'])) {
 	$_POST['captcha_cookie'] = $_SESSION['captcha_cookie'];
 }
+if (!isset($_POST['captcha_cookie']) && isset($_COOKIE['captcha_cookie'])) {
+	$_POST['captcha_cookie'] = $_COOKIE['captcha_cookie'];
+}
 
 if (isset($_POST['delete'])) {
 	// Delete

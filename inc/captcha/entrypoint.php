@@ -18,14 +18,14 @@ function cleanup ($pdo, $expires_in) {
 switch ($mode) {
 // Request: GET entrypoint.php?mode=get&extra=1234567890
 // Response: JSON: cookie => "generatedcookie", captchahtml => "captchahtml", expires_in => 120
+// With raw=1: returns PNG image directly (for noscript)
 case "get":
   if (!isset ($_GET['extra'])) {
     die();
   }
 
-  header("Content-type: application/json");
-
   $extra = $_GET['extra'];
+  $raw = isset($_GET['raw']) && $_GET['raw'] == '1';
 
   require_once("config.php");
 
@@ -35,13 +35,26 @@ case "get":
 
   $cookie = rand_string(20, "abcdefghijklmnopqrstuvwxyz");
 
-  $html = $captcha->to_html();
-  $img = $captcha->to_image();
-
   $query = $pdo->prepare("INSERT INTO `captchas` (`cookie`, `extra`, `text`, `created_at`) VALUES (?, ?, ?, ?)");
   $query->execute(                               [$cookie,  $extra,  $text,  time()]);
 
-  echo json_encode(["cookie" => $cookie, "captchahtml" => $html, "image" => $img, "expires_in" => $expires_in]);
+  if ($raw) {
+    $secure = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off';
+    setcookie('captcha_cookie', $cookie, [
+      'expires' => time() + $expires_in,
+      'path' => '/',
+      'secure' => $secure,
+      'httponly' => true,
+      'samesite' => 'Strict'
+    ]);
+    header("Content-type: image/png");
+    echo base64_decode($captcha->to_image());
+  } else {
+    header("Content-type: application/json");
+    $html = $captcha->to_html();
+    $img = $captcha->to_image();
+    echo json_encode(["cookie" => $cookie, "captchahtml" => $html, "image" => $img, "expires_in" => $expires_in]);
+  }
   
   break;
 

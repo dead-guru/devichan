@@ -95,7 +95,7 @@ form[name="post"] { display: block !important; }
 				<noscript>
 					<input class='captcha_text' placeholder="{% trans %}Verification{% endtrans %}" type='text' name='captcha_text' style="width: 50%; height: 20px" maxlength='6' autocomplete='off'>
 					<div class="captcha_html">
-						<img src="/{{ config.captcha.provider_get }}?mode=get&raw=1">
+						<img src="{{ config.captcha.provider_get }}?mode=get&extra={{ config.captcha.extra }}&raw=1">
 					</div>
 				</noscript>
 			</td>
@@ -111,7 +111,7 @@ form[name="post"] { display: block !important; }
 				<noscript>
 					<input class='captcha_text' placeholder="{% trans %}Verification{% endtrans %}" type='text' name='captcha_text' style="width: 50%; height: 20px" maxlength='6' autocomplete='off'>
 					<div class="captcha_html">
-						<img src="/{{ config.captcha.provider_get }}?mode=get&raw=1">
+						<img src="{{ config.captcha.provider_get }}?mode=get&extra={{ config.captcha.extra }}&raw=1">
 					</div>
 				</noscript>
                         </td>
