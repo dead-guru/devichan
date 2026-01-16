@@ -7,6 +7,9 @@
     root * /var/www
     encode gzip
 
+    @blocked path /.env /.env.* /.git/* /inc/secrets.php /inc/instance-config.php /docker-compose.yml /composer.* /*.sql
+    respond @blocked 403
+
     header {
         X-Frame-Options "SAMEORIGIN"
         X-Content-Type-Options "nosniff"
