@@ -7,6 +7,11 @@
 /*/thumb
 /*/config.php
 /*.html
+.env
+
+.idea
+
+/stylesheets/*.min.css
 
 *.webmanifest
 

@@ -7,6 +7,12 @@ services:
       - ./:/var/www
       - ./php-fpm/custom.ini:/usr/local/etc/php/conf.d/custom.ini
       - ./php-fpm/www.conf:/usr/local/etc/php-fpm.d/www.conf
+    environment:
+      - MYSQL_HOST=${MYSQL_HOST}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
     networks:
       - caddy
   cmysql:
@@ -14,10 +20,10 @@ services:
     command: --sort_buffer_size=2M
     restart: always
     environment:
-      MYSQL_DATABASE: 'dead'
-      MYSQL_USER: 'dead'
-      MYSQL_PASSWORD: 'a*%)@FD43fs%34fddjh35'
-      MYSQL_ROOT_PASSWORD: 'changeme'
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
     ports:
       - '3306:3306'
     volumes:
@@ -33,9 +39,9 @@ services:
     volumes:
       - ./backup:/backup
     environment:
-      - MYSQL_HOST=cmysql
-      - MYSQL_USER=dead
-      - MYSQL_PASS=a*%)@FD43fs%34fddjh35
+      - MYSQL_HOST=${MYSQL_HOST}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASS=${MYSQL_PASSWORD}
       - MAX_BACKUPS=15
       - INIT_BACKUP=1
       - CRON_TIME=0 */12 * * *
@@ -48,7 +54,7 @@ services:
   credis:
     image: 'bitnami/redis:latest'
     environment:
-      - ALLOW_EMPTY_PASSWORD=yes
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
     networks:
       - caddy
   caddy:

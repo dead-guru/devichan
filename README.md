@@ -117,17 +117,23 @@ To get a local copy up and running follow these simple example steps.
    ```sh
    git clone git@github.com:dead-guru/devichan.git
    ```
-2. Run docker-compose
+2. Copy environment file and configure credentials
+   ```sh
+   cp .env.dist .env
+   ```
+   Edit `.env` and set your database and Redis passwords.
+
+3. Run docker-compose
    ```sh
    docker-compose up -d
    ```
-3. Install Composer packages
+4. Install Composer packages
    ```sh
    docker-compose exec cphp composer install
    ```
-4. Navigate to `http://localhost/install.php` in your web browser and follow the prompts.
-5. devichan should now be installed. Log in to `/mod/` with the default username and password combination: `admin` / `password`.
-6. You can install some "themes" on `/mod/?/themes`
+5. Navigate to `http://localhost/install.php` in your web browser and follow the prompts.
+6. devichan should now be installed. Log in to `/mod/` with the default username and password combination: `admin` / `password`.
+7. You can install some "themes" on `/mod/?/themes`
 
 **!!!Please remember to change the administrator account password.**
 

@@ -911,6 +911,11 @@ if ($step == 0) {
 	$sg = new SaltGen();
 	$config['cookies']['salt'] = $sg->generate();
 	$config['secure_trip_salt'] = $sg->generate();
+
+	if (getenv('MYSQL_HOST')) $config['db']['server'] = getenv('MYSQL_HOST');
+	if (getenv('MYSQL_DATABASE')) $config['db']['database'] = getenv('MYSQL_DATABASE');
+	if (getenv('MYSQL_USER')) $config['db']['user'] = getenv('MYSQL_USER');
+	if (getenv('MYSQL_PASSWORD')) $config['db']['password'] = getenv('MYSQL_PASSWORD');
 	
 	echo Element('page.html', array(
 		'body' => Element('installer/config.html', array(
@@ -924,6 +929,9 @@ if ($step == 0) {
 	$more = $_POST['more'];
 	unset($_POST['more']);
 
+	$db_config = $_POST['db'];
+	unset($_POST['db']);
+
 	$instance_config =
 '<'.'?php
 
@@ -934,6 +942,13 @@ if ($step == 0) {
 *
 *  You can copy values from config.php (defaults) and paste them here.
 */
+
+
+	$config[\'db\'][\'server\'] = getenv(\'MYSQL_HOST\') ?: \'' . addslashes($db_config['server']) . '\';
+	$config[\'db\'][\'database\'] = getenv(\'MYSQL_DATABASE\') ?: \'' . addslashes($db_config['database']) . '\';
+	$config[\'db\'][\'prefix\'] = \'' . addslashes($db_config['prefix']) . '\';
+	$config[\'db\'][\'user\'] = getenv(\'MYSQL_USER\') ?: \'' . addslashes($db_config['user']) . '\';
+	$config[\'db\'][\'password\'] = getenv(\'MYSQL_PASSWORD\') ?: \'' . addslashes($db_config['password']) . '\';
 
 ';
 	
