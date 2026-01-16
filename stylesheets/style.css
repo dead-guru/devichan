@@ -1506,3 +1506,23 @@ div.post.reply {
 .picmo__popupContainer {
     z-index: 9999 !important;
 }
+
+input#treeview {
+    width: 11px; height: 11px;
+    accent-color: #999; filter: brightness(0.85);
+    vertical-align: middle;
+    cursor: pointer;
+    padding: 0;
+    margin: 0;
+    border: none;
+    outline: none;
+}
+
+#quick-reply th {
+    border: 0 !important;
+}
+#quick-reply table {
+    border-collapse: inherit !important;
+    border-spacing: 0;
+    border-radius: 4px !important;
+}

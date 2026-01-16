@@ -230,10 +230,14 @@ $(function () {
 
         if (device_type == "mobile" && (active_page == 'thread' || active_page == 'index')) {
             var board = $('form[name="post"] input[name="board"]').val();
+            var boardData = storage()[board];
 
-            var where = $('div[style="text-align:right"]').first();
             $('.watch-menu').remove();
-            construct_watchlist_for(board, "mobile").css("float", "left").insertBefore(where);
+
+            if (boardData && boardData.threads && osize(boardData.threads)) {
+                var where = $('div[style="text-align:right"]').first();
+                construct_watchlist_for(board, "mobile").css("float", "left").insertBefore(where);
+            }
         }
     };
     var fetch_jsons = function () {
