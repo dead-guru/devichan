@@ -44,8 +44,14 @@ $('<div class="dropzone-wrap" style="display: none;">'+
 '</div>').prependTo('#upload td');
 
 var files = [];
-$('#upload_file').remove();  // remove the original file selector
-$('.dropzone-wrap').css('user-select', 'none').show();  // let jquery add browser specific prefix
+$('#upload_file').remove();
+$('.dropzone-wrap').css('user-select', 'none').show();
+
+window.FileSelector = {
+    addFile: function(file) { addFile(file); },
+    removeFile: function(file) { removeFile(file); },
+    getFiles: function() { return files; }
+};
 
 function addFile(file) {
 	if (files.length == max_images)

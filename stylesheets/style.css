@@ -1301,7 +1301,7 @@ input[type=password], input[type=text], select, textarea
 }
 
 .search-box-inner {
-    display: block;
+    display: block !important;
     max-width: 100% !important;
     padding: 0 !important;
     margin: 0 !important
@@ -1501,4 +1501,8 @@ div.post.reply {
         animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;
     }
+}
+
+.picmo__popupContainer {
+    z-index: 9999 !important;
 }

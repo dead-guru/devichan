@@ -1,43 +1,65 @@
-$(window).ready(function () {
+(function($) {
+    'use strict';
 
-    var formatText = document.querySelector('.format-text');
+    var pickers = new WeakMap();
 
-    if (formatText !== null) {
-        var button = document.createElement('button');
-        button.innerHTML = 'E';
-        button.title = 'Add emoji';
-        button.setAttribute('type', 'button');
-        button.setAttribute('data-action', 'emoji');
-        button.classList.add('emoji-picker-trigger');
-        button.addEventListener('click', () => {
-            window.picker.toggle();
+    function createPicker(button) {
+        if (typeof picmoPopup === 'undefined') return null;
+
+        var p = picmoPopup.createPopup({
+            animate: false,
+            showRecents: false,
+            showSearch: false,
+            showVariants: false,
+            showPreview: false,
+            showCategoryTabs: false,
+            categories: ['custom'],
+            visibleRows: 4,
+            custom: window.emo,
+        }, {
+            referenceElement: button,
+            triggerElement: button,
+            position: 'bottom-start',
+            showCloseButton: false,
         });
-        formatText.appendChild(button);
 
-        if (typeof picmoPopup !== 'undefined') {
-            window.picker = picmoPopup.createPopup({
-                animate: true,
-                showRecents: false,
-                showSearch: false,
-                showVariants: false,
-                showPreview: false,
-                showCategoryTabs: false,
-                categories: ['custom'],
-                visibleRows: 4,
-                custom: window.emo,
-            }, {
-                referenceElement: button,
-                triggerElement: button,
-                position: 'bottom-start',
-                showCloseButton: false,
+        p.addEventListener('emoji:select', function(selection) {
+            var $form = $(button).closest('form');
+            var $textarea = $form.find('textarea[name="body"]');
+            if ($textarea.length) {
+                $textarea.val($textarea.val() + selection.emoji + ' ').trigger('input');
+            }
+        });
 
-            });
-
-            window.picker.addEventListener('emoji:select', selection => {
-                $('#body').val($('#body').val() + selection.emoji + ' ').focus().trigger('keyup');
-            });
-        } else {
-            console.log('picmoPopup is not defined, skipping emoji picker');
-        }
+        return p;
     }
-});
+
+    function addEmojiButtons() {
+        $('.format-text').each(function() {
+            if ($(this).find('.emoji-picker-trigger').length) return;
+            $(this).append('<button type="button" class="emoji-picker-trigger" title="Add emoji" data-action="emoji">E</button>');
+        });
+    }
+
+    $(document).on('click', '.emoji-picker-trigger', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        var btn = this;
+        if (!$(btn).is(':visible')) return;
+
+        var picker = pickers.get(btn);
+        if (!picker) {
+            picker = createPicker(btn);
+            if (picker) pickers.set(btn, picker);
+        }
+
+        if (picker) {
+            picker.toggle();
+        }
+    });
+
+    $(document).ready(addEmojiButtons);
+    $(document).on('formatText', addEmojiButtons);
+
+})(jQuery);

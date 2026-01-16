@@ -31,11 +31,11 @@
 		#quick-reply {\
 			position: fixed;\
 			right: 5%;\
-			top: 5%;\
+			top: calc(5% + 20px);\
 			float: right;\
 			display: block;\
 			padding: 0 0 0 0;\
-			width: 300px;\
+			width: 410px;\
 			z-index: 100;\
 		}\
 		#quick-reply table {\
