@@ -17,9 +17,18 @@ onready(function(){
 	if (active_page !== 'thread' && active_page !== 'index' && active_page !== 'ukko') {
 		return;
 	}
+
+	var isTouchDevice = (typeof device_type !== 'undefined' && device_type === 'mobile') ||
+		('ontouchstart' in window) ||
+		(navigator.maxTouchPoints > 0);
 	var dont_fetch_again = [];
+
 	init_hover = function() {
 		var $link = $(this);
+
+		if (isTouchDevice) {
+			return;
+		}
 
 		var id;
 		var matches;

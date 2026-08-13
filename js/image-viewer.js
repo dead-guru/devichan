@@ -228,6 +228,7 @@
             this.container.innerHTML = `
                 <div class="iv-toolbar">
                     <button class="iv-btn iv-btn-exif">EXIF</button>
+                    <button class="iv-btn iv-btn-close" title="Close (Esc)">✕</button>
                 </div>
                 <div class="iv-exif-panel"></div>
                 <div class="iv-viewer">
@@ -278,6 +279,7 @@
                 if (e.target.classList.contains('iv-prev')) { e.stopPropagation(); this.navigate(-1); }
                 else if (e.target.classList.contains('iv-next')) { e.stopPropagation(); this.navigate(1); }
                 else if (e.target.classList.contains('iv-btn-exif')) { e.stopPropagation(); this.toggleExif(); }
+                else if (e.target.classList.contains('iv-btn-close')) { e.stopPropagation(); this.close(); }
             });
 
             this.container.addEventListener('wheel', (e) => {

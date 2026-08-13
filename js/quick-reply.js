@@ -31,12 +31,12 @@
 		#quick-reply {\
 			position: fixed;\
 			right: 5%;\
-			top: calc(5% + 20px);\
+			top: calc(5% + 40px);\
 			float: right;\
 			display: block;\
 			padding: 0 0 0 0;\
 			width: 410px;\
-			z-index: 100;\
+			z-index: 2147443647;\
 		}\
 		#quick-reply table {\
 			border-collapse: collapse;\
@@ -72,6 +72,7 @@
 		#quick-reply th .close-btn {\
 			float: right;\
 			padding: 0 5px;\
+			font-size: 20px;\
 		}\
 		#quick-reply input[type="text"], #quick-reply select {\
 			width: 100%;\
@@ -116,10 +117,45 @@
 		#quick-reply td.recaptcha-response {\
 			padding: 0 0 1px 0;\
 		}\
-		@media screen and (max-width: 400px) {\
+		@media screen and (max-width: 768px) {\
 			#quick-reply {\
-				display: none !important;\
+				top: 0 !important;\
+				left: 0 !important;\
+				right: 0 !important;\
+				bottom: 0 !important;\
+				width: 100% !important;\
+				height: 100% !important;\
+				padding: 10px !important;\
+				margin: 0 !important;\
+				background: rgba(0, 0, 0, 0.1) !important;\
+				box-sizing: border-box !important;\
 			}\
+			#quick-reply table {\
+				width: 100% !important;\
+				height: auto !important;\
+				max-height: 100% !important;\
+				overflow-y: auto !important;\
+			}\
+			#quick-reply th {\
+				padding: 8px 5px !important;\
+			}\
+			#quick-reply th .close-btn {\
+				font-size: 20px;\
+				padding: 0 10px;\
+				line-height: 1;\
+			}\
+			#quick-reply textarea {\
+				min-height: 120px;\
+			}\
+			#quick-reply input[type="text"], #quick-reply select, #quick-reply textarea {\
+				font-size: 16px;\
+				padding: 8px;\
+                width: 100% !important;\
+			}\
+            #quick-reply textarea {\
+                min-height: 120px !important;\
+                width: 100% !important;\
+            }\
 		}\
 		</style>').appendTo($('head'));
     };
@@ -131,7 +167,7 @@
 
         if ($('#quick-reply').length != 0)
             return;
-        show('form[name="post"]');
+        showE('form[name="post"]');
         do_css();
         var $postForm = $('form[name="post"]').clone();
 
@@ -321,7 +357,8 @@
         $postForm.find('input[type="text"],select').on('change input propertychange', function () {
             $origPostForm.find('[name="' + $(this).attr('name') + '"]').val($(this).val());
         });
-        if (typeof $postForm.draggable != 'undefined') {
+        var isMobile = $(window).width() <= 768;
+        if (typeof $postForm.draggable != 'undefined' && !isMobile) {
             if (localStorage.quickReplyPosition) {
                 var offset = JSON.parse(localStorage.quickReplyPosition);
                 if (offset.top < 0)
@@ -358,7 +395,9 @@
 
         // Fix bug when table gets too big for form. Shouldn't exist, but crappy CSS etc.
         $postForm.show();
-        $postForm.width($postForm.find('table').width());
+        if (!isMobile) {
+            $postForm.width($postForm.find('table').width());
+        }
         $postForm.hide();
 
         $(window).trigger('quick-reply');
@@ -366,8 +405,6 @@
         $(window).ready(function () {
             if (settings.get('hide_at_top', true)) {
                 $(window).scroll(function () {
-                    if ($(this).width() <= 400)
-                        return;
                     if ($(this).scrollTop() < $origPostForm.offset().top + $origPostForm.height() - 100)
                         $postForm.fadeOut(100);
                     else
@@ -387,8 +424,6 @@
     };
 
     $(window).on('cite', function (e, id, with_link) {
-        if ($(this).width() <= 400)
-            return;
         show_quick_reply();
         if (with_link) {
             $(document).ready(function () {
@@ -442,8 +477,6 @@
                 $('.quick-reply-btn').hide();
 
                 $(window).scroll(function () {
-                    if ($(this).width() <= 400)
-                        return;
                     if ($(this).scrollTop() < $('form[name="post"]:first').offset().top + $('form[name="post"]:first').height() - 100)
                         $('.quick-reply-btn').fadeOut(100);
                     else

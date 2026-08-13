@@ -148,35 +148,51 @@ var dropHandlers = {
 // attach handlers
 $(document).on(dropHandlers);
 
-$(document).on('click', '.dropzone .remove-btn', function (e) {
+$(document).on('click touchend', '.dropzone .remove-btn', function (e) {
 	e.stopPropagation();
+	e.preventDefault();
 
-	var file = $(e.target).parent().data('file-ref');
+	var $target = $(e.target).closest('.remove-btn');
+	var file = $target.parent().data('file-ref');
 
 	getThumbElement(file).remove();
 	removeFile(file);
 });
 
-$(document).on('keypress click', '.dropzone', function (e) {
+$(document).on('keypress click touchend', '.dropzone', function (e) {
+	if (e.type === 'touchend') {
+		e.preventDefault();
+	}
 	e.stopPropagation();
 
-	// accept mouse click or Enter
-	if ((e.which != 1 || e.target.className != 'file-hint') &&
-		 e.which != 13)
+	var isEnterKey = e.type === 'keypress' && e.which === 13;
+	var isClick = e.type === 'click' || e.type === 'touchend';
+	var isValidTarget = $(e.target).closest('.dropzone').length > 0 &&
+	                    !$(e.target).hasClass('remove-btn') &&
+	                    !$(e.target).closest('.remove-btn').length;
+
+	if (!isValidTarget || (!isClick && !isEnterKey)) {
 		return;
+	}
 
-	var $fileSelector = $('<input type="file" multiple>');
+	var $fileSelector = $('<input type="file" multiple>')
+		.css({
+			position: 'absolute',
+			left: '-9999px',
+			opacity: 0
+		})
+		.appendTo('body');
 
-	$fileSelector.on('change', function (e) {
+	$fileSelector.on('change', function () {
 		if (this.files.length > 0) {
-			for (var i=0; i<this.files.length; i++) {
+			for (var i = 0; i < this.files.length; i++) {
 				addFile(this.files[i]);
 			}
 		}
 		$(this).remove();
 	});
 
-	$fileSelector.click();
+	$fileSelector[0].click();
 });
 
 $(document).on('paste', function (e) {

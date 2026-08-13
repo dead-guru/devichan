@@ -185,7 +185,7 @@ if (active_page === 'thread' || active_page === 'index' || active_page === 'cata
 				$ele.children('.body, .files, .video-container').hide();
 			}
 		}
-		function show(ele) {
+		function showE(ele) {
 			var $ele = $(ele);
 
 			$(ele).data('hidden', false);
@@ -246,7 +246,7 @@ if (active_page === 'thread' || active_page === 'index' || active_page === 'cata
 						//  if hidden due to post id, remove it from blacklist
 						//  otherwise just show this post
 						blacklist.remove.post(boardId, threadId, postId);
-						show(ele);
+						showE(ele);
 					});
 					$buffer.find('#filter-menu-hide').addClass('hidden');
 				} else {
@@ -515,7 +515,7 @@ if (active_page === 'thread' || active_page === 'index' || active_page === 'cata
 
 			// post didn't match any filters
 			if (!$post.data('hidden')) {
-				show(post);
+				showE(post);
 			}
 		}
 
