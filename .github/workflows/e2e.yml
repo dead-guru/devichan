@@ -24,8 +24,21 @@ jobs:
       - name: Check out the repository
         uses: actions/checkout@v4
 
+      - name: Build the PHP image
+        run: make e2e-build
+
+      - name: Start the test services
+        run: make e2e-up
+
+      - name: Prepare the application fixture
+        run: make e2e-prepare
+
       - name: Run the E2E tests
-        run: make e2e
+        run: make e2e-run
+
+      - name: Show the service logs
+        if: failure()
+        run: docker compose -p devichan-e2e -f compose.test.yml logs --tail 200
 
       - name: Add the coverage summary
         if: always()
@@ -42,3 +55,7 @@ jobs:
           path: tests/_output/
           if-no-files-found: error
           retention-days: 14
+
+      - name: Stop the test services
+        if: always()
+        run: make e2e-down
