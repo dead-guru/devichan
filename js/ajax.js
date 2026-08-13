@@ -91,7 +91,7 @@ $(window).ready(function() {
 											setTimeout(function() { $(window).trigger("scroll"); }, 100);
 										}
 									});
-									
+
 									highlightReply(post_response.id);
 									window.location.hash = post_response.id;
 									$(window).scrollTop($('div.post#reply_' + post_response.id).offset().top);
@@ -100,6 +100,13 @@ $(window).ready(function() {
 									$(form).find('input[type="submit"]').removeAttr('disabled');
 									$(form).find('input[name="subject"],input[name="file_url"],\
 										textarea[name="body"],input[type="file"]').val('').change();
+
+									if (sessionStorage.body) {
+										var savedBody = JSON.parse(sessionStorage.body);
+										var locationKey = window.location.origin + window.location.pathname + window.location.search;
+										delete savedBody[locationKey];
+										sessionStorage.body = JSON.stringify(savedBody);
+									}
 								},
 								cache: false,
 								contentType: false,

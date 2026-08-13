@@ -255,6 +255,10 @@ function generatePassword() {
 	return pass;
 }
 
+function getLocationKey() {
+	return window.location.origin + window.location.pathname + window.location.search;
+}
+
 function dopost(form) {
 	if (form.elements['name']) {
 		localStorage.name = form.elements['name'].value.replace(/( |^)## .+$/, '');
@@ -266,7 +270,7 @@ function dopost(form) {
 		localStorage.email = form.elements['email'].value;
 	}
 
-	saved[document.location] = form.elements['body'].value;
+	saved[getLocationKey()] = form.elements['body'].value;
 	sessionStorage.body = JSON.stringify(saved);
 
 	return form.elements['body'].value != "" || (form.elements['file'] && form.elements['file'].value != "") || (form.elements.file_url && form.elements['file_url'].value != "");
@@ -283,10 +287,9 @@ function toggle(selector) {
 	}
 }
 
-function show(selector) {
+function showE(selector) {
 	var x = document.querySelector(selector);
 	if (!x) return false;
-
 	x.style.display = "block";
 }
 
@@ -298,7 +301,7 @@ function citeReply(id, with_link) {
 
 	if (!textarea) return false;
 
-	show('form[name=post]');
+	showE('form[name=post]');
 
 	if (document.selection) {
 		// IE
@@ -319,8 +322,8 @@ function citeReply(id, with_link) {
 	if (typeof $ != 'undefined') {
 		var select = document.getSelection().toString();
 		if (select) {
-			var body = $('#reply_' + id + ', #op_' + id).find('div.body');  // TODO: support for OPs
-			var index = body.text().indexOf(select.replace('\n', ''));  // for some reason this only works like this
+			var body = $('#reply_' + id + ', #op_' + id).find('div.body');
+			var index = body.text().indexOf(select.replace('\n', ''));
 			if (index > -1) {
 				textarea.value += '>' + select + '\n';
 			}
@@ -328,6 +331,10 @@ function citeReply(id, with_link) {
 
 		$(window).trigger('cite', [id, with_link]);
 		$(textarea).change();
+
+		setTimeout(function() {
+			$('#quick-reply').show();
+		}, 100);
 	}
 
 	return false;
@@ -363,9 +370,9 @@ function rememberStuff() {
 
 				document.cookie = '{% endverbatim %}{{ config.cookies.js }}{% verbatim %}={};expires=0;path=/;';
 			}
-			if (saved[document.location]) {
-				document.forms.post.body.value = saved[document.location];
-			}
+		if (saved[getLocationKey()]) {
+			document.forms.post.body.value = saved[getLocationKey()];
+		}
 		}
 
 		if (localStorage.body) {
