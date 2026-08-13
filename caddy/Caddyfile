@@ -20,17 +20,22 @@
         max_size 2GB
     }
 
-    @static path *.jpg *.jpeg *.gif *.png *.ico *.cur *.svg *.svgz *.mp4 *.ogg *.ogv *.webm *.htc *.gz
-    header @static Cache-Control "public, max-age=2592000"
+    @static path *.jpg *.jpeg *.gif *.png *.ico *.cur *.svg *.svgz *.mp4 *.ogg *.ogv *.webm *.htc *.gz *.woff *.woff2 *.ttf *.eot
+    header @static Cache-Control "public, max-age=2592000, immutable"
 
     @assets path *.css *.js
-    header @assets Cache-Control "public, max-age=31536000"
+    header @assets Cache-Control "public, max-age=31536000, immutable"
 
-    @html path *.html
-    header @html Cache-Control "no-cache, no-store, must-revalidate"
+    @no_cache_ext path *.html *.json
+    header @no_cache_ext {
+        Cache-Control "no-store, no-cache, must-revalidate, max-age=0"
+        Pragma "no-cache"
+        Expires "0"
+    }
 
     @favicon path /favicon.ico /robots.txt
     handle @favicon {
+        header Cache-Control "public, max-age=86400"
         file_server
     }
 
@@ -69,10 +74,10 @@
 
         @rewrite_auth_login path /auth/login /auth/login/
         rewrite @rewrite_auth_login /auth/login.php?{query}
-        
+
         @rewrite_auth_check path /auth/check /auth/check/
         rewrite @rewrite_auth_check /auth/check.php?{query}
-        
+
         @rewrite_auth path_regexp ^/auth/?$
         rewrite @rewrite_auth /auth/login.php?{query}
 
@@ -83,6 +88,16 @@
             trusted_proxies private_ranges
             env REMOTE_ADDR {header.CF-Connecting-IP}
             read_timeout 600s
+        }
+
+        @dynamic {
+            not path *.jpg *.jpeg *.gif *.png *.ico *.cur *.svg *.svgz *.mp4 *.ogg *.ogv *.webm *.htc *.gz *.woff *.woff2 *.ttf *.eot *.css *.js
+            not path /favicon.ico /robots.txt
+        }
+        header @dynamic {
+            Cache-Control "no-store, no-cache, must-revalidate, max-age=0"
+            Pragma "no-cache"
+            Expires "0"
         }
 
         file_server
