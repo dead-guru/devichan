@@ -38,6 +38,13 @@ $(document).ready(function(){
 		return strftime(window.post_date, t, datelocale);
 	};
 
+	function uaPlural(n, one, few, many) {
+		var mod10 = n % 10, mod100 = n % 100;
+		if (mod10 === 1 && mod100 !== 11) return one;
+		if (mod10 >= 2 && mod10 <= 4 && (mod100 < 10 || mod100 >= 20)) return few;
+		return many;
+	}
+
 	function timeDifference(current, previous) {
 
 		var msPerMinute = 60 * 1000;
@@ -51,15 +58,20 @@ $(document).ready(function(){
 		if (elapsed < msPerMinute) {
 			return _('Just now');
 		} else if (elapsed < msPerHour) {
-			return Math.round(elapsed/msPerMinute) + (Math.round(elapsed/msPerMinute)<=1 ? _(' minute ago'):_(' minutes ago'));
+			var n = Math.round(elapsed/msPerMinute);
+			return n + uaPlural(n, _(' minute ago'), _(' minutes ago 2-4'), _(' minutes ago'));
 		} else if (elapsed < msPerDay ) {
-			return Math.round(elapsed/msPerHour ) + (Math.round(elapsed/msPerHour)<=1 ? _(' hour ago'):_(' hours ago'));
+			var n = Math.round(elapsed/msPerHour);
+			return n + uaPlural(n, _(' hour ago'), _(' hours ago 2-4'), _(' hours ago'));
 		} else if (elapsed < msPerMonth) {
-			return Math.round(elapsed/msPerDay) + (Math.round(elapsed/msPerDay)<=1 ? _(' day ago'):_(' days ago'));
+			var n = Math.round(elapsed/msPerDay);
+			return n + uaPlural(n, _(' day ago'), _(' days ago 2-4'), _(' days ago'));
 		} else if (elapsed < msPerYear) {
-			return Math.round(elapsed/msPerMonth) + (Math.round(elapsed/msPerMonth)<=1 ? _(' month ago'):_(' months ago'));
+			var n = Math.round(elapsed/msPerMonth);
+			return n + uaPlural(n, _(' month ago'), _(' months ago 2-4'), _(' months ago'));
 		} else {
-			return Math.round(elapsed/msPerYear ) + (Math.round(elapsed/msPerYear)<=1 ? _(' year ago'):_(' years ago'));
+			var n = Math.round(elapsed/msPerYear);
+			return n + uaPlural(n, _(' year ago'), _(' years ago 2-4'), _(' years ago'));
 		}
 	}
 

@@ -1209,6 +1209,21 @@ msgstr " рік назад"
 msgid " years ago"
 msgstr " років назад"
 
+msgid " minutes ago 2-4"
+msgstr " хвилини назад"
+
+msgid " hours ago 2-4"
+msgstr " години назад"
+
+msgid " days ago 2-4"
+msgstr " дні назад"
+
+msgid " months ago 2-4"
+msgstr " місяці назад"
+
+msgid " years ago 2-4"
+msgstr " роки назад"
+
 msgid "Search"
 msgstr "Пошук"
 
