@@ -309,8 +309,7 @@ if (isset($_POST['delete'])) {
 		// Check the referrer
 		if ($config['referer_match'] !== false &&
 			(!isset($_SERVER['HTTP_REFERER']) || !preg_match($config['referer_match'], rawurldecode($_SERVER['HTTP_REFERER']))) && !$fromApi)
-			
-            error($config['referer_match'] . ' - ' . $_SERVER['HTTP_REFERER']);
+			error($config['error']['referer']);
 	
 		checkDNSBL();
 		
@@ -1025,7 +1024,7 @@ if (isset($_POST['delete'])) {
             json_encode($js),
             0,
             $config['cookies']['jail'] ? $config['cookies']['path'] : '/',
-            $config['raw_host'] ?? '', false, false);
+            '', false, false);
 	}
 	
 	$root = $post['mod'] ? $config['root'] . $config['file_mod'] . '?/' : $config['root'];
