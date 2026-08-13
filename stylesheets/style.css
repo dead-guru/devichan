@@ -1504,7 +1504,7 @@ div.post.reply {
 }
 
 .picmo__popupContainer {
-    z-index: 9999 !important;
+    z-index: 2147483647 !important;
 }
 
 input#treeview {
@@ -1525,6 +1525,14 @@ input#treeview {
     border-collapse: inherit !important;
     border-spacing: 0;
     border-radius: 4px !important;
+}
+
+html {
+    scroll-padding-top: 60px;
+}
+
+div.post, div.thread {
+    scroll-margin-top: 60px;
 }
 
 :root {
