@@ -114,7 +114,7 @@ function is_valid_webm(array $ffprobe_out) {
 	$any_h26x = false;
 	foreach ($trackmap['videoat'] as $arr_idx => $track_idx) {
 		$video_codec = $ffprobe_out['streams'][$track_idx]['codec_name'];
-		if ($video_codec === 'h264' || $video_codec === 'h265') {
+		if ($video_codec === 'h264' || $video_codec === 'h265' || $video_codec === 'av1') {
 			$video_idx = $arr_idx;
 			$any_h26x = true;
 			break;
@@ -133,12 +133,12 @@ function is_valid_webm(array $ffprobe_out) {
 		}
 	}
 
-		// If the video is not h264, h265 or there is audio but it's not aac.
+		// If the video is not h264, h265, av1 or there is audio but it's not aac.
 		if (!$any_h26x || ($audio_idx !== null && !$any_aac)) {
 			return [
 				'error' => [
 					'code' => 2,
-					'msg' => $config['error']['invalidwebm'] . ' [h264/h265/aac check]'
+					'msg' => $config['error']['invalidwebm'] . ' [h264/h265/av1/aac check]'
 				]
 			];
 		}
