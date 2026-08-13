@@ -1263,7 +1263,9 @@
 
 	// The scheme and domain. This is used to get the site's absolute URL (eg. for image identification links).
 	// If you use the CLI tools, it would be wise to override this setting.
-	$config['domain'] = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') ? 'https://' : 'http://';
+	$isHttps = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off')
+		|| (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https');
+	$config['domain'] = $isHttps ? 'https://' : 'http://';
 	$config['domain'] .= isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : 'localhost';
 
     // Override domain for internal Docker container communication
