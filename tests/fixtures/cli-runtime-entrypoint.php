@@ -17,6 +17,7 @@ $scenario = $argv[1] ?? '';
 
 switch ($scenario) {
     case 'login':
+        $config['file_login'] = $config['file_mod_login'];
         loginForm('Invalid credentials', 'integration-user', '/?/dashboard');
         break;
 

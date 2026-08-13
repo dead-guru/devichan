@@ -26,7 +26,7 @@ final class PostingThreadRulesCest
         ]);
 
         $I->seeResponseCodeIs(500);
-        $I->assertStringContainsString('Нитку закрито', $I->grabPageSource());
+        $I->assertStringContainsString('Thread locked. You may not reply at this time.', $I->grabPageSource());
         $I->dontSeeInDatabase('posts_b', ['body_nomarkup' => $body]);
     }
 
@@ -97,7 +97,7 @@ final class PostingThreadRulesCest
         ]);
 
         $I->seeResponseCodeIs(500);
-        $I->assertStringContainsString('максимально припустимої', $I->grabPageSource());
+        $I->assertStringContainsString('Thread has reached its maximum reply limit.', $I->grabPageSource());
         $I->dontSeeInDatabase('posts_b', ['body_nomarkup' => $body]);
     }
 }

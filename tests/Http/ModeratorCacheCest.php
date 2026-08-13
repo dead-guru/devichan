@@ -20,7 +20,7 @@ final class ModeratorCacheCest
 
         $I->amOnPage('/mod.php?/');
         $this->assertHealthyPage($I);
-        $I->see('Панель керування');
+        $I->see('Dashboard');
 
         $I->amOnPage('/mod.php?/themes/catalog');
         $I->submitForm('form[action=""]', [

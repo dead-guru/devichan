@@ -7,6 +7,7 @@ $config['db']['server'] = getenv('MYSQL_HOST') ?: 'cmysql';
 $config['db']['user'] = getenv('MYSQL_USER') ?: 'devichan_e2e';
 $config['db']['password'] = getenv('MYSQL_PASSWORD') ?: 'devichan_e2e';
 $config['db']['database'] = getenv('MYSQL_DATABASE') ?: 'devichan_e2e';
+$config['locale'] = 'en';
 
 $config['cookies']['salt'] = 'devichan-e2e-only-cookie-salt';
 $config['cache']['enabled'] = false;

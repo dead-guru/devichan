@@ -12,7 +12,7 @@ trait HttpAssertions
     {
         $I->seeResponseCodeIs(200);
         $I->dontSeeInSource('Caught fatal error');
-        $I->dontSeeInSource('Помилка бази даних');
+        $I->dontSeeInSource('Database error');
         $I->dontSeeInSource('Stack trace:');
         $I->dontSeeInSource('<title>Error</title>');
     }

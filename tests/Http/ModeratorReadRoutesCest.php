@@ -101,7 +101,7 @@ final class ModeratorReadRoutesCest
         foreach (['/mod.php?/b/move/1', '/mod.php?/b/move_reply/2'] as $route) {
             $I->amOnPage($route);
             $I->seeResponseCodeIs(500);
-            $I->see('У вас відсутній дозвіл на цю дію.');
+            $I->see("You don't have permission to do that.");
         }
     }
 

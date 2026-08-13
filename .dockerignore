@@ -16,6 +16,9 @@ inc/secrets.php
 static/fonts
 tests/_output
 tests/Support/_generated
+templates/cache
+tmp/cache/*
+!tmp/cache/.gitkeep
 202511101941.dead.sql
 202511101941.dead.sql.gz
 dev.zip

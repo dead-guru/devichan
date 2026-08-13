@@ -3,9 +3,10 @@ name: devichan-e2e
 services:
   workspace:
     image: devichan-e2e-php:${PHP_VERSION:-8.1}
-    command: ["sh", "-ec", "chown -R www-data:www-data /var/www"]
+    command: ["sh", "-ec", "chown -R www-data:www-data /var/www && chmod -R a+rwX /var/www/tests/_output"]
     volumes:
       - app_data:/var/www
+      - ./tests/_output:/var/www/tests/_output
 
   cphp:
     build:
@@ -150,6 +151,7 @@ services:
 
   prepare:
     image: devichan-e2e-php:${PHP_VERSION:-8.1}
+    user: www-data
     working_dir: /var/www
     environment:
       MYSQL_HOST: cmysql

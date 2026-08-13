@@ -173,6 +173,6 @@ final class PostingCest
             'post' => $postButton,
         ]);
         $I->seeResponseCodeIs(500);
-        $I->see('Виявлено флуд');
+        $I->see('Flood detected; Post discarded.');
     }
 }
