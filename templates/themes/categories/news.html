@@ -1,4 +1,4 @@
-{% filter remove_whitespace %}
+{% apply remove_whitespace %}
 <!doctype html>
 <html lang="{{ config.locale|default('en')|slice(0, 2) }}">
 <head>
@@ -34,4 +34,4 @@
 		{% include 'footer.html' %}
 </body>
 </html>
-{% endfilter %}
+{% endapply %}

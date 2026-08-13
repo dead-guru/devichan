@@ -6,7 +6,7 @@
 		{% if board %}
 			<li><a href="?/config">Edit site-wide config</a></li>
 		{% endif %}
-		{% for _board in boards if _board.uri != board %}
+		{% for _board in boards|filter(_board => _board.uri != board) %}
 			<li>
 				<a href="?/config/{{ _board.uri }}">Edit config for {{ config.board_abbreviation|sprintf(_board.uri) }}</a>
 			</li>
@@ -22,7 +22,7 @@
 			<th class="minimal">{% trans 'Type' %}</th>
 			<th>{% trans 'Description' %}</th>
 		</tr>
-		{% for var in conf if var.type != 'array' %}
+		{% for var in conf|filter(var => var.type != 'array') %}
 			{% if var.name|length == 1 %}
 				{% set name = 'cf_' ~ var.name %}
 			{% else %}
@@ -77,4 +77,3 @@
 		<li><input name="save" type="submit" value="{% trans 'Save changes' %}"></li>
 	</ul>
 </form>
-

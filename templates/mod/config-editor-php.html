@@ -7,7 +7,7 @@
 			{% if board %}
 				<li><a href="?/config">Edit site-wide config</a></li>
 			{% endif %}
-			{% for _board in boards if _board.uri != board %}
+			{% for _board in boards|filter(_board => _board.uri != board) %}
 				<li>
 					<a href="?/config/{{ _board.uri }}">Edit config for {{ config.board_abbreviation|sprintf(_board.uri) }}</a>
 				</li>

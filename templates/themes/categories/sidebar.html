@@ -1,4 +1,4 @@
-{% filter remove_whitespace %}
+{% apply remove_whitespace %}
 <!doctype html>
 <html lang="{{ config.locale|default('en')|slice(0, 2) }}">
 <head>
@@ -51,4 +51,4 @@
 	{% endfor %}
 </body>
 </html>
-{% endfilter %}
+{% endapply %}

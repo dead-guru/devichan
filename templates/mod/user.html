@@ -32,7 +32,7 @@
 				<th>{% trans 'Group' %}</th>
 				<td>
 					<ul style="padding:5px 8px;list-style:none">
-						{% for group_value, group_name in config.mod.groups if group_name != 'Disabled' %}
+						{% for group_value, group_name in config.mod.groups|filter(group_name => group_name != 'Disabled') %}
 							<li>
 								<input type="radio" name="type" id="group_{{ group_name }}" value="{{ group_value }}"> 
 								<label for="group_{{ group_name }}">{% trans group_name %}</label>
@@ -120,4 +120,3 @@
 		<a href="?/log:{{ user.username|e }}">{% trans 'View more logs for this user.' %}</a>
 	</p>
 {% endif %}
-
