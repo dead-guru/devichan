@@ -1,0 +1,208 @@
+name: devichan-e2e
+
+services:
+  workspace:
+    image: devichan-e2e-php:${PHP_VERSION:-8.1}
+    command: ["sh", "-ec", "chown -R www-data:www-data /var/www"]
+    volumes:
+      - app_data:/var/www
+
+  cphp:
+    build:
+      context: .
+      dockerfile: php-fpm/Dockerfile
+      target: test
+      args:
+        PHP_VERSION: ${PHP_VERSION:-8.1}
+    image: devichan-e2e-php:${PHP_VERSION:-8.1}
+    working_dir: /var/www
+    environment:
+      MYSQL_HOST: cmysql
+      MYSQL_DATABASE: devichan_e2e
+      MYSQL_USER: devichan_e2e
+      MYSQL_PASSWORD: devichan_e2e
+      REDIS_PASSWORD: devichan_e2e
+    volumes:
+      - app_data:/var/www
+      - ./tests/_output:/var/www/tests/_output
+      - ./tests/coverage.ini:/usr/local/etc/php/conf.d/test-coverage.ini:ro
+      - ./tests/fixtures/secrets.php:/var/www/inc/secrets.php:ro
+      - ./tests/fixtures/installed:/var/www/.installed:ro
+    depends_on:
+      workspace:
+        condition: service_completed_successfully
+      cmysql:
+        condition: service_healthy
+      credis:
+        condition: service_started
+
+  installer:
+    image: devichan-e2e-php:${PHP_VERSION:-8.1}
+    working_dir: /var/www
+    environment:
+      MYSQL_HOST: cmysql-installer
+      MYSQL_DATABASE: devichan_installer_e2e
+      MYSQL_USER: devichan_installer_e2e
+      MYSQL_PASSWORD: devichan_installer_e2e
+      REDIS_PASSWORD: devichan_e2e
+    command: ["php", "-S", "0.0.0.0:8000"]
+    volumes:
+      - app_data:/var/www
+      - ./tests/_output:/var/www/tests/_output
+      - ./tests/coverage.ini:/usr/local/etc/php/conf.d/test-coverage.ini:ro
+      - ./tests/fixtures/installer-secrets.php:/var/www/inc/secrets.php:ro
+    depends_on:
+      workspace:
+        condition: service_completed_successfully
+      cmysql-installer:
+        condition: service_healthy
+      credis:
+        condition: service_started
+
+  smart-builder:
+    image: devichan-e2e-php:${PHP_VERSION:-8.1}
+    working_dir: /var/www
+    environment:
+      MYSQL_HOST: cmysql
+      MYSQL_DATABASE: devichan_e2e
+      MYSQL_USER: devichan_e2e
+      MYSQL_PASSWORD: devichan_e2e
+      REDIS_PASSWORD: devichan_e2e
+    command: ["php", "-S", "0.0.0.0:8000", "tests/bin/smart-build-router.php"]
+    volumes:
+      - app_data:/var/www
+      - ./tests/_output:/var/www/tests/_output
+      - ./tests/coverage.ini:/usr/local/etc/php/conf.d/test-coverage.ini:ro
+      - ./tests/fixtures/smart-builder-secrets.php:/var/www/inc/secrets.php:ro
+      - ./tests/fixtures/installed:/var/www/.installed:ro
+    depends_on:
+      workspace:
+        condition: service_completed_successfully
+      cmysql:
+        condition: service_healthy
+      credis:
+        condition: service_started
+
+  cmysql:
+    image: mysql:5.7
+    platform: linux/amd64
+    environment:
+      MYSQL_DATABASE: devichan_e2e
+      MYSQL_USER: devichan_e2e
+      MYSQL_PASSWORD: devichan_e2e
+      MYSQL_ROOT_PASSWORD: devichan_e2e_root
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-pdevichan_e2e_root"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./install.sql:/docker-entrypoint-initdb.d/10-install.sql:ro
+      - ./tests/fixtures/seed.sql:/docker-entrypoint-initdb.d/20-seed.sql:ro
+
+  cmysql-installer:
+    image: mysql:5.7
+    platform: linux/amd64
+    environment:
+      MYSQL_DATABASE: devichan_installer_e2e
+      MYSQL_USER: devichan_installer_e2e
+      MYSQL_PASSWORD: devichan_installer_e2e
+      MYSQL_ROOT_PASSWORD: devichan_installer_e2e_root
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-pdevichan_installer_e2e_root"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+    tmpfs:
+      - /var/lib/mysql
+
+  credis:
+    image: bitnami/redis:latest
+    environment:
+      REDIS_PASSWORD: devichan_e2e
+
+  sftp:
+    image: lscr.io/linuxserver/openssh-server:version-8.6_p1-r3
+    environment:
+      PUID: 1000
+      PGID: 1000
+      TZ: Etc/UTC
+      PASSWORD_ACCESS: "true"
+      USER_PASSWORD: password
+      USER_NAME: e2e
+      LOG_STDOUT: "true"
+    volumes:
+      - ssh_data:/config
+
+  caddy:
+    image: caddy:2-alpine
+    volumes:
+      - app_data:/var/www:ro
+      - ./caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+    depends_on:
+      cphp:
+        condition: service_started
+
+  selenium:
+    image: selenium/standalone-chromium:latest
+    shm_size: 2gb
+
+  prepare:
+    image: devichan-e2e-php:${PHP_VERSION:-8.1}
+    working_dir: /var/www
+    environment:
+      MYSQL_HOST: cmysql
+      MYSQL_DATABASE: devichan_e2e
+      MYSQL_USER: devichan_e2e
+      MYSQL_PASSWORD: devichan_e2e
+      REDIS_PASSWORD: devichan_e2e
+    command:
+      - sh
+      - -ec
+      - php tests/bin/prepare.php && test -f index.html && test -f b/index.html && test -f b/res/1.html && test -f recent.html && php tools/sync-caddy-routes.php
+    volumes:
+      - app_data:/var/www
+      - ./tests/fixtures/secrets.php:/var/www/inc/secrets.php:ro
+      - ./tests/fixtures/installed:/var/www/.installed:ro
+    depends_on:
+      workspace:
+        condition: service_completed_successfully
+      cmysql:
+        condition: service_healthy
+      caddy:
+        condition: service_started
+
+  runner:
+    image: devichan-e2e-php:${PHP_VERSION:-8.1}
+    working_dir: /var/www
+    environment:
+      E2E_BASE_URL: http://caddy
+      E2E_DB_DSN: mysql:host=cmysql;dbname=devichan_e2e;charset=utf8mb4
+      E2E_DB_USER: devichan_e2e
+      E2E_DB_PASSWORD: devichan_e2e
+      E2E_WEBDRIVER_HOST: selenium
+      COVERAGE_MIN: ${COVERAGE_MIN:-85}
+      XDEBUG_MODE: coverage
+    volumes:
+      - app_data:/var/www
+      - ./tests/_output:/var/www/tests/_output
+      - ./tests/coverage.ini:/usr/local/etc/php/conf.d/test-coverage.ini:ro
+      - ./tests/fixtures/secrets.php:/var/www/inc/secrets.php:ro
+      - ./tests/fixtures/installed:/var/www/.installed:ro
+    depends_on:
+      caddy:
+        condition: service_started
+      installer:
+        condition: service_started
+      selenium:
+        condition: service_started
+      sftp:
+        condition: service_started
+      smart-builder:
+        condition: service_started
+
+volumes:
+  app_data:
+  mysql_data:
+  ssh_data:

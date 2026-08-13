@@ -1,0 +1,14 @@
+actor: HttpTester
+suite_namespace: DevichanE2E\Http
+modules:
+    enabled:
+        - Asserts
+        - PhpBrowser:
+            url: '%E2E_BASE_URL%'
+            timeout: 20
+        - Db:
+            dsn: '%E2E_DB_DSN%'
+            user: '%E2E_DB_USER%'
+            password: '%E2E_DB_PASSWORD%'
+            cleanup: false
+            populate: false

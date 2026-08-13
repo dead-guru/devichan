@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.5/phpunit.xsd"
+         bootstrap="tests/Integration/bootstrap.php"
+         cacheDirectory="tests/_output/phpunit-cache"
+         colors="true">
+    <testsuites>
+        <testsuite name="Devichan integration">
+            <directory suffix="Test.php">tests/Integration</directory>
+        </testsuite>
+    </testsuites>
+    <source>
+        <include>
+            <directory suffix=".php">inc</directory>
+            <directory suffix=".php">auth</directory>
+            <directory suffix=".php">templates/themes</directory>
+            <directory suffix=".php">tools</directory>
+            <file>banned.php</file>
+            <file>boards.php</file>
+            <file>install.php</file>
+            <file>log.php</file>
+            <file>mod.php</file>
+            <file>post.php</file>
+            <file>report.php</file>
+            <file>search.php</file>
+            <file>smart_build.php</file>
+            <file>stats.php</file>
+        </include>
+        <exclude>
+            <directory>inc/lib</directory>
+            <file>inc/image/bmp.php</file>
+            <file>inc/secrets.php</file>
+            <directory>templates/themes/*/templates</directory>
+        </exclude>
+    </source>
+</phpunit>

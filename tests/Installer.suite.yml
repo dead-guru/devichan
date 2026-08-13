@@ -1,0 +1,8 @@
+actor: InstallerTester
+suite_namespace: DevichanE2E\Installer
+modules:
+    enabled:
+        - Asserts
+        - PhpBrowser:
+            url: '%E2E_BASE_URL%'
+            timeout: 20
