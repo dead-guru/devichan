@@ -4,10 +4,12 @@ require 'inc/bootstrap.php';
 require_once 'inc/functions.php';
 
 session_name('board_auth');
+$secure = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on')
+    || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https');
 session_set_cookie_params([
     'lifetime' => 0,
     'path' => '/',
-    'secure' => isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on',
+    'secure' => $secure,
     'httponly' => true,
     'samesite' => 'Lax'
 ]);

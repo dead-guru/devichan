@@ -39,7 +39,8 @@ case "get":
   $query->execute(                               [$cookie,  $extra,  $text,  time()]);
 
   if ($raw) {
-    $secure = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off';
+    $secure = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+      || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https');
     setcookie('captcha_cookie', $cookie, [
       'expires' => time() + $expires_in,
       'path' => '/',

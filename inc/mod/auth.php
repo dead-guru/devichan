@@ -118,25 +118,29 @@ function setCookies() {
 	if (!$mod)
 		error('setCookies() was called for a non-moderator!');
 	
+	$secure = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off'
+		|| (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https');
 	setcookie($config['cookies']['mod'],
 			$mod['username'] . // username
 			':' . 
 			$mod['hash'][0] . // password
 			':' .
 			$mod['hash'][1], // salt
-		time() + $config['cookies']['expire'], $config['cookies']['jail'] ? $config['cookies']['path'] : '/', $config['raw_host'] ?? '', !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off', $config['cookies']['httponly']);
+		time() + $config['cookies']['expire'], $config['cookies']['jail'] ? $config['cookies']['path'] : '/', '', $secure, $config['cookies']['httponly']);
 }
 
 function destroyCookies() {
 	global $config;
+	$secure = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off'
+		|| (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https');
 	// Delete the cookies
 	setcookie(
         $config['cookies']['mod'],
         'deleted',
         time() - $config['cookies']['expire'],
-        $config['cookies']['jail']?$config['cookies']['path'] : '/',
-        $config['raw_host'] ?? '',
-        !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off', true);
+        $config['cookies']['jail'] ? $config['cookies']['path'] : '/',
+        '',
+        $secure, true);
 }
 
 function modLog($action, $_board=null) {
