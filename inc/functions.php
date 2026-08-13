@@ -249,6 +249,14 @@ function loadConfig() {
         	    in_array('mp4',  $config['allowed_ext_files']))
 			event_handler('post', 'postHandler');
 	}
+
+	if (isset($_COOKIE['stylesheet']) && !empty($config['stylesheets'])) {
+		$cookieStyle = $_COOKIE['stylesheet'];
+		if (isset($config['stylesheets'][$cookieStyle])) {
+			$config['default_stylesheet'] = [$cookieStyle, $config['stylesheets'][$cookieStyle]];
+		}
+	}
+
 	// Effectful config processing below:
     
     if ($config['minify_js'] && !Cache::get('minify_js_hash') && file_exists('js/package.json')) {
