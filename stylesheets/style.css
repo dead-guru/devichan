@@ -270,7 +270,7 @@ input[type="checkbox"].delete {
 }
 
 .intro span.capcode, p.intro a.capcode, p.intro a.nametag {
-    color: #f00000;
+    /* color: #f00000; */
     margin-left: 0
 }
 
@@ -1525,4 +1525,70 @@ input#treeview {
     border-collapse: inherit !important;
     border-spacing: 0;
     border-radius: 4px !important;
+}
+
+:root {
+    --color-primary-red: #ED1C25;
+    --gradient-rainbow: linear-gradient(
+                135deg,
+                #00ffff,
+                #00ff00,
+                #ffff00,
+                #ff7f00
+            );
+}
+
+.capcode {
+    font-weight: bold;
+    font-family: sans-serif;
+}
+
+.text-red {
+    color: var(--color-primary-red);
+}
+
+.text-rainbow {
+    background-image: var(--gradient-rainbow);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+.video-container {
+    position: relative;
+    display: flow-root !important;
+}
+.video-container > a.file {
+    position: relative;
+    display: inline-block;
+}
+.video-container > a.file::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 68px;
+    height: 48px;
+    background: rgba(212, 18, 18, 0.8);
+    border-radius: 14px / 50%;
+    pointer-events: none;
+    z-index: 1;
+    transition: background 0.2s;
+}
+.video-container:hover > a.file::before {
+    background: rgba(255, 0, 0, 0.95);
+}
+.video-container > a.file::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-40%, -50%);
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 10px 0 10px 18px;
+    border-color: transparent transparent transparent #fff;
+    pointer-events: none;
+    z-index: 2;
 }
