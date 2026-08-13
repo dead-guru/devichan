@@ -9,9 +9,17 @@
 /*.html
 .env
 
-.idea
+.cache/*
 
+.idea/
+
+stylesheets/*.min.css
 /stylesheets/*.min.css
+
+*.html.gz
+*.js.gz
+*.json.gz
+
 
 *.webmanifest
 
