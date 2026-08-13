@@ -21,7 +21,7 @@
     <div class="portal-column-left">
 
         <div class="box">
-            <h2>News</h2>
+            <h2>Новини</h2>
             <ul class="list-news">
                 {% for item in stats.latest_news %}
                 <li>
@@ -33,15 +33,15 @@
         </div>
 
         <div class="box">
-            <h2>Board Top (7 days)</h2>
+            <h2>Топ бордів (7 днів)</h2>
             <ul class="list-stats">
                 {% for board in stats.top_boards %}
                 <li>
                     <a href="{{ config.root }}{{ board.uri }}/">/{{ board.uri }}/ - {{ board.name }}</a>
-                    <span>{{ board.count }} posts</span>
+                    <span>{{ board.count }} постів</span>
                 </li>
                 {% else %}
-                <li>No activity...</li>
+                <li>Нема активності.</li>
                 {% endfor %}
             </ul>
         </div>
@@ -50,7 +50,7 @@
 
     <div class="portal-column-main">
         <div class="box">
-            <h2>Latest active threads</h2>
+            <h2>Останні активні треди</h2>
             <ul class="list-threads">
                 {% for post in recent_posts %}
                 <li>
@@ -68,17 +68,17 @@
         <div class="box">
             <h2>Stats</h2>
             <ul class="list-stats">
-                <li><strong>Posts (All Time):</strong> <span>{{ stats.total_posts }}</span></li>
-                <li><strong>Threads (All Time):</strong> <span>{{ stats.total_threads }}</span></li>
-                <li><strong>Posts (24h):</strong> <span>{{ stats.posts_today }}</span></li>
-                <li><strong>Anonymous (All Time):</strong> <span>{{ stats.unique_posters }}</span></li>
-                <li><strong>Anonymous (24h):</strong> <span>{{ stats.unique_posters_today }}</span></li>
-                <li><strong>Data:</strong> <span>{{ stats.active_content|filesize }}</span></li>
+                <li><strong>Постів (Весь час):</strong> <span>{{ stats.total_posts }}</span></li>
+                <li><strong>Тредів (Весь час):</strong> <span>{{ stats.total_threads }}</span></li>
+                <li><strong>Постів (24г):</strong> <span>{{ stats.posts_today }}</span></li>
+                <li><strong>Безосів (Весь час):</strong> <span>{{ stats.unique_posters }}</span></li>
+                <li><strong>Безосів (24г):</strong> <span>{{ stats.unique_posters_today }}</span></li>
+                <li><strong>Данних:</strong> <span>{{ stats.active_content|filesize }}</span></li>
             </ul>
         </div>
 
         <div class="box">
-            <h2>Latest images</h2>
+            <h2>Останні пікчі</h2>
             <ul class="list-images">
                 {% for post in recent_images %}
                 <li>

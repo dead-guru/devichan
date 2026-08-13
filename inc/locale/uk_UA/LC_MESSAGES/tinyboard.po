@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: uk_UA\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
 #: ../../../../inc/functions.php:583 ../../../../inc/functions.php:600
 #: ../../../../inc/functions.php:591 ../../../../inc/functions.php:608
@@ -188,9 +188,7 @@ msgstr "Логін"
 #: ../../../../inc/display.php:262 ../../../../inc/display.php:257
 #, php-format
 msgid "Post too long. Click <a href=\"%s\">here</a> to view the full text."
-msgstr ""
-"Допис задовгий. Натисніть <a href=\"%s\">тут</a>, щоб переглянути текст "
-"повністю."
+msgstr "Допис задовгий. Клікни <a href=\"%s\">сюди</a>, якщо хочеш прочитати це простирадло."
 
 #: ../../../../inc/display.php:368 ../../../../inc/display.php:473
 #: ../../../../inc/display.php:385 ../../../../inc/display.php:495
@@ -380,7 +378,7 @@ msgstr "Перемістити нитку на іншу дошку"
 #: ../../../../inc/config.php:476 ../../../../inc/config.php:479
 #: ../../../../inc/config.php:482 ../../../../inc/config.php:533
 msgid "You have been muted for unoriginal content."
-msgstr "Вас позбавлено права дописувати за неоригінальний контент."
+msgstr "Тебе замʼючено за неоригінальне лайно."
 
 #. The names on the post buttons. (On most imageboards, these are both just
 #. "Post").
@@ -421,7 +419,7 @@ msgstr ""
 #. Error messages
 #: ../../../../inc/config.php:866
 msgid "Lurk some more before posting."
-msgstr ""
+msgstr "Полуркай ще. Ти не готовий."
 "Вам не завадило б почитати Українську Драматику, перш ніж щось сюди писати."
 
 #. * ====================
@@ -441,7 +439,7 @@ msgstr ""
 #: ../../../../inc/config.php:1020 ../../../../inc/config.php:1023
 #: ../../../../inc/config.php:1122
 msgid "You look like a bot."
-msgstr "Ви поводитесь як бот."
+msgstr "Ти бот. Або поводишся як бот. Різниці немає."
 
 #: ../../../../inc/config.php:868 ../../../../inc/config.php:973
 #: ../../../../inc/config.php:964 ../../../../inc/config.php:966
@@ -450,7 +448,7 @@ msgstr "Ви поводитесь як бот."
 #: ../../../../inc/config.php:1021 ../../../../inc/config.php:1024
 #: ../../../../inc/config.php:1123
 msgid "Your browser sent an invalid or no HTTP referer."
-msgstr "Ваш браузер не надіслав HTTP реферера або надіслав хибний"
+msgstr "Твій браузер надіслав якесь лайно замість реферера."
 
 #: ../../../../inc/config.php:869 ../../../../inc/config.php:974
 #: ../../../../inc/config.php:965 ../../../../inc/config.php:967
@@ -460,7 +458,7 @@ msgstr "Ваш браузер не надіслав HTTP реферера або
 #: ../../../../inc/config.php:1124
 #, php-format
 msgid "The %s field was too long."
-msgstr "Поле %s занадто довге."
+msgstr "Поле %s задовге. Тебе ніхто стільки читати не буде."
 
 #: ../../../../inc/config.php:870 ../../../../inc/config.php:975
 #: ../../../../inc/config.php:966 ../../../../inc/config.php:968
@@ -469,7 +467,7 @@ msgstr "Поле %s занадто довге."
 #: ../../../../inc/config.php:1023 ../../../../inc/config.php:1026
 #: ../../../../inc/config.php:1125
 msgid "The body was too long."
-msgstr "Вміст допису занадто довгий."
+msgstr "Занадто довго. Це борда, а не твій блог."
 
 #: ../../../../inc/config.php:871 ../../../../inc/config.php:976
 #: ../../../../inc/config.php:967 ../../../../inc/config.php:969
@@ -478,7 +476,7 @@ msgstr "Вміст допису занадто довгий."
 #: ../../../../inc/config.php:1024 ../../../../inc/config.php:1027
 #: ../../../../inc/config.php:1126
 msgid "The body was too short or empty."
-msgstr "Вміст допису занадто короткий або пустий."
+msgstr "Пустий допис. Тобі нема що сказати? Тоді навіщо?"
 
 #: ../../../../inc/config.php:872 ../../../../inc/config.php:977
 #: ../../../../inc/config.php:968 ../../../../inc/config.php:970
@@ -487,7 +485,7 @@ msgstr "Вміст допису занадто короткий або пуст�
 #: ../../../../inc/config.php:1025 ../../../../inc/config.php:1028
 #: ../../../../inc/config.php:1127
 msgid "You must upload an image."
-msgstr "Допис повинен містити зображення."
+msgstr "Без картинки не можна. Прикріпи щось."
 
 #: ../../../../inc/config.php:873 ../../../../inc/config.php:978
 #: ../../../../inc/config.php:969 ../../../../inc/config.php:971
@@ -496,7 +494,7 @@ msgstr "Допис повинен містити зображення."
 #: ../../../../inc/config.php:1027 ../../../../inc/config.php:1030
 #: ../../../../inc/config.php:1129
 msgid "The server failed to handle your upload."
-msgstr "Не вдалося завантажити файл на сервер."
+msgstr "Сервер подавився твоїм файлом."
 
 #: ../../../../inc/config.php:874 ../../../../inc/config.php:979
 #: ../../../../inc/config.php:970 ../../../../inc/config.php:972
@@ -505,7 +503,7 @@ msgstr "Не вдалося завантажити файл на сервер."
 #: ../../../../inc/config.php:1028 ../../../../inc/config.php:1031
 #: ../../../../inc/config.php:1130
 msgid "Unsupported image format."
-msgstr "Формат зображення не підтримується."
+msgstr "Що за формат? Мертва борда таке не їсть."
 
 #: ../../../../inc/config.php:875 ../../../../inc/config.php:980
 #: ../../../../inc/config.php:971 ../../../../inc/config.php:973
@@ -523,7 +521,7 @@ msgstr "Неправильна дошка!"
 #: ../../../../inc/config.php:1030 ../../../../inc/config.php:1033
 #: ../../../../inc/config.php:1132
 msgid "Thread specified does not exist."
-msgstr "Вказана нитка не існує."
+msgstr "Цієї нитки не існує. Може, ніколи й не існувало."
 
 #: ../../../../inc/config.php:877 ../../../../inc/config.php:982
 #: ../../../../inc/config.php:973 ../../../../inc/config.php:975
@@ -532,7 +530,7 @@ msgstr "Вказана нитка не існує."
 #: ../../../../inc/config.php:1031 ../../../../inc/config.php:1034
 #: ../../../../inc/config.php:1133
 msgid "Thread locked. You may not reply at this time."
-msgstr "Нитку закрито. Ви більше не можете сюди дописати."
+msgstr "Нитку замкнено. Тут більше нічого не буде."
 
 #: ../../../../inc/config.php:878 ../../../../inc/config.php:983
 #: ../../../../inc/config.php:974 ../../../../inc/config.php:976
@@ -541,7 +539,7 @@ msgstr "Нитку закрито. Ви більше не можете сюди 
 #: ../../../../inc/config.php:1032 ../../../../inc/config.php:1035
 #: ../../../../inc/config.php:1134
 msgid "Thread has reached its maximum reply limit."
-msgstr "Кількість дописів у нитці досягла максимально припустимої."
+msgstr "Нитка переповнена. Створюй нову, якщо є що сказати."
 
 #: ../../../../inc/config.php:879 ../../../../inc/config.php:984
 #: ../../../../inc/config.php:975 ../../../../inc/config.php:977
@@ -550,7 +548,7 @@ msgstr "Кількість дописів у нитці досягла макс�
 #: ../../../../inc/config.php:1033 ../../../../inc/config.php:1036
 #: ../../../../inc/config.php:1135
 msgid "Thread has reached its maximum image limit."
-msgstr "Кількість зображень у нитці досягла максимально припустимої."
+msgstr "Ліміт картинок у нитці. Все, більше не влізе."
 
 #: ../../../../inc/config.php:880 ../../../../inc/config.php:985
 #: ../../../../inc/config.php:976 ../../../../inc/config.php:978
@@ -559,7 +557,7 @@ msgstr "Кількість зображень у нитці досягла ма�
 #: ../../../../inc/config.php:1034 ../../../../inc/config.php:1037
 #: ../../../../inc/config.php:1136
 msgid "You didn't make a post."
-msgstr "Ви не розмістили допис."
+msgstr "Ти нічого не написав. Взагалі нічого."
 
 #: ../../../../inc/config.php:881 ../../../../inc/config.php:986
 #: ../../../../inc/config.php:977 ../../../../inc/config.php:979
@@ -568,7 +566,7 @@ msgstr "Ви не розмістили допис."
 #: ../../../../inc/config.php:1035 ../../../../inc/config.php:1038
 #: ../../../../inc/config.php:1137
 msgid "Flood detected; Post discarded."
-msgstr "Виявлено флуд — опис відхилено."
+msgstr "Флуд. Допис у смітник."
 
 #: ../../../../inc/config.php:882 ../../../../inc/config.php:987
 #: ../../../../inc/config.php:978 ../../../../inc/config.php:980
@@ -577,7 +575,7 @@ msgstr "Виявлено флуд — опис відхилено."
 #: ../../../../inc/config.php:1036 ../../../../inc/config.php:1039
 #: ../../../../inc/config.php:1138
 msgid "Your request looks automated; Post discarded."
-msgstr "Ваш запит схожий на автоматизований — допис відхилено."
+msgstr "Пахне ботом. Допис відхилено."
 
 #: ../../../../inc/config.php:883 ../../../../inc/config.php:988
 #: ../../../../inc/config.php:979 ../../../../inc/config.php:981
@@ -586,7 +584,7 @@ msgstr "Ваш запит схожий на автоматизований — �
 #: ../../../../inc/config.php:1037 ../../../../inc/config.php:1040
 #: ../../../../inc/config.php:1139
 msgid "Unoriginal content!"
-msgstr "Неоригінальний контент!"
+msgstr "Це вже було. Придумай щось нове."
 
 #: ../../../../inc/config.php:884 ../../../../inc/config.php:989
 #: ../../../../inc/config.php:980 ../../../../inc/config.php:982
@@ -596,8 +594,7 @@ msgstr "Неоригінальний контент!"
 #: ../../../../inc/config.php:1140
 #, php-format
 msgid "Unoriginal content! You have been muted for %d seconds."
-msgstr ""
-"Неоригінальний контент! Вас позбавлено можливості дописувати на %d секунд."
+msgstr "Неоригінальне лайно! Тебе замʼючено на %d сек. Подумай над своїм життям."
 
 #: ../../../../inc/config.php:885 ../../../../inc/config.php:990
 #: ../../../../inc/config.php:981 ../../../../inc/config.php:983
@@ -607,7 +604,7 @@ msgstr ""
 #: ../../../../inc/config.php:1141
 #, php-format
 msgid "You are muted! Expires in %d seconds."
-msgstr "Вас позбавлено можливості дописувати! Буде повернено через %d секунд."
+msgstr "Тебе замʼючено. Почекай %d сек. і подумай."
 
 #: ../../../../inc/config.php:886 ../../../../inc/config.php:991
 #: ../../../../inc/config.php:982 ../../../../inc/config.php:984
@@ -617,7 +614,7 @@ msgstr "Вас позбавлено можливості дописувати! �
 #: ../../../../inc/config.php:1142
 #, php-format
 msgid "Your IP address is listed in %s."
-msgstr "Вашу IP адресу знайдено в списку %s."
+msgstr "Твоя IP в чорному списку %s. Не пощастило."
 
 #: ../../../../inc/config.php:887 ../../../../inc/config.php:992
 #: ../../../../inc/config.php:983 ../../../../inc/config.php:985
@@ -626,7 +623,7 @@ msgstr "Вашу IP адресу знайдено в списку %s."
 #: ../../../../inc/config.php:1041 ../../../../inc/config.php:1044
 #: ../../../../inc/config.php:1143
 msgid "Too many links; flood detected."
-msgstr "Забагато посилань — виявлено флуд."
+msgstr "Забагато посилань. Ти спамер чи що?"
 
 #: ../../../../inc/config.php:888 ../../../../inc/config.php:993
 #: ../../../../inc/config.php:984 ../../../../inc/config.php:986
@@ -635,7 +632,7 @@ msgstr "Забагато посилань — виявлено флуд."
 #: ../../../../inc/config.php:1042 ../../../../inc/config.php:1045
 #: ../../../../inc/config.php:1144
 msgid "Too many cites; post discarded."
-msgstr "Забагато цитування — допис відхилено."
+msgstr "Забагато цитат. Заспокойся."
 
 #: ../../../../inc/config.php:889 ../../../../inc/config.php:994
 #: ../../../../inc/config.php:985 ../../../../inc/config.php:987
@@ -644,7 +641,7 @@ msgstr "Забагато цитування — допис відхилено."
 #: ../../../../inc/config.php:1043 ../../../../inc/config.php:1046
 #: ../../../../inc/config.php:1145
 msgid "Too many cross-board links; post discarded."
-msgstr "Забагато міждошкових посилань — допис відхилено."
+msgstr "Забагато міждошкових посилань. Сиди на своїй борді."
 
 #: ../../../../inc/config.php:890 ../../../../inc/config.php:995
 #: ../../../../inc/config.php:986 ../../../../inc/config.php:988
@@ -653,7 +650,7 @@ msgstr "Забагато міждошкових посилань — допис
 #: ../../../../inc/config.php:1044 ../../../../inc/config.php:1047
 #: ../../../../inc/config.php:1146
 msgid "You didn't select anything to delete."
-msgstr "Ви не вибрали жодного допису, щоб видалити."
+msgstr "Ти нічого не вибрав для видалення."
 
 #: ../../../../inc/config.php:891 ../../../../inc/config.php:996
 #: ../../../../inc/config.php:987 ../../../../inc/config.php:989
@@ -662,7 +659,7 @@ msgstr "Ви не вибрали жодного допису, щоб видал�
 #: ../../../../inc/config.php:1045 ../../../../inc/config.php:1048
 #: ../../../../inc/config.php:1147
 msgid "You didn't select anything to report."
-msgstr "Ви не вибрали жодного допису, щоб поскаржитися."
+msgstr "Ти нічого не вибрав для скарги."
 
 #: ../../../../inc/config.php:892 ../../../../inc/config.php:997
 #: ../../../../inc/config.php:988 ../../../../inc/config.php:990
@@ -671,7 +668,7 @@ msgstr "Ви не вибрали жодного допису, щоб поска�
 #: ../../../../inc/config.php:1046 ../../../../inc/config.php:1049
 #: ../../../../inc/config.php:1149
 msgid "You can't report that many posts at once."
-msgstr "Ви не можете поскаржитися на таку кількість дописів відразу."
+msgstr "Забагато скарг за раз. По одному."
 
 #: ../../../../inc/config.php:893 ../../../../inc/config.php:998
 #: ../../../../inc/config.php:989 ../../../../inc/config.php:991
@@ -680,7 +677,7 @@ msgstr "Ви не можете поскаржитися на таку кільк
 #: ../../../../inc/config.php:1047 ../../../../inc/config.php:1050
 #: ../../../../inc/config.php:1150
 msgid "Wrong password…"
-msgstr "Неправильний пароль…"
+msgstr "Пароль невірний. Спробуй ще."
 
 #: ../../../../inc/config.php:894 ../../../../inc/config.php:999
 #: ../../../../inc/config.php:990 ../../../../inc/config.php:992
@@ -689,7 +686,7 @@ msgstr "Неправильний пароль…"
 #: ../../../../inc/config.php:1048 ../../../../inc/config.php:1051
 #: ../../../../inc/config.php:1151
 msgid "Invalid image."
-msgstr "Неправильне зображення."
+msgstr "Битий файл. Що ти туди засунув?"
 
 #: ../../../../inc/config.php:895 ../../../../inc/config.php:1000
 #: ../../../../inc/config.php:991 ../../../../inc/config.php:993
@@ -698,7 +695,7 @@ msgstr "Неправильне зображення."
 #: ../../../../inc/config.php:1049 ../../../../inc/config.php:1052
 #: ../../../../inc/config.php:1153
 msgid "Unknown file extension."
-msgstr "Невідоме розширення файла."
+msgstr "Невідомий формат файлу. Що це взагалі?"
 
 #: ../../../../inc/config.php:896 ../../../../inc/config.php:1001
 #: ../../../../inc/config.php:992 ../../../../inc/config.php:994
@@ -707,7 +704,7 @@ msgstr "Невідоме розширення файла."
 #: ../../../../inc/config.php:1050 ../../../../inc/config.php:1053
 #: ../../../../inc/config.php:1154
 msgid "Maximum file size: %maxsz% bytes<br>Your file's size: %filesz% bytes"
-msgstr ""
+msgstr "Ліміт: %maxsz% байт<br>Твоє файло: %filesz% байт. Не влізе."
 "Максимальний розмір файла: %maxsz% байтів<br>Розмір вашого файла: %filesz% "
 "байтів"
 
@@ -718,7 +715,7 @@ msgstr ""
 #: ../../../../inc/config.php:1051 ../../../../inc/config.php:1054
 #: ../../../../inc/config.php:1155
 msgid "The file was too big."
-msgstr "Файл завеликий."
+msgstr "Файл завеликий. Менше."
 
 #: ../../../../inc/config.php:898 ../../../../inc/config.php:1003
 #: ../../../../inc/config.php:994 ../../../../inc/config.php:996
@@ -728,7 +725,7 @@ msgstr "Файл завеликий."
 #: ../../../../inc/config.php:1161
 #, php-format
 msgid "That file <a href=\"%s\">already exists</a>!"
-msgstr "Файл <a href=\"%s\">уже існує</a>!"
+msgstr "Цей файл <a href=\"%s\">вже є</a>. Ти не перший."
 
 #: ../../../../inc/config.php:899 ../../../../inc/config.php:1004
 #: ../../../../inc/config.php:995 ../../../../inc/config.php:997
@@ -738,7 +735,7 @@ msgstr "Файл <a href=\"%s\">уже існує</a>!"
 #: ../../../../inc/config.php:1162
 #, php-format
 msgid "That file <a href=\"%s\">already exists</a> in this thread!"
-msgstr "Файл <a href=\"%s\">уже існує</a> у цій нитці!"
+msgstr "Цей файл <a href=\"%s\">вже є</a> в цій нитці. Пізно."
 
 #: ../../../../inc/config.php:900 ../../../../inc/config.php:1005
 #: ../../../../inc/config.php:996 ../../../../inc/config.php:998
@@ -748,7 +745,7 @@ msgstr "Файл <a href=\"%s\">уже існує</a> у цій нитці!"
 #: ../../../../inc/config.php:1163
 #, php-format
 msgid "You'll have to wait another %s before deleting that."
-msgstr "Почекайте ще %s перед видаленням."
+msgstr "Почекай ще %s перед видаленням."
 
 #: ../../../../inc/config.php:901 ../../../../inc/config.php:1006
 #: ../../../../inc/config.php:997 ../../../../inc/config.php:999
@@ -757,7 +754,7 @@ msgstr "Почекайте ще %s перед видаленням."
 #: ../../../../inc/config.php:1060 ../../../../inc/config.php:1063
 #: ../../../../inc/config.php:1164
 msgid "MIME type detection XSS exploit (IE) detected; post discarded."
-msgstr "Виявлено XSS-експлойт визначення MIME-типу — допис відхилено."
+msgstr "Хакер, блін. XSS-експлойт. Допис відхилено."
 
 #: ../../../../inc/config.php:902 ../../../../inc/config.php:1007
 #: ../../../../inc/config.php:998 ../../../../inc/config.php:1000
@@ -766,7 +763,7 @@ msgstr "Виявлено XSS-експлойт визначення MIME-типу
 #: ../../../../inc/config.php:1061 ../../../../inc/config.php:1064
 #: ../../../../inc/config.php:1165
 msgid "Couldn't make sense of the URL of the video you tried to embed."
-msgstr "Не вдалося розпізнати адресу відео, яке ви намагалися вбудувати."
+msgstr "Не вдалося розпізнати URL відео. Що за посилання?"
 
 #: ../../../../inc/config.php:903 ../../../../inc/config.php:1008
 #: ../../../../inc/config.php:999 ../../../../inc/config.php:1001
@@ -775,7 +772,7 @@ msgstr "Не вдалося розпізнати адресу відео, яке
 #: ../../../../inc/config.php:1062 ../../../../inc/config.php:1065
 #: ../../../../inc/config.php:1166
 msgid "You seem to have mistyped the verification."
-msgstr "Здається, ви не пройшли підтвердження."
+msgstr "Капча невірна. Ти точно не робот?"
 
 #. Moderator errors
 #: ../../../../inc/config.php:906 ../../../../inc/config.php:1011
@@ -799,7 +796,7 @@ msgstr ""
 #: ../../../../inc/config.php:1067 ../../../../inc/config.php:1070
 #: ../../../../inc/config.php:1173
 msgid "Invalid username and/or password."
-msgstr "Неправильне імʼя користувача і/або пароль."
+msgstr "Невірний логін або пароль."
 
 #: ../../../../inc/config.php:908 ../../../../inc/config.php:1013
 #: ../../../../inc/config.php:1004 ../../../../inc/config.php:1006
@@ -808,7 +805,7 @@ msgstr "Неправильне імʼя користувача і/або пар�
 #: ../../../../inc/config.php:1068 ../../../../inc/config.php:1071
 #: ../../../../inc/config.php:1174
 msgid "You are not a mod…"
-msgstr "Ви не модератор…"
+msgstr "Ти не модератор. Йди звідси."
 
 #: ../../../../inc/config.php:909 ../../../../inc/config.php:1014
 #: ../../../../inc/config.php:1005 ../../../../inc/config.php:1007
@@ -829,7 +826,7 @@ msgstr ""
 #: ../../../../inc/config.php:1070 ../../../../inc/config.php:1073
 #: ../../../../inc/config.php:1176
 msgid "Invalid/malformed cookies."
-msgstr "Неправильні/неправильно сформовані куки."
+msgstr "Куки зламані. Почисти браузер."
 
 #: ../../../../inc/config.php:911 ../../../../inc/config.php:1016
 #: ../../../../inc/config.php:1007 ../../../../inc/config.php:1009
@@ -838,7 +835,7 @@ msgstr "Неправильні/неправильно сформовані ку�
 #: ../../../../inc/config.php:1071 ../../../../inc/config.php:1074
 #: ../../../../inc/config.php:1177
 msgid "Your browser didn't submit an input when it should have."
-msgstr "Ваш браузер не підтвердив введення тоді, коли потрібно."
+msgstr "Браузер не відправив потрібне поле. Оновись."
 
 #: ../../../../inc/config.php:912 ../../../../inc/config.php:1017
 #: ../../../../inc/config.php:1008 ../../../../inc/config.php:1010
@@ -848,7 +845,7 @@ msgstr "Ваш браузер не підтвердив введення тод�
 #: ../../../../inc/config.php:1178
 #, php-format
 msgid "The %s field is required."
-msgstr "Поле %s обовʼязкове."
+msgstr "Поле %s обовʼязкове. Заповни."
 
 #: ../../../../inc/config.php:913 ../../../../inc/config.php:1018
 #: ../../../../inc/config.php:1009 ../../../../inc/config.php:1011
@@ -858,7 +855,7 @@ msgstr "Поле %s обовʼязкове."
 #: ../../../../inc/config.php:1179
 #, php-format
 msgid "The %s field was invalid."
-msgstr "Поле %s заповнено неправильно."
+msgstr "Поле %s заповнено криво."
 
 #: ../../../../inc/config.php:914 ../../../../inc/config.php:1019
 #: ../../../../inc/config.php:1010 ../../../../inc/config.php:1012
@@ -877,7 +874,7 @@ msgstr "Дошка %s уже існує."
 #: ../../../../inc/config.php:1075 ../../../../inc/config.php:1078
 #: ../../../../inc/config.php:1181
 msgid "You don't have permission to do that."
-msgstr "У вас відсутній дозвіл на цю дію."
+msgstr "Тобі це не дозволено."
 
 #: ../../../../inc/config.php:916 ../../../../inc/config.php:1021
 #: ../../../../inc/config.php:1012 ../../../../inc/config.php:1014
@@ -886,7 +883,7 @@ msgstr "У вас відсутній дозвіл на цю дію."
 #: ../../../../inc/config.php:1076 ../../../../inc/config.php:1079
 #: ../../../../inc/config.php:1182
 msgid "That post doesn't exist…"
-msgstr "Цей допис не існує…"
+msgstr "Цей допис не існує. Може, ніколи й не існував."
 
 #: ../../../../inc/config.php:917 ../../../../inc/config.php:1022
 #: ../../../../inc/config.php:1013 ../../../../inc/config.php:1015
@@ -895,7 +892,7 @@ msgstr "Цей допис не існує…"
 #: ../../../../inc/config.php:1077 ../../../../inc/config.php:1080
 #: ../../../../inc/config.php:1183
 msgid "Page not found."
-msgstr "Сторінку не знайдено."
+msgstr "Сторінку не знайдено. Тут пусто."
 
 #: ../../../../inc/config.php:918 ../../../../inc/config.php:1023
 #: ../../../../inc/config.php:1014 ../../../../inc/config.php:1016
@@ -924,7 +921,7 @@ msgstr "Цієї теми не існує!"
 #: ../../../../inc/config.php:1080 ../../../../inc/config.php:1083
 #: ../../../../inc/config.php:1186
 msgid "Invalid security token! Please go back and try again."
-msgstr "Неправильний токен безпеки! Поверніться і спробуйте ще раз."
+msgstr "Невірний токен безпеки. Оновлюй сторінку і спробуй знову."
 
 #. Default public ban message. In public ban messages, %length% is replaced
 #. with "for x days" or
