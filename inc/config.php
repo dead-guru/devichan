@@ -673,6 +673,7 @@
 	$config['markup'][] = array("/~~(.+?)~~/", "<s>\$1</s>"); //u
 	$config['markup'][] = array("/\*\*(.+?)\*\*/", "<span class=\"spoiler\">\$1</span>"); //spoiler
 	$config['markup'][] = array("/^[ |\t]*==(.+?)==[ |\t]*$/m", "<span class=\"heading\">\$1</span>"); //heading
+	$config['markup_math'] = "/\[math\](.*?)\[\/math\]/is";
 
 	// Code markup. This should be set to a regular expression, using tags you want to use. Examples:
 	// "/\[code\](.*?)\[\/code\]/is"
