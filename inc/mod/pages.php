@@ -63,6 +63,8 @@ function mod_login($redirect = false) {
 }
 
 function mod_confirm($request) {
+	global $config;
+
 	mod_page(_('Confirm action'), $config['file_mod_confim'], array('request' => $request, 'token' => make_secure_link_token($request)));
 }
 
@@ -3015,4 +3017,3 @@ function mod_debug_apc() {
 	
 	mod_page(_('Debug: APC'), $config['file_mod_debug_apc'], array('cached_vars' => $cached_vars));
 }
-
