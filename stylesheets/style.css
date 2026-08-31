@@ -309,6 +309,19 @@ div.post div.body {
     white-space: pre-wrap
 }
 
+span.math-rendered {
+    display: block;
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: .25em 0;
+    white-space: normal
+}
+
+span.math-rendered math {
+    font-size: 1.15em
+}
+
 div.post.reply {
     background: #d6daf0;
     margin: .2em 4px;

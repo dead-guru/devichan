@@ -2020,6 +2020,16 @@ function markup(&$body, $track_cites = false, $op = false) {
 		}, $body);
 	}
 
+	$math_markup = array();
+	if ($config['markup_math']) {
+		$math_token = bin2hex(random_bytes(8));
+		$body = preg_replace_callback($config['markup_math'], function($matches) use (&$math_markup, $math_token) {
+			$placeholder = "%%DEVICHAN_MATH_{$math_token}_" . count($math_markup) . "%%";
+			$math_markup[$placeholder] = MathRenderer::render($matches[1]);
+			return $placeholder;
+		}, $body);
+	}
+
 	foreach ($config['markup'] as $markup) {
 		if (is_string($markup[1])) {
 			$body = preg_replace($markup[0], $markup[1], $body);
@@ -2250,6 +2260,10 @@ function markup(&$body, $track_cites = false, $op = false) {
 
 	// replace tabs with 8 spaces
 	$body = str_replace("\t", '		', $body);
+
+	foreach ($math_markup as $placeholder => $mathml) {
+		$body = str_replace($placeholder, $mathml, $body);
+	}
 
 	return $tracked_cites;
 }

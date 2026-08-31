@@ -67,6 +67,15 @@ if (active_page === 'thread' || active_page === 'index') {
 				prefix: '```',
 				suffix: '```'
 			},
+			math: {
+				text: _('Math'),
+				short: '∑',
+				key: 'm',
+				multiline: true,
+				exclusiveline: false,
+				prefix: '[math]',
+				suffix: '[/math]'
+			},
 			heading: {
 				text: _('Heading'),
 				short: _('H'),
@@ -270,7 +279,15 @@ if (active_page === 'thread' || active_page === 'index') {
 		};
 
 		// setup default rules for customizing
-		if (!localStorage.formatText_rules_1) localStorage.formatText_rules_1 = JSON.stringify(self.rules);
+		if (!localStorage.formatText_rules_1) {
+			localStorage.formatText_rules_1 = JSON.stringify(self.rules);
+		} else {
+			var savedRules = JSON.parse(localStorage.formatText_rules_1);
+			if (!savedRules.math) {
+				savedRules.math = self.rules.math;
+				localStorage.formatText_rules_1 = JSON.stringify(savedRules);
+			}
+		}
 
 		// setup code to be ran when page is ready (work around for main.js compilation).
 		$(document).ready(function(){
