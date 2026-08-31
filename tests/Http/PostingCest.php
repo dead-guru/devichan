@@ -11,6 +11,12 @@ final class PostingCest
 {
     use HttpAssertions;
 
+    public function _after(HttpTester $I): void
+    {
+        $I->deleteHeader('X-E2E-Post-Case');
+        $I->deleteHeader('CF-Connecting-IP');
+    }
+
     public function visitorCanCreateAnEmbeddedThreadAndReply(HttpTester $I): void
     {
         sleep(2);
@@ -147,7 +153,13 @@ final class PostingCest
 
     public function visitorPostingIsRateLimited(HttpTester $I): void
     {
-        sleep(2);
+        $visitorIp = sprintf(
+            '2001:db8:%s:%s::1',
+            bin2hex(random_bytes(2)),
+            bin2hex(random_bytes(2)),
+        );
+        $I->haveHttpHeader('X-E2E-Post-Case', 'rate-limit');
+        $I->haveHttpHeader('CF-Connecting-IP', $visitorIp);
         $firstBody = 'E2E flood baseline ' . bin2hex(random_bytes(4));
 
         $I->amOnPage('/b/');
@@ -163,6 +175,10 @@ final class PostingCest
             'post' => $postButton,
         ]);
         $this->assertHealthyPage($I);
+        $I->seeInDatabase('posts_b', [
+            'body_nomarkup' => $firstBody,
+            'ip' => $visitorIp,
+        ]);
 
         $I->amOnPage('/b/');
         $I->submitForm('form[name="post"]', [

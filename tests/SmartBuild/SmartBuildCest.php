@@ -13,10 +13,15 @@ final class SmartBuildCest
 
     public function generatesPublicHtmlRoutes(SmartBuildTester $I): void
     {
+        $threadPage = codecept_root_dir('b/res/1.html');
+        if (is_file($threadPage)) {
+            $I->assertTrue(unlink($threadPage));
+        }
+
         foreach ([
             '/b/' => 'Seed public thread',
             '/b/index.html' => 'Seed public thread',
-            '/b/res/1-seed-thread.html' => 'Seed reply',
+            '/b/res/1.html' => 'Seed reply',
             '/b/catalog.html' => 'Seed thread',
             '/b/index.rss' => '<rss',
             '/recent.html' => 'Seed public thread',

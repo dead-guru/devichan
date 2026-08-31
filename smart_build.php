@@ -53,19 +53,19 @@ if ($reached) {
   header("HTTP/1.1 200 OK");
   header("Status: 200 OK");
   if (preg_match('/\.json$/', $request)) {
-    header("Content-Type", "application/json");
+    header("Content-Type: application/json");
   }
   elseif (preg_match('/\.js$/', $request)) {
-    header("Content-Type", "text/javascript; charset=utf-8");
+    header("Content-Type: text/javascript; charset=utf-8");
   }
   elseif (preg_match('/\.xml$/', $request)) {
-    header("Content-Type", "application/xml");
+    header("Content-Type: application/xml");
   }
   elseif (preg_match('/\.rss$/', $request)) {
-    header("Content-Type", "application/rss+xml");
+    header("Content-Type: application/rss+xml");
   }
   else {
-    header("Content-Type", "text/html; charset=utf-8");
+    header("Content-Type: text/html; charset=utf-8");
   }
   header("Cache-Control: public, nocache, no-cache, max-age=0, must-revalidate");
   header("Expires: Fri, 22 Feb 1991 06:00:00 GMT");

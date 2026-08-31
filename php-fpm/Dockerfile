@@ -28,7 +28,7 @@ RUN apt-get update && apt-get install -y \
         locales locales-all \
     && docker-php-ext-configure gd --with-webp=/usr/include/webp --with-jpeg=/usr/include --with-freetype=/usr/include/freetype2/ \
     && pecl install redis imagick igbinary \
-    && docker-php-ext-install gd zip opcache intl pdo_mysql mysqli bcmath gettext iconv mbstring curl \
+    && docker-php-ext-install exif gd zip opcache intl pdo_mysql mysqli bcmath gettext iconv mbstring curl \
     && docker-php-ext-enable igbinary redis imagick \
     && rm -rf /var/lib/apt/lists/*
 

@@ -94,6 +94,11 @@ $config['delete_time'] = 0;
 $config['flood_time'] = 1;
 $config['flood_time_ip'] = 1;
 $config['flood_time_same'] = 1;
+if ($e2ePostCase === 'rate-limit') {
+    $config['flood_time'] = 60;
+    $config['flood_time_ip'] = 60;
+    $config['flood_time_same'] = 60;
+}
 
 $config['search']['enable'] = true;
 $config['search']['queries_per_minutes'] = [1000, 1];

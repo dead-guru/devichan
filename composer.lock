@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "67ba1e2368c7a0822aba786fba9f5cdf",
+    "content-hash": "4f3c4ab9c4c49ddc072154a656aac79b",
     "packages": [
         {
             "name": "bepsvpt/blurhash",
@@ -265,6 +265,62 @@
                 }
             ],
             "time": "2022-10-20T09:10:12+00:00"
+        },
+        {
+            "name": "erusev/parsedown",
+            "version": "1.8.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/erusev/parsedown.git",
+                "reference": "96baaad00f71ba04d76e45b4620f54d3beabd6f7"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/erusev/parsedown/zipball/96baaad00f71ba04d76e45b4620f54d3beabd6f7",
+                "reference": "96baaad00f71ba04d76e45b4620f54d3beabd6f7",
+                "shasum": ""
+            },
+            "require": {
+                "ext-mbstring": "*",
+                "php": ">=7.1"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^7.5|^8.5|^9.6"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Parsedown": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Emanuil Rusev",
+                    "email": "hello@erusev.com",
+                    "homepage": "http://erusev.com"
+                }
+            ],
+            "description": "Parser for Markdown.",
+            "homepage": "http://parsedown.org",
+            "keywords": [
+                "markdown",
+                "parser"
+            ],
+            "support": {
+                "issues": "https://github.com/erusev/parsedown/issues",
+                "source": "https://github.com/erusev/parsedown/tree/1.8.0"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/erusev",
+                    "type": "github"
+                }
+            ],
+            "time": "2026-02-16T11:41:01+00:00"
         },
         {
             "name": "ezyang/htmlpurifier",
@@ -6236,13 +6292,13 @@
     "prefer-lowest": false,
     "platform": {
         "php": ">=8.1",
-        "ext-mbstring": ">=8.1",
-        "ext-gd": ">=8.1",
         "ext-curl": ">=8.1",
-        "ext-pdo": ">=8.1",
         "ext-fileinfo": ">=8.1",
+        "ext-gd": ">=8.1",
         "ext-gettext": "*",
-        "ext-imagick": "*"
+        "ext-imagick": "*",
+        "ext-mbstring": ">=8.1",
+        "ext-pdo": ">=8.1"
     },
     "platform-dev": {},
     "plugin-api-version": "2.9.0"

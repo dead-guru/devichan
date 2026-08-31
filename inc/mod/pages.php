@@ -63,6 +63,8 @@ function mod_login($redirect = false) {
 }
 
 function mod_confirm($request) {
+	global $config;
+
 	mod_page(_('Confirm action'), $config['file_mod_confim'], array('request' => $request, 'token' => make_secure_link_token($request)));
 }
 
@@ -1220,13 +1222,11 @@ function mod_move_reply($originBoard, $postID) {
 
 	if (isset($_POST['board'])) {
 		$targetBoard = $_POST['board'];
+		$targetThread = $_POST['target_thread'] ? (int) $_POST['target_thread'] : null;
 
-		if ($_POST['target_thread']) {
-			$query = prepare(sprintf('SELECT * FROM ``posts_%s`` WHERE `id` = :id', $targetBoard));
-			$query->bindValue(':id', $_POST['target_thread']);
-			$query->execute() or error(db_error($query)); // If it fails, thread probably does not exist
+		if ($targetThread) {
 			$post['op'] = false;
-			$post['thread'] = $_POST['target_thread'];
+			$post['thread'] = $targetThread;
 		}
 		else {
 			$post['op'] = true;
@@ -1236,9 +1236,9 @@ function mod_move_reply($originBoard, $postID) {
 			$post['files'] = json_decode($post['files'], TRUE);
 			$post['has_file'] = true;
 			foreach ($post['files'] as $i => &$file) {
-				$file['file_path'] = sprintf($config['board_path'], $board['uri']) . $config['dir']['img'] . $file['file'];
+				$file['file_path'] = sprintf($config['board_path'], $originBoard) . $config['dir']['img'] . $file['file'];
 				if (isset($file['thumb']))
-				$file['thumb_path'] = sprintf($config['board_path'], $board['uri']) . $config['dir']['thumb'] . $file['thumb'];
+					$file['thumb_path'] = sprintf($config['board_path'], $originBoard) . $config['dir']['thumb'] . $file['thumb'];
 			}
 		} else {
 			$post['has_file'] = false;
@@ -1249,25 +1249,32 @@ function mod_move_reply($originBoard, $postID) {
 		
 		if (!openBoard($targetBoard))
 			error($config['error']['noboard']);
+
+		if ($targetThread) {
+			$query = prepare(sprintf('SELECT `id` FROM ``posts_%s`` WHERE `id` = :id AND `thread` IS NULL', $board['uri']));
+			$query->bindValue(':id', $targetThread, PDO::PARAM_INT);
+			$query->execute() or error(db_error($query));
+			if (!$query->fetch(PDO::FETCH_ASSOC))
+				error($config['error']['nonexistant']);
+		}
 		
 		// create the new post
 		$newID = post($post);
+		$destinationThread = $targetThread ?: (int) $newID;
 		
 		if ($post['has_file']) {
 			foreach ($post['files'] as $i => &$file) {
-				// move the image
-				if (isset($file['thumb']))
-				if ($file['thumb'] != 'spoiler' || $file['thumb'] != 'deleted') { //trying to move/copy the spoiler thumb raises an error
-				rename($file['file_path'], sprintf($config['board_path'], $board['uri']) . $config['dir']['img'] . $file['file']);
-				rename($file['thumb_path'], sprintf($config['board_path'], $board['uri']) . $config['dir']['thumb'] . $file['thumb']);
-				}
+				if ($file['file'] !== 'deleted')
+					rename($file['file_path'], sprintf($config['board_path'], $board['uri']) . $config['dir']['img'] . $file['file']);
+				if (isset($file['thumb']) && !in_array($file['thumb'], array('spoiler', 'deleted'), true))
+					rename($file['thumb_path'], sprintf($config['board_path'], $board['uri']) . $config['dir']['thumb'] . $file['thumb']);
 			}
 		}
 
 		// build index
 		buildIndex();
 		// build new thread
-		buildThread($newID);
+		buildThread($destinationThread);
 		
 		// trigger themes
 		rebuildThemes('post', $targetBoard);
@@ -1284,14 +1291,8 @@ function mod_move_reply($originBoard, $postID) {
 		// open target board for redirect
 		openBoard($targetBoard);
 
-		// Find new thread on our target board
-		$query = prepare(sprintf('SELECT thread FROM ``posts_%s`` WHERE `id` = :id', $targetBoard));
-		$query->bindValue(':id', $newID);
-		$query->execute() or error(db_error($query));
-		$post = $query->fetch(PDO::FETCH_ASSOC);
-
 		// redirect
-		header('Location: ?/' . sprintf($config['board_path'], $board['uri']) . $config['dir']['res'] . link_for($post) . '#' . $newID, true, $config['redirect_http']);
+		header('Location: ?/' . sprintf($config['board_path'], $board['uri']) . $config['dir']['res'] . link_for(array('id' => $destinationThread)) . '#' . $newID, true, $config['redirect_http']);
 	}
 
 	else {
@@ -3015,4 +3016,3 @@ function mod_debug_apc() {
 	
 	mod_page(_('Debug: APC'), $config['file_mod_debug_apc'], array('cached_vars' => $cached_vars));
 }
-
