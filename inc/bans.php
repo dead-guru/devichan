@@ -301,6 +301,7 @@ class Bans {
 			$query->bindValue(':post', null, PDO::PARAM_NULL);
 		
 		$query->execute() or error(db_error($query));
+		$ban_id = $pdo->lastInsertId();
 		if (isset($mod['id']) && $mod['id'] == $mod_id) {
 			modLog('Created a new ' .
 				($length > 0 ? preg_replace('/^(\d+) (\w+?)s?$/', '$1-$2', until($length)) : 'permanent') .
@@ -308,12 +309,12 @@ class Bans {
 				($ban_board ? '/' . $ban_board . '/' : 'all boards') .
 				' for ' .
 				(filter_var($mask, FILTER_VALIDATE_IP) !== false ? "<a href=\"?/IP/$cloaked_mask\">$cloaked_mask</a>" : $cloaked_mask) .
-				' (<small>#' . $pdo->lastInsertId() . '</small>)' .
+				' (<small>#' . $ban_id . '</small>)' .
 				' with ' . ($reason ? 'reason: ' . utf8tohtml($reason) . '' : 'no reason'));
 		}
 
 		rebuildThemes('bans');
 
-		return $pdo->lastInsertId();
+		return $ban_id;
 	}
 }
