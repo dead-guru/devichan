@@ -166,4 +166,32 @@ final class DisplayIntegrationTest extends TestCase
             $build_pages = $originalBuildPages;
         }
     }
+
+    public function testModeratorDashboardUsesBannerHeightWithoutAWidth(): void
+    {
+        global $config, $mod;
+
+        $mod = [
+            'id' => 1,
+            'type' => 30,
+            'username' => 'admin',
+            'boards' => ['*'],
+        ];
+        $config['url_banner'] = '/banner/test.png';
+        $config['banner_width'] = 0;
+        $config['banner_height'] = 120;
+
+        $dashboard = Element('mod/dashboard.html', [
+            'config' => $config,
+            'mod' => $mod,
+            'boards' => [],
+            'noticeboard' => [],
+            'unread_pms' => 0,
+            'reports' => 0,
+            'logout_token' => 'test-token',
+        ]);
+
+        self::assertStringContainsString('height:120px', $dashboard);
+        self::assertStringNotContainsString('width:0px', $dashboard);
+    }
 }

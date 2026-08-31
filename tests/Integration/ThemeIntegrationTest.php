@@ -66,16 +66,23 @@ final class ThemeIntegrationTest extends TestCase
         self::assertFileExists($this->outputDirectory . 'categories-news.html');
 
         $frameset = [
+            'title' => 'Integration Frames',
             'file_main' => 'frames.html',
             'file_sidebar' => 'frames-sidebar.html',
             'file_news' => 'frames-news.html',
         ];
+        $config['url_favicon'] = '/integration-favicon.ico';
         \frameset_build('all', $frameset, false);
         self::assertStringContainsString('Seed news', \Frameset::news($frameset));
         self::assertNotSame('', \Frameset::sidebar($frameset));
         self::assertFileExists($this->outputDirectory . 'frames.html');
         self::assertFileExists($this->outputDirectory . 'frames-sidebar.html');
         self::assertFileExists($this->outputDirectory . 'frames-news.html');
+        $framesPage = (string) file_get_contents($this->outputDirectory . 'frames.html');
+        self::assertStringContainsString('<title>Integration Frames</title>', $framesPage);
+        self::assertStringContainsString('href="/integration-favicon.ico"', $framesPage);
+        self::assertStringContainsString('body{margin:0}', $framesPage);
+        self::assertStringContainsString('height:100%', $framesPage);
 
         $config['dir']['home'] = $this->outputDirectory;
     }
@@ -120,6 +127,9 @@ final class ThemeIntegrationTest extends TestCase
             'thread_limit' => '1',
             'exclude' => 'sec',
         ];
+        $original = query('SELECT `files`, `num_files` FROM ``posts_b`` WHERE `id` = 2')
+            ->fetch(\PDO::FETCH_ASSOC);
+        self::assertIsArray($original);
         $files = json_encode([['file' => 'reply.png']], JSON_THROW_ON_ERROR);
         query("UPDATE ``posts_b`` SET `files` = " . $pdo->quote($files) . ", `num_files` = 1 WHERE `id` = 2");
 
@@ -141,7 +151,11 @@ final class ThemeIntegrationTest extends TestCase
             self::assertStringContainsString('overflow', $page);
             self::assertFileExists($ukkoSettings['uri'] . '/ukko.js');
         } finally {
-            query("UPDATE ``posts_b`` SET `files` = NULL, `num_files` = 0 WHERE `id` = 2");
+            query(sprintf(
+                "UPDATE ``posts_b`` SET `files` = %s, `num_files` = %d WHERE `id` = 2",
+                $original['files'] === null ? 'NULL' : $pdo->quote($original['files']),
+                (int) $original['num_files'],
+            ));
         }
     }
 
@@ -165,6 +179,12 @@ final class ThemeIntegrationTest extends TestCase
         \catalog_build('all', $settings, 'b');
         self::assertFileExists($directory . '/catalog.html');
         self::assertFileExists($directory . '/index.rss');
+        $bump = (int) query('SELECT `bump` FROM ``posts_b`` WHERE `id` = 1')->fetchColumn();
+        $catalogPage = (string) file_get_contents($directory . '/catalog.html');
+        self::assertStringContainsString(
+            'title="' . gmdate('M d H:i', $bump) . '"',
+            $catalogPage,
+        );
 
         $config['generation_strategies'] = ['strategy_smart_build'];
         \catalog_build('all', $settings, 'b');
@@ -177,6 +197,9 @@ final class ThemeIntegrationTest extends TestCase
         global $pdo;
 
         require_once 'templates/themes/catalog/theme.php';
+        $original = query('SELECT `files`, `num_files` FROM ``posts_b`` WHERE `id` = 1')
+            ->fetch(\PDO::FETCH_ASSOC);
+        self::assertIsArray($original);
         $files = json_encode([
             ['file' => 'deleted', 'thumb' => 'deleted'],
             ['file' => 'second.png', 'thumb' => 'second-thumb.png'],
@@ -193,7 +216,11 @@ final class ThemeIntegrationTest extends TestCase
             ], 'b', true);
             self::assertStringContainsString('second-thumb.png', $page);
         } finally {
-            query("UPDATE ``posts_b`` SET `files` = NULL, `num_files` = 0 WHERE `id` = 1");
+            query(sprintf(
+                "UPDATE ``posts_b`` SET `files` = %s, `num_files` = %d WHERE `id` = 1",
+                $original['files'] === null ? 'NULL' : $pdo->quote($original['files']),
+                (int) $original['num_files'],
+            ));
         }
     }
 }

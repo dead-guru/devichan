@@ -94,4 +94,30 @@ final class PublicUiCest
         $I->dontSeeElement('[data-vichan-thread-files] [role="alert"]');
     }
 
+    public function expandedImagesKeepReadableViewportSpacing(BrowserTester $I): void
+    {
+        $I->amOnPage('/b/res/1.html');
+        $spacing = $I->executeJS(<<<'JS'
+            const image = document.createElement('img');
+            image.className = 'full-image';
+            document.body.appendChild(image);
+            const style = getComputedStyle(image);
+            return {
+                top: style.marginTop,
+                right: style.marginRight,
+                bottom: style.marginBottom,
+                left: style.marginLeft,
+                maxWidth: style.maxWidth,
+            };
+            JS);
+
+        $I->assertEquals([
+            'top' => '5px',
+            'right' => '20px',
+            'bottom' => '10px',
+            'left' => '20px',
+            'maxWidth' => 'calc(100% - 40px)',
+        ], $spacing);
+    }
+
 }

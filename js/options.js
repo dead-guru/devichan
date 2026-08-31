@@ -98,7 +98,7 @@
     options_handler = $("<div id='options_handler'></div>").css("display", "none");
     options_background = $("<div id='options_background'></div>").on("click", Options.hide).appendTo(options_handler);
     options_div = $("<div id='options_div'></div>").appendTo(options_handler);
-    options_close = $("<a id='options_close' href='javascript:void(0)'><i class='fa fa-times'></i></div>")
+    options_close = $("<a id='options_close' href='javascript:void(0)'><i class='fa fa-times'></i></a>")
         .on("click", Options.hide).appendTo(options_div);
     options_tablist = $("<div id='options_tablist'></div>").appendTo(options_div);
 
