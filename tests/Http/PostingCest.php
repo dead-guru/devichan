@@ -188,7 +188,7 @@ final class PostingCest
             'embed' => 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
             'post' => $postButton,
         ]);
-        $I->seeResponseCodeIs(500);
+        $I->seeResponseCodeIs(400);
         $I->see('Flood detected; Post discarded.');
     }
 }

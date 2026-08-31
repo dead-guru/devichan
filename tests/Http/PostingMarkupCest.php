@@ -81,7 +81,7 @@ final class PostingMarkupCest
             'post' => $postButton,
         ]);
 
-        $I->seeResponseCodeIs(500);
+        $I->seeResponseCodeIs(400);
         $I->see('E2E filter rejection');
         $I->seeInDatabase('ip_notes', [
             'mod' => -1,

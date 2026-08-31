@@ -138,6 +138,10 @@ services:
 
   caddy:
     image: caddy:2-alpine
+    networks:
+      default:
+        aliases:
+          - external-caddy
     volumes:
       - app_data:/var/www:ro
       - ./caddy/Caddyfile:/etc/caddy/Caddyfile:ro

@@ -48,6 +48,16 @@ VALUES
     (1, NULL, 'Seed thread', 'Anonymous', 'Seed public thread', 'Seed public thread', UNIX_TIMESTAMP() - 120, UNIX_TIMESTAMP() - 60, 'postpass', '127.0.0.10', 0, 0, 0, 0, 'seed-thread'),
     (2, 1, NULL, 'Anonymous', 'Seed reply >>1', 'Seed reply >>1', UNIX_TIMESTAMP() - 60, NULL, 'replypass', '127.0.0.11', 0, 0, 0, 0, NULL);
 
+UPDATE `posts_b`
+SET `files` = '[{"name":"seed-op.jpg","filename":"seed-op.jpg","file":"1700000000001.jpg","thumb":"1700000000001.png","size":12345,"width":640,"height":480,"thumbwidth":160,"thumbheight":120}]',
+    `num_files` = 1
+WHERE `id` = 1;
+
+UPDATE `posts_b`
+SET `files` = '[{"name":"seed-reply.png","filename":"seed-reply.png","file":"1700000000002.png","thumb":"1700000000002.png","size":6789,"width":480,"height":640,"thumbwidth":90,"thumbheight":120},{"name":"seed-notes.txt","filename":"seed-notes.txt","file":"1700000000003.txt","thumb":"file","size":24}]',
+    `num_files` = 2
+WHERE `id` = 2;
+
 INSERT INTO `posts_sec`
     (`id`, `thread`, `subject`, `name`, `body`, `body_nomarkup`, `time`, `bump`, `password`, `ip`, `sticky`, `locked`, `cycle`, `sage`, `slug`)
 VALUES

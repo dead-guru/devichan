@@ -85,6 +85,7 @@ $config['syslog'] = false;
 $config['referer_match'] = false;
 $config['minify_css'] = false;
 $config['purge'] = [];
+$config['additional_javascript'][] = 'js/threadfilelist.js';
 
 $config['captcha']['enabled'] = false;
 $config['new_thread_capt'] = false;

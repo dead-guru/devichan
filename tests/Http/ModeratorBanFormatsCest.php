@@ -65,7 +65,7 @@ final class ModeratorBanFormatsCest
             'new_ban' => 'New Ban',
         ]);
 
-        $I->seeResponseCodeIs(500);
+        $I->seeResponseCodeIs(400);
         $I->seeInSource('<title>Error</title>');
         $I->dontSeeInSource('Caught fatal error');
         $I->dontSeeInDatabase('bans', ['reason' => 'E2E invalid range']);

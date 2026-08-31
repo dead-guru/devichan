@@ -209,7 +209,8 @@ img.banner, img.board_image {
 }
 
 .full-image {
-    max-width: 98%
+    max-width: calc(100% - 40px);
+    margin: 5px 20px 10px;
 }
 
 div.post .post-image {

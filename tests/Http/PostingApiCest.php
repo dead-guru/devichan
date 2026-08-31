@@ -78,7 +78,7 @@ final class PostingApiCest
             'password' => 'e2e-invalid',
             'embed' => 'https://invalid.example/video',
         ]);
-        $I->seeResponseCodeIs(500);
+        $I->seeResponseCodeIs(400);
         $I->assertStringContainsString('<title>Error</title>', $I->grabPageSource());
         $I->dontSeeInDatabase('posts_b', ['body_nomarkup' => 'E2E invalid embed']);
 
@@ -88,7 +88,7 @@ final class PostingApiCest
             'delete_1' => 'on',
             'delete' => 'Delete',
         ]);
-        $I->seeResponseCodeIs(500);
+        $I->seeResponseCodeIs(400);
         $I->assertStringContainsString('<title>Error</title>', $I->grabPageSource());
         $I->seeInDatabase('posts_b', ['id' => 1, 'password' => 'postpass']);
     }
