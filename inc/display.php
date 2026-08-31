@@ -103,7 +103,10 @@ function error($message, $priority = true, $debug_stuff = false) {
 			'error' => $message
 		)));
 	} else {
-		header($_SERVER['SERVER_PROTOCOL'] . ' 500 Internal Server Error', true, 500);
+		$status = http_response_code();
+		if ($status < 400 || $status > 599)
+			$status = 500;
+		http_response_code($status);
         die(require '500.php');
 	}
 
@@ -467,4 +470,3 @@ class Thread {
 		return $built;
 	}
 };
-
