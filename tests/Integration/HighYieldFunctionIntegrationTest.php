@@ -171,12 +171,7 @@ final class HighYieldFunctionIntegrationTest extends TestCase
             ['slug' => 'seed-thread'],
         ));
 
-        try {
-            markdown('**safe**');
-            self::fail('The missing Parsedown dependency should expose the current markdown failure.');
-        } catch (\Error $error) {
-            self::assertStringContainsString('Parsedown', $error->getMessage());
-        }
+        self::assertSame('<p><strong>safe</strong></p>', markdown('**safe**'));
         self::assertStringNotContainsString('<script', purify_html('<script>x</script><b>safe</b>'));
         self::assertSame(['https://example.com/path'], get_urls('See https://example.com/path.'));
         self::assertSame('hello', base32_decode(base32_encode('hello')));
