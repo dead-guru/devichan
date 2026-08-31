@@ -12,9 +12,9 @@ $board = $argv[1];
 $q = query(sprintf("SELECT `id`, `bump`, `time` FROM ``posts_%s``
                     WHERE `thread` IS NULL", $board));
 while ($val = $q->fetch()) {
-        $lc = prepare(sprintf('SELECT MAX(`time`) AS `aq` FROM ``posts_%s``
+	$lc = prepare(sprintf('SELECT MAX(`time`) AS `aq` FROM ``posts_%s``
                                WHERE ((`thread` = :thread and
-			       `email` != "sage" ) OR `id` = :thread', $board));
+			       `email` != "sage" ) OR `id` = :thread)', $board));
 		
 	$lc->bindValue(":thread", $val['id']);
 	$lc->execute();
@@ -25,6 +25,7 @@ while ($val = $q->fetch()) {
 	                                  WHERE `id`=:id", $board));
 		$query->bindValue(":bump", $f['aq']);
 		$query->bindValue(":id", $val['id']);
+		$query->execute() or error(db_error($query));
                 echo("Thread $val[id] - to be $val[bump] -> $f[aq]\n");
         }
 	else {
