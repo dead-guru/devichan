@@ -62,6 +62,8 @@ favicon.ico
 /static/spoiler.png
 
 /vendor/
+/.composer-cache/
+/e2eclean/
 
 .idea
 .vscode

@@ -142,6 +142,13 @@ To get a local copy up and running follow these simple example steps.
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
+## Tests
+
+Run the full test suite:
+
+`make e2e`
+
+Coverage: `tests/_output/coverage/index.html`
 
 <!-- Upgrade details -->
 ## Upgrade

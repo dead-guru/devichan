@@ -1,0 +1,3 @@
+/_output/
+/Support/_generated/*
+!/Support/_generated/.gitignore

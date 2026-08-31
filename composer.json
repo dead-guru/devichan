@@ -32,19 +32,6 @@
   "autoload": {
     "classmap": [
       "inc/"
-    ],
-    "files": [
-      "inc/bootstrap.php",
-      "inc/display.php",
-      "inc/template.php",
-      "inc/database.php",
-      "inc/events.php",
-      "inc/api.php",
-      "inc/mod/auth.php",
-      "inc/lock.php",
-      "inc/queue.php",
-      "inc/polyfill.php",
-      "inc/functions.php"
     ]
   },
   "license": "Tinyboard + vichan",
@@ -71,6 +58,19 @@
     }
   ],
   "require-dev": {
+    "codeception/c3": "^2.9",
+    "codeception/codeception": "^5.2",
+    "codeception/module-asserts": "^3.1",
+    "codeception/module-db": "^3.2",
+    "codeception/module-phpbrowser": "^3.0",
+    "codeception/module-webdriver": "^4.0",
+    "phpunit/phpunit": "^10.5",
     "symfony/var-dumper": "^6.2"
+  },
+  "config": {
+    "allow-plugins": {
+      "codeception/c3": true
+    },
+    "sort-packages": true
   }
 }

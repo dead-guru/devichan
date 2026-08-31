@@ -1,0 +1,25 @@
+actor: BrowserTester
+suite_namespace: DevichanE2E\Browser
+modules:
+    enabled:
+        - Asserts
+        - WebDriver:
+            url: '%E2E_BASE_URL%'
+            host: '%E2E_WEBDRIVER_HOST%'
+            port: 4444
+            browser: chrome
+            window_size: 1440x1000
+            debug_log_entries: 100
+            log_js_errors: true
+            capabilities:
+                goog:chromeOptions:
+                    args:
+                        - '--headless=new'
+                        - '--no-sandbox'
+                        - '--disable-dev-shm-usage'
+        - Db:
+            dsn: '%E2E_DB_DSN%'
+            user: '%E2E_DB_USER%'
+            password: '%E2E_DB_PASSWORD%'
+            cleanup: false
+            populate: false

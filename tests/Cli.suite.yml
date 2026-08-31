@@ -1,0 +1,4 @@
+actor: CliTester
+modules:
+    enabled:
+        - Asserts

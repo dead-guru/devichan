@@ -1,0 +1,8 @@
+actor: SmartBuildTester
+suite_namespace: DevichanE2E\SmartBuild
+modules:
+    enabled:
+        - Asserts
+        - PhpBrowser:
+            url: '%E2E_BASE_URL%'
+            timeout: 20
