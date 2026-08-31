@@ -3024,13 +3024,11 @@ function uncloak_ip($ip) {
 	if (substr($ip, 0, strlen($config['ipcrypt_prefix']) + 1) === $config['ipcrypt_prefix'].':') {
 		$plaintext = openssl_decrypt(base32_decode($juice), 'rc4-40', $ipcrypt_key, OPENSSL_RAW_DATA);
 
-		if ($plaintext === false || strlen($plaintext) == 0)
+		if ($plaintext === false || !in_array(strlen($plaintext), array(4, 16), true))
 			return '#ERROR';
 
-		if (strlen($ip) >= 16)
-			return inet_ntop($plaintext);
-		else
-			return long2ip(unpack('N', $plaintext)[1]);
+		$address = inet_ntop($plaintext);
+		return $address === false ? '#ERROR' : $address;
 	}
 
 	return '#ERROR';
