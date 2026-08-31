@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "bcb9b2b0d926a6c6b8845329cdc95bd1",
+    "content-hash": "befce1ef59c27134fd1d1ae6688d7a1c",
     "packages": [
         {
             "name": "bepsvpt/blurhash",
@@ -127,6 +127,53 @@
             },
             "abandoned": true,
             "time": "2020-05-30T10:05:48+00:00"
+        },
+        {
+            "name": "dead-guru/latex2mathml-php",
+            "version": "v1.5.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/dead-guru/latex2mathml-php.git",
+                "reference": "0749731467b5b6a788a4d9190ac7ab60f620449a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/dead-guru/latex2mathml-php/zipball/0749731467b5b6a788a4d9190ac7ab60f620449a",
+                "reference": "0749731467b5b6a788a4d9190ac7ab60f620449a",
+                "shasum": ""
+            },
+            "require": {
+                "ext-dom": "*",
+                "php": ">=8.1"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^10.5 || ^11.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Latex2MathML\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "snorky22",
+                    "email": "chaplains.francois@orange.fr"
+                }
+            ],
+            "description": "Pure PHP library for LaTeX to MathML and OMML conversion",
+            "keywords": [
+                "converter",
+                "latex",
+                "mathml",
+                "omml",
+                "php",
+                "word"
+            ],
+            "time": "2026-08-26T16:17:20+00:00"
         },
         {
             "name": "doctrine/inflector",
@@ -2192,7 +2239,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {},
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
@@ -2205,6 +2252,6 @@
         "ext-gettext": "*",
         "ext-imagick": "*"
     },
-    "platform-dev": [],
-    "plugin-api-version": "2.3.0"
+    "platform-dev": {},
+    "plugin-api-version": "2.9.0"
 }
