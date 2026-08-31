@@ -46,7 +46,7 @@ final class ModeratorConfigEditorCest
             'code' => '<?php this is invalid php',
             'save' => 'Save changes',
         ]);
-        $I->seeResponseCodeIs(500);
+        $I->seeResponseCodeIs(400);
         $I->see('syntax');
 
         $I->amOnPage('/mod.php?/config/b');

@@ -16,6 +16,7 @@ final class PostingBranchMatrixCest
     public function _after(HttpTester $I): void
     {
         $I->deleteHeader('X-E2E-Post-Case');
+        $I->deleteHeader('CF-Connecting-IP');
         $I->resetCookie('e2e_post_case');
         foreach ($this->generatedImages as $image) {
             if (is_file($image)) {
@@ -50,7 +51,7 @@ final class PostingBranchMatrixCest
             ],
         ] as $request) {
             $I->sendAjaxPostRequest('/post.php', $request);
-            $I->seeResponseCodeIs(500);
+            $I->seeResponseCodeIs(400);
             $I->assertStringContainsString('Board is locked', $I->grabPageSource());
         }
     }
@@ -65,7 +66,7 @@ final class PostingBranchMatrixCest
             'delete_' . $thread => 'on',
             'delete' => 'Delete',
         ]);
-        $I->seeResponseCodeIs(500);
+        $I->seeResponseCodeIs(400);
         $I->seeInDatabase('posts_b', ['id' => $thread]);
 
         $this->setCase($I, 'report-limit');
@@ -76,7 +77,7 @@ final class PostingBranchMatrixCest
             'delete_' . $thread => 'on',
             'report' => 'Submit',
         ]);
-        $I->seeResponseCodeIs(500);
+        $I->seeResponseCodeIs(400);
 
         $this->setCase($I, 'report-captcha');
         $I->sendAjaxPostRequest('/post.php', [
@@ -85,7 +86,7 @@ final class PostingBranchMatrixCest
             'delete_1' => 'on',
             'report' => 'Submit',
         ]);
-        $I->seeResponseCodeIs(500);
+        $I->seeResponseCodeIs(400);
     }
 
     public function disabledFieldsAreForcedToSafeValues(HttpTester $I): void
@@ -121,7 +122,7 @@ final class PostingBranchMatrixCest
             'board' => 'b',
             'body' => 'E2E requires an image',
         ]);
-        $I->seeResponseCodeIs(500);
+        $I->seeResponseCodeIs(400);
 
         $this->setCase($I, 'force-body');
         $I->sendAjaxPostRequest('/post.php', [
@@ -130,7 +131,7 @@ final class PostingBranchMatrixCest
             'body' => " \n\t ",
             'embed' => 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
         ]);
-        $I->seeResponseCodeIs(500);
+        $I->seeResponseCodeIs(400);
 
         $I->setCookie('e2e_upload_by_url', '1');
         foreach (['file:///etc/passwd', 'http://caddy/file.e2e-unknown'] as $url) {
@@ -140,7 +141,7 @@ final class PostingBranchMatrixCest
                 'body' => 'E2E invalid URL upload',
                 'file_url' => $url,
             ]);
-            $I->seeResponseCodeIs(500);
+            $I->seeResponseCodeIs(400);
         }
 
         $I->sendAjaxPostRequest('/post.php', [
@@ -150,7 +151,7 @@ final class PostingBranchMatrixCest
             'user_flag' => 'missing-flag',
             'embed' => 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
         ]);
-        $I->seeResponseCodeIs(500);
+        $I->seeResponseCodeIs(400);
     }
 
     public function uploadedImagesExerciseSizeCountMethodAndExtensionPolicies(HttpTester $I): void
@@ -161,9 +162,10 @@ final class PostingBranchMatrixCest
             'tiny-file-limit',
             'zero-image-limit',
             'restricted-op-extension',
-        ] as $case) {
+        ] as $index => $case) {
             $filename = $this->createPng($I);
             $this->setCase($I, $case);
+            $I->haveHttpHeader('CF-Connecting-IP', '198.51.100.' . (100 + $index));
             $I->amOnPage('/b/');
             $I->attachFile('form[name="post"] input[name="file"]', $filename);
             $I->fillField('form[name="post"] textarea[name="body"]', 'E2E upload branch ' . $case);
@@ -173,7 +175,7 @@ final class PostingBranchMatrixCest
                 $I->seeResponseCodeIs(200);
                 $I->seeInDatabase('posts_b', ['body_nomarkup' => 'E2E upload branch ' . $case]);
             } else {
-                $I->seeResponseCodeIs(500);
+                $I->seeResponseCodeIs(400);
                 $I->dontSeeInDatabase('posts_b', ['body_nomarkup' => 'E2E upload branch ' . $case]);
             }
         }

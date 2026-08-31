@@ -25,7 +25,7 @@ final class PostingThreadRulesCest
             'password' => 'e2e-locked',
         ]);
 
-        $I->seeResponseCodeIs(500);
+        $I->seeResponseCodeIs(400);
         $I->assertStringContainsString('Thread locked. You may not reply at this time.', $I->grabPageSource());
         $I->dontSeeInDatabase('posts_b', ['body_nomarkup' => $body]);
     }
@@ -96,7 +96,7 @@ final class PostingThreadRulesCest
             'password' => 'e2e-limit',
         ]);
 
-        $I->seeResponseCodeIs(500);
+        $I->seeResponseCodeIs(400);
         $I->assertStringContainsString('Thread has reached its maximum reply limit.', $I->grabPageSource());
         $I->dontSeeInDatabase('posts_b', ['body_nomarkup' => $body]);
     }

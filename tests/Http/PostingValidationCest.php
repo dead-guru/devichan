@@ -11,18 +11,18 @@ final class PostingValidationCest
     public function malformedDeletionAndReportRequestsAreRejected(HttpTester $I): void
     {
         $invalidRequests = [
-            ['delete' => 'Delete'],
-            ['delete' => 'Delete', 'board' => 'b', 'password' => ''],
-            ['delete' => 'Delete', 'board' => 'missing', 'password' => 'e2e'],
-            ['delete' => 'Delete', 'board' => 'b', 'password' => 'e2e'],
-            ['report' => 'Submit'],
-            ['report' => 'Submit', 'board' => 'missing', 'reason' => 'E2E'],
-            ['report' => 'Submit', 'board' => 'b', 'reason' => 'E2E'],
+            [['delete' => 'Delete'], 400],
+            [['delete' => 'Delete', 'board' => 'b', 'password' => ''], 400],
+            [['delete' => 'Delete', 'board' => 'missing', 'password' => 'e2e'], 404],
+            [['delete' => 'Delete', 'board' => 'b', 'password' => 'e2e'], 400],
+            [['report' => 'Submit'], 400],
+            [['report' => 'Submit', 'board' => 'missing', 'reason' => 'E2E'], 404],
+            [['report' => 'Submit', 'board' => 'b', 'reason' => 'E2E'], 400],
         ];
 
-        foreach ($invalidRequests as $request) {
+        foreach ($invalidRequests as [$request, $status]) {
             $I->sendAjaxPostRequest('/post.php', $request);
-            $I->seeResponseCodeIs(500);
+            $I->seeResponseCodeIs($status);
             $I->assertStringContainsString('<title>Error</title>', $I->grabPageSource());
         }
     }
@@ -30,21 +30,21 @@ final class PostingValidationCest
     public function malformedPostRequestsAreRejected(HttpTester $I): void
     {
         $I->sendAjaxPostRequest('/post.php', ['post' => 'New Topic']);
-        $I->seeResponseCodeIs(500);
+        $I->seeResponseCodeIs(400);
 
         $I->sendAjaxPostRequest('/post.php', [
             'post' => 'New Topic',
             'board' => 'missing',
             'body' => 'E2E unknown board',
         ]);
-        $I->seeResponseCodeIs(500);
+        $I->seeResponseCodeIs(404);
 
         $I->sendAjaxPostRequest('/post.php', [
             'post' => 'not-the-real-button',
             'board' => 'b',
             'body' => 'E2E invalid submit button',
         ]);
-        $I->seeResponseCodeIs(500);
+        $I->seeResponseCodeIs(400);
 
         $I->sendAjaxPostRequest('/post.php', [
             'api' => 'e2e-api-key',
@@ -52,10 +52,10 @@ final class PostingValidationCest
             'thread' => '999999',
             'body' => 'E2E missing thread',
         ]);
-        $I->seeResponseCodeIs(500);
+        $I->seeResponseCodeIs(404);
 
         $I->amOnPage('/post.php');
-        $I->seeResponseCodeIs(500);
+        $I->seeResponseCodeIs(400);
     }
 
     public function oversizedPostFieldsAreRejected(HttpTester $I): void
@@ -76,7 +76,7 @@ final class PostingValidationCest
                 'embed' => 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
             ], $fields);
             $I->sendAjaxPostRequest('/post.php', $request);
-            $I->seeResponseCodeIs(500);
+            $I->seeResponseCodeIs(400);
             $I->assertStringContainsString('<title>Error</title>', $I->grabPageSource());
         }
     }
@@ -96,7 +96,7 @@ final class PostingValidationCest
         $I->fillField('form[name="post"] input[name="password"]', 'e2e-invalid-image');
         $I->click('form[name="post"] input[name="post"]');
 
-        $I->seeResponseCodeIs(500);
+        $I->seeResponseCodeIs(400);
         $I->seeInSource('<title>Error</title>');
         $I->dontSeeInDatabase('posts_b', [
             'body_nomarkup' => 'E2E invalid image payload',

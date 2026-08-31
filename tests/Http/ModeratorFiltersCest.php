@@ -37,7 +37,7 @@ final class ModeratorFiltersCest
             'e2e_filter_case' => 'fields',
         ]);
 
-        $I->seeResponseCodeIs(500);
+        $I->seeResponseCodeIs(400);
         $I->assertStringContainsString('E2E compound filter rejection', $I->grabPageSource());
         $I->dontSeeInDatabase('posts_b', [
             'body_nomarkup' => $body,
@@ -62,7 +62,7 @@ final class ModeratorFiltersCest
         $I->fillField('form[name="post"] input[name="password"]', 'e2e-file-filter');
         $I->click('form[name="post"] input[name="post"]');
 
-        $I->seeResponseCodeIs(500);
+        $I->seeResponseCodeIs(400);
         $I->see('E2E file filter rejection');
         $I->dontSeeInDatabase('posts_b', ['body_nomarkup' => 'E2E file filter']);
     }
@@ -115,7 +115,7 @@ final class ModeratorFiltersCest
             if ($attempt === 'first') {
                 $I->seeResponseCodeIs(200);
             } else {
-                $I->seeResponseCodeIs(500);
+                $I->seeResponseCodeIs(400);
                 $I->assertStringContainsString(
                     'E2E flood filter rejection',
                     $I->grabPageSource(),

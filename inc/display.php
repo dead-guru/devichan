@@ -97,43 +97,36 @@ function error($message, $priority = true, $debug_stuff = false) {
 		$debug_stuff['backtrace'] = debug_backtrace();
 	}
 
+	$status = http_response_code();
+	if ($status < 400 || $status > 599) {
+		if (isset($db_error)) {
+			$status = 500;
+		} elseif (in_array($message, array(
+			$config['error']['404'],
+			$config['error']['noboard'],
+			$config['error']['nonexistant'],
+			$config['error']['invalidpost'],
+		), true)) {
+			$status = 404;
+		} elseif (in_array($message, array(
+			$config['error']['notamod'],
+			$config['error']['noaccess'],
+		), true)) {
+			$status = 403;
+		} else {
+			$status = 400;
+		}
+	}
+	http_response_code($status);
+
 	if (isset($_POST['json_response'])) {
-		header('Content-Type: text/json; charset=utf-8');
+		header('Content-Type: application/json; charset=utf-8');
 		die(json_encode(array(
 			'error' => $message
 		)));
-	} else {
-		$status = http_response_code();
-		if ($status < 400 || $status > 599)
-			$status = 500;
-		http_response_code($status);
-        die(require '500.php');
 	}
 
-	$pw = $config['db']['password'];
-	$debug_callback = function($item) use (&$debug_callback, $pw) {
-		if (is_array($item)) {
-			$item = array_filter($item, $debug_callback);
-		}
-		return ($item !== $pw || !$pw);
-	};
-
-
-	if ($debug_stuff)
-		$debug_stuff = array_filter($debug_stuff, $debug_callback);
-
-	die(Element($config['file_page_template'], array(
-		'config' => $config,
-		'title' => _('Error'),
-		'subtitle' => _('An error has occured.'),
-		'body' => Element($config['file_error'], array(
-			'config' => $config,
-			'message' => $message,
-			'mod' => $mod,
-			'board' => isset($board) ? $board : false,
-			'debug' => $config['debug'] ? (is_array($debug_stuff) ? str_replace("\n", '&#10;', utf8tohtml(print_r($debug_stuff, true))) : utf8tohtml($debug_stuff)) : null
-		))
-	)));
+	die(require '500.php');
 }
 
 function loginForm($error=false, $username=false, $redirect=false) {

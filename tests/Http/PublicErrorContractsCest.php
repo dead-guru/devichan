@@ -14,8 +14,23 @@ final class PublicErrorContractsCest
     public function unknownSecretBoardIsRejected(HttpTester $I): void
     {
         $I->amOnPage('/auth/login?board=missing');
-        $I->seeResponseCodeIs(500);
+        $I->seeResponseCodeIs(404);
         $I->seeElement('body');
+    }
+
+    public function jsonErrorsUseTheMappedStatusAndBody(HttpTester $I): void
+    {
+        $I->sendAjaxPostRequest('/post.php', [
+            'post' => 'New Topic',
+            'json_response' => '1',
+        ]);
+
+        $I->seeResponseCodeIs(400);
+        $I->assertIsArray(json_decode(
+            $I->grabPageSource(),
+            true,
+            flags: JSON_THROW_ON_ERROR,
+        ));
     }
 
     public function incompleteReportRequestReturnsBadRequest(HttpTester $I): void
@@ -37,6 +52,17 @@ final class PublicErrorContractsCest
         $I->amOnPage('/log/?board=missing');
         $I->seeResponseCodeIs(404);
         $I->seeElement('body');
+    }
+
+    public function externalThreadApiDoesNotExposeSecretBoards(HttpTester $I): void
+    {
+        $I->amOnPage('/js/outside/thread.php?board=sec&thread=1');
+        $I->seeResponseCodeIs(404);
+        $I->assertIsArray(json_decode(
+            $I->grabPageSource(),
+            true,
+            flags: JSON_THROW_ON_ERROR,
+        ));
     }
 
     public function searchHandlesEmptyBroadAndMissingResults(HttpTester $I): void
