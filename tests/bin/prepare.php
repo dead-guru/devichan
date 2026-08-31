@@ -52,11 +52,38 @@ if (!$databaseReady) {
 
 require 'inc/bootstrap.php';
 
+function writeFixtureImage(string $path, int $width, int $height, string $format): void
+{
+    $image = imagecreatetruecolor($width, $height);
+    imagefill($image, 0, 0, imagecolorallocate($image, 64, 128, 192));
+    $written = $format === 'jpg'
+        ? imagejpeg($image, $path, 90)
+        : imagepng($image, $path);
+    imagedestroy($image);
+
+    if (!$written) {
+        throw new RuntimeException("Unable to create fixture image {$path}.");
+    }
+}
+
 buildJavascript();
 
 foreach (listBoards(true) as $boardName) {
     if (!openBoard($boardName)) {
         throw new RuntimeException("Unable to open /{$boardName}/");
+    }
+
+    if ($boardName === 'b') {
+        writeFixtureImage($board['dir'] . $config['dir']['img'] . '1700000000001.jpg', 640, 480, 'jpg');
+        writeFixtureImage($board['dir'] . $config['dir']['thumb'] . '1700000000001.png', 160, 120, 'png');
+        writeFixtureImage($board['dir'] . $config['dir']['img'] . '1700000000002.png', 480, 640, 'png');
+        writeFixtureImage($board['dir'] . $config['dir']['thumb'] . '1700000000002.png', 90, 120, 'png');
+        if (file_put_contents(
+            $board['dir'] . $config['dir']['img'] . '1700000000003.txt',
+            "Thread gallery fixture\n",
+        ) === false) {
+            throw new RuntimeException('Unable to create the text-file fixture.');
+        }
     }
 
     $config['try_smarter'] = false;
