@@ -252,6 +252,9 @@ class Bans {
 		}
 		
 		$range = self::parse_range($mask);
+		if ($range === false)
+			error(_('Invalid IP address or range.'));
+
 		$mask = self::range_to_string($range);
 		$cloaked_mask = cloak_mask($mask);
 		
