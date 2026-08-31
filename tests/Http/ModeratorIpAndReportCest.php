@@ -82,7 +82,7 @@ final class ModeratorIpAndReportCest
     private function followConfirmation(HttpTester $I): void
     {
         $this->assertHealthyPage($I);
-        $confirmUrl = $I->grabAttributeFrom('a[href*="/mod.php?/"]', 'href');
+        $confirmUrl = $I->grabAttributeFrom('a[href^="?/IP/"][href*="/remove_"]', 'href');
         $I->amOnPage($confirmUrl);
         $this->assertHealthyPage($I);
     }
