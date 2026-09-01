@@ -120,38 +120,58 @@ final class ModeratorBoardAndPostCest
     public function administratorCanSpoilerAndDeleteAnUploadedFile(HttpTester $I): void
     {
         $this->loginAsAdmin($I);
-        $body = 'E2E file moderation thread';
+        $threadBody = 'E2E file moderation thread';
 
         $I->amOnPage('/mod.php?/b/');
+        $postButton = $I->grabAttributeFrom(
+            'form[name="post"] input[name="post"]',
+            'value',
+        );
+        $I->submitForm('form[name="post"]', [
+            'board' => 'b',
+            'body' => $threadBody,
+            'password' => 'e2e-file-thread',
+            'embed' => 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+            'post' => $postButton,
+        ]);
+        $this->assertHealthyPage($I);
+        $threadId = (int) $I->grabFromDatabase('posts_b', 'id', [
+            'body_nomarkup' => $threadBody,
+        ]);
+        $I->assertGreaterThan(2, $threadId);
+
+        $replyBody = 'E2E file moderation reply';
+        $I->amOnPage('/mod.php?/b/res/' . $threadId . '.html');
         $I->attachFile(
             'form[name="post"] input[name="file"]',
             '../../../static/banners/default.png',
         );
-        $I->fillField('form[name="post"] textarea[name="body"]', $body);
-        $I->fillField('form[name="post"] input[name="password"]', 'e2e-file');
+        $I->fillField('form[name="post"] textarea[name="body"]', $replyBody);
+        $I->fillField('form[name="post"] input[name="password"]', 'e2e-file-reply');
         $I->click('form[name="post"] input[name="post"]');
         $this->assertHealthyPage($I);
-        $threadId = (int) $I->grabFromDatabase('posts_b', 'id', [
-            'body_nomarkup' => $body,
+        $replyId = (int) $I->grabFromDatabase('posts_b', 'id', [
+            'body_nomarkup' => $replyBody,
         ]);
-        $I->assertGreaterThan(2, $threadId);
+        $I->assertGreaterThan($threadId, $replyId);
 
         $I->amOnPage('/mod.php?/b/res/' . $threadId . '.html');
         $spoilerUrl = $this->grabConfirmedAction(
             $I,
-            "b/spoiler/{$threadId}/0",
+            "b/spoiler/{$replyId}/0",
         );
         $I->amOnPage($spoilerUrl);
-        $files = (string) $I->grabFromDatabase('posts_b', 'files', ['id' => $threadId]);
+        $files = (string) $I->grabFromDatabase('posts_b', 'files', ['id' => $replyId]);
         $I->assertStringContainsString('"thumb":"spoiler"', $files);
 
         $I->amOnPage('/mod.php?/b/res/' . $threadId . '.html');
         $deleteFileUrl = $this->grabConfirmedAction(
             $I,
-            "b/deletefile/{$threadId}/0",
+            "b/deletefile/{$replyId}/0",
         );
         $I->amOnPage($deleteFileUrl);
-        $files = (string) $I->grabFromDatabase('posts_b', 'files', ['id' => $threadId]);
+        $I->seeCurrentUrlEquals('/mod.php?/b/res/' . $threadId . '.html#' . $replyId);
+        $files = (string) $I->grabFromDatabase('posts_b', 'files', ['id' => $replyId]);
         $I->assertStringContainsString('"file":"deleted"', $files);
 
         $I->amOnPage('/mod.php?/b/res/' . $threadId . '.html');

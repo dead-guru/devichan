@@ -1695,7 +1695,7 @@ function mod_deletefile($board, $post, $file) {
 		error($config['error']['noaccess']);
 	
 	// Delete file
-	deleteFile($post, TRUE, $file);
+	$thread = deleteFile($post, TRUE, $file);
 	// Record the action
 	modLog("Deleted file from post #{$post}");
 	
@@ -1705,7 +1705,7 @@ function mod_deletefile($board, $post, $file) {
 	rebuildThemes('post-delete', $board);
 	
 	// Redirect
-	header('Location: ?/' . sprintf($config['board_path'], $board) . $config['file_index'], true, $config['redirect_http']);
+	header('Location: ?/' . sprintf($config['board_path'], $board) . $config['dir']['res'] . sprintf($config['file_page'], $thread) . '#' . $post, true, $config['redirect_http']);
 }
 
 function mod_spoiler_image($board, $post, $file) {

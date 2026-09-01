@@ -1145,13 +1145,14 @@ function deleteFile($id, $remove_entirely_if_already=true, $file=null) {
 	$query->execute() or error(db_error($query));
 	if (!$post = $query->fetch(PDO::FETCH_ASSOC))
 		error($config['error']['invalidpost']);
+	$thread = $post['thread'] ?: $id;
 	$files = json_decode($post['files']);
 	$file_to_delete = $file !== false ? $files[(int)$file] : (object)array('file' => false);
 
 	if (!$files[0]) error(_('That post has no files.'));
 
 	if ($files[0]->file == 'deleted' && $post['num_files'] == 1 && !$post['thread'])
-		return; // Can't delete OP's image completely.
+		return $thread; // Can't delete OP's image completely.
 
 	$query = prepare(sprintf("UPDATE ``posts_%s`` SET `files` = :file WHERE `id` = :id", $board['uri']));
 	if (($file && $file_to_delete->file == 'deleted') && $remove_entirely_if_already) {
@@ -1178,10 +1179,9 @@ function deleteFile($id, $remove_entirely_if_already=true, $file=null) {
 	$query->bindValue(':id', $id, PDO::PARAM_INT);
 	$query->execute() or error(db_error($query));
 
-	if ($post['thread'])
-		buildThread($post['thread']);
-	else
-		buildThread($id);
+	buildThread($thread);
+
+	return $thread;
 }
 
 // rebuild post (markup)
