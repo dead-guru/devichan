@@ -9,7 +9,7 @@
 (function($) {
     'use strict';
 
-    if (typeof active_page === 'undefined' || (active_page !== 'thread' && active_page !== 'index')) {
+    if (typeof active_page === 'undefined' || !['thread', 'index', 'page'].includes(active_page)) {
         return;
     }
 
@@ -1098,7 +1098,7 @@
             this.rulerTop = rulerTop;
             this.rulerLeft = rulerLeft;
             this.canvasHostEl = canvasHostEl;
-            this.dpr = window.devicePixelRatio || 1;
+            this.dpr = 1;
 
             this.overlayCtx = overlayCanvas.getContext('2d');
             this.overlayCtx.scale(this.dpr, this.dpr);
@@ -1339,7 +1339,8 @@
 
         _clientToCanvas(clientX, clientY) {
             const r = this.canvasHostEl.getBoundingClientRect();
-            return { x: clientX - r.left, y: clientY - r.top };
+            return { x: (clientX - r.left) * this.drawCanvas.width / r.width,
+                y: (clientY - r.top) * this.drawCanvas.height / r.height };
         }
 
         _isPointerOverCanvas(clientX, clientY) {
@@ -1407,7 +1408,8 @@
         constructor(canvas, state) {
             this.canvas = canvas;
             this.state = state;
-            this.dpr = window.devicePixelRatio || 1;
+            // Export dimensions are image pixels, independent of screen density.
+            this.dpr = 1;
             this.ctx = canvas.getContext('2d', { willReadFrequently: true });
             this.ctx.scale(this.dpr, this.dpr);
 
@@ -1596,6 +1598,8 @@
             this.tempCanvas.height = logicalH * this.dpr;
             this.ctx.scale(this.dpr, this.dpr);
             this.tempCtx.scale(this.dpr, this.dpr);
+            if (this.guides) this.guides.resize(logicalW, logicalH);
+            if (this.controllerUI) this.controllerUI.fitCanvas(logicalW, logicalH);
         }
 
         resize(w, h) {
@@ -1607,22 +1611,12 @@
                 this.ctx.fillRect(0, 0, w, h);
                 this.ctx.drawImage(img, 0, 0, w, h);
                 this.commitState();
-                if (this.guides) this.guides.resize(w, h);
             };
             img.src = data;
         }
 
         loadFromImage(img) {
-            let w = img.width, h = img.height;
-            const maxW = Math.min(window.innerWidth - 100, 1200);
-            const maxH = Math.min(window.innerHeight - 300, 800);
-
-            if (w > maxW || h > maxH) {
-                const scale = Math.min(maxW / w, maxH / h);
-                w = Math.floor(w * scale);
-                h = Math.floor(h * scale);
-            }
-
+            const w = img.naturalWidth, h = img.naturalHeight;
             this._applyDprToCanvas(w, h);
 
             this.ctx.fillStyle = '#ffffff';
@@ -1640,7 +1634,10 @@
         constructor(controller) {
             this.controller = controller;
             this.state = controller.state;
-            this.injectStyles();
+            if (!document.getElementById('paint-icons')) {
+                $('<link>', { id: 'paint-icons', rel: 'stylesheet',
+                    href: configRoot + 'stylesheets/fontawesome-6/css/all.min.css' }).appendTo('head');
+            }
         }
 
         open(imageUrl) {
@@ -1669,12 +1666,19 @@
             this.controller.engine.guides.renderGuides();
             this.controller.engine.clear();
             this.renderToolOptions();
+            this.fitCanvas(dims.w, dims.h);
 
             if (imageUrl) this.controller.loadImage(imageUrl);
         }
 
+        fitCanvas(w, h) {
+            const scale = Math.min(1, Math.max(100, window.innerWidth - 80) / (w + 20),
+                Math.max(100, window.innerHeight - 300) / (h + 20));
+            $('.paint-canvas-frame').css('zoom', scale);
+        }
+
         renderModal(dims) {
-            const dpr = window.devicePixelRatio || 1;
+            const dpr = 1;
             const html = `
                 <div class="paint-modal-overlay">
                     <div class="paint-modal">
@@ -1725,7 +1729,7 @@
                             </div>
                             <div class="paint-actions">
                                 <button class="paint-btn" data-action="cancel" title="Cancel"><i class="fa-solid fa-xmark"></i> Cancel</button>
-                                <button class="paint-btn paint-btn-done" data-action="done" title="Done"><i class="fa-solid fa-check"></i> Done</button>
+                                <button class="paint-btn paint-btn-done" data-action="done" title="Done"><i class="fa-solid fa-check"></i> <span>Done</span></button>
                             </div>
                         </div>
                     </div>
@@ -1827,14 +1831,13 @@
 
             const canvas = $('.paint-canvas')[0];
             const getCoords = (e) => {
-                // Returns CSS-pixel coordinates relative to canvas. The DrawingEngine
-                // applies ctx.scale(dpr, dpr) so all drawing happens in CSS-pixel space;
-                // returning logical coords keeps everything consistent.
+                // Convert the fitted preview back to image pixels.
                 const rect = canvas.getBoundingClientRect();
                 const clientX = e.touches ? e.touches[0].clientX : e.clientX;
                 const clientY = e.touches ? e.touches[0].clientY : e.clientY;
                 const t = (e.timeStamp != null) ? e.timeStamp : performance.now();
-                return { x: clientX - rect.left, y: clientY - rect.top, t };
+                return { x: (clientX - rect.left) * canvas.width / rect.width,
+                    y: (clientY - rect.top) * canvas.height / rect.height, t };
             };
 
             let isDrawing = false;
@@ -2029,76 +2032,7 @@
             $(document).off('.paint');
         }
 
-        injectStyles() {
-            if ($('#paint-tool-styles').length) return;
-            const css = `
-                .paint-modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 10000; display: flex; align-items: center; justify-content: center; }
-                .paint-modal { background: #f0f0f0; border: 1px solid #888; box-shadow: 2px 2px 10px rgba(0,0,0,0.3); display: flex; flex-direction: column; max-width: 95vw; max-height: 95vh; }
-                .paint-header { display: flex; justify-content: space-between; padding: 6px 10px; background: #e0e0e0; border-bottom: 1px solid #888; }
-                .paint-header h3 { margin: 0; font-size: 13px; color: #333; }
-                .paint-close { cursor: pointer; border: 1px solid #888; background: #ddd; width: 20px; padding: 0; margin: 0; }
-                .paint-toolbar { display: flex; flex-wrap: wrap; gap: 4px; padding: 4px; background: #d4d4d4; border-bottom: 1px solid #888; }
-                .paint-toolbar-group { display: flex; gap: 2px; padding: 0 6px; border-right: 1px solid #aaa; align-items: center; }
-                .paint-tool-options { display: flex; flex-wrap: wrap; gap: 4px; padding: 4px; background: #cdcdcd; border-bottom: 1px solid #888; min-height: 28px; box-sizing: content-box; }
-                .paint-btn { background: #e8e8e8; border: 1px solid #888; cursor: pointer; min-width: 28px; height: 28px; font-size: 12px; padding: 0 5px; margin: 0; display: inline-flex; align-items: center; justify-content: center; gap: 4px; }
-                .paint-btn i { font-size: 14px; line-height: 1; pointer-events: none; }
-                .paint-btn:hover { background: #d0d0d0; }
-                .paint-btn.active { background: #b0b0b0; border-color: #555; box-shadow: inset 1px 1px 2px rgba(0,0,0,0.2); }
-                .paint-btn-done { background: #90c090; font-weight: bold; }
-                .paint-btn.pulse { animation: paintBtnPulse 0.6s ease-in-out 2; }
-                @keyframes paintBtnPulse {
-                    0% { box-shadow: 0 0 0 0 rgba(255, 180, 0, 0.7); background: #ffd060; }
-                    50% { box-shadow: 0 0 0 6px rgba(255, 180, 0, 0); background: #ffe890; }
-                    100% { box-shadow: 0 0 0 0 rgba(255, 180, 0, 0); background: #e8e8e8; }
-                }
-                .paint-color-input { width: 28px; height: 28px; border: 1px solid #888; padding: 0; cursor: pointer; }
-                .paint-canvas-container { flex: 1; overflow: auto; background: #808080; padding: 10px; display: flex; justify-content: center; }
-                .paint-canvas { background: #fff; box-shadow: 2px 2px 5px rgba(0,0,0,0.3); cursor: crosshair; touch-action: none; }
-                .paint-footer { display: flex; justify-content: space-between; padding: 6px 10px; background: #d4d4d4; border-top: 1px solid #888; }
-                .paint-dim { width: 50px; text-align: center; }
-                .paint-lbl { font-size: 11px; min-width: 30px; text-align: right; }
-                .paint-range { width: 60px; height: 18px; cursor: pointer; }
-                .paint-edit-image { cursor: pointer; opacity: 0.6; } .paint-edit-image:hover { opacity: 1; }
-                .paint-canvas-frame {
-                    display: grid;
-                    grid-template-columns: 20px auto;
-                    grid-template-rows:    20px auto;
-                }
-                .paint-ruler-corner {
-                    background: #d4d4d4;
-                    border-right:  1px solid #888;
-                    border-bottom: 1px solid #888;
-                    grid-row: 1; grid-column: 1;
-                }
-                .paint-ruler-top {
-                    background: #ececec;
-                    border-bottom: 1px solid #888;
-                    cursor: row-resize;
-                    touch-action: none;
-                    grid-row: 1; grid-column: 2;
-                    display: block;
-                }
-                .paint-ruler-left {
-                    background: #ececec;
-                    border-right: 1px solid #888;
-                    cursor: col-resize;
-                    touch-action: none;
-                    grid-row: 2; grid-column: 1;
-                    display: block;
-                }
-                .paint-canvas-host {
-                    position: relative;
-                    grid-row: 2; grid-column: 2;
-                }
-                .paint-canvas-host > canvas { display: block; }
-                .paint-guide-overlay {
-                    position: absolute;
-                    top: 0; left: 0;
-                    pointer-events: none;
-                }
-            `;
-            $('<style id="paint-tool-styles">').text(css).appendTo('head');
-        }
+
     }
 
     class Integration {
@@ -2163,7 +2097,7 @@
                             const $post = $(el).closest('.post, .op');
                             if($post.length) pid = $post.attr('id').replace(/reply_|op_/, '') || $post.find('.post_no').last().text();
                             
-                            this.controller.open($imgLink.attr('href'), pid);
+                            this.controller.open($imgLink.attr('href'), { replyTo: pid });
                         });
                     $(el).append($btn);
                 });
@@ -2208,9 +2142,14 @@
             this.replyTo = null;
         }
 
-        open(url, postId) {
-            this.replyTo = postId;
+        open(url, opts = {}) {
+            if ($('.paint-modal-overlay').length) return;
+            this.replyTo = opts.replyTo;
+            this.onExport = opts.onExport;
             this.ui.open(url);
+            if (this.onExport) {
+                $('.paint-actions [data-action="done"]').attr('title', _('Apply')).find('span').text(_('Apply'));
+            }
         }
 
         close() {
@@ -2225,18 +2164,21 @@
         setTool(t) { if(this.engine) this.engine.setTool(t); }
 
         loadImage(url) {
+            const engine = this.engine;
             const img = new Image();
+            const done = $('.paint-actions [data-action="done"]');
+            done.prop('disabled', true);
             img.crossOrigin = 'anonymous';
             img.onload = () => {
-                const dims = this.engine.loadFromImage(img);
+                if (this.engine !== engine) return;
+                const dims = engine.loadFromImage(img);
                 $('#paint-w').val(dims.w);
                 $('#paint-h').val(dims.h);
+                done.prop('disabled', false);
             };
             img.onerror = () => {
-                const img2 = new Image();
-                img2.src = url; 
-                img2.onload = () => this.engine.loadFromImage(img2);
-            }
+                if (this.engine === engine) alert(_('Could not load image.'));
+            };
             img.src = url;
         }
 
@@ -2281,13 +2223,18 @@
         }
 
         done() {
-            this.engine.canvas.toBlob((blob) => {
-                this.integration.handleExport(blob, this.replyTo);
+            const engine = this.engine;
+            engine.canvas.toBlob((blob) => {
+                if (!blob || this.engine !== engine) return;
+                if (this.onExport) this.onExport(blob);
+                else this.integration.handleExport(blob, this.replyTo);
                 this.close();
             });
         }
     }
 
-    $(document).ready(() => new PaintController());
+    $(document).ready(() => {
+        if (!window.paintTool) window.paintTool = new PaintController();
+    });
 
 })(jQuery);

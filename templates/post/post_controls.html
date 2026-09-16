@@ -55,8 +55,8 @@
 	<a title="{% trans %}Make thread cycle{% endtrans %}" href="?/{{ secure_link(board.dir ~ 'cycle/' ~ post.id) }}">{{ config.mod.link_cycle }}</a>&nbsp;
 	{% endif %}
 {% endif %}
-{% if mod|hasPermission(config.mod.editpost, board.uri) %}
-	<a title="{% trans %}Edit post{% endtrans %}" href="?/{{ board.dir }}edit{% if config.mod.raw_html_default %}_raw{% endif %}/{{ post.id }}">{{ config.mod.link_editpost }}</a>&nbsp;
+{% if mod|hasPermission(config.mod.editpost, board.uri) or mod|hasPermission(config.mod.editfile, board.uri) %}
+	<a title="{% trans %}Edit post{% endtrans %}" href="?/{{ board.dir }}edit{% if config.mod.raw_html_default and mod|hasPermission(config.mod.rawhtml, board.uri) %}_raw{% endif %}/{{ post.id }}">{{ config.mod.link_editpost }}</a>&nbsp;
 {% endif %}
 </span>
 
