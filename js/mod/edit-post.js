@@ -1,5 +1,6 @@
 /* Attachment changes stay in the form until the post is saved. */
 $(function() {
+    const paint = window.paintTool;
     async function isEditable(file) {
         const buf = await file.arrayBuffer();
         const bytes = new Uint8Array(buf);
@@ -58,8 +59,8 @@ $(function() {
                 link.href = url;
             }
             edit.hidden = true;
-            if (drawn) edit.hidden = false;
-            else isEditable(file).then(editable => {
+            if (paint && drawn) edit.hidden = false;
+            else if (paint) isEditable(file).then(editable => {
                 if (input.files[0] === file) edit.hidden = !editable;
             });
             reset.hidden = false;
@@ -80,13 +81,13 @@ $(function() {
                 link.textContent = row.dataset.filename;
                 link.href = row.dataset.url;
             }
-            edit.hidden = row.dataset.editable !== '1';
+            edit.hidden = !paint || row.dataset.editable !== '1';
             reset.hidden = true;
         });
-        if (window.paintTool) {
+        if (paint) {
             edit.hidden = row.dataset.editable !== '1';
             edit.addEventListener('click', function() {
-                window.paintTool.open(url || row.dataset.url, {
+                paint.open(url || row.dataset.url, {
                     onExport(blob) {
                         const name = (input.files[0] ? input.files[0].name : row.dataset.filename).replace(/\.[^.]+$/, '') + '.png';
                         const file = new File([blob], name, { type: 'image/png' });

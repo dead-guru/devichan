@@ -52,7 +52,6 @@
 		{% endif %}
 	</div>
 </form>
-{% if attachments %}
-<script src="{{ config.root }}js/paint-tool.js"></script>
+{% if attachments and not nojavascript %}
 <script src="{{ config.root }}js/mod/edit-post.js"></script>
 {% endif %}
