@@ -140,7 +140,8 @@ final class ModeratorAttachmentsCest
         $I->click('.edit-attachment-image');
         $I->waitForJS('return window.paintTool.engine && window.paintTool.engine.history.length === 1 && document.querySelector("#paint-w").value != "600";', 10);
         $I->seeElementInDOM('#paint-tool-styles');
-        $I->assertSame([$width, $height, $width, $height], $I->executeJS('return [document.querySelector(".paint-canvas").width, document.querySelector(".paint-canvas").height, document.querySelector(".paint-ruler-top").width, document.querySelector(".paint-ruler-left").height];'));
+        $I->assertSame([$width, $height], $I->executeJS('return [document.querySelector(".paint-canvas").width, document.querySelector(".paint-canvas").height];'));
+        $I->assertTrue($I->executeJS('const c = document.querySelector(".paint-canvas").getBoundingClientRect(); const t = document.querySelector(".paint-ruler-top").getBoundingClientRect(); const l = document.querySelector(".paint-ruler-left").getBoundingClientRect(); return Math.abs(t.width - c.width) < 1 && Math.abs(l.height - c.height) < 1 && t.height === 20 && l.width === 20;'));
         $I->assertTrue($I->executeJS('const r = document.querySelector(".paint-canvas").getBoundingClientRect(); return r.width < innerWidth && r.height < innerHeight;'));
         $I->waitForJS('return document.fonts.check(\'900 14px "Font Awesome 6 Free"\');', 10);
         $I->assertLessThanOrEqual(1, $I->executeJS('const a = document.querySelector(".paint-actions [data-action=done]").getBoundingClientRect(); const b = document.querySelector(".paint-actions [data-action=cancel]").getBoundingClientRect(); return Math.abs(a.top + a.height / 2 - b.top - b.height / 2);'));
