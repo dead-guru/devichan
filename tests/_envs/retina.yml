@@ -1,0 +1,10 @@
+modules:
+    config:
+        WebDriver:
+            capabilities:
+                goog:chromeOptions:
+                    args:
+                        - '--headless=new'
+                        - '--no-sandbox'
+                        - '--disable-dev-shm-usage'
+                        - '--force-device-scale-factor=2'

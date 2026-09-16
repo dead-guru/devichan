@@ -1,47 +1,57 @@
-<form action="" method="post">
+<form action="" method="post" enctype="multipart/form-data" id="edit-post" data-file-icon="{{ (config.root ~ (config.file_thumb|format(config.file_icons.default)))|e }}">
 	<input type="hidden" name="token" value="{{ token }}">
-	
-	<table>
-		<tr>
-			<th>
-				{% trans %}Name{% endtrans %}
-			</th>
-			<td>
-				<input type="text" name="name" size="25" maxlength="35" autocomplete="off" value="{{ post.name|e }}">
-			</td>
-		</tr>
-		<tr>
-			<th>
-				{% trans %}Email{% endtrans %}
-			</th>
-			<td>
-				<input type="text" name="email" size="25" maxlength="40" autocomplete="off" value="{{ post.email }}">
-			</td>
-		</tr>
-		<tr>
-			<th>
-				{% trans %}Subject{% endtrans %}
-			</th>
-			<td>
-				<input style="float:left;" type="text" name="subject" size="25" maxlength="100" autocomplete="off" value="{{ post.subject|e }}">
-				<input accesskey="s" style="margin-left:2px;" type="submit" name="post" value="{% trans %}Update{% endtrans %}">
-			</td>
-		</tr>
-		<tr>
-			<th>
-				{% trans %}Comment{% endtrans %}
-			</th>
-			<td>
-				<textarea name="body" id="body" rows="8" cols="35">{% if raw %}{{ post.body }}{% else %}{{ post.body_nomarkup }}{% endif %}</textarea>
-			</td>
-		</tr>
-	</table>
-	<p style="text-align:center">
+	<div class="edit-post-fields">
+		<label for="edit-name">{% trans %}Name{% endtrans %}
+			<input id="edit-name" type="text" name="name" maxlength="35" autocomplete="off" {% if not can_edit %}readonly{% endif %} value="{{ post.name|e }}">
+		</label>
+		<label for="edit-email">{% trans %}Email{% endtrans %}
+			<input id="edit-email" type="text" name="email" maxlength="40" autocomplete="off" {% if not can_edit %}readonly{% endif %} value="{{ post.email|e }}">
+		</label>
+		<label for="edit-subject" class="edit-post-wide">{% trans %}Subject{% endtrans %}
+			<input id="edit-subject" type="text" name="subject" maxlength="100" autocomplete="off" {% if not can_edit %}readonly{% endif %} value="{{ post.subject|e }}">
+		</label>
+		<label for="body" class="edit-post-wide">{% trans %}Comment{% endtrans %}
+			<textarea name="body" id="body" rows="4" {% if not can_edit %}readonly{% endif %}>{% if raw %}{{ post.body }}{% else %}{{ post.body_nomarkup }}{% endif %}</textarea>
+		</label>
+	</div>
+	{% if attachments %}
+	<fieldset class="edit-post-files">
+		<legend>{% trans %}Files{% endtrans %}</legend>
+		<ul>
+			{% for index, file in attachments %}
+			<li class="edit-attachment" data-editable="{{ file.editable ? '1' : '0' }}" data-url="{{ file.url|e }}" data-preview="{{ file.preview|e }}" data-filename="{{ file.filename|default(file.name)|e }}">
+				<input type="hidden" name="original_file[{{ index }}]" value="{{ file.file|e }}">
+				<a class="attachment-preview-link" href="{{ file.url|e }}" target="_blank" rel="noopener" aria-label="{{ file.filename|default(file.name)|e }}">
+					<img class="attachment-preview" src="{{ file.preview|e }}" alt="">
+				</a>
+				<div class="attachment-info">
+					{% if file.file != 'deleted' %}
+					<a class="attachment-link" href="{{ file.url|e }}" target="_blank" rel="noopener">{{ file.filename|default(file.name)|e }}</a>
+					{% else %}<span>{% trans %}Deleted file{% endtrans %}</span>{% endif %}
+					<input type="file" id="replacement-{{ index }}" name="replacement_{{ index }}" aria-label="{% trans %}Replace{% endtrans %} {{ file.filename|default(file.name)|e }}">
+					<button type="button" class="reset-attachment" hidden>{% trans %}Undo change{% endtrans %}</button>
+				</div>
+				<div class="attachment-actions">
+					<button type="button" class="edit-attachment-image" hidden>{% trans %}Edit{% endtrans %}</button>
+					<button type="button" class="replace-attachment" hidden>{% trans %}Replace{% endtrans %}</button>
+				</div>
+			</li>
+			{% endfor %}
+		</ul>
+	</fieldset>
+	{% endif %}
+	<div class="edit-post-actions">
+		<input type="submit" name="post" value="{% trans %}Save changes{% endtrans %}" accesskey="s">
+		<a href="{{ return_url|e }}">{% trans %}Cancel{% endtrans %}</a>
+	</div>
+	<div class="edit-post-mode">
 		{% if raw %}
-			{% trans %}Currently editing raw HTML.{% endtrans %} 
 			<a href="?/{{ board }}/edit/{{ post.id }}">{% trans %}Edit markup instead?{% endtrans %}</a>
-		{% else %}
+		{% elseif can_edit and mod|hasPermission(config.mod.rawhtml, board) %}
 			<a href="?/{{ board }}/edit_raw/{{ post.id }}">{% trans %}Edit raw HTML instead?{% endtrans %}</a>
 		{% endif %}
-	</p>
+	</div>
 </form>
+{% if attachments and not nojavascript %}
+<script src="{{ config.root }}js/mod/edit-post.js"></script>
+{% endif %}

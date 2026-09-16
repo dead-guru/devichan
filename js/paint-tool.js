@@ -9,7 +9,7 @@
 (function($) {
     'use strict';
 
-    if (typeof active_page === 'undefined' || (active_page !== 'thread' && active_page !== 'index')) {
+    if (typeof active_page === 'undefined' || !['thread', 'index', 'page'].includes(active_page)) {
         return;
     }
 
@@ -22,6 +22,7 @@
             this.taper = 0;
             this.fillTolerance = 10;
             this.fillGapClose = 0;
+            this.rectFill = false;
             this.selection = {
                 active: false,
                 phase: 'pristine',      // 'pristine' | 'modified'
@@ -46,7 +47,8 @@
                     smoothing: this.smoothing,
                     taper: this.taper,
                     fillTolerance: this.fillTolerance,
-                    fillGapClose: this.fillGapClose
+                    fillGapClose: this.fillGapClose,
+                    rectFill: this.rectFill
                 }));
             } catch (e) {}
         }
@@ -63,6 +65,7 @@
                 if (data.taper != null) this.taper = data.taper;
                 if (data.fillTolerance != null) this.fillTolerance = data.fillTolerance;
                 if (data.fillGapClose != null) this.fillGapClose = data.fillGapClose;
+                if (data.rectFill != null) this.rectFill = data.rectFill;
             } catch (e) {}
         }
     }
@@ -335,15 +338,18 @@
             this.engine.saveSnapshot();
         }
         drawShape(ctx, x, y) {}
+        paintShape(ctx) { ctx.stroke(); }
         onMove(x, y) {
             this.engine.restoreSnapshot();
+            this.engine.ctx.save();
             this.engine.ctx.globalAlpha = this.engine.state.opacity;
             this.engine.ctx.strokeStyle = this.engine.state.color;
+            this.engine.ctx.fillStyle = this.engine.state.color;
             this.engine.ctx.lineWidth = this.engine.state.brushSize;
             this.engine.ctx.beginPath();
             this.drawShape(this.engine.ctx, x, y);
-            this.engine.ctx.stroke();
-            this.engine.ctx.globalAlpha = 1;
+            this.paintShape(this.engine.ctx);
+            this.engine.ctx.restore();
         }
 
         getOptionsPanel() {
@@ -374,6 +380,58 @@
     class RectTool extends ShapeTool {
         drawShape(ctx, x, y) {
             ctx.rect(this.startX, this.startY, x - this.startX, y - this.startY);
+        }
+
+        paintShape(ctx) {
+            this.engine.state.rectFill ? ctx.fill() : ctx.stroke();
+        }
+
+        getOptionsPanel() {
+            return super.getOptionsPanel() + `
+                <label class="paint-toolbar-group paint-lbl">
+                    <input type="checkbox" class="rect-fill-ctl" ${this.engine.state.rectFill ? 'checked' : ''}> Fill
+                </label>`;
+        }
+    }
+
+    class PixelateTool extends Tool {
+        onStart(x, y) {
+            super.onStart(x, y);
+            const eng = this.engine;
+            eng.saveSnapshot();
+            this.preview = document.createElement('canvas');
+            this.preview.width = Math.ceil(eng.canvas.width / eng.pixelSize);
+            this.preview.height = Math.ceil(eng.canvas.height / eng.pixelSize);
+            const ctx = this.preview.getContext('2d');
+            ctx.imageSmoothingQuality = 'high';
+            ctx.drawImage(eng.canvas, 0, 0, this.preview.width, this.preview.height);
+        }
+
+        onMove(x, y) {
+            const eng = this.engine;
+            eng.restoreSnapshot();
+            const ctx = eng.ctx;
+            ctx.save();
+            ctx.beginPath();
+            ctx.rect(Math.round(this.startX), Math.round(this.startY),
+                Math.round(x) - Math.round(this.startX), Math.round(y) - Math.round(this.startY));
+            ctx.clip();
+            ctx.imageSmoothingEnabled = false;
+            ctx.drawImage(this.preview, 0, 0, eng.canvas.width, eng.canvas.height);
+            ctx.restore();
+        }
+
+        onEnd() { this.preview = null; }
+
+        getOptionsPanel() {
+            const eng = this.engine;
+            const max = Math.max(eng.pixelSize, Math.round(Math.max(eng.canvas.width, eng.canvas.height) / 10));
+            return `
+                <div class="paint-toolbar-group">
+                    <label class="paint-lbl" for="paint-pixel-size">Block size</label>
+                    <input id="paint-pixel-size" type="range" class="paint-range pixel-size-ctl" min="2" max="${max}" value="${eng.pixelSize}">
+                    <span class="paint-lbl pixel-size-val">${eng.pixelSize}px</span>
+                </div>`;
         }
     }
 
@@ -443,7 +501,7 @@
 
             let obstacleMask = null;
             if (gapClose > 0) {
-                obstacleMask = this._buildObstacleMask(data, width, height, gapClose);
+                obstacleMask = this._buildObstacleMask(data, width, height, targetColor, tol, gapClose);
             }
 
             const stack = [[x, y]];
@@ -473,35 +531,36 @@
             ctx.putImageData(imageData, 0, 0);
         }
 
-        _buildObstacleMask(data, width, height, iterations) {
-            // Initial mask: pixels with average luminance < 128 are "obstacles" (dark lines)
+        _buildObstacleMask(data, width, height, targetColor, tol, iterations) {
             let mask = new Uint8Array(width * height);
             for (let i = 0; i < width * height; i++) {
                 const idx = i * 4;
-                const lum = (data[idx] + data[idx+1] + data[idx+2]) / 3;
-                if (lum < 128) mask[i] = 1;
+                if (Math.abs(data[idx] - targetColor.r) > tol ||
+                    Math.abs(data[idx+1] - targetColor.g) > tol ||
+                    Math.abs(data[idx+2] - targetColor.b) > tol) mask[i] = 1;
             }
-            // Morphological dilate, 3x3 kernel, N iterations — each pass grows
-            // dark regions by 1 pixel in all directions, so small gaps close up.
-            for (let iter = 0; iter < iterations; iter++) {
-                const next = new Uint8Array(width * height);
-                for (let y = 0; y < height; y++) {
-                    for (let x = 0; x < width; x++) {
-                        const k = y * width + x;
-                        if (mask[k]) { next[k] = 1; continue; }
-                        if ((x > 0 && mask[k-1]) ||
-                            (x < width-1 && mask[k+1]) ||
-                            (y > 0 && mask[k-width]) ||
-                            (y < height-1 && mask[k+width]) ||
-                            (x > 0 && y > 0 && mask[k-width-1]) ||
-                            (x < width-1 && y > 0 && mask[k-width+1]) ||
-                            (x > 0 && y < height-1 && mask[k+width-1]) ||
-                            (x < width-1 && y < height-1 && mask[k+width+1])) {
-                            next[k] = 1;
+            // Close gaps with dilation followed by erosion, so boundaries don't stay thicker.
+            for (const value of [1, 0]) {
+                for (let iter = 0; iter < iterations; iter++) {
+                    const next = mask.slice();
+                    for (let y = 0; y < height; y++) {
+                        for (let x = 0; x < width; x++) {
+                            const k = y * width + x;
+                            if (mask[k] === value) continue;
+                            if ((x > 0 && mask[k-1] === value) ||
+                                (x < width-1 && mask[k+1] === value) ||
+                                (y > 0 && mask[k-width] === value) ||
+                                (y < height-1 && mask[k+width] === value) ||
+                                (x > 0 && y > 0 && mask[k-width-1] === value) ||
+                                (x < width-1 && y > 0 && mask[k-width+1] === value) ||
+                                (x > 0 && y < height-1 && mask[k+width-1] === value) ||
+                                (x < width-1 && y < height-1 && mask[k+width+1] === value)) {
+                                next[k] = value;
+                            }
                         }
                     }
+                    mask = next;
                 }
-                mask = next;
             }
             return mask;
         }
@@ -538,6 +597,8 @@
             this._baseAngle = 0;
             this._startAngle = 0;
             this._cloneKey = false;      // sticky: true if Alt/Shift held at any point during drag → clone instead of move
+            this.history = [];
+            this.historyIndex = -1;
         }
 
         get sel() { return this.engine.state.selection; }
@@ -663,6 +724,7 @@
                     this.engine.controllerUI.renderToolOptions();
                 }
             }
+            if (this.sel.active) this.saveEdit();
             this._dragMode = null;
             this._mouseStart = null;
             this._transformStart = null;
@@ -705,6 +767,7 @@
             if (!sel.active) return;
             if (sel.phase === 'pristine') this._liftSelection(false);
             sel.transform.sx *= -1;
+            this.saveEdit();
             this.engine.renderSelection();
             this.engine.controllerUI.renderToolOptions();
         }
@@ -714,6 +777,7 @@
             if (!sel.active) return;
             if (sel.phase === 'pristine') this._liftSelection(false);
             sel.transform.sy *= -1;
+            this.saveEdit();
             this.engine.renderSelection();
             this.engine.controllerUI.renderToolOptions();
         }
@@ -748,6 +812,7 @@
                 // First stamp from PRISTINE: just lift in clone mode at identity transform.
                 // User now sees original + floating overlapping. They drag to position, then stamp again.
                 this._liftSelection(true);
+                this.saveEdit();
                 this.engine.controllerUI.renderToolOptions();
                 this.engine.renderSelection();
                 return;
@@ -791,6 +856,7 @@
             // Step E: reset transform — floating snaps back to original rect position for next stamp.
             sel.transform = { tx: 0, ty: 0, sx: 1, sy: 1, angle: 0 };
             sel.isClone = true;  // from now on we don't paint a hole; original pixels are preserved in base.
+            this.saveEdit();
             // Step F: refresh display
             eng.renderSelection();
             eng.controllerUI.renderToolOptions();
@@ -798,7 +864,33 @@
 
         hitTestZone(x, y) { return this._hitTest(x, y); }
 
-        // === internals (stubs to fill in Tasks 2-6) ===
+        saveEdit() {
+            const sel = this.sel;
+            const entry = {
+                phase: sel.phase, transform: { ...sel.transform }, floating: sel.floating,
+                pristineSnapshot: sel.pristineSnapshot, isClone: sel.isClone,
+                base: this.engine.selectionRenderBase
+            };
+            const prev = this.history[this.historyIndex];
+            if (prev && prev.base === entry.base && prev.phase === entry.phase &&
+                JSON.stringify(prev.transform) === JSON.stringify(entry.transform)) return;
+            this.history.length = this.historyIndex + 1;
+            this.history.push(entry);
+            this.historyIndex++;
+        }
+
+        restoreEdit(step) {
+            const index = this.historyIndex + step;
+            if (index < 0 || index >= this.history.length) return false;
+            this.historyIndex = index;
+            const { base, transform, ...entry } = this.history[index];
+            Object.assign(this.sel, entry, { transform: { ...transform } });
+            this.engine.selectionRenderBase = base;
+            this.engine.renderSelection();
+            this.engine.controllerUI.renderToolOptions();
+            return true;
+        }
+
         _hitTest(x, y) {
             const sel = this.sel;
             if (!sel.active || !sel.rect) return 'background';
@@ -806,7 +898,7 @@
             // tolerance is fixed in CSS pixels regardless of scale/rotation, matching visuals.
             const corners = this._computeCorners();
             const isTouch = ('ontouchstart' in window);
-            const half = (isTouch ? 24 : 14) / 2;
+            const half = (isTouch ? 24 : 14) / (2 * this.engine.scale);
             const hitWorld = (p) => Math.abs(x - p.x) <= half && Math.abs(y - p.y) <= half;
             // Priority: rotate, corners, edges, then inside.
             if (hitWorld(corners.ROT)) return 'rotate';
@@ -1021,7 +1113,8 @@
             const len = Math.sqrt(dx*dx + dy*dy);
             const ux = len > 0.001 ? dx / len : 0;
             const uy = len > 0.001 ? dy / len : -1;
-            corners.ROT = { x: corners.T.x + ux * 24, y: corners.T.y + uy * 24 };
+            const offset = 24 / this.engine.scale;
+            corners.ROT = { x: corners.T.x + ux * offset, y: corners.T.y + uy * offset };
             return corners;
         }
 
@@ -1031,8 +1124,8 @@
             const ctx = this.engine.ctx;
             const offset = this.engine.dashOffset || 0;
             ctx.save();
-            ctx.lineWidth = 1;
-            ctx.setLineDash([4, 4]);
+            ctx.lineWidth = 1 / this.engine.scale;
+            ctx.setLineDash([4 / this.engine.scale, 4 / this.engine.scale]);
             ctx.beginPath();
             ctx.moveTo(corners.TL.x, corners.TL.y);
             ctx.lineTo(corners.TR.x, corners.TR.y);
@@ -1052,8 +1145,8 @@
         // Independent of any current transform on ctx; positions come from _computeCorners.
         _drawHandles(corners) {
             const ctx = this.engine.ctx;
-            const s = 8;   // visual size in CSS px
-            const lw = 1;
+            const s = 8 / this.engine.scale;
+            const lw = 1 / this.engine.scale;
             const positions = [corners.TL, corners.T, corners.TR, corners.R, corners.BR, corners.B, corners.BL, corners.L];
             ctx.save();
             ctx.fillStyle = '#ffffff';
@@ -1085,6 +1178,8 @@
             sel.floating = null;
             sel.pristineSnapshot = null;
             sel.isClone = false;
+            this.history = [];
+            this.historyIndex = -1;
             this.engine.stopDashTimer();
         }
     }
@@ -1098,7 +1193,8 @@
             this.rulerTop = rulerTop;
             this.rulerLeft = rulerLeft;
             this.canvasHostEl = canvasHostEl;
-            this.dpr = window.devicePixelRatio || 1;
+            this.dpr = 1;
+            this.scale = 1;
 
             this.overlayCtx = overlayCanvas.getContext('2d');
             this.overlayCtx.scale(this.dpr, this.dpr);
@@ -1117,8 +1213,8 @@
         }
 
         renderRulers() {
-            this._drawRuler(this.rulerTopCtx,  'h', this.drawCanvas.width / this.dpr, 20);
-            this._drawRuler(this.rulerLeftCtx, 'v', 20, this.drawCanvas.height / this.dpr);
+            this._drawRuler(this.rulerTopCtx,  'h', this.drawCanvas.width * this.scale, 20);
+            this._drawRuler(this.rulerLeftCtx, 'v', 20, this.drawCanvas.height * this.scale);
             this._drawCursorMark();
         }
 
@@ -1134,8 +1230,8 @@
                 ctx.strokeStyle = '#d33';
                 ctx.lineWidth = 1;
                 ctx.beginPath();
-                ctx.moveTo(this.cursorX + 0.5, 0);
-                ctx.lineTo(this.cursorX + 0.5, 20);
+                ctx.moveTo(this.cursorX * this.scale + 0.5, 0);
+                ctx.lineTo(this.cursorX * this.scale + 0.5, 20);
                 ctx.stroke();
             }
             if (this.cursorY != null) {
@@ -1143,8 +1239,8 @@
                 ctx.strokeStyle = '#d33';
                 ctx.lineWidth = 1;
                 ctx.beginPath();
-                ctx.moveTo(0,  this.cursorY + 0.5);
-                ctx.lineTo(20, this.cursorY + 0.5);
+                ctx.moveTo(0,  this.cursorY * this.scale + 0.5);
+                ctx.lineTo(20, this.cursorY * this.scale + 0.5);
                 ctx.stroke();
             }
         }
@@ -1155,7 +1251,7 @@
             const h = this.drawCanvas.height / this.dpr;
             ctx.clearRect(0, 0, w, h);
 
-            ctx.lineWidth = 1;
+            ctx.lineWidth = 1 / this.scale;
             ctx.strokeStyle = '#5cd1e6';
             ctx.setLineDash([]);
 
@@ -1211,7 +1307,7 @@
             for (let i = this.state.guides.length - 1; i >= 0; i--) {
                 const g = this.state.guides[i];
                 const d = (g.axis === 'h') ? Math.abs(y - g.pos) : Math.abs(x - g.pos);
-                if (d <= 5) return { idx: i, axis: g.axis };
+                if (d <= 5 / this.scale) return { idx: i, axis: g.axis };
             }
             return null;
         }
@@ -1251,40 +1347,37 @@
             this.overlayCtx = this.overlayCanvas.getContext('2d');
             this.overlayCtx.scale(this.dpr, this.dpr);
 
-            // Resize ruler-top
-            this.rulerTop.width  = newW * this.dpr;
-            this.rulerTop.height = 20  * this.dpr;
-            this.rulerTop.style.width  = newW + 'px';
-            this.rulerTop.style.height = '20px';
-            this.rulerTopCtx = this.rulerTop.getContext('2d');
-            this.rulerTopCtx.scale(this.dpr, this.dpr);
-
-            // Resize ruler-left
-            this.rulerLeft.width  = 20  * this.dpr;
-            this.rulerLeft.height = newH * this.dpr;
-            this.rulerLeft.style.width  = '20px';
-            this.rulerLeft.style.height = newH + 'px';
-            this.rulerLeftCtx = this.rulerLeft.getContext('2d');
-            this.rulerLeftCtx.scale(this.dpr, this.dpr);
-
             // Drop off-bounds guides
             this.state.guides = this.state.guides.filter(g =>
                 (g.axis === 'h') ? (g.pos >= 0 && g.pos <= newH)
                                  : (g.pos >= 0 && g.pos <= newW)
             );
 
+            this.renderGuides();
+        }
+
+        setScale(scale) {
+            this.scale = scale;
+            const dpr = window.devicePixelRatio || 1;
+            const w = this.drawCanvas.width * scale;
+            const h = this.drawCanvas.height * scale;
+            this.rulerTop.width = Math.round(w * dpr);
+            this.rulerTop.height = 20 * dpr;
+            this.rulerTop.style.width = w + 'px';
+            this.rulerLeft.width = 20 * dpr;
+            this.rulerLeft.height = Math.round(h * dpr);
+            this.rulerLeft.style.height = h + 'px';
+            this.rulerTopCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+            this.rulerLeftCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
             this.renderRulers();
             this.renderGuides();
         }
 
         _tickSpacing() {
-            const w = this.drawCanvas.width / this.dpr;
-            const h = this.drawCanvas.height / this.dpr;
-            const m = Math.max(w, h);
-            if (m <=  300) return { minor:  5, major:  25 };
-            if (m <= 1000) return { minor: 10, major:  50 };
-            if (m <= 3000) return { minor: 20, major: 100 };
-            return                  { minor: 50, major: 250 };
+            const target = 60 / this.scale;
+            const power = Math.pow(10, Math.floor(Math.log10(target)));
+            const major = [1, 2, 5, 10].find(n => n * power >= target) * power;
+            return { minor: major / 5, major };
         }
 
         _drawRuler(ctx, axis, widthCSS, heightCSS) {
@@ -1293,34 +1386,35 @@
             ctx.fillRect(0, 0, widthCSS, heightCSS);
 
             const { minor, major } = this._tickSpacing();
-            const limit = (axis === 'h') ? widthCSS : heightCSS;
+            const limit = ((axis === 'h') ? widthCSS : heightCSS) / this.scale;
 
             ctx.lineWidth = 1;
-            ctx.font = '9px sans-serif';
+            ctx.font = '10px sans-serif';
             ctx.textBaseline = 'top';
 
             for (let pos = 0; pos <= limit; pos += minor) {
                 const isMajor = (pos % major === 0);
+                const screenPos = Math.round(pos * this.scale);
                 if (axis === 'h') {
                     ctx.strokeStyle = isMajor ? '#666' : '#999';
                     ctx.beginPath();
-                    ctx.moveTo(pos + 0.5, isMajor ? 16 : 18);
-                    ctx.lineTo(pos + 0.5, 20);
+                    ctx.moveTo(screenPos + 0.5, isMajor ? 14 : 17);
+                    ctx.lineTo(screenPos + 0.5, 20);
                     ctx.stroke();
                     if (isMajor && pos !== 0) {
                         ctx.fillStyle = '#444';
                         ctx.textAlign = 'left';
-                        ctx.fillText(String(pos), pos + 2, 1);
+                        ctx.fillText(String(pos), screenPos + 2, 1);
                     }
                 } else {
                     ctx.strokeStyle = isMajor ? '#666' : '#999';
                     ctx.beginPath();
-                    ctx.moveTo(isMajor ? 16 : 18, pos + 0.5);
-                    ctx.lineTo(20,                pos + 0.5);
+                    ctx.moveTo(isMajor ? 14 : 17, screenPos + 0.5);
+                    ctx.lineTo(20,                screenPos + 0.5);
                     ctx.stroke();
                     if (isMajor && pos !== 0) {
                         ctx.save();
-                        ctx.translate(11, pos + 2);
+                        ctx.translate(11, screenPos + 2);
                         ctx.rotate(-Math.PI / 2);
                         ctx.fillStyle = '#444';
                         ctx.textAlign = 'right';
@@ -1339,7 +1433,8 @@
 
         _clientToCanvas(clientX, clientY) {
             const r = this.canvasHostEl.getBoundingClientRect();
-            return { x: clientX - r.left, y: clientY - r.top };
+            return { x: (clientX - r.left) * this.drawCanvas.width / r.width,
+                y: (clientY - r.top) * this.drawCanvas.height / r.height };
         }
 
         _isPointerOverCanvas(clientX, clientY) {
@@ -1407,7 +1502,8 @@
         constructor(canvas, state) {
             this.canvas = canvas;
             this.state = state;
-            this.dpr = window.devicePixelRatio || 1;
+            // Export dimensions are image pixels, independent of screen density.
+            this.dpr = 1;
             this.ctx = canvas.getContext('2d', { willReadFrequently: true });
             this.ctx.scale(this.dpr, this.dpr);
 
@@ -1419,6 +1515,9 @@
 
             this.history = [];
             this.historyIndex = -1;
+            this.historyLoad = null;
+            this.scale = 1;
+            this.pixelSize = Math.max(2, Math.round(Math.max(canvas.width, canvas.height) / 80));
             this.snapshot = null;
             this.selectionRenderBase = null;  // ImageData captured when selection becomes active; used to wipe per-frame overlays
             this.controllerUI = null;          // backref set by UIManager.open() — needed by SelectionTool to call renderToolOptions / pulseSelectionButtons
@@ -1431,6 +1530,7 @@
                 eraser: new EraserTool(this),
                 line: new LineTool(this),
                 rect: new RectTool(this),
+                pixelate: new PixelateTool(this),
                 circle: new CircleTool(this),
                 text: new TextTool(this),
                 fill: new FillTool(this),
@@ -1453,7 +1553,8 @@
 
         end(t) {
             this.currentTool.onEnd(t);
-            if (this.currentTool instanceof BrushTool || this.currentTool instanceof EraserTool) {
+            if (this.currentTool instanceof BrushTool || this.currentTool instanceof EraserTool ||
+                this.currentTool instanceof ShapeTool || this.currentTool instanceof PixelateTool) {
                this.commitState();
             }
             // SelectionTool commits explicitly via apply()
@@ -1541,10 +1642,12 @@
         }
 
         commitState() {
+            const data = this.canvas.toDataURL();
+            if (this.history[this.historyIndex] === data) return;
             if (this.historyIndex < this.history.length - 1) {
                 this.history = this.history.slice(0, this.historyIndex + 1);
             }
-            this.history.push(this.canvas.toDataURL());
+            this.history.push(data);
             this.historyIndex++;
             if (this.history.length > 30) {
                 this.history.shift();
@@ -1553,12 +1656,22 @@
         }
 
         undo() {
+            const selection = this.tools.selection;
+            if (this.state.selection.active) {
+                if (selection.restoreEdit(-1)) return;
+                selection.cancel();
+            }
             if (this.historyIndex <= 0) return;
             this.historyIndex--;
             this.loadHistoryItem();
         }
 
         redo() {
+            const selection = this.tools.selection;
+            if (this.state.selection.active) {
+                selection.restoreEdit(1);
+                return;
+            }
             if (this.historyIndex >= this.history.length - 1) return;
             this.historyIndex++;
             this.loadHistoryItem();
@@ -1566,13 +1679,17 @@
 
         loadHistoryItem() {
             const img = new Image();
+            this.historyLoad = img;
+            $('.paint-modal [data-action], .paint-modal [data-tool]')
+                .not('[data-action="undo"], [data-action="redo"], [data-action="cancel"]').prop('disabled', true);
+            $('.paint-canvas').css('pointer-events', 'none');
             img.onload = () => {
-                const w = this.canvas.width / this.dpr;
-                const h = this.canvas.height / this.dpr;
-                this.ctx.clearRect(0, 0, w, h);
-                this.ctx.fillStyle = '#ffffff';
-                this.ctx.fillRect(0, 0, w, h);
-                this.ctx.drawImage(img, 0, 0, w, h);
+                if (this.historyLoad !== img || !this.canvas.isConnected) return;
+                this._applyDprToCanvas(img.naturalWidth, img.naturalHeight, false);
+                this.ctx.drawImage(img, 0, 0);
+                this.historyLoad = null;
+                $('.paint-modal [data-action], .paint-modal [data-tool]').prop('disabled', false);
+                $('.paint-canvas').css('pointer-events', '');
             };
             img.src = this.history[this.historyIndex];
         }
@@ -1585,7 +1702,7 @@
             this.commitState();
         }
 
-        _applyDprToCanvas(logicalW, logicalH) {
+        _applyDprToCanvas(logicalW, logicalH, resetPixelSize = true) {
             // Resize canvas to dpr-scaled internal pixels with logical CSS sizing,
             // then re-apply ctx.scale (canvas resize resets transform).
             this.canvas.width = logicalW * this.dpr;
@@ -1596,41 +1713,40 @@
             this.tempCanvas.height = logicalH * this.dpr;
             this.ctx.scale(this.dpr, this.dpr);
             this.tempCtx.scale(this.dpr, this.dpr);
+            if (this.guides) this.guides.resize(logicalW, logicalH);
+            if (this.controllerUI) this.controllerUI.fitCanvas(logicalW, logicalH);
+            $('#paint-w').val(logicalW);
+            $('#paint-h').val(logicalH);
+            if (resetPixelSize) {
+                this.pixelSize = Math.max(2, Math.round(Math.max(logicalW, logicalH) / 80));
+            }
+            if (this.controllerUI) this.controllerUI.renderToolOptions();
         }
 
         resize(w, h) {
-            const data = this.canvas.toDataURL();
-            const img = new Image();
-            img.onload = () => {
-                this._applyDprToCanvas(w, h);
-                this.ctx.fillStyle = '#ffffff';
-                this.ctx.fillRect(0, 0, w, h);
-                this.ctx.drawImage(img, 0, 0, w, h);
-                this.commitState();
-                if (this.guides) this.guides.resize(w, h);
-            };
-            img.src = data;
+            if (!Number.isInteger(w) || !Number.isInteger(h) || w < 1 || h < 1 ||
+                (w === this.canvas.width && h === this.canvas.height)) return;
+            const copy = document.createElement('canvas');
+            copy.width = this.canvas.width;
+            copy.height = this.canvas.height;
+            copy.getContext('2d').drawImage(this.canvas, 0, 0);
+            this._applyDprToCanvas(w, h);
+            this.ctx.drawImage(copy, 0, 0, w, h);
+            this.commitState();
         }
 
-        loadFromImage(img) {
-            let w = img.width, h = img.height;
-            const maxW = Math.min(window.innerWidth - 100, 1200);
-            const maxH = Math.min(window.innerHeight - 300, 800);
-
-            if (w > maxW || h > maxH) {
-                const scale = Math.min(maxW / w, maxH / h);
-                w = Math.floor(w * scale);
-                h = Math.floor(h * scale);
-            }
-
+        loadFromImage(img, resetHistory = false) {
+            const w = img.naturalWidth, h = img.naturalHeight;
             this._applyDprToCanvas(w, h);
 
             this.ctx.fillStyle = '#ffffff';
             this.ctx.fillRect(0, 0, w, h);
             this.ctx.drawImage(img, 0, 0, w, h);
 
-            this.history = [];
-            this.historyIndex = -1;
+            if (resetHistory) {
+                this.history = [];
+                this.historyIndex = -1;
+            }
             this.commitState();
             return { w, h };
         }
@@ -1641,6 +1757,10 @@
             this.controller = controller;
             this.state = controller.state;
             this.injectStyles();
+            if (!document.getElementById('paint-icons')) {
+                $('<link>', { id: 'paint-icons', rel: 'stylesheet',
+                    href: configRoot + 'stylesheets/fontawesome-6/css/all.min.css' }).appendTo('head');
+            }
         }
 
         open(imageUrl) {
@@ -1669,12 +1789,25 @@
             this.controller.engine.guides.renderGuides();
             this.controller.engine.clear();
             this.renderToolOptions();
+            this.fitCanvas(dims.w, dims.h);
 
-            if (imageUrl) this.controller.loadImage(imageUrl);
+            if (imageUrl) this.controller.loadImage(imageUrl, true);
+        }
+
+        fitCanvas(w, h) {
+            const chrome = $('.paint-header, .paint-toolbar, .paint-tool-options, .paint-footer')
+                .toArray().reduce((height, el) => height + $(el).outerHeight(), 0);
+            const scale = Math.min(1, Math.max(100, window.innerWidth * 0.95 - 44) / w,
+                Math.max(100, window.innerHeight * 0.95 - chrome - 44) / h);
+            $('.paint-canvas-host, .paint-canvas-host > canvas').css({ width: w * scale, height: h * scale });
+            const eng = this.controller.engine;
+            eng.scale = scale;
+            eng.guides.setScale(scale);
+            if (eng.state.selection.active) eng.renderSelection();
         }
 
         renderModal(dims) {
-            const dpr = window.devicePixelRatio || 1;
+            const dpr = 1;
             const html = `
                 <div class="paint-modal-overlay">
                     <div class="paint-modal">
@@ -1686,6 +1819,7 @@
                                     {n: 'eraser',    i: 'fa-solid fa-eraser',        t: 'Eraser'},
                                     {n: 'line',      i: 'fa-solid fa-slash',         t: 'Line'},
                                     {n: 'rect',      i: 'fa-regular fa-square',      t: 'Rectangle'},
+                                    {n: 'pixelate',  i: 'fa-solid fa-border-all',    t: 'Pixelate'},
                                     {n: 'circle',    i: 'fa-regular fa-circle',      t: 'Circle'},
                                     {n: 'fill',      i: 'fa-solid fa-fill-drip',     t: 'Fill'},
                                     {n: 'text',      i: 'fa-solid fa-font',          t: 'Text'},
@@ -1725,7 +1859,7 @@
                             </div>
                             <div class="paint-actions">
                                 <button class="paint-btn" data-action="cancel" title="Cancel"><i class="fa-solid fa-xmark"></i> Cancel</button>
-                                <button class="paint-btn paint-btn-done" data-action="done" title="Done"><i class="fa-solid fa-check"></i> Done</button>
+                                <button class="paint-btn paint-btn-done" data-action="done" title="Done"><i class="fa-solid fa-check"></i> <span>Done</span></button>
                             </div>
                         </div>
                     </div>
@@ -1789,11 +1923,23 @@
                 $modal.find('.gapclose-val').text(this.value + 'px');
                 self.state.save();
             });
+            $modal.on('change', '.rect-fill-ctl', function() {
+                self.state.rectFill = this.checked;
+                self.state.save();
+            });
+            $modal.on('input', '.pixel-size-ctl', function() {
+                self.controller.engine.pixelSize = parseInt(this.value, 10);
+                $modal.find('.pixel-size-val').text(this.value + 'px');
+            });
 
             $('.paint-modal').on('click', '[data-action]', function() {
                 const action = $(this).data('action');
                 const eng = self.controller.engine;
                 const seltool = eng && eng.tools && eng.tools.selection;
+                if (action === 'undo' || action === 'redo') {
+                    eng[action]();
+                    return;
+                }
                 // Selection-specific actions route to SelectionTool
                 if (seltool && (action === 'apply' || action === 'selCancel' || action === 'flipH' || action === 'flipV' || action === 'duplicate')) {
                     if (action === 'apply') seltool.apply();
@@ -1803,8 +1949,7 @@
                     else if (action === 'duplicate') seltool.duplicate();
                     return;
                 }
-                const destructive = (action === 'undo' || action === 'redo' || action === 'clear' ||
-                                    action === 'load' || action === 'resize');
+                const destructive = (action === 'clear' || action === 'load' || action === 'resize');
                 // Hard-block destructive + export actions while MODIFIED — floating isn't baked yet,
                 // so save/done would export the wrong state.
                 if (seltool && eng.state.selection.active && eng.state.selection.phase === 'modified') {
@@ -1814,7 +1959,8 @@
                     }
                 }
                 // PRISTINE + destructive → drop selection so its rect doesn't dangle on stale coords
-                if (seltool && eng.state.selection.active && eng.state.selection.phase === 'pristine' && destructive) {
+                if (seltool && eng.state.selection.active && eng.state.selection.phase === 'pristine' &&
+                    (destructive || action === 'save' || action === 'done')) {
                     seltool.cancel();
                 }
                 if (self.controller[action]) self.controller[action]();
@@ -1827,14 +1973,13 @@
 
             const canvas = $('.paint-canvas')[0];
             const getCoords = (e) => {
-                // Returns CSS-pixel coordinates relative to canvas. The DrawingEngine
-                // applies ctx.scale(dpr, dpr) so all drawing happens in CSS-pixel space;
-                // returning logical coords keeps everything consistent.
+                // Convert the fitted preview back to image pixels.
                 const rect = canvas.getBoundingClientRect();
                 const clientX = e.touches ? e.touches[0].clientX : e.clientX;
                 const clientY = e.touches ? e.touches[0].clientY : e.clientY;
                 const t = (e.timeStamp != null) ? e.timeStamp : performance.now();
-                return { x: clientX - rect.left, y: clientY - rect.top, t };
+                return { x: (clientX - rect.left) * canvas.width / rect.width,
+                    y: (clientY - rect.top) * canvas.height / rect.height, t };
             };
 
             let isDrawing = false;
@@ -1962,23 +2107,19 @@
                     }
                 }
                 if (e.key === 'Escape') self.controller.close();
-                if ((e.ctrlKey || e.metaKey) && e.key === 'z') {
-                    // Hard-block undo/redo while modified
-                    if (sel && sel.active && sel.phase === 'modified') {
-                        self.pulseSelectionButtons();
-                        e.preventDefault();
-                        return;
-                    }
-                    // PRISTINE → drop selection so its rect doesn't dangle on stale coords
-                    if (seltool && sel && sel.active && sel.phase === 'pristine') {
-                        seltool.cancel();
-                    }
+                if ((e.ctrlKey || e.metaKey) && ['z', 'y'].includes(e.key.toLowerCase()) &&
+                    !$(e.target).is('input, textarea, [contenteditable]')) {
                     e.preventDefault();
-                    e.shiftKey ? eng.redo() : eng.undo();
+                    if (isDrawing) end(e);
+                    e.shiftKey || e.key.toLowerCase() === 'y' ? eng.redo() : eng.undo();
                 }
             });
             
             $(document).on('paste.paint', (e) => self.controller.handlePaste(e));
+            $(window).on('resize.paint', () => {
+                const eng = self.controller.engine;
+                if (eng) self.fitCanvas(eng.canvas.width, eng.canvas.height);
+            });
 
             $('.paint-ruler-top').on('mousedown touchstart', function(e) {
                 const eng = self.controller.engine;
@@ -1995,9 +2136,11 @@
         }
 
         renderToolOptions() {
-            const tool = this.controller.engine && this.controller.engine.currentTool;
+            const eng = this.controller.engine;
+            const tool = eng && eng.currentTool;
             const html = (tool && tool.getOptionsPanel && tool.getOptionsPanel()) || '';
             $('.paint-tool-options').html(html);
+            if (eng && eng.guides) this.fitCanvas(eng.canvas.width, eng.canvas.height);
         }
 
         pulseSelectionButtons() {
@@ -2027,12 +2170,14 @@
             }
             $('.paint-modal-overlay').remove();
             $(document).off('.paint');
+            $(window).off('.paint');
         }
+
 
         injectStyles() {
             if ($('#paint-tool-styles').length) return;
             const css = `
-                .paint-modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 10000; display: flex; align-items: center; justify-content: center; }
+                .paint-modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 9800; display: flex; align-items: center; justify-content: center; }
                 .paint-modal { background: #f0f0f0; border: 1px solid #888; box-shadow: 2px 2px 10px rgba(0,0,0,0.3); display: flex; flex-direction: column; max-width: 95vw; max-height: 95vh; }
                 .paint-header { display: flex; justify-content: space-between; padding: 6px 10px; background: #e0e0e0; border-bottom: 1px solid #888; }
                 .paint-header h3 { margin: 0; font-size: 13px; color: #333; }
@@ -2040,11 +2185,10 @@
                 .paint-toolbar { display: flex; flex-wrap: wrap; gap: 4px; padding: 4px; background: #d4d4d4; border-bottom: 1px solid #888; }
                 .paint-toolbar-group { display: flex; gap: 2px; padding: 0 6px; border-right: 1px solid #aaa; align-items: center; }
                 .paint-tool-options { display: flex; flex-wrap: wrap; gap: 4px; padding: 4px; background: #cdcdcd; border-bottom: 1px solid #888; min-height: 28px; box-sizing: content-box; }
-                .paint-btn { background: #e8e8e8; border: 1px solid #888; cursor: pointer; min-width: 28px; height: 28px; font-size: 12px; padding: 0 5px; margin: 0; display: inline-flex; align-items: center; justify-content: center; gap: 4px; }
+                .paint-btn { cursor: pointer; min-width: 28px; min-height: 28px; margin: 0; display: inline-flex; align-items: center; justify-content: center; gap: 4px; }
                 .paint-btn i { font-size: 14px; line-height: 1; pointer-events: none; }
-                .paint-btn:hover { background: #d0d0d0; }
-                .paint-btn.active { background: #b0b0b0; border-color: #555; box-shadow: inset 1px 1px 2px rgba(0,0,0,0.2); }
-                .paint-btn-done { background: #90c090; font-weight: bold; }
+                .paint-btn.active { outline: 2px solid currentColor; outline-offset: -3px; }
+                .paint-btn-done { font-weight: bold; }
                 .paint-btn.pulse { animation: paintBtnPulse 0.6s ease-in-out 2; }
                 @keyframes paintBtnPulse {
                     0% { box-shadow: 0 0 0 0 rgba(255, 180, 0, 0.7); background: #ffd060; }
@@ -2054,25 +2198,26 @@
                 .paint-color-input { width: 28px; height: 28px; border: 1px solid #888; padding: 0; cursor: pointer; }
                 .paint-canvas-container { flex: 1; overflow: auto; background: #808080; padding: 10px; display: flex; justify-content: center; }
                 .paint-canvas { background: #fff; box-shadow: 2px 2px 5px rgba(0,0,0,0.3); cursor: crosshair; touch-action: none; }
-                .paint-footer { display: flex; justify-content: space-between; padding: 6px 10px; background: #d4d4d4; border-top: 1px solid #888; }
-                .paint-dim { width: 50px; text-align: center; }
+                .paint-footer { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; justify-content: space-between; padding: 6px 10px; background: #d4d4d4; border-top: 1px solid #888; }
+                .paint-dim { width: 70px; text-align: center; }
                 .paint-lbl { font-size: 11px; min-width: 30px; text-align: right; }
                 .paint-range { width: 60px; height: 18px; cursor: pointer; }
                 .paint-edit-image { cursor: pointer; opacity: 0.6; } .paint-edit-image:hover { opacity: 1; }
                 .paint-canvas-frame {
                     display: grid;
+                    flex: none;
+                    align-self: flex-start;
                     grid-template-columns: 20px auto;
                     grid-template-rows:    20px auto;
                 }
                 .paint-ruler-corner {
                     background: #d4d4d4;
-                    border-right:  1px solid #888;
-                    border-bottom: 1px solid #888;
+                    box-shadow: inset -1px -1px #888;
                     grid-row: 1; grid-column: 1;
                 }
                 .paint-ruler-top {
                     background: #ececec;
-                    border-bottom: 1px solid #888;
+                    box-shadow: inset 0 -1px #888;
                     cursor: row-resize;
                     touch-action: none;
                     grid-row: 1; grid-column: 2;
@@ -2080,7 +2225,7 @@
                 }
                 .paint-ruler-left {
                     background: #ececec;
-                    border-right: 1px solid #888;
+                    box-shadow: inset -1px 0 #888;
                     cursor: col-resize;
                     touch-action: none;
                     grid-row: 2; grid-column: 1;
@@ -2096,9 +2241,14 @@
                     top: 0; left: 0;
                     pointer-events: none;
                 }
+                .paint-actions, .paint-dimensions { display: flex; align-items: center; gap: 6px; }
+                .paint-actions { margin-left: auto; }
+                .paint-modal .paint-btn { box-sizing: border-box; vertical-align: middle; }
+                .paint-modal .paint-dim { box-sizing: border-box; height: 28px; margin: 0; }
             `;
             $('<style id="paint-tool-styles">').text(css).appendTo('head');
         }
+
     }
 
     class Integration {
@@ -2163,7 +2313,7 @@
                             const $post = $(el).closest('.post, .op');
                             if($post.length) pid = $post.attr('id').replace(/reply_|op_/, '') || $post.find('.post_no').last().text();
                             
-                            this.controller.open($imgLink.attr('href'), pid);
+                            this.controller.open($imgLink.attr('href'), { replyTo: pid });
                         });
                     $(el).append($btn);
                 });
@@ -2208,9 +2358,14 @@
             this.replyTo = null;
         }
 
-        open(url, postId) {
-            this.replyTo = postId;
+        open(url, opts = {}) {
+            if ($('.paint-modal-overlay').length) return;
+            this.replyTo = opts.replyTo;
+            this.onExport = opts.onExport;
             this.ui.open(url);
+            if (this.onExport) {
+                $('.paint-actions [data-action="done"]').attr('title', _('Apply')).find('span').text(_('Apply'));
+            }
         }
 
         close() {
@@ -2224,35 +2379,47 @@
 
         setTool(t) { if(this.engine) this.engine.setTool(t); }
 
-        loadImage(url) {
+        loadImage(url, resetHistory = false) {
+            const engine = this.engine;
             const img = new Image();
+            const done = $('.paint-actions [data-action="done"]');
+            const wasDisabled = done.prop('disabled') || resetHistory;
+            done.prop('disabled', true);
             img.crossOrigin = 'anonymous';
             img.onload = () => {
-                const dims = this.engine.loadFromImage(img);
+                if (this.engine !== engine) return;
+                const dims = engine.loadFromImage(img, resetHistory);
                 $('#paint-w').val(dims.w);
                 $('#paint-h').val(dims.h);
+                done.prop('disabled', false);
             };
             img.onerror = () => {
-                const img2 = new Image();
-                img2.src = url; 
-                img2.onload = () => this.engine.loadFromImage(img2);
-            }
+                if (this.engine !== engine) return;
+                done.prop('disabled', wasDisabled);
+                alert(_('Could not load image.'));
+            };
             img.src = url;
         }
 
         handlePaste(e) {
+            const engine = this.engine;
             const items = (e.originalEvent || e).clipboardData.items;
             for (let i = 0; i < items.length; i++) {
                 if (items[i].type.indexOf('image') !== -1) {
                     const blob = items[i].getAsFile();
+                    const url = URL.createObjectURL(blob);
                     const img = new Image();
                     img.onload = () => {
-                        const ratio = Math.min(this.engine.canvas.width / img.width, this.engine.canvas.height / img.height, 1);
+                        URL.revokeObjectURL(url);
+                        if (this.engine !== engine) return;
+                        engine.tools.selection.apply();
+                        const ratio = Math.min(engine.canvas.width / img.width, engine.canvas.height / img.height, 1);
                         const w = img.width * ratio, h = img.height * ratio;
-                        this.engine.ctx.drawImage(img, (this.engine.canvas.width-w)/2, (this.engine.canvas.height-h)/2, w, h);
-                        this.engine.commitState();
+                        engine.ctx.drawImage(img, (engine.canvas.width-w)/2, (engine.canvas.height-h)/2, w, h);
+                        engine.commitState();
                     };
-                    img.src = URL.createObjectURL(blob);
+                    img.onerror = () => URL.revokeObjectURL(url);
+                    img.src = url;
                     break;
                 }
             }
@@ -2281,13 +2448,18 @@
         }
 
         done() {
-            this.engine.canvas.toBlob((blob) => {
-                this.integration.handleExport(blob, this.replyTo);
+            const engine = this.engine;
+            engine.canvas.toBlob((blob) => {
+                if (!blob || this.engine !== engine) return;
+                if (this.onExport) this.onExport(blob);
+                else this.integration.handleExport(blob, this.replyTo);
                 this.close();
             });
         }
     }
 
-    $(document).ready(() => new PaintController());
+    $(document).ready(() => {
+        if (!window.paintTool) window.paintTool = new PaintController();
+    });
 
 })(jQuery);
