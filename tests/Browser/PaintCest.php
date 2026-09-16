@@ -194,6 +194,99 @@ final class PaintCest
         $I->assertSame($changed, $this->pixels($I));
     }
 
+    public function pastingFinishesTheSelectionAndKeepsUndoSteps(BrowserTester $I): void
+    {
+        $I->click('[data-tool="rect"]');
+        $I->checkOption('.rect-fill-ctl');
+        $this->drag($I, 80, 70, 160, 120);
+        $original = $this->pixels($I);
+        foreach ([false, true] as $move) {
+            $I->click('[data-tool="selection"]');
+            $this->drag($I, 40, 40, 220, 180);
+            if ($move) {
+                $this->drag($I, 130, 110, 230, 150);
+            }
+            $I->executeJS(<<<'JS'
+                const source = document.createElement('canvas'); source.width = source.height = 40;
+                const ctx = source.getContext('2d'); ctx.fillStyle = '#ff0000'; ctx.fillRect(0, 0, 40, 40);
+                source.toBlob(blob => {
+                    const data = new DataTransfer();
+                    data.items.add(new File([blob], 'paste.png', {type: 'image/png'}));
+                    document.dispatchEvent(new ClipboardEvent('paste', {clipboardData: data, bubbles: true}));
+                });
+            JS);
+            $I->waitForJS('return !window.paintTool.state.selection.active;', 10);
+            $I->executeJS('window.paintTool.engine.renderSelection();');
+            $I->assertSame([255, 0, 0, 255], $I->executeJS('return Array.from(window.paintTool.engine.ctx.getImageData(300, 200, 1, 1).data);'));
+            $I->assertTrue($I->executeJS('const eng = window.paintTool.engine; return eng.canvas.toDataURL() === eng.history[eng.historyIndex];'));
+            $pasted = $this->pixels($I);
+            $I->makeScreenshot('paint-paste-selection-' . ($move ? 'moved' : 'pristine'));
+            $this->history($I, 'undo');
+            if ($move) {
+                $I->assertSame([0, 0, 0, 255], $I->executeJS('return Array.from(window.paintTool.engine.ctx.getImageData(210, 140, 1, 1).data);'));
+                $I->assertSame([255, 255, 255, 255], $I->executeJS('return Array.from(window.paintTool.engine.ctx.getImageData(100, 90, 1, 1).data);'));
+                $this->history($I, 'undo');
+            }
+            $I->assertSame($original, $this->pixels($I));
+            $this->history($I, 'redo');
+            if ($move) $this->history($I, 'redo');
+            $I->assertSame($pasted, $this->pixels($I));
+            $this->history($I, 'undo');
+            if ($move) $this->history($I, 'undo');
+        }
+    }
+
+    public function failedLoadKeepsTheDrawingUsable(BrowserTester $I): void
+    {
+        $I->click('[data-tool="brush"]');
+        $this->drag($I, 40, 40, 200, 150);
+        $before = $this->pixels($I);
+        $I->executeJS('window.paintTool.loadImage("/tests/Support/Data/invalid-image.png");');
+        $I->waitForText('Could not load image.', 10, '#alert_message');
+        $I->makeScreenshot('paint-load-error');
+        $I->click('#alert_div .alert_button');
+        $I->waitForElementNotVisible('#alert_handler');
+        $I->assertFalse($I->executeJS('return document.querySelector(".paint-actions [data-action=done]").disabled;'));
+        $I->assertSame($before, $this->pixels($I));
+        $I->executeJS('window.paintTool.onExport = blob => { window.paintExportSize = blob.size; };');
+        $I->click('.paint-actions [data-action="done"]');
+        $I->waitForElementNotVisible('.paint-modal-overlay');
+        $I->assertGreaterThan(0, $I->executeJS('return window.paintExportSize;'));
+
+        $I->executeJS('window.paintTool.open("/tests/Support/Data/invalid-image.png");');
+        $I->waitForText('Could not load image.', 10, '#alert_message');
+        $I->click('#alert_div .alert_button');
+        $I->waitForElementNotVisible('#alert_handler');
+        $I->assertTrue($I->executeJS('return document.querySelector(".paint-actions [data-action=done]").disabled;'));
+        $I->executeJS('window.paintTool.loadImage("/static/banners/default.png");');
+        $I->waitForJS('return window.paintTool.engine.canvas.width === 300;', 10);
+        $I->assertFalse($I->executeJS('return document.querySelector(".paint-actions [data-action=done]").disabled;'));
+    }
+
+    public function undoAndRedoKeepThePixelBlockSize(BrowserTester $I): void
+    {
+        $I->click('[data-tool="pixelate"]');
+        $I->executeJS(<<<'JS'
+            const eng = window.paintTool.engine, ctx = eng.ctx;
+            const gradient = ctx.createLinearGradient(0, 0, 600, 0);
+            gradient.addColorStop(0, '#000000'); gradient.addColorStop(1, '#ffffff');
+            ctx.fillStyle = gradient; ctx.fillRect(0, 0, 600, 400); eng.commitState();
+            $('.pixel-size-ctl').val(23).trigger('input');
+        JS);
+        $this->drag($I, 50, 50, 500, 300);
+        $this->history($I, 'undo');
+        $I->assertSame([23, 23], $I->executeJS('return [window.paintTool.engine.pixelSize, Number(document.querySelector(".pixel-size-ctl").value)];'));
+        $this->history($I, 'redo');
+        $I->assertSame([23, 23], $I->executeJS('return [window.paintTool.engine.pixelSize, Number(document.querySelector(".pixel-size-ctl").value)];'));
+        $I->fillField('#paint-w', '80');
+        $I->fillField('#paint-h', '60');
+        $I->click('[data-action="resize"]');
+        $this->history($I, 'undo');
+        $I->executeJS('$(".pixel-size-ctl").val(23).trigger("input");');
+        $this->history($I, 'redo');
+        $I->assertSame([23, 23], $I->executeJS('return [window.paintTool.engine.pixelSize, Number(document.querySelector(".pixel-size-ctl").value)];'));
+    }
+
     private function assertRulers(BrowserTester $I, int $w, int $h): void
     {
         $I->assertSame([$w, $h], $I->executeJS('const c = document.querySelector(".paint-canvas"); return [c.width, c.height];'));

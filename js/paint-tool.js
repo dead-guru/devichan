@@ -425,7 +425,7 @@
 
         getOptionsPanel() {
             const eng = this.engine;
-            const max = Math.max(2, Math.round(Math.max(eng.canvas.width, eng.canvas.height) / 10));
+            const max = Math.max(eng.pixelSize, Math.round(Math.max(eng.canvas.width, eng.canvas.height) / 10));
             return `
                 <div class="paint-toolbar-group">
                     <label class="paint-lbl" for="paint-pixel-size">Block size</label>
@@ -1684,7 +1684,7 @@
             $('.paint-canvas').css('pointer-events', 'none');
             img.onload = () => {
                 if (this.historyLoad !== img || !this.canvas.isConnected) return;
-                this._applyDprToCanvas(img.naturalWidth, img.naturalHeight);
+                this._applyDprToCanvas(img.naturalWidth, img.naturalHeight, false);
                 this.ctx.drawImage(img, 0, 0);
                 this.historyLoad = null;
                 $('.paint-modal [data-action], .paint-modal [data-tool]').prop('disabled', false);
@@ -1701,7 +1701,7 @@
             this.commitState();
         }
 
-        _applyDprToCanvas(logicalW, logicalH) {
+        _applyDprToCanvas(logicalW, logicalH, resetPixelSize = true) {
             // Resize canvas to dpr-scaled internal pixels with logical CSS sizing,
             // then re-apply ctx.scale (canvas resize resets transform).
             this.canvas.width = logicalW * this.dpr;
@@ -1716,7 +1716,9 @@
             if (this.controllerUI) this.controllerUI.fitCanvas(logicalW, logicalH);
             $('#paint-w').val(logicalW);
             $('#paint-h').val(logicalH);
-            this.pixelSize = Math.max(2, Math.round(Math.max(logicalW, logicalH) / 80));
+            if (resetPixelSize) {
+                this.pixelSize = Math.max(2, Math.round(Math.max(logicalW, logicalH) / 80));
+            }
             if (this.controllerUI) this.controllerUI.renderToolOptions();
         }
 
@@ -2174,7 +2176,7 @@
         injectStyles() {
             if ($('#paint-tool-styles').length) return;
             const css = `
-                .paint-modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 10000; display: flex; align-items: center; justify-content: center; }
+                .paint-modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 9800; display: flex; align-items: center; justify-content: center; }
                 .paint-modal { background: #f0f0f0; border: 1px solid #888; box-shadow: 2px 2px 10px rgba(0,0,0,0.3); display: flex; flex-direction: column; max-width: 95vw; max-height: 95vh; }
                 .paint-header { display: flex; justify-content: space-between; padding: 6px 10px; background: #e0e0e0; border-bottom: 1px solid #888; }
                 .paint-header h3 { margin: 0; font-size: 13px; color: #333; }
@@ -2380,6 +2382,7 @@
             const engine = this.engine;
             const img = new Image();
             const done = $('.paint-actions [data-action="done"]');
+            const wasDisabled = done.prop('disabled') || resetHistory;
             done.prop('disabled', true);
             img.crossOrigin = 'anonymous';
             img.onload = () => {
@@ -2390,24 +2393,32 @@
                 done.prop('disabled', false);
             };
             img.onerror = () => {
-                if (this.engine === engine) alert(_('Could not load image.'));
+                if (this.engine !== engine) return;
+                done.prop('disabled', wasDisabled);
+                alert(_('Could not load image.'));
             };
             img.src = url;
         }
 
         handlePaste(e) {
+            const engine = this.engine;
             const items = (e.originalEvent || e).clipboardData.items;
             for (let i = 0; i < items.length; i++) {
                 if (items[i].type.indexOf('image') !== -1) {
                     const blob = items[i].getAsFile();
+                    const url = URL.createObjectURL(blob);
                     const img = new Image();
                     img.onload = () => {
-                        const ratio = Math.min(this.engine.canvas.width / img.width, this.engine.canvas.height / img.height, 1);
+                        URL.revokeObjectURL(url);
+                        if (this.engine !== engine) return;
+                        engine.tools.selection.apply();
+                        const ratio = Math.min(engine.canvas.width / img.width, engine.canvas.height / img.height, 1);
                         const w = img.width * ratio, h = img.height * ratio;
-                        this.engine.ctx.drawImage(img, (this.engine.canvas.width-w)/2, (this.engine.canvas.height-h)/2, w, h);
-                        this.engine.commitState();
+                        engine.ctx.drawImage(img, (engine.canvas.width-w)/2, (engine.canvas.height-h)/2, w, h);
+                        engine.commitState();
                     };
-                    img.src = URL.createObjectURL(blob);
+                    img.onerror = () => URL.revokeObjectURL(url);
+                    img.src = url;
                     break;
                 }
             }
