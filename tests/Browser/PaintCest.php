@@ -79,6 +79,100 @@ final class PaintCest
         $I->assertSame($text, $this->pixels($I));
     }
 
+    public function fillWorksInsideShapesOnLightAndDarkBackgrounds(BrowserTester $I): void
+    {
+        foreach (['rect', 'circle'] as $shape) {
+            foreach (['#ffffff', '#407fc0', '#222222'] as $background) {
+                foreach (range(0, 5) as $gap) {
+                    $I->executeJS(<<<JS
+                        const eng = window.paintTool.engine;
+                        eng.ctx.fillStyle = '$background'; eng.ctx.fillRect(0, 0, 600, 400);
+                        eng.state.color = '#ffff80'; eng.state.brushSize = 4;
+                        eng.state.rectFill = false;
+                    JS);
+                    $I->click('[data-tool="' . $shape . '"]');
+                    $this->drag($I, 80, 80, 520, 320);
+                    $before = $this->pixels($I);
+                    $I->click('[data-tool="fill"]');
+                    $I->executeJS(<<<JS
+                        $('.paint-color-input').val('#ff0000').trigger('input');
+                        $('.gapclose-ctl').val($gap).trigger('input');
+                    JS);
+                    $I->click('.paint-canvas');
+                    $I->assertSame([255, 0, 0, 255], $I->executeJS('return Array.from(window.paintTool.engine.ctx.getImageData(300, 200, 1, 1).data);'), "$shape on $background, gap $gap");
+                    $I->assertSame([255, 255, 128, 255], $I->executeJS('return Array.from(window.paintTool.engine.ctx.getImageData(300, 80, 1, 1).data);'));
+                    $I->assertSame(sscanf(substr($background, 1), '%2x%2x%2x'), $I->executeJS('return Array.from(window.paintTool.engine.ctx.getImageData(20, 20, 1, 1).data).slice(0, 3);'));
+                    $after = $this->pixels($I);
+                    $this->history($I, 'undo');
+                    $I->assertSame($before, $this->pixels($I));
+                    $this->history($I, 'redo');
+                    $I->assertSame($after, $this->pixels($I));
+                }
+            }
+            $I->makeScreenshot('paint-fill-' . $shape);
+        }
+    }
+
+    public function fillClosesGapsInLightOutlinesAndCanRecolorTheResult(BrowserTester $I): void
+    {
+        $I->executeJS(<<<'JS'
+            const eng = window.paintTool.engine;
+            eng.ctx.fillStyle = '#203060'; eng.ctx.fillRect(0, 0, 600, 400);
+            eng.state.color = '#ffff80'; eng.state.rectFill = false; eng.state.brushSize = 4;
+        JS);
+        $I->click('[data-tool="rect"]');
+        $this->drag($I, 80, 80, 520, 320);
+        $I->executeJS(<<<'JS'
+            const eng = window.paintTool.engine;
+            eng.ctx.fillStyle = '#203060'; eng.ctx.fillRect(299, 76, 2, 8); eng.commitState();
+            eng.state.color = '#ff0000';
+        JS);
+        $I->click('[data-tool="fill"]');
+        $I->executeJS('$(".gapclose-ctl").val(0).trigger("input");');
+        $I->click('.paint-canvas');
+        $I->assertSame([255, 0, 0, 255], $I->executeJS('return Array.from(window.paintTool.engine.ctx.getImageData(20, 20, 1, 1).data);'));
+        $this->history($I, 'undo');
+        foreach (range(1, 5) as $gap) {
+            $I->executeJS("$('.gapclose-ctl').val($gap).trigger('input'); $('.paint-color-input').val('#ff0000').trigger('input');");
+            $I->click('.paint-canvas');
+            $I->assertSame([255, 0, 0, 255], $I->executeJS('return Array.from(window.paintTool.engine.ctx.getImageData(300, 200, 1, 1).data);'));
+            $I->assertSame([32, 48, 96, 255], $I->executeJS('return Array.from(window.paintTool.engine.ctx.getImageData(20, 20, 1, 1).data);'));
+            $I->executeJS('$(".paint-color-input").val("#0080ff").trigger("input");');
+            $I->click('.paint-canvas');
+            $I->assertSame([0, 128, 255, 255], $I->executeJS('return Array.from(window.paintTool.engine.ctx.getImageData(300, 200, 1, 1).data);'));
+            $I->assertSame([32, 48, 96, 255], $I->executeJS('return Array.from(window.paintTool.engine.ctx.getImageData(20, 20, 1, 1).data);'));
+            $this->history($I, 'undo');
+            $this->history($I, 'undo');
+        }
+    }
+
+    public function fillRecolorsARedRectangleWithGapClose(BrowserTester $I): void
+    {
+        $I->click('[data-tool="rect"]');
+        $I->checkOption('.rect-fill-ctl');
+        $I->executeJS('window.paintTool.state.color = "#ff0000";');
+        $this->drag($I, 80, 80, 520, 320);
+        $before = $this->pixels($I);
+        $I->click('[data-tool="fill"]');
+        $I->executeJS('$(".paint-color-input").val("#000000").trigger("input");');
+        $filled = null;
+        foreach (range(0, 5) as $gap) {
+            $I->executeJS("$('.gapclose-ctl').val($gap).trigger('input');");
+            $I->click('.paint-canvas');
+            $I->assertSame([0, 0, 0, 255], $I->executeJS('return Array.from(window.paintTool.engine.ctx.getImageData(300, 200, 1, 1).data);'));
+            $I->assertSame([255, 255, 255, 255], $I->executeJS('return Array.from(window.paintTool.engine.ctx.getImageData(20, 20, 1, 1).data);'));
+            $after = $this->pixels($I);
+            $filled ??= $after;
+            $I->assertSame($filled, $after, "Gap $gap must not leave an unfilled border");
+            $this->history($I, 'undo');
+            $I->assertSame($before, $this->pixels($I));
+            $this->history($I, 'redo');
+            $I->assertSame($after, $this->pixels($I));
+            $I->makeScreenshot('paint-fill-red-to-black-gap-' . $gap);
+            $this->history($I, 'undo');
+        }
+    }
+
     public function pixelateOnlyChangesTheRectangleAndScalesWithTheImage(BrowserTester $I): void
     {
         foreach ([600, 4000] as $width) {

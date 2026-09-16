@@ -501,7 +501,7 @@
 
             let obstacleMask = null;
             if (gapClose > 0) {
-                obstacleMask = this._buildObstacleMask(data, width, height, gapClose);
+                obstacleMask = this._buildObstacleMask(data, width, height, targetColor, tol, gapClose);
             }
 
             const stack = [[x, y]];
@@ -531,35 +531,36 @@
             ctx.putImageData(imageData, 0, 0);
         }
 
-        _buildObstacleMask(data, width, height, iterations) {
-            // Initial mask: pixels with average luminance < 128 are "obstacles" (dark lines)
+        _buildObstacleMask(data, width, height, targetColor, tol, iterations) {
             let mask = new Uint8Array(width * height);
             for (let i = 0; i < width * height; i++) {
                 const idx = i * 4;
-                const lum = (data[idx] + data[idx+1] + data[idx+2]) / 3;
-                if (lum < 128) mask[i] = 1;
+                if (Math.abs(data[idx] - targetColor.r) > tol ||
+                    Math.abs(data[idx+1] - targetColor.g) > tol ||
+                    Math.abs(data[idx+2] - targetColor.b) > tol) mask[i] = 1;
             }
-            // Morphological dilate, 3x3 kernel, N iterations — each pass grows
-            // dark regions by 1 pixel in all directions, so small gaps close up.
-            for (let iter = 0; iter < iterations; iter++) {
-                const next = new Uint8Array(width * height);
-                for (let y = 0; y < height; y++) {
-                    for (let x = 0; x < width; x++) {
-                        const k = y * width + x;
-                        if (mask[k]) { next[k] = 1; continue; }
-                        if ((x > 0 && mask[k-1]) ||
-                            (x < width-1 && mask[k+1]) ||
-                            (y > 0 && mask[k-width]) ||
-                            (y < height-1 && mask[k+width]) ||
-                            (x > 0 && y > 0 && mask[k-width-1]) ||
-                            (x < width-1 && y > 0 && mask[k-width+1]) ||
-                            (x > 0 && y < height-1 && mask[k+width-1]) ||
-                            (x < width-1 && y < height-1 && mask[k+width+1])) {
-                            next[k] = 1;
+            // Close gaps with dilation followed by erosion, so boundaries don't stay thicker.
+            for (const value of [1, 0]) {
+                for (let iter = 0; iter < iterations; iter++) {
+                    const next = mask.slice();
+                    for (let y = 0; y < height; y++) {
+                        for (let x = 0; x < width; x++) {
+                            const k = y * width + x;
+                            if (mask[k] === value) continue;
+                            if ((x > 0 && mask[k-1] === value) ||
+                                (x < width-1 && mask[k+1] === value) ||
+                                (y > 0 && mask[k-width] === value) ||
+                                (y < height-1 && mask[k+width] === value) ||
+                                (x > 0 && y > 0 && mask[k-width-1] === value) ||
+                                (x < width-1 && y > 0 && mask[k-width+1] === value) ||
+                                (x > 0 && y < height-1 && mask[k+width-1] === value) ||
+                                (x < width-1 && y < height-1 && mask[k+width+1] === value)) {
+                                next[k] = value;
+                            }
                         }
                     }
+                    mask = next;
                 }
-                mask = next;
             }
             return mask;
         }
