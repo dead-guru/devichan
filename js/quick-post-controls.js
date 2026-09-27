@@ -13,77 +13,132 @@
  *
  */
 
-$(document).ready(function(){
-	var open_form = function() {
-		var thread = $(this).parent().parent().hasClass('op');
-		var id = $(this).attr('name').match(/^delete_(\d+)$/)[1];
-		var submitButton;
-		
-		if(this.checked) {
-		var deleteSection = (typeof allow_delete !== 'undefined' && allow_delete) ? 
-			'<input type="hidden" name="delete_' + id + '">' +
-			'<label for="password_' + id + '">'+_("Password")+'</label>: ' +
-			'<input id="password_' + id + '" type="password" name="password" size="11" maxlength="18">' +
-			'<input title="'+_('Delete file only')+'" type="checkbox" name="file" id="delete_file_' + id + '">' +
-				'<label for="delete_file_' + id + '">'+_('File')+'</label>' +
-			' <input type="submit" name="delete" value="'+_('Delete')+'">' +
-			'<br>' : '';
-		
-		var post_form = $('<form class="post-actions" method="post" style="margin:10px 0 0 0">' +
-			'<div style="text-align:left">' +
-				(!thread ? '<hr>' : '') +
-				deleteSection +
-				'<label for="reason_' + id + '">'+_('Reason')+'</label>: ' +
-				'<input id="reason_' + id + '" type="text" name="reason" size="20" maxlength="100">' +
-				' <input type="submit" name="report" value="'+_('Report')+'">' +
-			'</div>' +
-		'</form>');
-			post_form
-				.attr('action', $('form[name="post"]:first').attr('action'))
-				.append($('input[name=board]:first').clone())
-				.find('input:not([type="checkbox"]):not([type="submit"]):not([type="hidden"])').keypress(function(e) {
-					if(e.which == 13) {
-						e.preventDefault();
-						if($(this).attr('name') == 'password')  {
-							post_form.find('input[name=delete]').click();
-						} else if($(this).attr('name') == 'reason')  {
-							post_form.find('input[name=report]').click();
-						}
-						
-						return false;
-					}
-					
-					return true;
-				});
-			
-			post_form.find('input[type="password"]').val(localStorage.password);
-			
-			if(thread) {
-				post_form.prependTo($(this).parent().parent().find('div.body'));
-			} else {
-				post_form.appendTo($(this).parent().parent());
-				//post_form.insertBefore($(this));
-			}
-			
-			$(window).trigger('quick-post-controls', post_form);
+/* Post actions use the same fields as the board's report/delete form. */
+$(function () {
+	var $controls = $('form[name="postcontrols"]');
+	if (!$controls.length) return;
+
+	function openDialog(action, $post, button) {
+		var id = $post.children('.intro').find('input.delete').attr('name');
+		var board = $post.closest('.thread').data('board');
+		var reporting = action === 'report';
+		var title = reporting ? _('Report post No.{0}') : _('Delete post No.{0}');
+		var $dialog = $('<dialog class="post-action-dialog" aria-labelledby="post-action-title">');
+		var $close = $('<button type="button" class="post-action-close">').text('×').attr('aria-label', _('Close'));
+		var $form = $('<form class="post-actions" method="post">').attr('action', $controls.attr('action'));
+		var $fields = $('<div class="post-action-fields">');
+		var $message = $('<p class="post-action-message" role="status" aria-live="polite" hidden>');
+		var $submit = $('<input type="submit">').attr('name', action).val(reporting ? _('Report') : _('Delete'));
+		var $cancel = $('<button type="button">').text(_('Cancel'));
+		var captchaRequest;
+
+		$form.append($('<input type="hidden" name="board">').val(board),
+			$('<input type="hidden">').attr('name', id).val('on'),
+			$controls.children('input[name="mod"]').clone());
+
+		if (reporting) {
+			var reasons = [_('Spam / advertising'), _('Illegal content'), _('Wrong board'), _('Insults / harassment'), _('Other')];
+			var $reasons = $('<fieldset class="post-action-reasons">').attr('aria-label', _('Reason'));
+			reasons.forEach(function (reason, i) {
+				$reasons.append($('<label>').append(
+					$('<input type="radio" name="preset" required>').val(i), ' ', document.createTextNode(reason)));
+			});
+			var $details = $('<textarea name="details" rows="2" maxlength="250">')
+				.attr({placeholder: _('Details (optional)'), 'aria-label': _('Details (optional)')});
+			$fields.append($reasons, $details, '<input type="hidden" name="reason">');
+			$reasons.on('change', function () {
+				var other = $reasons.find(':checked').val() === '4';
+				$details.prop('required', other).attr('placeholder', other ? _('Reason') : _('Details (optional)'));
+			});
+			$form.on('submit', function (e) {
+				var preset = $reasons.find(':checked').val();
+				var details = $details.val().trim();
+				if (preset === undefined || (preset === '4' && !details)) {
+					e.preventDefault();
+					$message.text(preset === undefined ? _('Choose a reason.') : _('Enter a reason.')).prop('hidden', false);
+					return;
+				}
+				$form.find('input[name="reason"]').val(preset === '4' ? details : reasons[preset] + (details ? ': ' + details : ''));
+			});
 		} else {
-			var elm = $(this).parent().parent().find('form');
-			
-			if(elm.attr('class') == 'post-actions')
-				elm.remove();
+			$fields.append(
+				$('<p>').append($('<label>').text(_('Password') + ' ').append(
+					$('<input type="password" name="password" size="16" maxlength="18" required autocomplete="current-password">').val(localStorage.password || ''))),
+				$('<p>').append($('<label>').append('<input type="checkbox" name="file">', ' ', document.createTextNode(_('File only')))));
 		}
-	};
-	
-	var init_qpc = function() {
-		$(this).change(open_form);
-		if(this.checked)
-			$(this).trigger('change');
-	};
 
-	$('div.post input[type=checkbox].delete').each(init_qpc);
+		$dialog.append($close, $('<h2 id="post-action-title">').text(fmt(title, [id.replace('delete_', '')])), $form);
+		$form.append($fields, $message, $('<div class="post-action-buttons">').append($submit, $cancel));
+		$dialog.css('background-color', $('body').css('background-color')).appendTo('body');
 
-	$(document).on('new_post', function(e, post) {
-		$(post).find('input[type=checkbox].delete').each(init_qpc);
-	});
+		function close() { $dialog[0].close(); }
+		$close.add($cancel).on('click', close);
+		$dialog.on('click', function (e) {
+			if (e.target !== this) return;
+			var rect = this.getBoundingClientRect();
+			if (e.clientX < rect.left || e.clientX > rect.right || e.clientY < rect.top || e.clientY > rect.bottom) close();
+		}).on('close', function () {
+			if (captchaRequest) captchaRequest.abort();
+			$dialog.remove();
+			button.focus();
+		});
+		$form.on('post-action-success', function () {
+			if (reporting) {
+				$fields.prop('hidden', true);
+				$submit.hide();
+				$message.text(_('Report sent.')).prop('hidden', false);
+				$cancel.text(_('Close')).focus();
+			} else if ($post.hasClass('op') && active_page === 'thread' && !$form.find('[name="file"]').prop('checked')) {
+				window.location.href = $('#thread-return').attr('href');
+			} else {
+				window.location.reload();
+			}
+		});
+		$dialog[0].showModal();
+		$fields.find('input, textarea').first().focus();
+
+		// The report page owns CAPTCHA generation, including per-board settings.
+		if (reporting) {
+			$submit.prop('disabled', true);
+			captchaRequest = $.ajax({
+				url: configRoot + 'report/',
+				data: {board: board, post: id},
+				dataType: 'html',
+				success: function (html) {
+					var $report = $('<div>').append($.parseHTML(html)).find('#report_form');
+					if (!$report.length) {
+						$message.text(_('Could not load the report form.')).prop('hidden', false);
+						return;
+					}
+					$fields.append($report.find('.report-captcha'));
+					$submit.prop('disabled', false);
+				},
+				error: function (xhr, status) {
+					if (status !== 'abort') $message.text(_('Could not load the report form.')).prop('hidden', false);
+				}
+			});
+		}
+	}
+
+	function initMenu() {
+		Menu.add_item('reply_post_menu', _('Reply'));
+		Menu.add_item('hide_post_menu', _('Hide'));
+		Menu.add_item('report_menu', _('Report'));
+		if ($controls.find('#delete-fields').length) Menu.add_item('delete_post_menu', _('Delete'));
+		Menu.onclick(function (e, $menu) {
+			var button = e.target;
+			var $post = $(button).closest('.post');
+			$menu.find('#reply_post_menu').on('click', function () {
+				$post.children('.intro').find('a.post_no').last()[0].click();
+			});
+			$menu.find('#hide_post_menu').text($post.hasClass('post-hidden') ? _('Show') : _('Hide')).on('click', function () {
+				$(document).trigger('toggle_post', [$post]);
+			});
+			$menu.find('#report_menu').on('click', function () { openDialog('report', $post, button); });
+			$menu.find('#delete_post_menu').on('click', function () { openDialog('delete', $post, button); });
+		});
+		$controls.addClass('has-post-menu');
+	}
+	if (window.Menu) initMenu();
+	else $(document).one('menu_ready', initMenu);
 });
-

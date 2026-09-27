@@ -127,7 +127,7 @@ msgstr "Причина"
 #: ../../../../js/quick-post-controls.js:39
 #: ../../../../js/fix-report-delete-submit.js:40
 msgid "Report"
-msgstr "Повідомити адміністрацію"
+msgstr "Поскаржитися"
 
 #: ../../../../js/expand.js:20 ../../../../js/expand.js:22
 #: ../../../../js/own-board.js:97
@@ -356,7 +356,7 @@ msgstr "Щось пішло не так… Сталася невідома по�
 
 #: ../../../../js/ajax-post-controls.js:68
 msgid "Working..."
-msgstr ""
+msgstr "Надсилання..."
 
 #: ../../../../js/ajax.js:42 ../../../../js/ajax.js:45
 msgid "Posting... (#%)"
@@ -1053,7 +1053,7 @@ msgstr ""
 
 #: ../../../../js/own-board.js:103
 msgid "Reply"
-msgstr ""
+msgstr "Відповісти"
 
 #: ../../../../js/post-filter.js:207
 msgid "Hide post"
@@ -1167,13 +1167,10 @@ msgstr "ОК"
 
 #: ../../../../templates/main.js:96
 msgid "Cancel"
-msgstr "Відміна"
+msgstr "Скасувати"
 
 msgid "Wrap"
 msgstr "Огорнути"
-
-msgid "Just now"
-msgstr "Тільки що"
 
 msgid "Just now"
 msgstr "Тільки що"
@@ -1235,3 +1232,75 @@ msgstr "Автоматично оновлювати тред"
 
 msgid "Show desktop notifications on all replies"
 msgstr "Показувати сповіщення робочого стола для всіх відповідей"
+
+#: ../../../../js/post-menu.js
+msgid "Post menu"
+msgstr "Дії з повідомленням"
+
+#: ../../../../js/quick-post-controls.js
+msgid "Hide"
+msgstr "Приховати"
+
+#: ../../../../js/quick-post-controls.js
+msgid "Show"
+msgstr "Показати"
+
+#: ../../../../js/quick-post-controls.js
+msgid "Close"
+msgstr "Закрити"
+
+#: ../../../../js/quick-post-controls.js
+msgid "Report post No.{0}"
+msgstr "Скарга на повідомлення №{0}"
+
+#: ../../../../js/quick-post-controls.js
+msgid "Delete post No.{0}"
+msgstr "Видалити повідомлення №{0}"
+
+#: ../../../../js/quick-post-controls.js
+msgid "Spam / advertising"
+msgstr "Спам / реклама"
+
+#: ../../../../js/quick-post-controls.js
+msgid "Illegal content"
+msgstr "Незаконний контент"
+
+#: ../../../../js/quick-post-controls.js
+msgid "Wrong board"
+msgstr "Не та дошка"
+
+#: ../../../../js/quick-post-controls.js
+msgid "Insults / harassment"
+msgstr "Образи / цькування"
+
+#: ../../../../js/quick-post-controls.js
+msgid "Other"
+msgstr "Інше"
+
+#: ../../../../js/quick-post-controls.js
+msgid "Details (optional)"
+msgstr "Подробиці (не обов’язково)"
+
+#: ../../../../js/quick-post-controls.js
+msgid "Choose a reason."
+msgstr "Виберіть причину."
+
+#: ../../../../js/quick-post-controls.js
+msgid "Enter a reason."
+msgstr "Укажіть причину."
+
+#: ../../../../js/quick-post-controls.js
+msgid "File only"
+msgstr "лише файл"
+
+#: ../../../../js/quick-post-controls.js
+msgid "Report sent."
+msgstr "Скаргу надіслано."
+
+#: ../../../../js/quick-post-controls.js
+msgid "Could not load the report form."
+msgstr "Не вдалося завантажити форму скарги. Відкрийте її ще раз."
+
+#: ../../../../js/quick-post-controls.js
+msgid "Could not submit. Try again."
+msgstr "Не вдалося надіслати. Спробуйте ще раз."
