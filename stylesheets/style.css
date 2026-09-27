@@ -1496,7 +1496,8 @@ div.boardlist.bottom {
     font: inherit
 }
 
-.board-toolbar #updater label {
+.board-toolbar #updater label,
+.board-toolbar .tree-view-cntrl {
     display: inline-flex;
     align-items: center;
     gap: .35em;
@@ -1504,7 +1505,21 @@ div.boardlist.bottom {
     cursor: pointer
 }
 
-.board-toolbar #auto_update_status {
+.board-toolbar .tree-view-cntrl {
+    order: 1;
+    margin-left: auto;
+    padding: .2em .35em;
+    border-radius: 3px;
+    font: inherit;
+    line-height: 1.3
+}
+
+.board-toolbar .tree-view-cntrl:hover {
+    background-color: var(--theme_default_btnbghover, #8882)
+}
+
+.board-toolbar #auto_update_status,
+.board-toolbar #treeview {
     margin: 0
 }
 
@@ -1681,10 +1696,15 @@ div.board-pages a.selected {
         flex-basis: 100%
     }
 
+    .board-toolbar:has(.tree-view-cntrl) .watch-controls {
+        flex-basis: auto
+    }
+
     .board-toolbar #thread-links > a,
     .board-toolbar #thread-links_header > a,
     .board-toolbar #updater > a,
     .board-toolbar #updater label,
+    .board-toolbar .tree-view-cntrl,
     .board-toolbar button,
     .watch-controls button,
     .board-pages a,
@@ -1935,7 +1955,7 @@ table.fileboard td, table.fileboard th {
 }
 
 
-#expand-all-images, #shrink-all-images, .tree-view-cntrl {
+#expand-all-images, #shrink-all-images {
     display: inline;
     padding: 0 5px;
     font-size: .7rem

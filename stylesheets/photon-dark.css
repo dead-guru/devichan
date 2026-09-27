@@ -689,7 +689,7 @@ div.post i.fa {
     color: #b0b0b0;
 }
 
-#expand-all-images, #shrink-all-images, .tree-view-cntrl {
+#expand-all-images, #shrink-all-images {
     display: inline;
     padding: 0 5px;
     font-size: .7rem
