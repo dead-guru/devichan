@@ -74,7 +74,7 @@ msgstr "Вибрати"
 #: ../../../../js/upload-selection.js:53 ../../../../js/upload-selection.js:63
 #: ../../../../js/upload-selection.js:71 ../../../../js/upload-selection.js:73
 msgid "Remote"
-msgstr ""
+msgstr "За посиланням"
 
 #: ../../../../js/upload-selection.js:56 ../../../../js/upload-selection.js:66
 #: ../../../../js/upload-selection.js:74 ../../../../js/upload-selection.js:76
@@ -1393,3 +1393,11 @@ msgstr "Формула"
 #: ../../../../js/options/user-css.js ../../../../js/options/user-js.js
 msgid "Custom code"
 msgstr "Власний код"
+
+#: ../../../../js/paint-tool.js
+msgid "Draw (D)"
+msgstr "Малювати (D)"
+
+#: ../../../../js/emojis.js
+msgid "Add emoji"
+msgstr "Додати емодзі"

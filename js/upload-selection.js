@@ -18,6 +18,12 @@ $(function(){
   var enabled_embed = $("#upload_embed").length > 0;
   var enabled_oekaki = typeof window.oekaki != "undefined";
 
+  var select_mode = function(mode) {
+    $('#upload_selection button').each(function() {
+      $(this).attr('aria-pressed', $(this).data('mode') === mode ? 'true' : 'false');
+    });
+  };
+
   var disable_all = function() {
     $("#upload").hide();
     $("[id^=upload_file]").hide();
@@ -47,6 +53,7 @@ $(function(){
     $(".file_separator").show();
     $("[id^=upload_file]").show();
     $(".add_image").show();
+    select_mode('file');
   };
 
   enable_url = function() {
@@ -54,36 +61,44 @@ $(function(){
     $("#upload").show();
     $("#upload_url").show();
 
-    $('label[for="file_url"]').html(_("URL"));
+    $('#file_url').attr('placeholder', _('URL'));
+    select_mode('url');
   };
 
   enable_embed = function() {
     disable_all();
     $("#upload_embed").show();
+    select_mode('embed');
   };
 
   enable_oekaki = function() {
     disable_all();
 
     window.oekaki.init();
+    select_mode('oekaki');
   };
 
   if (enabled_url || enabled_embed || enabled_oekaki) {
-    $("<tr><th>"+_("Select")+"</th><td id='upload_selection'></td></tr>").insertBefore("#upload");
-    var my_html = "<a href='javascript:void(0)' onclick='enable_file(); return false;'>"+_("File")+"</a>";
+    $("<tr class='upload-modes'><th></th><td id='upload_selection'></td></tr>").insertBefore("#upload");
+    var choices = $('<div role="group"></div>').attr('aria-label', _('Select')).appendTo('#upload_selection');
+    var add_choice = function(mode, label, enable) {
+      $('<button type="button" aria-pressed="false"></button>')
+        .text(label).data('mode', mode).on('click', function() {
+          if ($(this).attr('aria-pressed') !== 'true') enable();
+        }).appendTo(choices);
+    };
+    add_choice('file', _('File'), enable_file);
     if (enabled_url) {
-      my_html += " / <a href='javascript:void(0)' onclick='enable_url(); return false;'>"+_("Remote")+"</a>";
+      add_choice('url', _('Remote'), enable_url);
     }
     if (enabled_embed) {
-      my_html += " / <a href='javascript:void(0)' onclick='enable_embed(); return false;'>"+_("Embed")+"</a>";
+      add_choice('embed', _('Embed'), enable_embed);
     }
     if (enabled_oekaki) {
-      my_html += " / <a href='javascript:void(0)' onclick='enable_oekaki(); return false;'>"+_("Oekaki")+"</a>";
+      add_choice('oekaki', _('Oekaki'), enable_oekaki);
 
       $("#confirm_oekaki_label").hide();
     }
-    $("#upload_selection").html(my_html);
-
     enable_file();
   }
 });

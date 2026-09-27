@@ -37,7 +37,7 @@
     function addEmojiButtons() {
         $('.format-text').each(function() {
             if ($(this).find('.emoji-picker-trigger').length) return;
-            $(this).append('<button type="button" class="emoji-picker-trigger" title="Add emoji" data-action="emoji">E</button>');
+            $(this).append('<button type="button" class="emoji-picker-trigger" title="' + _('Add emoji') + '" data-action="emoji">E</button>');
         });
     }
 

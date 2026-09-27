@@ -85,6 +85,11 @@ input {
     border: 2px outset #646464;
 }
 
+input[type="text"], input[type="password"], select {
+    color: var(--theme_default_text);
+    border: 1px solid var(--theme_default_border);
+}
+
 textarea {
     background-image: url('http://tohno-chan.org/stylesheets/img/awesome/animedance.gif');
     background-color: #ff6b94;
@@ -92,6 +97,11 @@ textarea {
     background-position: center;
     padding: 1px;
     border: 2px outset #646464;
+}
+
+.postform__limits {
+    color: #000;
+    background-color: #ff6b94;
 }
 
 /* Boards hover effect with dragon background */

@@ -2280,7 +2280,7 @@
 
         addToolbarButtons() {
             const self = this;
-            const btnHtml = '<button type="button" class="paint-toolbar-btn" style="font-weight:bold;font-size:11px;margin-left:3px;" title="Draw (D)">D</button>';
+            const btnHtml = '<button type="button" class="paint-toolbar-btn" title="' + _('Draw (D)') + '">D</button>';
             
             $(document).on('click', '.paint-toolbar-btn', function(e) {
                 e.preventDefault();
