@@ -74,7 +74,7 @@ a, a:visited {
     margin: 0
 }
 
-.boardlist:not(.compact-boardlist) #watch-pinned, .intro label {
+.intro label {
     display: inline
 }
 
@@ -912,7 +912,7 @@ pre {
     padding: 3px 3px 0
 }
 
-.compact-boardlist #watch-pinned, .compact-boardlist .cb-item {
+.compact-boardlist .cb-item {
     display: inline-block;
     vertical-align: middle
 }
@@ -1049,19 +1049,7 @@ pre {
     display: inline-block
 }
 
-.boardlist:not(.compact-boardlist) #watch-pinned::before {
-    content: " [ "
-}
-
-.boardlist:not(.compact-boardlist) #watch-pinned::after {
-    content: " ] "
-}
-
-.boardlist:not(.compact-boardlist) #watch-pinned a {
-    margin-left: 3pt
-}
-
-.boardlist:not(.compact-boardlist) #watch-pinned a:first-child, table.fileboard .intro a {
+table.fileboard .intro a {
     margin-left: 0
 }
 
@@ -1608,16 +1596,17 @@ div.boardlist.bottom {
     display: inline-flex;
     flex-wrap: wrap;
     max-width: 100%;
-    align-items: center;
-    gap: .5em;
-    margin-left: .65em;
-    padding-left: .65em;
-    border-left: 1px solid currentColor
+    align-items: baseline;
+    gap: .25em;
+    margin-left: .3em
 }
 
-.boardlist #watch-pinned:not(:empty)::before,
-.boardlist #watch-pinned:not(:empty)::after {
-    content: none
+.boardlist span#watch-pinned:not(:empty)::before {
+    content: "["
+}
+
+.boardlist span#watch-pinned:not(:empty)::after {
+    content: "]"
 }
 
 .boardlist #watch-pinned .watch-pin-icon {
@@ -1968,14 +1957,6 @@ table.fileboard td, table.fileboard th {
 
 .file:not(.multifile) {
     float: left
-}
-
-.boardlist:not(.compact-boardlist) #watch-pinned::before {
-    content: " ";
-}
-
-.boardlist:not(.compact-boardlist) #watch-pinned::after {
-    content: " ";
 }
 
 div.post.op, div.post.reply {
