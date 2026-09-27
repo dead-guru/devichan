@@ -2,7 +2,7 @@ ARG PHP_VERSION=8.1
 
 FROM composer:2 AS composer
 
-FROM php:${PHP_VERSION}-fpm-bullseye AS runtime
+FROM php:${PHP_VERSION}-fpm-bookworm AS runtime
 
 COPY --from=composer /usr/bin/composer /usr/bin/composer
 
@@ -31,6 +31,14 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-install exif gd zip opcache intl pdo_mysql mysqli bcmath gettext iconv mbstring curl \
     && docker-php-ext-enable igbinary redis imagick \
     && rm -rf /var/lib/apt/lists/*
+
+# IP cloaking uses RC4-40, which OpenSSL 3 provides in its legacy module.
+RUN printf '\n%s\n' \
+        '[openssl_init]' 'providers = provider_sect' \
+        '[provider_sect]' 'default = default_sect' 'legacy = legacy_sect' \
+        '[default_sect]' 'activate = 1' \
+        '[legacy_sect]' 'activate = 1' \
+        >> /etc/ssl/openssl.cnf
 
 RUN mkdir -p /var/www/inc/ \
     && printf '' > /var/www/inc/secrets.php \

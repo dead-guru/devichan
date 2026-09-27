@@ -1654,6 +1654,8 @@
 	$config['mod']['view_bumplock'] = MOD;
 	// Edit posts
 	$config['mod']['editpost'] = ADMIN;
+	// Replace post attachments
+	$config['mod']['editfile'] = MOD;
 	// "Move" a thread to another board (EXPERIMENTAL; has some known bugs)
 	$config['mod']['move'] = DISABLED;
 	// Bypass "field_disable_*" (forced anonymity, etc.)

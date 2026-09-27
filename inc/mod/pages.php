@@ -1593,11 +1593,15 @@ function mod_edit_post($board, $edit_raw_html, $postID) {
 	if (!openBoard($board))
 		error($config['error']['noboard']);
 
-	if (!hasPermission($config['mod']['editpost'], $board))
+	$can_edit = hasPermission($config['mod']['editpost'], $board);
+	$can_edit_files = hasPermission($config['mod']['editfile'], $board);
+	if (!$can_edit && !$can_edit_files)
 		error($config['error']['noaccess']);
 	
 	if ($edit_raw_html && !hasPermission($config['mod']['rawhtml'], $board))
 		error($config['error']['noaccess']);
+
+	require_once __DIR__ . '/attachments.php';
 
 	$security_token = make_secure_link_token($board . '/edit' . ($edit_raw_html ? '_raw' : '') . '/' . $postID);
 	
@@ -1608,42 +1612,79 @@ function mod_edit_post($board, $edit_raw_html, $postID) {
 	if (!$post = $query->fetch(PDO::FETCH_ASSOC))
 		error($config['error']['404']);
 	
-	if (isset($_POST['name'], $_POST['email'], $_POST['subject'], $_POST['body'])) {
-		// Remove any modifiers they may have put in
-		$_POST['body'] = remove_modifiers($_POST['body']);
-
-		// Add back modifiers in the original post
-		$modifiers = extract_modifiers($post['body_nomarkup']);
-		foreach ($modifiers as $key => $value) {
-			$_POST['body'] .= "<tinyboard $key>$value</tinyboard>";
+	if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+		if (!$can_edit_files && array_filter($_FILES, function($file) { return $file['error'] !== UPLOAD_ERR_NO_FILE; }))
+			error($config['error']['noaccess']);
+		$uploads = array('has_file' => true, 'files' => array(), 'op' => !$post['thread'], 'body_nomarkup' => '');
+		$saved = false;
+		register_shutdown_function(function() use (&$uploads, &$saved) {
+			if (!$saved) undoImage($uploads);
+		});
+		$files = $can_edit_files ? mod_prepare_attachments($uploads, $post) : array();
+		$fields = array();
+		$params = array(':id' => $postID);
+		if ($can_edit) {
+			if (!isset($_POST['name'], $_POST['email'], $_POST['subject'], $_POST['body']))
+				error($config['error']['invalid']);
+			$body = remove_modifiers($_POST['body']);
+			foreach (extract_modifiers($post['body_nomarkup']) as $key => $value)
+				$body .= "<tinyboard $key>$value</tinyboard>";
+			foreach (array('name', 'email', 'subject') as $field) {
+				$fields[] = "`$field` = :$field";
+				$params[':' . $field] = $_POST[$field];
+			}
+			$fields[] = '`body_nomarkup` = :body_nomarkup';
+			$params[':body_nomarkup'] = $edit_raw_html ? $_POST['body'] . "\n<tinyboard raw html>1</tinyboard>" : $body;
+			if ($edit_raw_html) {
+				$fields[] = '`body` = :body';
+				$params[':body'] = $_POST['body'];
+			}
 		}
-
-		if ($edit_raw_html)
-			$query = prepare(sprintf('UPDATE ``posts_%s`` SET `name` = :name, `email` = :email, `subject` = :subject, `body` = :body, `body_nomarkup` = :body_nomarkup WHERE `id` = :id', $board));
-		else
-			$query = prepare(sprintf('UPDATE ``posts_%s`` SET `name` = :name, `email` = :email, `subject` = :subject, `body_nomarkup` = :body WHERE `id` = :id', $board));
-		$query->bindValue(':id', $postID);
-		$query->bindValue(':name', $_POST['name']);
-		$query->bindValue(':email', $_POST['email']);
-		$query->bindValue(':subject', $_POST['subject']);
-		$query->bindValue(':body', $_POST['body']);
-		if ($edit_raw_html) {
-			$body_nomarkup = $_POST['body'] . "\n<tinyboard raw html>1</tinyboard>";
-			$query->bindValue(':body_nomarkup', $body_nomarkup);
+		if ($uploads['files']) {
+			$fields[] = '`files` = :files';
+			$fields[] = '`filehash` = :filehash';
+			$params[':files'] = json_encode($files);
+			$hashes = array();
+			foreach ($files as $file) {
+				if (!$file || $file['file'] === 'deleted') continue;
+				$hashes[] = $file['hash'] ?? md5_file($GLOBALS['board']['dir'] . $config['dir']['img'] . $file['file']);
+			}
+			$params[':filehash'] = count($hashes) == 1 ? $hashes[0] : md5(implode('', $hashes));
 		}
-		$query->execute() or error(db_error($query));
-		
-		if ($edit_raw_html) {
-			modLog("Edited raw HTML of post #{$postID}");
-		} else {
-			modLog("Edited post #{$postID}");
-			rebuildPost($postID);
+		if ($fields) {
+			// MyISAM tables cannot roll back. Save fields and attachments in one update.
+			$sql = sprintf('UPDATE ``posts_%s`` SET %s WHERE `id` = :id', $board, implode(', ', $fields));
+			if ($uploads['files']) {
+				$sql .= ' AND `files` = :original_files';
+				$params[':original_files'] = $post['files'];
+			}
+			$query = prepare($sql);
+			$query->execute($params) or error(db_error($query));
+			if ($uploads['files'] && !$query->rowCount()) {
+				http_response_code(409);
+				error(_('This attachment changed. Reload the post before replacing it.'));
+			}
 		}
-		
+		$saved = true;
+		$deleted = true;
+		$old_files = json_decode($post['files'], true) ?: array();
+		foreach ($uploads['files'] as $i => $file) {
+			$old = $old_files[$i];
+			foreach (array('file' => $config['dir']['img'], 'thumb' => $config['dir']['thumb']) as $key => $dir) {
+				if (empty($old[$key]) || in_array($old[$key], array('deleted', 'file', 'spoiler'))) continue;
+				$path = $GLOBALS['board']['dir'] . $dir . $old[$key];
+				if (is_file($path) && !file_unlink($path)) $deleted = false;
+			}
+			modLog("Replaced file #" . ($i + 1) . " of post #{$postID}");
+		}
+		if ($can_edit) {
+			modLog($edit_raw_html ? "Edited raw HTML of post #{$postID}" : "Edited post #{$postID}");
+			if (!$edit_raw_html) rebuildPost($postID);
+		}
+		buildThread($post['thread'] ?: $postID);
 		buildIndex();
-
 		rebuildThemes('post', $board);
-		
+		if (!$deleted) error(_('Post saved, but an old attachment could not be deleted.'));
 		header('Location: ?/' . sprintf($config['board_path'], $board) . $config['dir']['res'] . link_for($post) . '#' . $postID, true, $config['redirect_http']);
 	} else {
 		// Remove modifiers
@@ -1660,7 +1701,25 @@ function mod_edit_post($board, $edit_raw_html, $postID) {
 			$post['body'] = str_replace("\t", '&#09;', $post['body']);
 		}
 
-		mod_page(_('Edit post'), $config['file_mod_edit_post_form'], array('token' => $security_token, 'board' => $board, 'raw' => $edit_raw_html, 'post' => $post));
+		$attachments = array();
+		if ($can_edit_files) {
+			foreach (json_decode($post['files'], true) ?: array() as $i => $file) {
+				if (!$file) continue;
+				$file['url'] = $config['uri_img'] . $file['file'];
+				if (($file['thumb'] ?? null) === 'spoiler')
+					$file['preview'] = $config['root'] . $config['spoiler_image'];
+				elseif (!empty($file['thumb']) && $file['thumb'] !== 'file')
+					$file['preview'] = $config['uri_thumb'] . $file['thumb'];
+				else {
+					$ext = strtolower(pathinfo($file['file'], PATHINFO_EXTENSION));
+					$icon = $config['file_icons'][$ext] ?? $config['file_icons']['default'];
+					$file['preview'] = $config['root'] . sprintf($config['file_thumb'], $icon);
+				}
+				$file['editable'] = mod_attachment_editable($GLOBALS['board']['dir'] . $config['dir']['img'] . $file['file']);
+				$attachments[$i] = $file;
+			}
+		}
+		mod_page(_('Edit post'), $config['file_mod_edit_post_form'], array('token' => $security_token, 'board' => $board, 'raw' => $edit_raw_html, 'post' => $post, 'can_edit' => $can_edit, 'attachments' => $attachments, 'return_url' => '?/' . sprintf($config['board_path'], $board) . $config['dir']['res'] . link_for($post) . '#' . $postID));
 	}
 }
 
