@@ -159,12 +159,11 @@ form table tr td div.center {
 form[name="post"]:not(#quick-reply) > table {
     width: 40em;
     max-width: 100%;
-    table-layout: fixed;
     border-spacing: 0 .5em
 }
 
 form[name="post"]:not(#quick-reply) > table > tbody > tr > th {
-    width: 6em;
+    width: 1%;
     padding: .4em .75em .4em 0;
     vertical-align: top;
     box-sizing: border-box
@@ -192,6 +191,14 @@ form[name="post"]:not(#quick-reply) input[type="submit"] {
 
 form[name="post"]:not(#quick-reply) .post-field {
     width: 50%
+}
+
+form[name="post"] .captcha_html img {
+    display: block;
+    float: none;
+    max-width: 100%;
+    height: auto;
+    margin: 0
 }
 
 form[name="post"] #upload_url input {
@@ -314,9 +321,25 @@ form[name="post"] .format-text button:focus-visible {
 }
 
 @media (max-width: 480px) {
+    form[name="post"]:not(#quick-reply) > table,
+    form[name="post"]:not(#quick-reply) > table > tbody,
+    form[name="post"]:not(#quick-reply) > table > tbody > tr,
+    form[name="post"]:not(#quick-reply) > table > tbody > tr > th,
+    form[name="post"]:not(#quick-reply) > table > tbody > tr > td {
+        display: block;
+        width: 100%
+    }
+
+    form[name="post"]:not(#quick-reply) > table > tbody > tr {
+        margin-bottom: .5em
+    }
+
     form[name="post"]:not(#quick-reply) > table > tbody > tr > th {
-        width: 5em;
-        padding-right: .4em
+        padding: 0 0 .25em
+    }
+
+    form[name="post"]:not(#quick-reply) .upload-modes > th:empty {
+        display: none
     }
 }
 
