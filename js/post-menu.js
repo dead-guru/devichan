@@ -113,7 +113,8 @@ function addButton(post) {
 		if ($intro.find('.post-btn').length) return;
 		$intro.find('a.post_no').last().after(
 			$('<button>', {type: 'button', class: 'post-btn', title: _('Post menu'),
-				'aria-label': _('Post menu'), 'aria-haspopup': 'menu', 'aria-expanded': 'false', 'aria-controls': 'post-menu'}).text('▶')
+				'aria-label': _('Post menu'), 'aria-haspopup': 'menu', 'aria-expanded': 'false', 'aria-controls': 'post-menu'})
+				.append($('<i>', {class: 'fa fa-caret-right', 'aria-hidden': 'true'}))
 		);
 	});
 }

@@ -541,10 +541,6 @@ input, select {
         left: 0
     }
 
-    .watch-menu {
-        margin-top: 50px !important
-    }
-
     textarea#body {
         height: 100px;
         width: 100%

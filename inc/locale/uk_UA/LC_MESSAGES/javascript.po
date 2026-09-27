@@ -416,6 +416,14 @@ msgstr "Припинити стеження за ниткою"
 msgid "Watch this thread"
 msgstr "Стежити за ниткою"
 
+#: ../../../../js/watch.js
+msgid "New posts: {0}"
+msgstr "Нових дописів: {0}"
+
+#: ../../../../js/watch.js
+msgid "Thread not found"
+msgstr "Нитку не знайдено"
+
 #: ../../../../js/watch.js:260 ../../../../js/watch.js:261
 #: ../../../../js/watch.js:269 ../../../../js/watch.js:299
 #: ../../../../js/watch.js:300 ../../../../js/watch.js:308

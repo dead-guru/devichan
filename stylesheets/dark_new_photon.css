@@ -912,10 +912,6 @@ input, select {
         margin-right: 5px !important;
     }
 
-    .watch-menu {
-        margin-top: 50px !important;
-    }
-
     textarea#body {
         height: 100px;
         width: 100%;
