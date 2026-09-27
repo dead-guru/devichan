@@ -38,6 +38,7 @@ $(function () {
     time_loaded = Date.now();
 
     var updating_suspended = false;
+    var close_timer;
     var bookmarks_open = false;
     var mobile_query = window.matchMedia('(max-width: 700px)');
 
@@ -149,6 +150,7 @@ $(function () {
 
     var update_pinned = function () {
         if (updating_suspended) return;
+        clearTimeout(close_timer);
 
         if (typeof update_title != "undefined") update_title();
 
@@ -163,6 +165,20 @@ $(function () {
         }).appendTo(bl);
         var mobile = mobile_query.matches;
 
+        var schedule_close = function () {
+            clearTimeout(close_timer);
+            close_timer = setTimeout(function () {
+                bl.find('.watch-board').each(function () {
+                    if ($(this).is(':hover') || $.contains(this, document.activeElement)) return;
+                    $(this).children('a').attr('aria-expanded', 'false');
+                    $(this).find('.watch-menu').remove();
+                });
+                if (bl.is(':hover') || $.contains(bl[0], document.activeElement)) return;
+                updating_suspended = false;
+                update_pinned();
+            }, 250);
+        };
+
         bl.off('.watch');
         if (!mobile)
             bl.on("mouseenter.watch focusin.watch", function () {
@@ -170,8 +186,7 @@ $(function () {
             }).on("mouseleave.watch focusout.watch", function (e) {
                 if (e.relatedTarget && $.contains(this, e.relatedTarget)) return;
                 if ($(this).is(':hover') || $.contains(this, document.activeElement)) return;
-                updating_suspended = false;
-                update_pinned();
+                schedule_close();
             });
 
         var st = storage();
@@ -227,12 +242,14 @@ $(function () {
                         link.addClass('watch-board-link').attr('aria-expanded', 'false')
                             .wrap('<span class="watch-board"></span>');
                         link.parent().on('mouseenter.watch focusin.watch', function () {
+                            clearTimeout(close_timer);
                             if ($(this).find('.watch-menu').length) return;
+                            bl.find('.watch-board-link').attr('aria-expanded', 'false');
                             $('.cb-menu').remove();
                             var trigger = $(this).children('a').attr('aria-expanded', 'true');
                             var rect = trigger[0].getBoundingClientRect();
                             var wl = construct_watchlist_for(trigger.attr('data-board')).appendTo(this);
-                            wl.css({top: rect.bottom, left: Math.max(8, Math.min(rect.left,
+                            wl.css({top: Math.floor(rect.bottom) - 1, left: Math.max(8, Math.min(rect.left,
                                 document.documentElement.clientWidth - wl.outerWidth() - 8)),
                                 maxHeight: Math.max(80, window.innerHeight - rect.bottom - 8)});
 
@@ -241,11 +258,11 @@ $(function () {
                         }).on('mouseleave.watch focusout.watch', function (e) {
                             if (e.relatedTarget && $.contains(this, e.relatedTarget)) return;
                             if ($(this).is(':hover') || $.contains(this, document.activeElement)) return;
-                            $(this).children('a').attr('aria-expanded', 'false');
-                            $(this).find('.watch-menu').remove();
+                            schedule_close();
                         }).on('keydown.watch', function (e) {
                             if (e.key != 'Escape') return;
                             e.preventDefault();
+                            clearTimeout(close_timer);
                             $(this).children('a').focus().attr('aria-expanded', 'false');
                             $(this).find('.watch-menu').remove();
                         });
