@@ -302,10 +302,6 @@ div.post.reply div.body a {
     color: #d00
 }
 
-div.post {
-    padding-left: 20px
-}
-
 div.post div.body {
     white-space: pre-wrap
 }
@@ -2227,6 +2223,7 @@ div.post, div.thread {
     display: none !important;
 }
 
-.hide-thread-link {
+.intro .hide-thread-link {
+    margin-left: 0;
     margin-right: .35em;
 }
