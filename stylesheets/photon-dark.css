@@ -689,10 +689,14 @@ div.post i.fa {
     color: #b0b0b0;
 }
 
-#expand-all-images, #shrink-all-images, #watch-board, #watch-pin, #watch-thread, .tree-view-cntrl {
+#expand-all-images, #shrink-all-images, .tree-view-cntrl {
     display: inline;
     padding: 0 5px;
     font-size: .7rem
+}
+
+#thread-links a, #thread-links_header a {
+    text-decoration: none
 }
 
 .fileinfo, .no-new-threads, .unimportant, .unimportant * {

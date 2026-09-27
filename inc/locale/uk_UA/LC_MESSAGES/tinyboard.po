@@ -3974,3 +3974,12 @@ msgstr "файли"
 
 msgid "Create"
 msgstr "Створити"
+
+msgid "Up"
+msgstr "Вгору"
+
+msgid "Down"
+msgstr "Вниз"
+
+msgid "Search this board"
+msgstr "Пошук на дошці"

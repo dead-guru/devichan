@@ -38,6 +38,8 @@ $(function () {
     time_loaded = Date.now();
 
     var updating_suspended = false;
+    var bookmarks_open = false;
+    var mobile_query = window.matchMedia('(max-width: 700px)');
 
     var storage = function () {
         var storage = JSON.parse(localStorage.watch_js !== undefined ? localStorage.watch_js : "{}");
@@ -58,7 +60,7 @@ $(function () {
     };
 
     var is_pinned = function (boardconfig) {
-        return boardconfig.pinned || boardconfig.watched || (boardconfig.threads ? osize(boardconfig.threads) : false);
+        return !!boardconfig.pinned;
     };
     var is_boardwatched = function (boardconfig) {
         return boardconfig.watched;
@@ -69,13 +71,7 @@ $(function () {
     var toggle_pinned = function (board) {
         var st = storage();
         var bc = st[board] || {};
-        if (is_pinned(bc)) {
-            bc.pinned = false;
-            bc.watched = false;
-            bc.threads = {};
-        } else {
-            bc.pinned = true;
-        }
+        bc.pinned = !is_pinned(bc);
         st[board] = bc;
         storage_save(st);
         return bc.pinned;
@@ -86,6 +82,10 @@ $(function () {
         bc.watched = !is_boardwatched(bc) && Date.now();
         st[board] = bc;
         storage_save(st);
+        if (!bc.watched && status[board]) {
+            delete status[board].new_threads;
+            delete status[board].last_thread;
+        }
         return bc.watched;
     };
     var toggle_threadwatched = function (board, thread) {
@@ -132,13 +132,12 @@ $(function () {
                 toggle_threadwatched(board, tid);
                 if (status[board] && status[board].threads) delete status[board].threads[tid];
                 row.remove();
-                if (active_page == 'thread' && board == board_name && tid == $('input[name="thread"]').val()) {
-                    $('#watch-thread a').text(_('Watch this thread'));
-                }
+                update_controls();
+                $('#watch-bookmarks span').text(fmt(_('Bookmarks ({0})'), [osize(storage()[board].threads)]));
                 if (next.length) {
                     next.focus();
                 } else {
-                    var trigger = list.parent().children('a')[0];
+                    var trigger = list.hasClass('watch-menu-mobile') ? controls.find('button:not(#watch-bookmarks)')[0] : list.parent().children('a')[0];
                     updating_suspended = false;
                     update_pinned();
                     if (trigger && document.contains(trigger)) trigger.focus();
@@ -154,15 +153,17 @@ $(function () {
         if (typeof update_title != "undefined") update_title();
 
         var bl = $('.boardlist').first();
-        $('#watch-pinned, .watch-menu').remove();
-        bl.find('.watch-board-link').removeAttr('aria-expanded')
-            .removeClass('watch-board-link').css('font-style', '').each(function () {
-                $(this).html(this.origtitle);
-            }).unwrap();
-        var pinned = $('<div id="watch-pinned"></div>').appendTo(bl);
+        $('#watch-pinned, .watch-menu, .watch-extra').remove();
+        bl.find('.watch-board-link').removeClass('watch-board-link').removeAttr('aria-expanded').unwrap();
+        bl.find('.watch-tracked').removeClass('watch-tracked').css({'font-style': '', 'font-weight': ''}).each(function () {
+            $(this).html(this.origtitle);
+        });
+        var pinned = $('<span id="watch-pinned">').attr('aria-label', _('Pinned boards')).appendTo(bl);
+        var mobile = mobile_query.matches;
 
-        if (device_type == "desktop")
-            bl.off('.watch').on("mouseenter.watch focusin.watch", function () {
+        bl.off('.watch');
+        if (!mobile)
+            bl.on("mouseenter.watch focusin.watch", function () {
                 updating_suspended = true;
             }).on("mouseleave.watch focusout.watch", function (e) {
                 if (e.relatedTarget && $.contains(this, e.relatedTarget)) return;
@@ -173,12 +174,21 @@ $(function () {
 
         var st = storage();
         for (var i in st) {
-            if (is_pinned(st[i])) {
+            if (st[i].pinned || st[i].watched || (st[i].threads && osize(st[i].threads))) {
                 var link;
-                link = bl.find('a').filter(function () {
-                    return $(this).attr('href') == modRoot + i + '/' || $(this).attr('href') == modRoot + i + '/index.html';
-                }).first();
-                if (!link.length) link = $('<a href="' + modRoot + i + '/" class="cb-item cb-cat">/' + i + '/</a>').appendTo(pinned);
+                if (st[i].pinned) {
+                    if (!pinned.children().length) {
+                        $('<i class="fa-solid fa-thumbtack watch-pin-icon" aria-hidden="true">').appendTo(pinned);
+                    }
+                    link = $('<a>').attr('href', modRoot + i + '/').text('/' + i + '/').appendTo(pinned);
+                } else {
+                    link = bl.find('a').filter(function () {
+                        return $(this).attr('href') == modRoot + i + '/' || $(this).attr('href') == modRoot + i + '/index.html';
+                    }).first();
+                    if (!link.length) link = $('<a class="watch-extra cb-item cb-cat">')
+                        .attr('href', modRoot + i + '/').text('/' + i + '/').appendTo(bl);
+                }
+                link.addClass('watch-tracked');
 
                 if (link[0].origtitle === undefined) {
                     link[0].origtitle = link.html();
@@ -191,7 +201,8 @@ $(function () {
                     if (status && status[i] && status[i].new_threads) {
                         link.html(link.html() + " (" + status[i].new_threads + ")");
                     }
-                } else if (st[i].threads && osize(st[i].threads)) {
+                }
+                if (st[i].threads && osize(st[i].threads)) {
                     link.css("font-style", "italic");
 
                     link.attr("data-board", i);
@@ -203,12 +214,12 @@ $(function () {
                                 new_posts += status[i].threads[tid];
                             }
                         }
-                        if (new_posts > 0) {
+                        if (new_posts > 0 && !st[i].watched) {
                             link.html(link.html() + " (" + new_posts + ")");
                         }
                     }
 
-                    if (device_type == "desktop") {
+                    if (!mobile) {
                         link.addClass('watch-board-link').attr('aria-expanded', 'false')
                             .wrap('<span class="watch-board"></span>');
                         link.parent().on('mouseenter.watch focusin.watch', function () {
@@ -239,14 +250,23 @@ $(function () {
             }
         }
 
-        if (device_type == "mobile" && (active_page == 'thread' || active_page == 'index')) {
+        $('#watch-bookmarks').remove();
+        if (mobile && (active_page == 'thread' || active_page == 'index')) {
             var board = $('form[name="post"] input[name="board"]').val();
             var boardData = storage()[board];
 
             $('.watch-menu').remove();
 
             if (boardData && boardData.threads && osize(boardData.threads)) {
-                construct_watchlist_for(board).addClass('watch-menu-mobile').insertAfter('#watch-thread, #watch-board');
+                var menu = construct_watchlist_for(board).addClass('watch-menu-mobile')
+                    .attr('id', 'watch-mobile-list').prop('hidden', !bookmarks_open).insertAfter('.watch-controls');
+                $('<button id="watch-bookmarks" type="button"><i class="fa-solid fa-bookmark" aria-hidden="true"></i><span></span></button>')
+                    .attr({'aria-expanded': bookmarks_open, 'aria-controls': 'watch-mobile-list'})
+                    .appendTo('.watch-controls').on('click', function () {
+                        bookmarks_open = !bookmarks_open;
+                        $(this).attr('aria-expanded', bookmarks_open);
+                        menu.prop('hidden', !bookmarks_open);
+                    }).find('span').text(fmt(_('Bookmarks ({0})'), [osize(boardData.threads)]));
             }
         }
     };
@@ -269,7 +289,8 @@ $(function () {
                     }, sched);
                     sched += sched_diff;
                 })(i);
-            } else if (st[i].threads) {
+            }
+            if (st[i].threads) {
                 for (var j in st[i].threads) {
                     (function (i, j) {
                         setTimeout(function () {
@@ -292,6 +313,8 @@ $(function () {
     };
 
     var handle_board_json = function (board, json) {
+        var bc = storage()[board];
+        if (!bc || !bc.watched) return;
         var last_thread;
 
         var new_threads = 0;
@@ -316,7 +339,7 @@ $(function () {
                     if (cont) continue;
                 }
 
-                if (thread.last_modified > storage()[board].watched / 1000) {
+                if (thread.last_modified > bc.watched / 1000) {
                     last_thread = thread.no;
 
                     new_threads++;
@@ -364,38 +387,56 @@ $(function () {
         }
     };
 
-    if (active_page == "thread") {
-        var board = $('form[name="post"] input[name="board"]').val();
-        var thread = $('form[name="post"] input[name="thread"]').val();
+    var board = $('form[name="post"] input[name="board"]').val();
+    var thread = $('form[name="post"] input[name="thread"]').val();
+    var controls = $('<span class="watch-controls">');
 
-        var boardconfig = storage()[board] || {};
+    var update_controls = function () {
+        var bc = storage()[board] || {};
+        $('#watch-pin').attr({
+            'aria-pressed': is_pinned(bc),
+            title: is_pinned(bc) ? _('Unpin from top') : _('Keep this board in the top board list')
+        }).find('span').text(_('Pin to top'));
+        $('#watch-board').attr({
+            'aria-pressed': !!is_boardwatched(bc),
+            title: is_boardwatched(bc) ? _('Stop watching this board') : _('Mark threads with new posts in the board list')
+        }).find('span').text(_('Watch this board'));
+        $('#watch-thread').attr({
+            'aria-pressed': !!is_threadwatched(bc, thread),
+            title: is_threadwatched(bc, thread) ? _('Stop watching this thread') : _('Watch this thread')
+        }).find('span').text(is_threadwatched(bc, thread) ? _('Bookmarked') : _('Bookmark thread'));
+    };
 
-        $('hr:first').before('<div id="watch-thread" style="text-align:right"><a class="unimportant" href="javascript:void(0)">-</a></div>');
-        $('#watch-thread a').html(is_threadwatched(boardconfig, thread) ? _("Stop watching this thread") : _("Watch this thread")).click(function () {
-            $(this).html(toggle_threadwatched(board, thread) ? _("Stop watching this thread") : _("Watch this thread"));
-            update_pinned();
-        });
+    if (active_page == 'thread' || active_page == 'index') {
+        controls.appendTo('#thread-interactions_header');
+        if (active_page == 'thread') {
+            $('<button id="watch-thread" type="button"><i class="fa-solid fa-bookmark" aria-hidden="true"></i><span></span></button>')
+                .appendTo(controls).on('click', function () {
+                    toggle_threadwatched(board, thread);
+                    update_controls();
+                    update_pinned();
+                });
+        } else {
+            $('<button id="watch-pin" type="button"><i class="fa-solid fa-thumbtack" aria-hidden="true"></i><span></span></button>')
+                .appendTo(controls).on('click', function () {
+                    toggle_pinned(board);
+                    update_controls();
+                    update_pinned();
+                });
+            $('<button id="watch-board" type="button"><i class="fa-solid fa-bell" aria-hidden="true"></i><span></span></button>')
+                .appendTo(controls).on('click', function () {
+                    toggle_boardwatched(board);
+                    update_controls();
+                    update_pinned();
+                });
+        }
+        update_controls();
     }
-    if (active_page == "index") {
-        var board = $('form[name="post"] input[name="board"]').val();
 
-        var boardconfig = storage()[board] || {};
-
-        $('hr:first').before('<div id="watch-pin" style="text-align:right"><a class="unimportant" href="javascript:void(0)">-</a></div>');
-        $('#watch-pin a').html(is_pinned(boardconfig) ? _("Unpin this board") : _("Pin this board")).click(function () {
-            $(this).html(toggle_pinned(board) ? _("Unpin this board") : _("Pin this board"));
-            $('#watch-board a').html(is_boardwatched(boardconfig) ? _("Stop watching this board") : _("Watch this board"));
-            update_pinned();
-        });
-
-        $('hr:first').before('<div id="watch-board" style="text-align:right"><a class="unimportant" href="javascript:void(0)">-</a></div>');
-        $('#watch-board a').html(is_boardwatched(boardconfig) ? _("Stop watching this board") : _("Watch this board")).click(function () {
-            $(this).html(toggle_boardwatched(board) ? _("Stop watching this board") : _("Watch this board"));
-            $('#watch-pin a').html(is_pinned(boardconfig) ? _("Unpin this board") : _("Pin this board"));
-            update_pinned();
-        });
-
-    }
+    mobile_query.addEventListener('change', function () {
+        updating_suspended = false;
+        update_pinned();
+    });
 
     var check_post = function (frame, post) {
         return post.length && $(frame).scrollTop() + $(frame).height() >=

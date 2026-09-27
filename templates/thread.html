@@ -51,14 +51,10 @@
 	{% include 'post_form.html' %}
 
 	{% if config.global_message %}<hr /><div class="blotter">{{ config.global_message }}</div>{% endif %}
-	<div id="thread-interactions_header">
-			<span id="thread-links_header">
-				<a href="{{ return }}" title="Return"><i class="fa-solid fa-arrow-left-long"></i></a>
-				<a href="#bottom"  title="Go To Bottom"><i class="fa-solid fa-angles-down"></i></a>
-                		{% if config.catalog_link %}
-					<a href="{{ config.root }}{% if mod %}{{ config.file_mod }}?/{% endif %}{{ board.dir }}{{ config.catalog_link }}" title="Catalog"><i class="fa-solid fa-grip"></i></a>
-		                {% endif %}
-			</span>
+	<div id="thread-interactions_header" class="board-toolbar">
+		<span id="thread-links_header">
+			{% include 'navigation_links.html' with {'direction': 'bottom'} %}
+		</span>
 	</div>
 	<hr>
 	<form name="postcontrols" action="{{ config.post_url }}" method="post">
@@ -67,13 +63,9 @@
 
 		{{ body }}
 
-		<div id="thread-interactions">
+		<div id="thread-interactions" class="board-toolbar">
 			<span id="thread-links">
-				<a id="thread-return" href="{{ return }}"><i class="fa-solid fa-arrow-left-long"></i></a>
-				<a id="thread-top" href="#top"><i class="fa-solid fa-angle-up"></i></a>
-                		{% if config.catalog_link %}
-					<a id="thread-catalog" href="{{ config.root }}{% if mod %}{{ config.file_mod }}?/{% endif %}{{ board.dir }}{{ config.catalog_link }}"><i class="fa-solid fa-grip"></i></a>
-		                {% endif %}
+				{% include 'navigation_links.html' with {'direction': 'top'} %}
 			</span>
 
 			<span id="thread-quick-reply">

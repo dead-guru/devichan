@@ -22,12 +22,13 @@ if (active_page == 'index' && (""+document.location).match(/\/(index\.html)?(\?|
 
   var handle_one_thread = function() {
     if ($(this).find(".new-posts").length <= 0) {
-      $(this).find("br.clear").before("<div class='new-posts no-new-threads'>"+_("No new posts.")+"</div>");
+      $(this).find("br.clear").before('<div class="new-posts" hidden></div>');
     }
   };
 
   $(function() {
-    $("hr:first").before("<div class='new-threads no-new-threads'>"+_("No new threads.")+"</div>");
+    $('<span class="new-threads" hidden><button type="button"></button></span>')
+      .appendTo('#thread-interactions_header').find('button').on('click', fetch_new_threads);
 
     $('div[id^="thread_"]').each(handle_one_thread);
 
@@ -68,14 +69,7 @@ if (active_page == 'index' && (""+document.location).match(/\/(index\.html)?(\?|
   });
 
   var update_new_threads = function(i) {
-    var msg = i ?
-      (fmt(_("There are {0} new threads."), [i]) + " <a href='javascript:void(0)'>"+_("Click to expand")+"</a>.") :
-      _("No new threads.");
-
-    if ($(".new-threads").html() != msg) {
-      $(".new-threads").html(msg);
-      $(".new-threads a").click(fetch_new_threads);
-    }
+    $('.new-threads').prop('hidden', i <= 0).find('button').text(fmt(_('New threads: {0}'), [i]));
   };
 
   var update_new_posts = function(i, th) {
@@ -83,6 +77,7 @@ if (active_page == 'index' && (""+document.location).match(/\/(index\.html)?(\?|
       (fmt(_("There are {0} new posts in this thread."), [i])+" <a href='javascript:void(0)'>"+_("Click to expand")+"</a>.") :
       _("No new posts.");
 
+    $(th).find('.new-posts').prop('hidden', i <= 0);
     if ($(th).find(".new-posts").html() != msg) {
       $(th).find(".new-posts").html(msg);
       $(th).find(".new-posts a").click(window.expand_fun);
@@ -90,6 +85,7 @@ if (active_page == 'index' && (""+document.location).match(/\/(index\.html)?(\?|
   };
 
   var fetch_new_threads = function() {
+    var button = $('.new-threads button').prop('disabled', true).text(_('Loading...'));
     $.get(""+document.location, function(data) {
       $(data).find('div[id^="thread_"]').reverse().each(function() {
         if ($("#"+$(this).attr("id")).length) {
@@ -100,6 +96,11 @@ if (active_page == 'index' && (""+document.location).match(/\/(index\.html)?(\?|
 	  $(document).trigger("new_post", this);
 	}
       });
+      update_new_threads(0);
+    }).fail(function() {
+      button.text(_('Retry loading threads'));
+    }).always(function() {
+      button.prop('disabled', false);
     });
   };
 }();
