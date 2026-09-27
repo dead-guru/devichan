@@ -16,6 +16,8 @@ $(document).ready(function() {
       add: function(key, description, tab) {
         tab || (tab = 'general')
 
+        if (!window.Options || !Options.get_tab(tab)) return
+
         var checked = App.options.get(key)
         var $el = $(
           '<div>' +

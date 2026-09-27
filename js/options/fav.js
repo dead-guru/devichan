@@ -1,4 +1,5 @@
 $(document).ready(function(){
+if (!window.Options) return;
 //Creating functions
 var generateList = function(){
 	var favStor = [];

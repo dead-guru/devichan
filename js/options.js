@@ -9,59 +9,45 @@
  */
 
 +function () {
-
-    var options_button, options_handler, options_background, options_div
-        , options_close, options_tablist, options_tabs, options_current_tab;
-
-    var Options = {};
-    window.Options = Options;
+    var options_button, options_current_tab, previous_focus;
+    var options_tabs = {};
+    var Options = window.Options = {};
 
     var first_tab = function () {
-        for (var i in options_tabs) {
-            return i;
-        }
-        return false;
+        for (var id in options_tabs) return id;
     };
 
     Options.show = function () {
-        if (!options_current_tab) {
-            Options.select_tab(first_tab(), true);
-        }
-        options_handler.fadeIn();
-    };
-    Options.hide = function () {
-        options_handler.fadeOut();
+        if (!options_current_tab && !Options.select_tab(first_tab())) return false;
+        previous_focus = document.activeElement;
+        options_handler.show();
+        $('body').addClass('options-open');
+        options_current_tab.icon.focus();
+        return false;
     };
 
-    options_tabs = {};
+    Options.hide = function () {
+        options_handler.hide();
+        $('body').removeClass('options-open');
+        if (previous_focus && document.documentElement.contains(previous_focus)) previous_focus.focus();
+    };
 
     Options.add_tab = function (id, icon, name, content) {
-        var tab = {};
-
-        if (typeof content == "string") {
-            content = $("<div>" + content + "</div>");
-        }
-
-        tab.id = id;
-        tab.name = name;
-        //<i class=""></i>
-        tab.icon = $("<div class='options_tab_icon'><i class='" + icon + "'></i><div>" + name + "</div></div>");
-        tab.content = $("<div class='options_tab'></div>").css("display", "none");
-
-        tab.content.appendTo(options_div);
-
-        tab.icon.on("click", function () {
+        var tab = {id: id, name: name};
+        tab.icon = $('<button type="button" class="options_tab_icon" role="tab"></button>')
+            .attr({id: 'options-tab-' + id, 'aria-controls': 'options-panel-' + id, 'aria-selected': 'false', tabindex: -1})
+            .append($('<i aria-hidden="true"></i>').addClass(icon), $('<span></span>').text(name));
+        tab.content = $('<div class="options_tab" role="tabpanel" tabindex="0"></div>')
+            .attr({id: 'options-panel-' + id, 'aria-labelledby': 'options-tab-' + id})
+            .hide().appendTo(options_div);
+        $('<h2></h2>').text(name).appendTo(tab.content);
+        if (content) tab.content.append(content);
+        tab.icon.on('click', function () {
             Options.select_tab(id);
         }).appendTo(options_tablist);
-
-        $("<h2>" + name + "</h2>").appendTo(tab.content);
-
-        if (content) {
-            content.appendTo(tab.content);
-        }
-
         options_tabs[id] = tab;
-
+        if (!options_current_tab) Options.select_tab(id);
+        if (options_button) options_button.show();
         return tab;
     };
 
@@ -70,56 +56,83 @@
     };
 
     Options.extend_tab = function (id, content) {
-        if (typeof content == "string") {
-            content = $("<div>" + content + "</div>");
-        }
-
-        content.appendTo(options_tabs[id].content);
-
-        return options_tabs[id];
-    };
-
-    Options.select_tab = function (id, quick) {
-        if (options_current_tab) {
-            if (options_current_tab.id == id) {
-                return false;
-            }
-            options_current_tab.content.fadeOut();
-            options_current_tab.icon.removeClass("active");
-        }
         var tab = options_tabs[id];
-        options_current_tab = tab;
-        options_current_tab.icon.addClass("active");
-        tab.content[quick ? "show" : "fadeIn"]();
-
+        if (!tab) return false;
+        tab.content.append(content);
         return tab;
     };
 
-    options_handler = $("<div id='options_handler'></div>").css("display", "none");
-    options_background = $("<div id='options_background'></div>").on("click", Options.hide).appendTo(options_handler);
-    options_div = $("<div id='options_div'></div>").appendTo(options_handler);
-    options_close = $("<a id='options_close' href='javascript:void(0)'><i class='fa fa-times'></i></a>")
-        .on("click", Options.hide).appendTo(options_div);
-    options_tablist = $("<div id='options_tablist'></div>").appendTo(options_div);
-
-
-    $(function () {
-        options_button = $("<a href='javascript:void(0)' title='" + _("Options") + "'>[" + _("Options") + "]</a>").css("float", "right");
-
-        if ($(".boardlist.compact-boardlist").length) {
-            options_button.addClass("cb-item cb-fa").html("<i class='fa fa-gear'></i>");
+    Options.select_tab = function (id) {
+        var tab = options_tabs[id];
+        if (!tab) return false;
+        if (options_current_tab) {
+            options_current_tab.content.hide();
+            options_current_tab.icon.removeClass('active').attr({'aria-selected': 'false', tabindex: -1});
         }
+        options_current_tab = tab;
+        tab.icon.addClass('active').attr({'aria-selected': 'true', tabindex: 0});
+        tab.content.show();
+        return tab;
+    };
 
-        if ($(".boardlist:first").length) {
-            options_button.appendTo($(".boardlist:first"));
-        } else {
-            options_button.prependTo($(document.body));
+    var options_handler = $('<div id="options_handler"></div>').hide();
+    $('<div id="options_background"></div>').on('click', Options.hide).appendTo(options_handler);
+    var options_div = $('<div id="options_div" role="dialog" aria-modal="true"></div>')
+        .attr('aria-label', _('Options')).appendTo(options_handler);
+    $('<button type="button" id="options_close">×</button>')
+        .attr({'aria-label': _('Close'), title: _('Close')}).on('click', Options.hide).appendTo(options_div);
+    var options_tablist = $('<div id="options_tablist" role="tablist"></div>')
+        .attr('aria-label', _('Options')).appendTo(options_div);
+    var mobile = window.matchMedia('(max-width: 600px)');
+    function updateOrientation() {
+        options_tablist.attr('aria-orientation', mobile.matches ? 'horizontal' : 'vertical');
+    }
+    mobile.addEventListener('change', updateOrientation);
+    updateOrientation();
+
+    options_tablist.on('keydown', '[role="tab"]', function (event) {
+        var tabs = options_tablist.children();
+        var index = tabs.index(this);
+        switch (event.key) {
+            case 'ArrowLeft': case 'ArrowUp': index--; break;
+            case 'ArrowRight': case 'ArrowDown': index++; break;
+            case 'Home': index = 0; break;
+            case 'End': index = tabs.length - 1; break;
+            default: return;
         }
-
-        options_button.on("click", Options.show);
-
-        options_handler.appendTo($(document.body));
+        event.preventDefault();
+        tabs.eq((index + tabs.length) % tabs.length).trigger('click').focus();
     });
 
+    options_handler.on('keydown', function (event) {
+        if (event.key === 'Escape') {
+            event.preventDefault();
+            event.stopPropagation();
+            Options.hide();
+        } else if (event.key === 'Tab') {
+            var controls = options_div.find('a[href], button, input, select, textarea, [tabindex]')
+                .filter(':visible').not(':disabled, [tabindex="-1"]');
+            var first = controls[0], last = controls[controls.length - 1];
+            if (event.shiftKey && event.target === first) {
+                event.preventDefault();
+                last.focus();
+            } else if (!event.shiftKey && event.target === last) {
+                event.preventDefault();
+                first.focus();
+            }
+        }
+    });
 
+    $(function () {
+        options_button = $('<a href="#options"></a>')
+            .attr({title: _('Options'), 'aria-label': _('Options'), 'aria-haspopup': 'dialog'})
+            .text('[' + _('Options') + ']').css('float', 'right').toggle(!!first_tab());
+        if ($('.boardlist.compact-boardlist').length) {
+            options_button.addClass('cb-item cb-fa').html('<i class="fa fa-gear" aria-hidden="true"></i>');
+        }
+        if ($('.boardlist:first').length) options_button.appendTo($('.boardlist:first'));
+        else options_button.prependTo(document.body);
+        options_button.on('click', Options.show);
+        options_handler.appendTo(document.body);
+    });
 }();

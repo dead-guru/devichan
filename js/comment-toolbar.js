@@ -210,7 +210,7 @@ if (active_page === 'thread' || active_page === 'index') {
 
 		self.add_rule = function(rule, index){
 			if (rule === undefined) rule = {
-				text: 'New Rule',
+				text: _('New Rule'),
 				short: '',
 				key: '',
 				multiline:false,
@@ -230,22 +230,26 @@ if (active_page === 'thread' || active_page === 'index') {
 				}
 			}
 			if (window.Options && Options.get_tab('formatting')){
-				var html = $('<div class="format_rule" name="'+ index +'"></div>').html('\
-				<input type="text" name="text" class="format_option" size="10" value=\"'+ rule.text.replace(/"/g, '&quot;') +'\">\
-				<input type="text" name="short" class="format_option" size="10" value=\"'+ rule.short.replace(/"/g, '&quot;') +'\">\
-				<input type="checkbox" name="multiline" class="format_option" '+ (rule.multiline ? 'checked' : '') +'>\
-				<input type="checkbox" name="exclusiveline" class="format_option" '+ (rule.exclusiveline ? 'checked' : '') +'>\
-				<input type="text" name="prefix" class="format_option" size="8" value=\"'+ (rule.prefix ? rule.prefix.replace(/"/g, '&quot;') : '') +'\">\
-				<input type="text" name="suffix" class="format_option" size="8" value=\"'+ (rule.suffix ? rule.suffix.replace(/"/g, '&quot;') : '') +'\">\
-				<input type="text" name="key" class="format_option" size="2" maxlength="1" value=\"'+ rule.key +'\">\
-				<input type="button" value="X" onclick="if(confirm(\'Do you wish to remove the '+ rule.text +' formatting rule?\'))$(this).parent().remove();">\
-				');
-
-				if ($('.format_rule').length > 0) {
-					$('.format_rule').last().after(html);
-				} else {
-					Options.extend_tab('formatting', html);
-				}
+				var row = $('<div class="format_rule"></div>').attr('name', index);
+				var fields = [
+					['text', _('Rule name')], ['short', _('Short label')],
+					['multiline', _('Allow line breaks')], ['exclusiveline', _('Separate line')],
+					['prefix', _('Prefix')], ['suffix', _('Suffix')], ['key', _('Shortcut')]
+				];
+				fields.forEach(function (field) {
+					var name = field[0];
+					var checkbox = name === 'multiline' || name === 'exclusiveline';
+					var label = $('<label></label>').text(field[1]).appendTo(row);
+					var input = $('<input class="format_option">').attr({name: name, type: checkbox ? 'checkbox' : 'text'}).appendTo(label);
+					if (checkbox) input.prop('checked', rule[name]);
+					else input.val(rule[name] || '');
+					if (name === 'key') input.attr('maxlength', 1);
+				});
+				$('<button type="button">×</button>').attr({title: _('Remove rule'), 'aria-label': _('Remove rule')})
+					.on('click', function () {
+						if (confirm(fmt(_('Remove formatting rule "{0}"?'), [row.find('[name="text"]').val()]))) row.remove();
+					}).appendTo(row);
+				Options.get_tab('formatting').content.find('.format_rules').append(row);
 			}
 		};
 
@@ -291,15 +295,16 @@ if (active_page === 'thread' || active_page === 'index') {
 
 		// setup code to be ran when page is ready (work around for main.js compilation).
 		$(document).ready(function(){
-			// Add settings to Options panel general tab
-			if (window.Options && Options.get_tab('general')) {
+			if (window.Options && !Options.get_tab('formatting')) {
+				Options.add_tab('formatting', 'fa fa-align-left', _('Formatting Options'));
+			}
+			if (window.Options && Options.get_tab('formatting')) {
 				var s1 = '#formatText_keybinds>input', s2 = '#formatText_toolbar>input', e = 'change';
-				Options.extend_tab('general', '\
-					<fieldset>\
-						<legend>Formatting Options</legend>\
+				Options.extend_tab('formatting', '\
+					<div class="format-settings">\
 						<label id="formatText_keybinds"><input type="checkbox">' + _('Enable formatting keybinds') + '</label>\
 						<label id="formatText_toolbar"><input type="checkbox">' + _('Show formatting toolbar') + '</label>\
-					</fieldset>\
+					</div>\
 				');
 			} else {
 				var s1 = '#formatText_keybinds', s2 = '#formatText_toolbar', e = 'click';
@@ -307,48 +312,23 @@ if (active_page === 'thread' || active_page === 'index') {
 				$('hr:first').before('<div id="formatText_toolbar" style="text-align:right"><a class="unimportant" href="javascript:void(0)">'+ _('Show formatting toolbar') +'</a></div>');
 			}
 
-			// add the tab for customizing the format settings
-			if (window.Options && !Options.get_tab('formatting')) {
-				Options.add_tab('formatting', 'fa fa-angle-right', _('Customize Formatting'));
-				Options.extend_tab('formatting', '\
-				<style>\
-					.format_option{\
-						margin-right:5px;\
-						overflow:initial;\
-						font-size:15px;\
-					}\
-					.format_option[type="text"]{\
-						text-align:center;\
-						padding-bottom: 2px;\
-						padding-top: 2px;\
-					}\
-					.format_option:last-child{\
-						margin-right:0;\
-					}\
-					fieldset{\
-						margin-top:5px;\
-					}\
-				</style>\
-				');
-
-				// Data control row
-				Options.extend_tab('formatting', '\
-				<button onclick="formatText.add_rule();">'+_('Add Rule')+'</button>\
-				<button onclick="formatText.save_rules();">'+_('Save Rules')+'</button>\
-				<button onclick="formatText.reset_rules(false);">'+_('Revert')+'</button>\
-				<button onclick="formatText.reset_rules(true);">'+_('Reset to Default')+'</button>\
-				');
-
-				// Descriptor row
-				Options.extend_tab('formatting', '\
-					<span class="format_option" style="margin-left:25px; font-weight: bold">Name</span>\
-					<span class="format_option" style="margin-left:45px; font-weight: bold">Short</span>\
-					<span class="format_option" style="margin-left:25px; font-weight: bold" title="Multi-line: Allow formatted area to contain linebreaks.">ML</span>\
-					<span class="format_option" style="margin-left:0px; font-weight: bold" title="Exclusive-line: Require formatted area to start after and end before a linebreak.">EL</span>\
-					<span class="format_option" style="margin-left:15px; font-weight: bold" title="Text injected at the start of a format area.">Prefix</span>\
-					<span class="format_option" style="margin-left:25px; font-weight: bold" title="Text injected at the end of a format area.">Suffix</span>\
-					<span class="format_option" style="margin-left:15px; font-weight: bold" title="Optional keybind value to allow keyboard shortcut access.">Key</span>\
-				');
+			if (window.Options) {
+				Options.extend_tab('formatting', $('<style></style>').text(
+					'#options-panel-formatting .format-settings { margin-bottom: 16px; }' +
+					'#options-panel-formatting .format_rule { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; padding: 16px 0; border-top: 1px solid; }' +
+					'#options-panel-formatting .format_rule label { margin: 0; font-size: 12px; }' +
+					'#options-panel-formatting .format_rule input { display: block; width: 100%; margin: 4px 0 0; }' +
+					'#options-panel-formatting .format_rule input[type="checkbox"] { width: auto; }' +
+					'#options-panel-formatting .format_rule button { justify-self: end; align-self: end; }' +
+					'@media (max-width: 600px) { #options-panel-formatting .format_rule { grid-template-columns: repeat(2, minmax(0, 1fr)); } }'
+				));
+				var actions = $('<div class="options-actions"></div>');
+				$('<button type="button"></button>').text(_('Add Rule')).on('click', function () { self.add_rule(); }).appendTo(actions);
+				$('<button type="button"></button>').text(_('Save Rules')).on('click', self.save_rules).appendTo(actions);
+				$('<button type="button"></button>').text(_('Revert')).on('click', function () { self.reset_rules(false); }).appendTo(actions);
+				$('<button type="button"></button>').text(_('Reset to Default')).on('click', function () { self.reset_rules(true); }).appendTo(actions);
+				Options.extend_tab('formatting', actions);
+				Options.extend_tab('formatting', '<div class="format_rules"></div>');
 
 				// Rule rows
 				var rules = JSON.parse(localStorage.formatText_rules_1);
@@ -362,10 +342,10 @@ if (active_page === 'thread' || active_page === 'index') {
 			$(s1).on(e, function(e) {
 				if (!localStorage.formatText_keybinds_1 || localStorage.formatText_keybinds_1 == 'false') {
 					localStorage.formatText_keybinds_1 = 'true';
-					if (window.Options && Options.get_tab('general')) e.target.checked = true;
+					if (window.Options && Options.get_tab('formatting')) e.target.checked = true;
 				} else {
 					localStorage.formatText_keybinds_1 = 'false';
-					if (window.Options && Options.get_tab('general')) e.target.checked = false;
+					if (window.Options && Options.get_tab('formatting')) e.target.checked = false;
 				}
 			});
 
@@ -373,17 +353,17 @@ if (active_page === 'thread' || active_page === 'index') {
 			$(s2).on(e, function(e) {
 				if (!localStorage.formatText_toolbar_1 || localStorage.formatText_toolbar_1 == 'false') {
 					localStorage.formatText_toolbar_1 = 'true';
-					if (window.Options && Options.get_tab('general')) e.target.checked = true;
+					if (window.Options && Options.get_tab('formatting')) e.target.checked = true;
 					formatText.build_toolbars();
 				} else {
 					localStorage.formatText_toolbar_1 = 'false';
-					if (window.Options && Options.get_tab('general')) e.target.checked = false;
+					if (window.Options && Options.get_tab('formatting')) e.target.checked = false;
 					$('.format-text').remove();
 				}
 			});
 
 			// make sure the tab settings are switch properly at loadup
-			if (window.Options && Options.get_tab('general')) {
+			if (window.Options && Options.get_tab('formatting')) {
 				if (localStorage.formatText_keybinds_1 == 'true') $(s1)[0].checked = true;
 				else $(s1)[0].checked = false;
 				if (localStorage.formatText_toolbar_1 == 'true') $(s2)[0].checked = true;

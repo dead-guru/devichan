@@ -715,12 +715,8 @@ msgid "Erase"
 msgstr "Очистити"
 
 #: ../../../../js/options/general.js:41
-msgid ""
-"Are you sure you want to erase your storage? This involves your hidden "
-"threads, watched threads, post password and many more."
-msgstr ""
-"Ви впевнені, що хочете очистити своє сховище? Списки прихованих і "
-"переглянутих ниток, пароль дописування та багато іншого буде анульовано."
+msgid "Are you sure you want to erase your storage? This involves your hidden threads, watched threads, post password and many more."
+msgstr "Очистити локальні дані? Буде видалено закладки, приховані нитки, пароль дописів та інші збережені налаштування."
 
 #: ../../../../js/options/user-css.js:14
 msgid "User CSS"
@@ -735,12 +731,8 @@ msgid "Enter here your own CSS rules..."
 msgstr "Введіть власні правила CSS…"
 
 #: ../../../../js/options/user-css.js:46
-msgid ""
-"If you want to make a redistributable style, be sure to\n"
-"   have a Yotsuba B theme selected."
-msgstr ""
-"Якщо хочете, щоб ваш стиль був переносним,\n"
-"впевніться, що обрано тему Yotsuba B."
+msgid "If you want to make a redistributable style, be sure to have a Yotsuba B theme selected."
+msgstr "Щоб поділитися стилем, створюйте його на основі теми Yotsuba B."
 
 #: ../../../../js/options/user-css.js:47
 msgid "You can include CSS files from remote servers, for example:"
@@ -759,21 +751,16 @@ msgid "Enter here your own Javascript code..."
 msgstr "Введіть власний код Javascript…"
 
 #: ../../../../js/options/user-js.js:55
-msgid ""
-"Have a backup of your storage somewhere, as messing here\n"
-"   may render you this website unusable."
-msgstr ""
-"Створіть десь в іншому місці резервну копію сховища,\n"
-"бо може статись, що після змін тут ви будете не в змозі користуватися цим "
-"сайтом."
+msgid "Have a backup of your storage somewhere, as messing here may render you this website unusable."
+msgstr "Збережіть резервну копію локальних даних. Помилка в коді може порушити роботу сайту."
 
 #: ../../../../js/options/user-js.js:56
 msgid "You can include JS files from remote servers, for example:"
-msgstr "Ви можете включати файли CSS із віддалених серверів, наприклад:"
+msgstr "Можна підключати JS-файли з інших серверів, наприклад:"
 
 #: ../../../../js/id_colors.js:6 ../../../../js/id_colors.js:12
 msgid "Color IDs"
-msgstr ""
+msgstr "Розфарбовувати ідентифікатори"
 
 #: ../../../../js/auto-reload.js:33
 msgid "Update"
@@ -1036,7 +1023,7 @@ msgstr ""
 
 #: ../../../../js/options/fav.js:27
 msgid "Favorites"
-msgstr ""
+msgstr "Обрані дошки"
 
 #: ../../../../js/options/fav.js:42
 msgid "Drag the boards to sort them."
@@ -1111,7 +1098,7 @@ msgstr ""
 
 #: ../../../../js/post-filter.js:655
 msgid "Filters"
-msgstr ""
+msgstr "Фільтри"
 
 #: ../../../../js/post-filter.js:661
 msgid "Subject"
@@ -1312,3 +1299,97 @@ msgstr "Не вдалося завантажити форму скарги. Ві
 #: ../../../../js/quick-post-controls.js
 msgid "Could not submit. Try again."
 msgstr "Не вдалося надіслати. Спробуйте ще раз."
+
+#: ../../../../js/image-viewer.js
+msgid "Image Viewer"
+msgstr "Перегляд зображень"
+
+#: ../../../../js/image-viewer.js
+msgid "Enable Image Viewer"
+msgstr "Увімкнути перегляд зображень"
+
+#: ../../../../js/image-viewer.js
+msgid "Enable Scroll Zoom"
+msgstr "Масштабувати коліщатком миші"
+
+#: ../../../../js/image-viewer.js
+msgid "Enable Mouse Dragging"
+msgstr "Перетягувати зображення мишею"
+
+#: ../../../../js/image-viewer.js
+msgid "Min Zoom"
+msgstr "Мінімальний масштаб"
+
+#: ../../../../js/image-viewer.js
+msgid "Max Zoom"
+msgstr "Максимальний масштаб"
+
+#: ../../../../js/image-viewer.js
+msgid "Minimum zoom must not exceed maximum zoom."
+msgstr "Мінімальний масштаб не може перевищувати максимальний."
+
+#: ../../../../js/options/general.js
+msgid "Storage"
+msgstr "Локальні дані"
+
+#: ../../../../js/options/general.js
+msgid "Invalid storage data."
+msgstr "Неправильний формат даних сховища."
+
+#: ../../../../js/comment-toolbar.js
+msgid "Formatting Options"
+msgstr "Форматування"
+
+#: ../../../../js/comment-toolbar.js
+msgid "New Rule"
+msgstr "Нове правило"
+
+#: ../../../../js/comment-toolbar.js
+msgid "Short label"
+msgstr "Скорочення"
+
+#: ../../../../js/comment-toolbar.js
+msgid "Allow line breaks"
+msgstr "Кілька рядків"
+
+#: ../../../../js/comment-toolbar.js
+msgid "Separate line"
+msgstr "Окремий рядок"
+
+#: ../../../../js/comment-toolbar.js
+msgid "Prefix"
+msgstr "Префікс"
+
+#: ../../../../js/comment-toolbar.js
+msgid "Suffix"
+msgstr "Суфікс"
+
+#: ../../../../js/comment-toolbar.js
+msgid "Shortcut"
+msgstr "Клавіша"
+
+#: ../../../../js/comment-toolbar.js
+msgid "Remove rule"
+msgstr "Видалити правило"
+
+#: ../../../../js/comment-toolbar.js
+#, python-brace-format
+msgid "Remove formatting rule \"{0}\"?"
+msgstr "Видалити правило форматування «{0}»?"
+
+#: ../../../../js/auto-scroll.js
+msgid "Scroll to new posts"
+msgstr "Прокручувати до нових дописів"
+
+
+#: ../../../../js/comment-toolbar.js
+msgid "Rule name"
+msgstr "Назва правила"
+
+#: ../../../../js/comment-toolbar.js
+msgid "Math"
+msgstr "Формула"
+
+#: ../../../../js/options/user-css.js ../../../../js/options/user-js.js
+msgid "Custom code"
+msgstr "Власний код"
