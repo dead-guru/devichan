@@ -17,6 +17,36 @@ if (!window.Options) return;
 var tab = Options.add_tab("general", "fa fa-home", _("General"));
 
 $(function(){
+  var menu = $('body > .boardlist:not(.bottom)').first();
+  if (menu.length) {
+    menu.addClass('top-menu');
+    var position = localStorage.top_menu_position;
+    var fixed = position === 'fixed' || (position !== 'scroll' && /^(fixed|sticky)$/.test(menu.css('position')));
+    var row = $('<div class="options-row"></div>').append($('<span></span>').text(_('Top menu:')));
+    var label = $('<label class="options-switch"></label>').appendTo(row);
+    var toggle = $('<input type="checkbox" role="switch">')
+      .attr('aria-label', _('Keep the top menu fixed')).prop('checked', fixed).appendTo(label);
+    $('<span class="options-switch-off"></span>').text(_('Scrolls with the page')).appendTo(label);
+    $('<span class="options-switch-on"></span>').text(_('Fixed')).appendTo(label);
+    tab.content.children('h2').after(row);
+
+    function updateMenuHeight() {
+      document.documentElement.style.setProperty('--top-menu-height', menu[0].getBoundingClientRect().height + 'px');
+    }
+
+    function setMenuPosition(position) {
+      document.documentElement.setAttribute('data-top-menu', position);
+      updateMenuHeight();
+    }
+
+    setMenuPosition(fixed ? 'fixed' : 'scroll');
+    new ResizeObserver(updateMenuHeight).observe(menu[0]);
+    toggle.on('change', function () {
+      localStorage.top_menu_position = this.checked ? 'fixed' : 'scroll';
+      setMenuPosition(localStorage.top_menu_position);
+    });
+  }
+
   var stor = $('<fieldset></fieldset>').append($('<legend></legend>').text(_('Storage')));
   stor.appendTo(tab.content);
   var actions = $('<div class="options-actions"></div>').appendTo(stor);

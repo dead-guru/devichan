@@ -64,9 +64,6 @@ if (device_type == 'desktop') {
  	  .appendTo(topbl)
 	  .mouseenter(function() {
 	    var list = $("<div class='boardlist top cb-menu'></div>")
-	      .css("top", $(this).position().top + 13 + $(this).height())
-	      .css("left", $(this).position().left)
-	      .css("right", "auto")
 	      .appendTo(this);
 	    for (var j in this.item.boards) {
 	      var board = this.item.boards[j];
