@@ -93,6 +93,7 @@ $(function () {
         var bc = st[board] || {};
         if (is_threadwatched(bc, thread)) {
             delete bc.threads[thread];
+            if (bc.slugs) delete bc.slugs[thread];
         } else {
             bc.threads = bc.threads || {};
             bc.threads[thread] = Date.now();
@@ -104,50 +105,46 @@ $(function () {
         storage_save(st);
         return is_threadwatched(bc, thread);
     };
-    var construct_watchlist_for = function (board, variant) {
-        var list = $("<div class='boardlist top cb-menu watch-menu'></div>");
-        list.attr("data-board", board);
+    var construct_watchlist_for = function (board) {
+        var list = $('<span class="cb-menu watch-menu" role="list">').attr('data-board', board);
+        var bc = storage()[board];
+        list.css({backgroundColor: $('body').css('background-color'), color: $('body').css('color')});
 
-        if (storage()[board] && storage()[board].threads)
-            for (var tid in storage()[board].threads) {
-                var newposts = "(0)";
-                if (status && status[board] && status[board].threads && status[board].threads[tid]) {
-                    if (status[board].threads[tid] == -404) {
-                        newposts = "<i class='fa fa-ban-circle'></i>";
-                    } else {
-                        newposts = "(" + status[board].threads[tid] + ")";
-                    }
+        for (var tid in bc.threads) {
+            var count = status[board] && status[board].threads && status[board].threads[tid] || 0;
+            var label = count == -404 ? _('Thread not found') : fmt(_('New posts: {0}'), [count]);
+            var row = $('<span class="watch-row" role="listitem">').attr('data-thread', tid).appendTo(list);
+            var link = $('<a class="watch-link">').attr({
+                href: bc.slugs && bc.slugs[tid] || modRoot + board + '/res/' + tid + '.html',
+                'data-thread': tid
+            }).appendTo(row);
+            $('<span class="watch-thread-id">').text('#' + tid).appendTo(link);
+            $('<span class="watch-count">').text(count == -404 ? '—' : count)
+                .toggleClass('watch-unread', count > 0).attr({title: label, 'aria-label': label}).appendTo(link);
+            $('<button type="button" class="watch-remove">').text('×').attr({
+                title: _('Stop watching this thread'),
+                'aria-label': _('Stop watching this thread') + ' #' + tid
+            }).appendTo(row).on('click', function () {
+                var row = $(this).closest('.watch-row');
+                var tid = row.attr('data-thread');
+                var next = row.next().find('button');
+                if (!next.length) next = row.prev().find('button');
+                toggle_threadwatched(board, tid);
+                if (status[board] && status[board].threads) delete status[board].threads[tid];
+                row.remove();
+                if (active_page == 'thread' && board == board_name && tid == $('input[name="thread"]').val()) {
+                    $('#watch-thread a').text(_('Watch this thread'));
                 }
-
-                var tag;
-                if (variant == 'desktop') {
-                    tag = $("<a href='" + ((storage()[board].slugs && storage()[board].slugs[tid]) || (modRoot + board + "/res/" + tid + ".html")) + "'><span>#" + tid + "</span><span class='cb-uri watch-remove'>" + newposts + "</span>");
-                    tag.find(".watch-remove").mouseenter(function () {
-                        this.oldval = $(this).html();
-                        $(this).css("min-width", $(this).width());
-                        $(this).html("<i class='fa fa-minus'></i>");
-                    })
-                        .mouseleave(function () {
-                            $(this).html(this.oldval);
-                        })
-                } else if (variant == 'mobile') {
-                    tag = $("<a href='" + ((storage()[board].slugs && storage()[board].slugs[tid]) || (modRoot + board + "/res/" + tid + ".html")) + "'><span>#" + tid + "</span><span class='cb-uri'>" + newposts + "</span>"
-                        + "<span class='cb-uri watch-remove'><i class='fa fa-minus'></i></span>");
+                if (next.length) {
+                    next.focus();
+                } else {
+                    var trigger = list.parent().children('a')[0];
+                    updating_suspended = false;
+                    update_pinned();
+                    if (trigger && document.contains(trigger)) trigger.focus();
                 }
-
-                tag.attr('data-thread', tid)
-                    .addClass("cb-menuitem")
-                    .appendTo(list)
-                    .find(".watch-remove")
-                    .click(function () {
-                        var b = $(this).parent().parent().attr("data-board");
-                        var t = $(this).parent().attr("data-thread");
-                        toggle_threadwatched(b, t);
-                        $(this).parent().parent().parent().mouseleave();
-                        $(this).parent().remove();
-                        return false;
-                    });
-            }
+            });
+        }
         return list;
     };
 
@@ -158,22 +155,30 @@ $(function () {
 
         var bl = $('.boardlist').first();
         $('#watch-pinned, .watch-menu').remove();
+        bl.find('.watch-board-link').removeAttr('aria-expanded')
+            .removeClass('watch-board-link').css('font-style', '').each(function () {
+                $(this).html(this.origtitle);
+            }).unwrap();
         var pinned = $('<div id="watch-pinned"></div>').appendTo(bl);
 
         if (device_type == "desktop")
-            bl.off().on("mouseenter", function () {
+            bl.off('.watch').on("mouseenter.watch focusin.watch", function () {
                 updating_suspended = true;
-            }).on("mouseleave", function () {
+            }).on("mouseleave.watch focusout.watch", function (e) {
+                if (e.relatedTarget && $.contains(this, e.relatedTarget)) return;
+                if ($(this).is(':hover') || $.contains(this, document.activeElement)) return;
                 updating_suspended = false;
+                update_pinned();
             });
 
         var st = storage();
         for (var i in st) {
             if (is_pinned(st[i])) {
                 var link;
-                if (bl.find('[href*="' + modRoot + i + '/index.html"]:not(.cb-menuitem)').length) link = bl.find('[href*="' + modRoot + i + '/"]').first();
-
-                else link = $('<a href="' + modRoot + i + '/" class="cb-item cb-cat">/' + i + '/</a>').appendTo(pinned);
+                link = bl.find('a').filter(function () {
+                    return $(this).attr('href') == modRoot + i + '/' || $(this).attr('href') == modRoot + i + '/index.html';
+                }).first();
+                if (!link.length) link = $('<a href="' + modRoot + i + '/" class="cb-item cb-cat">/' + i + '/</a>').appendTo(pinned);
 
                 if (link[0].origtitle === undefined) {
                     link[0].origtitle = link.html();
@@ -203,27 +208,33 @@ $(function () {
                         }
                     }
 
-                    if (device_type == "desktop")
-                        link.off().mouseenter(function () {
+                    if (device_type == "desktop") {
+                        link.addClass('watch-board-link').attr('aria-expanded', 'false')
+                            .wrap('<span class="watch-board"></span>');
+                        link.parent().on('mouseenter.watch focusin.watch', function () {
+                            if ($(this).find('.watch-menu').length) return;
                             $('.cb-menu').remove();
-
-                            var board = $(this).attr("data-board");
-
-                            var wl = construct_watchlist_for(board, "desktop").appendTo($(this))
-                                .css("top", $(this).position().top
-                                    + ($(this).css('padding-top').replace('px', '') | 0)
-                                    + ($(this).css('padding-bottom').replace('px', '') | 0)
-                                    + $(this).height())
-                                .css("left", $(this).position().left)
-                                .css("right", "auto")
-                                .css("font-style", "normal");
+                            var trigger = $(this).children('a').attr('aria-expanded', 'true');
+                            var rect = trigger[0].getBoundingClientRect();
+                            var wl = construct_watchlist_for(trigger.attr('data-board')).appendTo(this);
+                            wl.css({top: rect.bottom, left: Math.max(8, Math.min(rect.left,
+                                document.documentElement.clientWidth - wl.outerWidth() - 8)),
+                                maxHeight: Math.max(80, window.innerHeight - rect.bottom - 8)});
 
                             if (typeof init_hover != "undefined")
-                                wl.find("a.cb-menuitem").each(init_hover);
-
-                        }).mouseleave(function () {
-                            $('.boardlist .cb-menu').remove();
+                                wl.find('a.watch-link').each(init_hover);
+                        }).on('mouseleave.watch focusout.watch', function (e) {
+                            if (e.relatedTarget && $.contains(this, e.relatedTarget)) return;
+                            if ($(this).is(':hover') || $.contains(this, document.activeElement)) return;
+                            $(this).children('a').attr('aria-expanded', 'false');
+                            $(this).find('.watch-menu').remove();
+                        }).on('keydown.watch', function (e) {
+                            if (e.key != 'Escape') return;
+                            e.preventDefault();
+                            $(this).children('a').focus().attr('aria-expanded', 'false');
+                            $(this).find('.watch-menu').remove();
                         });
+                    }
                 }
             }
         }
@@ -235,8 +246,7 @@ $(function () {
             $('.watch-menu').remove();
 
             if (boardData && boardData.threads && osize(boardData.threads)) {
-                var where = $('div[style="text-align:right"]').first();
-                construct_watchlist_for(board, "mobile").css("float", "left").insertBefore(where);
+                construct_watchlist_for(board).addClass('watch-menu-mobile').insertAfter('#watch-thread, #watch-board');
             }
         }
     };
@@ -266,7 +276,7 @@ $(function () {
                             var r = $.getJSON(configRoot + i + "/res/" + j + ".json", function (k, x, r) {
                                 handle_thread_json(r.board, r.thread, k);
                             }).fail(function (jqxhr, textStatus, error) {
-                                if (textStatus === 404) handle_thread_404(i, j);
+                                if (jqxhr.status === 404) handle_thread_404(i, j);
                             });
 
                             r.board = i;
@@ -323,11 +333,13 @@ $(function () {
         }
     };
     var handle_thread_json = function (board, threadid, json) {
+        var bc = storage()[board];
+        if (!is_threadwatched(bc, threadid)) return;
         var new_posts = 0;
         for (var i in json.posts) {
             var post = json.posts[i];
 
-            if (post.time > storage()[board].threads[threadid] / 1000) {
+            if (post.time > bc.threads[threadid] / 1000) {
                 new_posts++;
             }
         }
@@ -342,6 +354,7 @@ $(function () {
         }
     };
     var handle_thread_404 = function (board, threadid) {
+        if (!is_threadwatched(storage()[board], threadid)) return;
         status = status || {};
         status[board] = status[board] || {};
         status[board].threads = status[board].threads || {};

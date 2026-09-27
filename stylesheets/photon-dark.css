@@ -556,10 +556,6 @@ input, select, input[type="text"], input[type="password"], textarea {
         left: 0;
     }
 
-    .watch-menu {
-        margin-top: 50px !important;
-    }
-
     textarea#body {
         height: 100px;
         width: 100%;
