@@ -124,9 +124,9 @@
     });
 
     $(function () {
-        options_button = $('<a href="#options"></a>')
+        options_button = $('<a id="options_button" href="#options"></a>')
             .attr({title: _('Options'), 'aria-label': _('Options'), 'aria-haspopup': 'dialog'})
-            .html('<i class="fa fa-gear" aria-hidden="true"></i>').css('float', 'right').toggle(!!first_tab());
+            .html('<i class="fa fa-gear" aria-hidden="true"></i>').toggle(!!first_tab());
         if ($('.boardlist.compact-boardlist').length) {
             options_button.addClass('cb-item cb-fa');
         }

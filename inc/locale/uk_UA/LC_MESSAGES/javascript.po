@@ -1433,17 +1433,5 @@ msgid "Bookmarks ({0})"
 msgstr "Закладки ({0})"
 
 #: ../../../../js/options/general.js
-msgid "Top menu:"
-msgstr "Верхнє меню:"
-
-#: ../../../../js/options/general.js
-msgid "Keep the top menu fixed"
-msgstr "Закріпити верхнє меню"
-
-#: ../../../../js/options/general.js
-msgid "Scrolls with the page"
-msgstr "Рухається зі сторінкою"
-
-#: ../../../../js/options/general.js
-msgid "Fixed"
-msgstr "Закріплене"
+msgid "Scroll the menu with the page"
+msgstr "Рухати меню разом з сторінкою"
