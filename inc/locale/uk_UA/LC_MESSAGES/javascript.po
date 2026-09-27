@@ -1401,3 +1401,33 @@ msgstr "Малювати (D)"
 #: ../../../../js/emojis.js
 msgid "Add emoji"
 msgstr "Додати емодзі"
+
+msgid "Pinned boards"
+msgstr "Закріплені дошки"
+
+msgid "Keep this board in the top board list"
+msgstr "Показувати цю дошку окремо у верхньому списку"
+
+msgid "Pin to top"
+msgstr "Закріпити вгорі"
+
+msgid "Unpin from top"
+msgstr "Відкріпити згори"
+
+msgid "Mark threads with new posts in the board list"
+msgstr "Позначати у списку дошок нитки з новими дописами"
+
+msgid "Bookmarked"
+msgstr "У закладках"
+
+msgid "Bookmark thread"
+msgstr "До закладок"
+
+msgid "New threads: {0}"
+msgstr "Нові нитки: {0}"
+
+msgid "Retry loading threads"
+msgstr "Повторити завантаження ниток"
+
+msgid "Bookmarks ({0})"
+msgstr "Закладки ({0})"

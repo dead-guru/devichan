@@ -48,33 +48,21 @@
 	{% if config.global_message %}<div class="blotter">{{ config.global_message }}</div>{% endif %}
 
 	{% if config.page_nav_top %}
-		<div class="pages top">
-			{% for page in pages %}
-			 [<a {% if page.selected %}class="selected"{% endif %}{% if not page.selected %}href="{{ page.link }}"{% endif %}>{{ page.num }}</a>]{% if loop.last %} {% endif %}
-			{% endfor %}
-			{{ btn.next }}
-		</div>
+		{% include 'pagination.html' with {'top': true} %}
 	{% endif %}
 
-	<div id="thread-interactions_header">
-			<span id="thread-links_header">
-
-				<a href="#bottom"  title="Go To Bottom"><i class="fa-solid fa-angles-down"></i></a>
-                		{% if config.catalog_link %}
-					<a href="{{ config.root }}{% if mod %}{{ config.file_mod }}?/{% endif %}{{ board.dir }}{{ config.catalog_link }}" title="Catalog"><i class="fa-solid fa-grip"></i></a>
-		                {% endif %}
-			</span>
-	</div>
-	{% if config.board_search %}
-	<!-- Start Search Form -->
-	<form class="index-search" action="/search.php">
-		<p>
-			<input type="text" class="index-search-input" name="search" placeholder="{{ board.uri }} {% trans %}search{% endtrans %} [Enter]">
+	<div id="thread-interactions_header" class="board-toolbar">
+		<span id="thread-links_header">
+			{% include 'navigation_links.html' with {'direction': 'bottom'} %}
+		</span>
+		{% if config.board_search %}
+		<form class="index-search" role="search" action="{{ config.root }}search.php">
+			<input type="search" class="index-search-input" name="search" placeholder="{% trans %}Search this board{% endtrans %}" aria-label="{% trans %}Search this board{% endtrans %}" required>
 			<input type="hidden" name="board" value="{{ board.uri }}">
-		</p>
-	</form>
-	<!-- End Search Form -->
-	{% endif %}
+			<button type="submit" aria-label="{% trans %}Search{% endtrans %}" title="{% trans %}Search{% endtrans %}">{% if config.font_awesome %}<i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>{% else %}{% trans %}Search{% endtrans %}{% endif %}</button>
+		</form>
+		{% endif %}
+	</div>
 	<hr />
 
 	<form name="postcontrols" action="{{ config.post_url }}" method="post">
@@ -84,22 +72,12 @@
 	{% include 'report_delete.html' %}
 	</form>
 	{% include 'post_actions.html' %}
-	<div id="thread-interactions">
+	<div id="thread-interactions" class="board-toolbar">
 		<span id="thread-links">
-			<a id="thread-top" href="#top"><i class="fa-solid fa-angle-up"></i></a>
-					{% if config.catalog_link %}
-				<a id="thread-catalog" href="{{ config.root }}{% if mod %}{{ config.file_mod }}?/{% endif %}{{ board.dir }}{{ config.catalog_link }}"><i class="fa-solid fa-grip"></i></a>
-					{% endif %}
+			{% include 'navigation_links.html' with {'direction': 'top'} %}
 		</span>
 	</div>
-	<div class="pages">
-		{{ btn.prev }} {% for page in pages %}
-		 [<a {% if page.selected %}class="selected"{% endif %}{% if not page.selected %}href="{{ page.link }}"{% endif %}>{{ page.num }}</a>]{% if loop.last %} {% endif %}
-		{% endfor %} {{ btn.next }}
-		{% if config.catalog_link %}
-			 | <a href="{{ config.root }}{% if mod %}{{ config.file_mod }}?/{% endif %}{{ board.dir }}{{ config.catalog_link }}">{% trans %}Catalog{% endtrans %}</a>
-		{% endif %}
-	</div>
+	{% include 'pagination.html' with {'top': false} %}
 	<a name="bottom"></a>
 
 	{{ boardlist.bottom }}

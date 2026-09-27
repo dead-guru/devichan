@@ -1026,9 +1026,6 @@ pre {
     opacity: .6
 }
 
-.new-threads {
-    text-align: center
-}
 
 #alert_handler, #options_handler {
     position: fixed;
@@ -1388,9 +1385,239 @@ div.boardlist.bottom {
     clear: both
 }
 
-#thread-links > a {
-    padding-left: none;
-    padding-right: 10px
+#thread-interactions.board-toolbar,
+#thread-interactions_header.board-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .3em .75em;
+    margin: .4em 0;
+    font-size: .8em;
+    color: var(--theme_default_alttext, inherit)
+}
+
+.board-toolbar #thread-links,
+.board-toolbar #thread-links_header,
+.watch-controls {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .35em;
+    float: none
+}
+
+.board-toolbar #thread-links > a,
+.board-toolbar #thread-links_header > a,
+.watch-controls button,
+.board-toolbar .new-threads button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: .4em;
+    box-sizing: border-box;
+    min-height: 1.9em;
+    margin: 0;
+    padding: .2em .35em;
+    border: 1px solid transparent;
+    border-radius: 3px;
+    background: transparent;
+    font: inherit;
+    line-height: 1.3;
+    cursor: pointer
+}
+
+.board-toolbar #thread-links > a:not(:hover),
+.board-toolbar #thread-links_header > a:not(:hover),
+.watch-controls button,
+.board-toolbar .new-threads button {
+    color: var(--theme_default_link, inherit);
+    text-decoration: none
+}
+
+.watch-controls button[aria-pressed="true"],
+.watch-controls button[aria-expanded="true"] {
+    background-color: var(--theme_default_btnbg, #8882)
+}
+
+.board-toolbar button:hover,
+.watch-controls button:hover,
+.board-pages a[href]:hover {
+    background-color: var(--theme_default_btnbghover, #8882)
+}
+
+.board-toolbar button:hover {
+    font-weight: inherit
+}
+
+.board-toolbar a:focus-visible,
+.board-toolbar button:focus-visible,
+.board-toolbar input:focus-visible,
+.watch-controls button:focus-visible,
+.board-pages a:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 2px
+}
+
+.board-toolbar form.index-search {
+    display: flex;
+    flex: 0 1 12em;
+    align-items: stretch;
+    min-width: 9em;
+    max-width: 100%;
+    margin: 0;
+    border: 1px solid var(--theme_default_border, #8888);
+    border-radius: 3px;
+    background: var(--theme_default_altbtnbg, transparent)
+}
+
+.board-toolbar .index-search input[type="search"] {
+    flex: 1;
+    min-width: 0;
+    width: 100%;
+    margin: 0;
+    padding: .25em .45em;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    font: inherit
+}
+
+.board-toolbar .index-search button {
+    flex: none;
+    margin: 0;
+    padding: .25em .5em;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    cursor: pointer
+}
+
+.board-toolbar .new-threads {
+    margin: 0;
+    padding: 0
+}
+
+.new-threads[hidden],
+.new-posts[hidden],
+.watch-menu[hidden] {
+    display: none
+}
+
+.boardlist #watch-pinned:empty {
+    display: none
+}
+
+.boardlist #watch-pinned:not(:empty) {
+    display: inline-flex;
+    flex-wrap: wrap;
+    max-width: 100%;
+    align-items: center;
+    gap: .5em;
+    margin-left: .65em;
+    padding-left: .65em;
+    border-left: 1px solid currentColor
+}
+
+.boardlist #watch-pinned:not(:empty)::before,
+.boardlist #watch-pinned:not(:empty)::after {
+    content: none
+}
+
+.boardlist #watch-pinned .watch-pin-icon {
+    font-size: .8em
+}
+
+.boardlist #watch-pinned a {
+    margin: 0
+}
+
+div.pages.board-pages {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .3em;
+    margin: .4em 0;
+    padding: 0;
+    font-size: .85em;
+    border: 0;
+    border-radius: 0;
+    background: transparent !important;
+    color: inherit !important
+}
+
+div.pages.board-pages.top {
+    position: static;
+    opacity: 1
+}
+
+.board-toolbar .watch-menu-mobile {
+    flex-basis: 100%;
+    width: auto;
+    max-width: 100%;
+    margin: 0;
+    box-shadow: none
+}
+
+.board-pages .page-numbers {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .15em
+}
+
+.board-pages a,
+.board-pages > span[aria-disabled] {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: .4em;
+    box-sizing: border-box;
+    min-width: 1.9em;
+    min-height: 1.9em;
+    padding: .2em .4em;
+    border: 1px solid transparent;
+    border-radius: 3px;
+    line-height: 1.3;
+    white-space: nowrap
+}
+
+div.board-pages a.selected {
+    background-color: var(--theme_default_btnbg, #8882);
+    border-color: var(--theme_default_border, #8884);
+    color: inherit;
+    font-weight: bold
+}
+
+.board-pages [aria-disabled="true"] {
+    opacity: .5
+}
+
+@media (max-width: 600px) {
+    .board-toolbar form.index-search {
+        flex-grow: 1
+    }
+
+    .board-toolbar .watch-controls {
+        flex-basis: 100%
+    }
+
+    .board-toolbar #thread-links > a,
+    .board-toolbar #thread-links_header > a,
+    .board-toolbar button,
+    .watch-controls button,
+    .board-pages a,
+    .board-pages > span[aria-disabled] {
+        min-height: 2.5em
+    }
+
+    .board-pages .page-next {
+        margin-left: auto
+    }
+
+    .board-pages .page-numbers {
+        flex-basis: 100%;
+        order: 1
+    }
 }
 
 #thread-quick-reply {
@@ -1408,11 +1635,6 @@ div.boardlist.bottom {
     display: inline;
     margin-left: 10px;
     margin-right: 10px
-}
-
-#thread-links_header > a {
-    padding-left: 0;
-    padding-right: 10px
 }
 
 #post-moderation-fields {
@@ -1631,17 +1853,12 @@ table.fileboard td, table.fileboard th {
 }
 
 
-#expand-all-images, #shrink-all-images, #watch-board, #watch-pin, #watch-thread, .tree-view-cntrl {
+#expand-all-images, #shrink-all-images, .tree-view-cntrl {
     display: inline;
     padding: 0 5px;
     font-size: .7rem
 }
 
-.new-threads {
-    text-align: left;
-    display: inline;
-    padding: 0 5px
-}
 
 #thread-interactions, #thread-interactions_header, #thread_stats, #updater {
     display: inline;

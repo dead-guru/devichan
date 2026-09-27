@@ -1,0 +1,21 @@
+{% set current = 0 %}
+{% for page in pages %}
+	{% if page.selected %}{% set current = loop.index0 %}{% endif %}
+{% endfor %}
+<div class="pages board-pages{% if top %} top{% endif %}" role="navigation" aria-label="{% trans %}Pages{% endtrans %}">
+	{% if current > 0 %}
+	<a class="page-prev" rel="prev" href="{{ pages[current - 1].link }}"><i class="fa-solid fa-angle-left" aria-hidden="true"></i> {% trans %}Previous{% endtrans %}</a>
+	{% else %}
+	<span class="page-prev" aria-disabled="true"><i class="fa-solid fa-angle-left" aria-hidden="true"></i> {% trans %}Previous{% endtrans %}</span>
+	{% endif %}
+	<span class="page-numbers">
+		{% for page in pages %}
+		<a {% if page.selected %}class="selected" aria-current="page"{% else %}href="{{ page.link }}"{% endif %}>{{ page.num }}</a>
+		{% endfor %}
+	</span>
+	{% if current < pages|length - 1 %}
+	<a class="page-next" rel="next" href="{{ pages[current + 1].link }}">{% trans %}Next{% endtrans %} <i class="fa-solid fa-angle-right" aria-hidden="true"></i></a>
+	{% else %}
+	<span class="page-next" aria-disabled="true">{% trans %}Next{% endtrans %} <i class="fa-solid fa-angle-right" aria-hidden="true"></i></span>
+	{% endif %}
+</div>

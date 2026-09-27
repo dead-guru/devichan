@@ -1,0 +1,7 @@
+{% if return %}
+<a {% if direction == 'top' %}id="thread-return"{% endif %} href="{{ return }}"><i class="fa-solid fa-arrow-left-long" aria-hidden="true"></i> {% trans %}Return{% endtrans %}</a>
+{% endif %}
+<a {% if direction == 'top' %}id="thread-top"{% endif %} href="#{{ direction }}"><i class="fa-solid {% if direction == 'top' %}fa-angle-up{% else %}fa-angles-down{% endif %}" aria-hidden="true"></i> {% if direction == 'top' %}{% trans %}Up{% endtrans %}{% else %}{% trans %}Down{% endtrans %}{% endif %}</a>
+{% if config.catalog_link %}
+<a class="catalog-link" {% if direction == 'top' %}id="thread-catalog"{% endif %} href="{{ config.root }}{% if mod %}{{ config.file_mod }}?/{% endif %}{{ board.dir }}{{ config.catalog_link }}"><i class="fa-solid fa-grip" aria-hidden="true"></i> {% trans %}Catalog{% endtrans %}</a>
+{% endif %}
