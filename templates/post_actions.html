@@ -1,0 +1,7 @@
+{% if not nojavascript %}
+	{% for script in ['js/post-menu.js', 'js/hide-threads.js', 'js/ajax-post-controls.js', 'js/quick-post-controls.js'] %}
+		{% if script not in config.additional_javascript %}
+			<script src="{{ config.additional_javascript_url }}{{ script }}"></script>
+		{% endif %}
+	{% endfor %}
+{% endif %}

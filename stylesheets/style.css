@@ -1749,3 +1749,176 @@ div.post, div.thread {
         grid-column: 2;
     }
 }
+
+/* Post actions */
+.has-post-menu input.delete,
+.has-post-menu #post-moderation-fields {
+    display: none;
+}
+
+.intro button.post-btn {
+    display: inline-block;
+    margin: 0 0 0 .35em;
+    padding: 0 .15em;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.post-btn:focus-visible,
+.post-menu li:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+}
+
+.post-menu {
+    position: absolute;
+    z-index: 100;
+    min-width: 12em;
+    max-width: calc(100vw - 8px);
+    border: 1px solid #666;
+    border-radius: 4px;
+    box-shadow: 0 4px 16px #0004;
+    color: inherit;
+    line-height: 1.4;
+}
+
+.post-menu ul {
+    list-style: none;
+    margin: 0;
+    padding: .35em 0;
+}
+
+.post-menu li {
+    position: relative;
+    padding: .4em 1em;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.post-menu li:hover,
+.post-menu li:focus {
+    background: var(--theme_default_postbg, #8883);
+}
+
+.post-menu ul ul {
+    display: none;
+    position: absolute;
+    left: 100%;
+    top: 0;
+    background: var(--theme_default_bg, #eee);
+    border: 1px solid #666;
+}
+
+.post-menu li:hover > ul,
+.post-menu li:focus-within > ul {
+    display: block;
+}
+
+.post-menu-arrow {
+    float: right;
+    margin-left: 1em;
+}
+
+.post-action-dialog {
+    box-sizing: border-box;
+    width: 28em;
+    max-width: calc(100vw - 2em);
+    max-height: calc(100dvh - 2em);
+    margin: auto;
+    padding: 1em 1.2em;
+    border: 1px solid #666;
+    border-radius: 6px;
+    color: inherit;
+    font: inherit;
+    text-align: left;
+    box-shadow: 0 8px 32px #0004;
+}
+
+.post-action-dialog::backdrop {
+    background: #0008;
+}
+
+.post-action-dialog h2 {
+    margin: 0 1.5em .8em 0;
+    padding: 0;
+    color: inherit;
+    font: bold 1em/1.4 sans-serif;
+    letter-spacing: normal;
+    text-align: left;
+}
+
+.post-action-dialog .post-action-close {
+    position: absolute;
+    top: .35em;
+    right: .5em;
+    padding: 0 .2em;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    font-size: 1.3em;
+    cursor: pointer;
+}
+
+.post-action-dialog form,
+.post-action-dialog p {
+    margin: 0;
+}
+
+.post-action-fields > p + p {
+    margin-top: 1em;
+}
+
+.post-action-reasons {
+    margin: 0 0 .7em;
+    padding: 0;
+    border: 0;
+}
+
+.post-action-reasons label {
+    display: block;
+    margin: .25em 0;
+}
+
+.post-action-dialog input,
+.post-action-dialog button,
+.post-action-dialog textarea {
+    font-size: 1em;
+}
+
+.post-action-dialog input[type="password"] {
+    max-width: 100%;
+}
+
+.post-action-dialog textarea {
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 2.6em;
+    resize: vertical;
+}
+
+.post-action-dialog .post-action-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: .3em;
+    margin-top: 2em;
+}
+
+.post-action-dialog .post-action-message:not([hidden]) {
+    margin-top: 1em;
+    overflow-wrap: anywhere;
+}
+
+.post-hidden > :not(.intro),
+.hidden_thread > :not(.op),
+.hidden_thread .op > :not(.intro) {
+    display: none !important;
+}
+
+.hide-thread-link {
+    margin-right: .35em;
+}
