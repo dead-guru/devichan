@@ -1614,3 +1614,138 @@ div.post, div.thread {
     pointer-events: none;
     z-index: 2;
 }
+
+
+#edit-post {
+    max-width: 640px;
+    margin: 24px auto 48px;
+    padding: 0 16px;
+    font-size: 14px;
+    text-align: left;
+}
+
+#edit-post .edit-post-fields {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+#edit-post label {
+    display: grid;
+    gap: 4px;
+    font-weight: bold;
+}
+
+#edit-post .edit-post-wide {
+    grid-column: 1 / -1;
+}
+
+#edit-post input[type="text"],
+#edit-post textarea {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 8px;
+    font: inherit;
+    font-weight: normal;
+    border: 1px solid #a9a9a9;
+}
+
+#edit-post textarea {
+    min-height: 104px;
+    resize: vertical;
+}
+
+#edit-post .edit-post-files {
+    border: 0;
+    padding: 0;
+    margin: 24px 0;
+}
+
+#edit-post legend {
+    padding: 0;
+    font-weight: bold;
+}
+
+#edit-post ul {
+    padding: 0;
+    margin: 8px 0 0;
+    list-style: none;
+}
+
+#edit-post .edit-attachment {
+    display: grid;
+    grid-template-columns: 96px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 16px;
+    padding: 12px 0;
+    border-bottom: 1px solid color-mix(in srgb, currentColor 20%, transparent);
+}
+
+#edit-post .attachment-preview-link {
+    display: grid;
+    place-items: center;
+    width: 96px;
+    height: 72px;
+}
+
+#edit-post .attachment-preview {
+    max-width: 96px;
+    max-height: 72px;
+    object-fit: contain;
+}
+
+#edit-post .attachment-info {
+    display: grid;
+    justify-items: start;
+    gap: 8px;
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+#edit-post input[type="file"] {
+    max-width: 100%;
+}
+
+#edit-post .attachment-actions,
+#edit-post .edit-post-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+#edit-post .edit-post-actions {
+    gap: 16px;
+}
+
+#edit-post .edit-post-mode {
+    margin-top: 16px;
+    font-size: 12px;
+}
+
+#edit-post [hidden] {
+    display: none;
+}
+
+@media (max-width: 520px) {
+    #edit-post .edit-post-fields {
+        grid-template-columns: 1fr;
+    }
+
+    #edit-post .edit-attachment {
+        grid-template-columns: 72px minmax(0, 1fr);
+        gap: 8px 16px;
+    }
+
+    #edit-post .attachment-preview-link {
+        width: 72px;
+        grid-row: span 2;
+    }
+
+    #edit-post .attachment-preview {
+        max-width: 72px;
+    }
+
+    #edit-post .attachment-actions {
+        grid-column: 2;
+    }
+}

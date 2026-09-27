@@ -86,6 +86,9 @@ $config['referer_match'] = false;
 $config['minify_css'] = false;
 $config['purge'] = [];
 $config['additional_javascript'][] = 'js/threadfilelist.js';
+if (($_COOKIE['e2e_paint'] ?? null) === '1') {
+    $config['additional_javascript'][] = 'js/paint-tool.js';
+}
 
 $config['captcha']['enabled'] = false;
 $config['new_thread_capt'] = false;
