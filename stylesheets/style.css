@@ -890,12 +890,6 @@ pre {
     overflow: auto
 }
 
-#options_div {
-    width: 620px;
-    height: 400px;
-    resize: both
-}
-
 #alert_div {
     width: 500px
 }
@@ -910,7 +904,7 @@ pre {
     margin-bottom: 13px
 }
 
-#alert_close, #options_close {
+#alert_close {
     top: 0;
     right: 0;
     position: absolute;
@@ -919,54 +913,238 @@ pre {
     z-index: 100
 }
 
-#options_tablist {
-    padding: 0 5px;
-    left: 0;
-    width: 100px;
-    top: 0;
-    bottom: 0;
-    height: 100%;
-    border-right: 1px solid #000
-}
-
-.options_tab_icon {
-    padding: 5px;
-    cursor: pointer
-}
-
-#gallery_main, .options_tab {
+#gallery_main {
     top: 0;
     padding: 10px;
     position: absolute
 }
 
-.options_tab_icon i {
-    font-size: 20px
-}
-
-.options_tab_icon div {
-    font-size: 11px
-}
-
-.options_tab {
-    bottom: 10px;
-    left: 101px;
-    right: 0;
-    text-align: left;
-    font-size: 12px;
-    overflow-y: auto
-}
-
-.options_tab h2 {
-    text-align: center;
-    margin-bottom: 5px
-}
-
-.mobile-style #alert_div, .mobile-style #options_div {
+.mobile-style #alert_div {
     display: block;
     width: 100%;
     height: 100%;
     margin-top: 0
+}
+
+body.options-open {
+    overflow: hidden;
+}
+
+#options_handler {
+    background-image: none;
+}
+
+#options_div {
+    display: inline-grid;
+    grid-template-columns: 180px minmax(0, 1fr);
+    width: min(900px, calc(100% - 32px));
+    height: min(640px, calc(100% - 48px));
+    margin-top: 24px;
+    overflow: hidden;
+    box-sizing: border-box;
+    background-image: none;
+    border-color: var(--theme_default_border, currentColor);
+    border-radius: 6px;
+    box-shadow: 0 8px 32px #0004;
+    text-align: left;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+#options_div #options_close {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    z-index: 1;
+    width: 32px;
+    height: 32px;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+    color: inherit;
+    font: 26px/1 sans-serif;
+    cursor: pointer;
+}
+
+#options_tablist {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 12px 8px;
+    overflow: auto;
+    border-right: 1px solid;
+    border-color: var(--theme_default_border, currentColor);
+}
+
+#options_tablist .options_tab_icon {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+    width: 100%;
+    margin: 0;
+    padding: 8px;
+    border: 0;
+    border-radius: 3px;
+    background: transparent;
+    box-shadow: none;
+    color: inherit;
+    font: inherit;
+    text-align: left;
+    text-transform: none;
+    letter-spacing: normal;
+    cursor: pointer;
+}
+
+#options_tablist .options_tab_icon i {
+    width: 20px;
+    flex-shrink: 0;
+    font-size: 16px;
+    text-align: center;
+}
+
+#options_tablist .active {
+    font-weight: bold;
+    background-color: var(--theme_default_altbtnbg, #8882);
+}
+
+#options_tablist .options_tab_icon:hover, #options_div #options_close:hover {
+    background-color: var(--theme_default_altbtnbghover, #8883);
+}
+
+#options_div :focus-visible {
+    outline: 2px solid var(--theme_default_link, currentColor);
+    outline-offset: 2px;
+}
+
+#options_div .options_tab {
+    min-width: 0;
+    padding: 20px 24px;
+    overflow: auto;
+    scrollbar-gutter: stable;
+    overscroll-behavior: contain;
+}
+
+#options_div h2 {
+    margin: 0 24px 20px 0;
+    color: inherit;
+    font-size: 18px;
+    text-align: left;
+}
+
+#options_div fieldset {
+    min-width: 0;
+    margin: 0 0 24px;
+    padding: 12px 0 0;
+    border: 0;
+    border-top: 1px solid;
+    border-color: var(--theme_default_border, currentColor);
+}
+
+#options_div legend {
+    padding: 0 8px 0 0;
+    font-weight: bold;
+}
+
+#options_div label {
+    display: block;
+    margin: 0 0 8px;
+    cursor: pointer;
+}
+
+#options_div input, #options_div select, #options_div textarea, #options_div button {
+    box-sizing: border-box;
+    max-width: 100%;
+    font-size: inherit;
+}
+
+#options_div select, #options_div button, #options_div input[type="button"] {
+    height: auto;
+    min-height: 32px;
+    line-height: 1.5;
+}
+
+#options_div input[type="checkbox"] {
+    margin: 0 8px 0 0;
+    vertical-align: middle;
+}
+
+#options_div input[type="number"] {
+    width: 6em;
+}
+
+#options_div input[type="text"], #options_div input[type="number"], #options_div select {
+    padding: 4px 8px;
+}
+
+#options_div button, #options_div input[type="button"] {
+    padding: 6px 12px;
+    cursor: pointer;
+}
+
+#options_div :disabled {
+    opacity: .55;
+    cursor: default;
+}
+
+#options_div .options-row, #options_div .options-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px 16px;
+    margin-bottom: 12px;
+}
+
+#options_div .options-actions button {
+    margin: 0;
+}
+
+#options_div .options-output {
+    width: 100%;
+    margin-top: 12px;
+}
+
+#options_div #style-select {
+    margin-bottom: 24px;
+}
+
+@media (max-width: 600px) {
+    #options_div {
+        grid-template-columns: minmax(0, 1fr) 48px;
+        grid-template-rows: auto minmax(0, 1fr);
+        width: calc(100% - 16px);
+        height: calc(100% - 16px);
+        margin-top: 8px;
+    }
+
+    #options_tablist {
+        grid-column: 1;
+        grid-row: 1;
+        flex-direction: row;
+        padding: 8px;
+        border-right: 0;
+        border-bottom: 1px solid;
+    }
+
+    #options_tablist .options_tab_icon {
+        width: auto;
+        white-space: nowrap;
+    }
+
+    #options_div .options_tab {
+        grid-column: 1 / -1;
+        padding: 16px;
+    }
+
+    #options_div #options_close {
+        position: static;
+        grid-column: 2;
+        grid-row: 1;
+        align-self: center;
+        justify-self: center;
+    }
 }
 
 .poster_id {
@@ -1256,7 +1434,7 @@ table.fileboard td, table.fileboard th {
     color: #212121
 }
 
-#alert_close, #options_close {
+#alert_close {
     margin-right: 13px;
     margin-top: 5px;
 }

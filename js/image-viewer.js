@@ -17,7 +17,8 @@
     for (let key in SETTINGS_MAP) {
         let savedVal = localStorage.getItem(key);
         if (savedVal === null) {
-            savedVal = SETTINGS_MAP[key];
+            savedVal = window.tb_settings['image-viewer'][key];
+            if (savedVal === undefined) savedVal = SETTINGS_MAP[key];
         }
         window.tb_settings['image-viewer'][key] = savedVal;
     }
@@ -43,9 +44,9 @@
                 "<label><input type='checkbox' name='iv_enable' " + chk_enable + "> " + _("Enable Image Viewer") + "</label>" +
                 "<label><input type='checkbox' name='iv_scroll_zoom' " + chk_scroll + "> " + _("Enable Scroll Zoom") + "</label>" +
                 "<label><input type='checkbox' name='iv_drag' " + chk_drag + "> " + _("Enable Mouse Dragging") + "</label>" +
-                "<div style='margin-top:5px; display:flex; gap:10px;'>" +
-                    "<label>" + _("Min Zoom") + ": <input type='number' step='0.1' name='iv_zoom_min' value='" + val_min + "' style='width:60px;'></label>" +
-                    "<label>" + _("Max Zoom") + ": <input type='number' step='1' name='iv_zoom_max' value='" + val_max + "' style='width:60px;'></label>" +
+                "<div class='options-row'>" +
+                    "<label>" + _("Min Zoom") + ": <input type='number' required min='0.1' step='0.1' name='iv_zoom_min' value='" + val_min + "'></label>" +
+                    "<label>" + _("Max Zoom") + ": <input type='number' required min='0.1' step='0.1' name='iv_zoom_max' value='" + val_max + "'></label>" +
                 "</div>" +
             "</fieldset>";
 
@@ -53,21 +54,36 @@
 
         if (typeof $ !== 'undefined') {
             $(document).on('change', '#image-viewer-fs input', function() {
-                var name = $(this).attr('name');
-                var val;
+                var inputs = $(this);
 
-                if ($(this).attr('type') === 'checkbox') {
-                    val = $(this).is(':checked') ? 'true' : 'false';
-                } else {
-                    val = $(this).val();
+                if (this.type === 'number') {
+                    inputs = $('#image-viewer-fs input[type="number"]');
+                    var min = Number($('#image-viewer-fs [name="iv_zoom_min"]').val());
+                    var max = Number($('#image-viewer-fs [name="iv_zoom_max"]').val());
+                    inputs.each(function () { this.setCustomValidity(''); });
+                    if (min > max) this.setCustomValidity(_('Minimum zoom must not exceed maximum zoom.'));
+                    for (var i = 0; i < inputs.length; i++) {
+                        if (!inputs[i].reportValidity()) return;
+                    }
                 }
 
-                localStorage.setItem(name, val);
-                window.tb_settings['image-viewer'][name] = val;
+                inputs.each(function () {
+                    var val = this.type === 'checkbox' ? String(this.checked) : this.value;
+                    localStorage.setItem(this.name, val);
+                    window.tb_settings['image-viewer'][this.name] = val;
+                });
 
                 if (window.VichanImageViewer) {
                     window.VichanImageViewer.reloadSettings();
                 }
+            });
+            $(function () {
+                var enabled = $('#image-viewer-fs [name="iv_enable"]');
+                function updateControls() {
+                    $('#image-viewer-fs input').not(enabled).prop('disabled', !enabled.prop('checked'));
+                }
+                enabled.on('change', updateControls);
+                updateControls();
             });
         }
     }

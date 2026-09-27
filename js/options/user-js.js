@@ -11,24 +11,26 @@
 
 +function(){
 
-var tab = Options.add_tab("user-js", "fa fa-code", _("User JS"));
+if (!window.Options) return;
 
-var textarea = $("<textarea></textarea>").css({
-  "font-size": 12,
-  position: "absolute",
-  top: 35, bottom: 35,
-  width: "calc(100% - 20px)", margin: 0, padding: "4px", border: "1px solid black",
-  left: 5, right: 5
-}).appendTo(tab.content);
-var submit = $("<input type='button' value='"+_("Update custom Javascript")+"'>").css({
-  position: "absolute",
-  height: 25, bottom: 5,
-  width: "calc(100% - 10px)",
-  left: 5, right: 5
-}).click(function() {
+var tab = Options.get_tab('user-code') || Options.add_tab('user-code', 'fa fa-code', _('Custom code'));
+var section = $('<fieldset></fieldset>').append($('<legend></legend>').text(_('User JS'))).appendTo(tab.content);
+
+var textarea = $("<textarea spellcheck='false'></textarea>").attr('aria-label', _('User JS')).css({
+  "font-size": 13,
+  "font-family": "monospace",
+  display: "block",
+  width: "100%",
+  height: 220,
+  "min-height": 180,
+  margin: "0 0 12px",
+  padding: 8,
+  resize: "vertical"
+}).appendTo(section);
+var submit = $("<input type='button' value='"+_("Update custom Javascript")+"'>").click(function() {
   localStorage.user_js = textarea.val();
   document.location.reload();
-}).appendTo(tab.content);
+}).appendTo(section);
 
 var apply_js = function() {
   var proc = function() {
@@ -52,7 +54,7 @@ var apply_js = function() {
 var update_textarea = function() {
   if (!localStorage.user_js) {
     textarea.text("/* "+_("Enter here your own Javascript code...")+" */\n" +
-                  "/* "+_("Have a backup of your storage somewhere, as messing here\nmay render you this website unusable.")+" */\n" +
+                  "/* "+_("Have a backup of your storage somewhere, as messing here may render you this website unusable.")+" */\n" +
                   "/* "+_("You can include JS files from remote servers, for example:")+" */\n" +
                   'load_js("http://example.com/script.js");');
   }
