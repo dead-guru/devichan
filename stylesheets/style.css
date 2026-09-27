@@ -156,6 +156,170 @@ form table tr td div.center {
     padding-left: 3px
 }
 
+form[name="post"]:not(#quick-reply) > table {
+    width: 40em;
+    max-width: 100%;
+    table-layout: fixed;
+    border-spacing: 0 .5em
+}
+
+form[name="post"]:not(#quick-reply) > table > tbody > tr > th {
+    width: 6em;
+    padding: .4em .75em .4em 0;
+    vertical-align: top;
+    box-sizing: border-box
+}
+
+form[name="post"]:not(#quick-reply) > table > tbody > tr > td {
+    padding: 0;
+    vertical-align: top
+}
+
+form[name="post"]:not(#quick-reply) input[type="text"],
+form[name="post"]:not(#quick-reply) input[type="password"],
+form[name="post"]:not(#quick-reply) select,
+form[name="post"]:not(#quick-reply) input[type="submit"] {
+    box-sizing: border-box;
+    height: 2em;
+    max-width: 100%;
+    margin: 0;
+    padding: .25em .5em;
+    font-family: inherit;
+    font-size: inherit;
+    line-height: 1.4;
+    vertical-align: middle
+}
+
+form[name="post"]:not(#quick-reply) .post-field {
+    width: 50%
+}
+
+form[name="post"] #upload_url input {
+    display: block;
+    width: 100%;
+    margin: 0
+}
+
+form[name="post"] input[name="embed"] {
+    width: 100%
+}
+
+form[name="post"] input[type="file"] {
+    box-sizing: border-box;
+    max-width: 100%
+}
+
+form[name="post"] .postarea,
+form[name="post"] .dropzone-wrap {
+    float: none;
+    width: 100%;
+    padding: 0;
+    box-sizing: border-box;
+    text-align: left
+}
+
+form[name="post"] .postarea {
+    position: relative
+}
+
+form[name="post"] .postarea textarea#body,
+form[name="post"] .postarea textarea.text_body {
+    display: block;
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    min-height: 9em;
+    margin: 0;
+    padding: .4em .5em 1.7em;
+    font: inherit;
+    resize: vertical
+}
+
+form[name="post"] .postarea .postform__limits {
+    position: absolute;
+    right: .8em;
+    bottom: .25em;
+    float: none;
+    padding: 0;
+    font-size: .8em;
+    text-align: right;
+    opacity: .7;
+    pointer-events: none
+}
+
+form[name="post"] .postarea .format-text {
+    display: flex;
+    flex-wrap: wrap;
+    float: none;
+    gap: .25em;
+    padding-left: 0;
+    margin-bottom: .25em
+}
+
+form[name="post"] .postarea .format-text button {
+    box-sizing: border-box;
+    min-width: 2em;
+    height: 1.8em;
+    margin: 0;
+    padding: 0 .5em;
+    font-size: inherit;
+    line-height: 1.4
+}
+
+form[name="post"] #upload_selection {
+    padding-bottom: .25em
+}
+
+form[name="post"] .upload-modes > th {
+    background: transparent
+}
+
+#upload_selection > div {
+    display: flex;
+    flex-wrap: wrap;
+    float: none;
+    padding: 0;
+    text-align: left
+}
+
+#upload_selection button {
+    box-sizing: border-box;
+    height: auto;
+    min-height: 2em;
+    margin: 0 .25em 0 0;
+    padding: .3em .65em;
+    border: 1px solid transparent;
+    border-bottom: 2px solid transparent;
+    border-radius: 0;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    cursor: pointer
+}
+
+#upload_selection button[aria-pressed="true"] {
+    border-bottom-color: currentColor;
+    font-weight: bold
+}
+
+#upload_selection button:hover {
+    background-color: rgba(128, 128, 128, .15)
+}
+
+#upload_selection button:focus-visible,
+form[name="post"] .format-text button:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 2px
+}
+
+@media (max-width: 480px) {
+    form[name="post"]:not(#quick-reply) > table > tbody > tr > th {
+        width: 5em;
+        padding-right: .4em
+    }
+}
+
 form table tr td div input {
     display: block;
     margin: 2px auto 0
@@ -1255,36 +1419,36 @@ div.boardlist.bottom {
 }
 
 .dropzone {
-    color: #000;
+    color: inherit;
     cursor: default;
     margin: auto;
-    padding: 0 4px;
+    padding: 4px;
+    box-sizing: border-box;
     text-align: center;
     min-height: 50px;
     max-height: 140px;
     transition: .2s;
-    background-color: rgba(200, 200, 200, .5);
+    background-color: rgba(128, 128, 128, .12);
     overflow-y: auto
 }
 
 .dropzone .file-hint {
-    color: rgba(0, 0, 0, .5);
+    color: inherit;
     cursor: pointer;
-    position: relative;
-    margin-bottom: 5px;
-    padding: 10px 0;
-    top: 5px;
+    margin: 0;
+    padding: 10px 4px;
+    box-sizing: border-box;
     transition: .2s;
     border: 2px dashed rgba(125, 125, 125, .4)
 }
 
 .dropzone.dragover .file-hint, .file-hint:hover {
-    color: #000;
+    color: inherit;
     border-color: rgba(125, 125, 125, .8)
 }
 
 .dropzone.dragover {
-    background-color: #c8c8c8
+    background-color: rgba(128, 128, 128, .25)
 }
 
 .dropzone .file-thumbs {

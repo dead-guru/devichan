@@ -1571,13 +1571,13 @@ div.post.reply {
     padding: 5px !important;
     text-align: center !important;
     background-color: var(--theme_default_bg) !important;
-    border: 2px dashed var(--theme_default_border) !important;
+    border: 0 !important;
     overflow-y: auto !important;
     transition: all 0.15s ease !important;
 }
 
 .dropzone:focus {
-    outline: none !important;
+    outline: 2px solid var(--theme_default_link) !important;
     border-color: var(--theme_default_link) !important;
     box-shadow: 0 0 10px rgba(0, 255, 136, 0.2) !important;
 }
@@ -1926,13 +1926,10 @@ div.post.reply {
 
 .paint-toolbar-btn {
     font-weight: bold !important;
-    font-size: 11px !important;
-    margin-left: 3px !important;
     background: var(--theme_default_postbg) !important;
     border: 2px solid var(--theme_default_border) !important;
     color: var(--theme_default_link) !important;
     cursor: pointer !important;
-    padding: 2px 8px !important;
     transition: all 0.1s ease !important;
 }
 

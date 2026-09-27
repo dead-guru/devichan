@@ -50,7 +50,6 @@
 		#quick-reply tr td:nth-child(2) {\
 			white-space: nowrap;\
 			text-align: right;\
-			padding-right: 4px;\
 		}\
 		#quick-reply tr td:nth-child(2) input[type="submit"] {\
 			width: 100%;\
@@ -74,13 +73,15 @@
 			padding: 0 5px;\
 			font-size: 20px;\
 		}\
-		#quick-reply input[type="text"], #quick-reply select {\
+		#quick-reply input[type="text"], #quick-reply select, #quick-reply input[type="submit"] {\
 			width: 100%;\
 			padding: 2px;\
 			font-size: 10pt;\
 			box-sizing: border-box;\
 			-webkit-box-sizing:border-box;\
 			-moz-box-sizing: border-box;\
+			height: 2em;\
+			vertical-align: middle;\
 		}\
 		#quick-reply textarea {\
 			width: 100%;\
@@ -90,6 +91,7 @@
 			-moz-box-sizing: border-box;\
 			font-size: 10pt;\
 			resize: vertical horizontal;\
+			padding: .4em .5em 1.7em;\
 		}\
 		#quick-reply input, #quick-reply select, #quick-reply textarea {\
 			margin: 0 0 1px 0;\
@@ -147,14 +149,18 @@
 			#quick-reply textarea {\
 				min-height: 120px;\
 			}\
-			#quick-reply input[type="text"], #quick-reply select, #quick-reply textarea {\
+			#quick-reply input[type="text"], #quick-reply select, #quick-reply textarea, #quick-reply input[type="submit"] {\
 				font-size: 16px;\
 				padding: 8px;\
                 width: 100% !important;\
 			}\
+			#quick-reply input[type="text"], #quick-reply select, #quick-reply input[type="submit"] {\
+				height: 2.5em;\
+			}\
             #quick-reply textarea {\
                 min-height: 120px !important;\
                 width: 100% !important;\
+                padding-bottom: 1.7em;\
             }\
 		}\
 		</style>').appendTo($('head'));
@@ -185,6 +191,7 @@
                     // Replace <th> with input placeholders
                     $td.find('input[type="text"]')
                         .removeAttr('size')
+                        .filter(':not([placeholder])')
                         .attr('placeholder', $th.clone().children().remove().end().text());
                 }
 

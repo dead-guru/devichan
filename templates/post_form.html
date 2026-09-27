@@ -26,7 +26,7 @@ form[name="post"] { display: block !important; }
 				{% trans %}Name{% endtrans %}
 			</th>
 			<td>
-				<input type="text" name="name" placeholder="{% trans %}Name{% endtrans %}" style="width: 50%; height: 20px" maxlength="35" autocomplete="off"> {% if config.allow_no_country and config.country_flags %}<input id="no_country" name="no_country" type="checkbox"> <label for="no_country">{% trans %}Don't show my flag{% endtrans %}</label>{% endif %}
+				<input type="text" name="name" placeholder="{% trans %}Name{% endtrans %}" class="post-field" maxlength="35" autocomplete="off"> {% if config.allow_no_country and config.country_flags %}<input id="no_country" name="no_country" type="checkbox"> <label for="no_country">{% trans %}Don't show my flag{% endtrans %}</label>{% endif %}
 			</td>
 		</tr>{% endif %}
 		{% if not config.field_disable_email or (mod and post.mod|hasPermission(config.mod.bypass_field_disable, board.uri)) %}<tr>
@@ -35,16 +35,16 @@ form[name="post"] { display: block !important; }
 			</th>
 			<td>
 				{% if config.field_email_selectbox %}
-				<select name="email" id="email_selectbox" style="width: 50%; height: 20px" autocomplete="off">
+				<select name="email" id="email_selectbox" class="post-field" autocomplete="off">
 					<option value="" selected>{% trans %}Options{% endtrans %}</option>
 					<option value="sage">sage</option>
 					{% if not config.always_noko %}<option value="noko">noko</option>{% endif %}
 				</select>
 				{% else %}
-				<input type="text" name="email" style="width: 50%; height: 20px" maxlength="40" autocomplete="off">
+				<input type="text" name="email" class="post-field" maxlength="40" autocomplete="off">
 				{% endif %}
 				{% if not (not (config.field_disable_subject or (id and config.field_disable_reply_subject)) or (mod and post.mod|hasPermission(config.mod.bypass_field_disable, board.uri))) %}
-				<input accesskey="s" style="margin-left:2px;" type="submit" name="post" value="{% if id %}{{ config.button_reply }}{% else %}{{ config.button_newtopic }}{% endif %}" />{% if config.spoiler_images %} <input id="spoiler" name="spoiler" type="checkbox"> <label for="spoiler">{% trans %}Spoiler Image{% endtrans %}</label>				{% endif %}
+				<input accesskey="s" type="submit" name="post" value="{% if id %}{{ config.button_reply }}{% else %}{{ config.button_newtopic }}{% endif %}" />{% if config.spoiler_images %} <input id="spoiler" name="spoiler" type="checkbox"> <label for="spoiler">{% trans %}Spoiler Image{% endtrans %}</label>				{% endif %}
 				{% endif %}
 			</td>
 		</tr>{% endif %}
@@ -53,8 +53,8 @@ form[name="post"] { display: block !important; }
 				{% trans %}Subject{% endtrans %}
 			</th>
 			<td>
-				<input style="float:left; width: 50%; height: 20px" placeholder="{% trans %}Subject{% endtrans %}" type="text" name="subject" maxlength="100" autocomplete="off">
-				<input accesskey="s" style="margin-left:2px;" type="submit" name="post" value="{% if id %}{{ config.button_reply }}{% else %}{{ config.button_newtopic }}{% endif %}" />{% if config.spoiler_images %} <input id="spoiler" name="spoiler" type="checkbox"> <label for="spoiler">{% trans %}Spoiler Image{% endtrans %}</label>{% endif %}
+				<input class="post-field" placeholder="{% trans %}Subject{% endtrans %}" type="text" name="subject" maxlength="100" autocomplete="off">
+				<input accesskey="s" type="submit" name="post" value="{% if id %}{{ config.button_reply }}{% else %}{{ config.button_newtopic }}{% endif %}" />{% if config.spoiler_images %} <input id="spoiler" name="spoiler" type="checkbox"> <label for="spoiler">{% trans %}Spoiler Image{% endtrans %}</label>{% endif %}
 			</td>
 		</tr>
 		{% endif %}
@@ -65,12 +65,12 @@ form[name="post"] { display: block !important; }
 			<td>
 				<div class="postarea">
 					<textarea name="body" placeholder="{% trans %}Comment{% endtrans %}" id="body" rows="5" class="text_body"></textarea>
-					<div class="postform__limits" title="Post/reply limits">{{ config.max_filesize | format_bytes(0) }} / {{ config.max_images }} {% trans %}files{% endtrans %} / <span class="postform__len">{{config.max_body}}</span></div>
+					<div class="postform__limits">{{ config.max_filesize | format_bytes(0) }} / {{ config.max_images }} {% trans %}files{% endtrans %} / <span class="postform__len">{{config.max_body}}</span></div>
 				</div>
 				
 				{% if not (not (config.field_disable_subject or (id and config.field_disable_reply_subject)) or (mod and post.mod|hasPermission(config.mod.bypass_field_disable, board.uri))) %}
 				{% if not (not config.field_disable_email or (mod and post.mod|hasPermission(config.mod.bypass_field_disable, board.uri))) %}
-				<input accesskey="s" style="margin-left:2px;" type="submit" name="post" value="{% if id %}{{ config.button_reply }}{% else %}{{ config.button_newtopic }}{% endif %}" />{% if config.spoiler_images %} <input id="spoiler" name="spoiler" type="checkbox"> <label for="spoiler">{% trans %}Spoiler Image{% endtrans %}</label>{% endif %}
+				<input accesskey="s" type="submit" name="post" value="{% if id %}{{ config.button_reply }}{% else %}{{ config.button_newtopic }}{% endif %}" />{% if config.spoiler_images %} <input id="spoiler" name="spoiler" type="checkbox"> <label for="spoiler">{% trans %}Spoiler Image{% endtrans %}</label>{% endif %}
 				{% endif %}
 				{% endif %}
 			</td>
@@ -93,7 +93,7 @@ form[name="post"] { display: block !important; }
 			<td>
 				<script>load_captcha("{{ config.captcha.provider_get }}", "{{ config.captcha.extra }}");</script>
 				<noscript>
-					<input class='captcha_text' placeholder="{% trans %}Verification{% endtrans %}" type='text' name='captcha_text' style="width: 50%; height: 20px" maxlength='6' autocomplete='off'>
+					<input class='captcha_text post-field' placeholder="{% trans %}Verification{% endtrans %}" type='text' name='captcha_text' maxlength='6' autocomplete='off'>
 					<div class="captcha_html">
 						<img src="{{ config.captcha.provider_get }}?mode=get&extra={{ config.captcha.extra }}&raw=1">
 					</div>
@@ -109,7 +109,7 @@ form[name="post"] { display: block !important; }
                         <td>
                                 <script>load_captcha("{{ config.captcha.provider_get }}", "{{ config.captcha.extra }}");</script>
 				<noscript>
-					<input class='captcha_text' placeholder="{% trans %}Verification{% endtrans %}" type='text' name='captcha_text' style="width: 50%; height: 20px" maxlength='6' autocomplete='off'>
+					<input class='captcha_text post-field' placeholder="{% trans %}Verification{% endtrans %}" type='text' name='captcha_text' maxlength='6' autocomplete='off'>
 					<div class="captcha_html">
 						<img src="{{ config.captcha.provider_get }}?mode=get&extra={{ config.captcha.extra }}&raw=1">
 					</div>
@@ -154,8 +154,7 @@ form[name="post"] { display: block !important; }
 
 				{% if config.allow_upload_by_url %}
 					<div style="float:none;text-align:left" id="upload_url">
-						<label for="file_url">{% trans %}Or URL{% endtrans %}</label>:
-						<input style="display:inline" type="text" id="file_url" name="file_url" size="35">
+						<input type="text" id="file_url" name="file_url" size="35" placeholder="{% trans %}Or URL{% endtrans %}" aria-label="{% trans %}URL{% endtrans %}">
 					</div>
 				{% endif %}
 			</td>
