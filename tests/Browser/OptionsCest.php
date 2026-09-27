@@ -17,7 +17,6 @@ final class OptionsCest
         $I->waitForElement('body.is-moderator');
         $I->setCookie('e2e_options', '1');
         $I->executeJS('localStorage.top_menu_position = "scroll";');
-        $I->resizeWindow(1280, 600);
         $I->amOnPage('/mod.php?/b/res/1.html');
         $I->waitForElement('.top-menu');
 
