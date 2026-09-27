@@ -38,7 +38,7 @@ final class PublicUiCest
         $I->waitForElementVisible('form input[name="password"]');
         $I->fillField('form input[name="password"]', 'secret');
         $I->click('form input[type="submit"]');
-        $I->waitForElement('body');
+        $I->waitForText('Secret board content', 10, '#op_1 .body');
         $I->seeInCurrentUrl('/sec/');
         $I->see('Secret board content');
     }
