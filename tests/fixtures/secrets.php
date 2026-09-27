@@ -89,6 +89,13 @@ $config['additional_javascript'][] = 'js/threadfilelist.js';
 if (($_COOKIE['e2e_paint'] ?? null) === '1') {
     $config['additional_javascript'][] = 'js/paint-tool.js';
 }
+if (($_COOKIE['e2e_options'] ?? null) === '1') {
+    $config['additional_javascript'][] = 'js/options.js';
+    $config['additional_javascript'][] = 'js/options/general.js';
+    $config['boards'] = [['b']];
+    $config['stylesheets']['Photon'] = 'photon.css';
+    $config['default_stylesheet'] = ['Photon', 'photon.css'];
+}
 
 $config['captcha']['enabled'] = false;
 $config['new_thread_capt'] = false;

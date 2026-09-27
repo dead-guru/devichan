@@ -23,7 +23,7 @@ $(function(){
     var position = localStorage.top_menu_position;
     var fixed = position === 'fixed' || (position !== 'scroll' && /^(fixed|sticky)$/.test(menu.css('position')));
     var label = $('<label></label>');
-    var toggle = $('<input type="checkbox">').prop('checked', !fixed).appendTo(label);
+    var toggle = $('<input type="checkbox">').prop('checked', fixed).appendTo(label);
     label.append(document.createTextNode(_('Scroll the menu with the page')));
     tab.content.children('h2').after(label);
 
@@ -39,7 +39,7 @@ $(function(){
     setMenuPosition(fixed ? 'fixed' : 'scroll');
     new ResizeObserver(updateMenuHeight).observe(menu[0]);
     toggle.on('change', function () {
-      localStorage.top_menu_position = this.checked ? 'scroll' : 'fixed';
+      localStorage.top_menu_position = this.checked ? 'fixed' : 'scroll';
       setMenuPosition(localStorage.top_menu_position);
     });
   }
