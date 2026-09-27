@@ -18,7 +18,7 @@ final class PublicUiCest
         $I->click('h1.open-form a');
         $I->waitForElementVisible('form[name="post"]');
 
-        $I->click('a[title="Catalog"]');
+        $I->click('#thread-links_header .catalog-link');
         $I->waitForElement('body');
         $I->seeInCurrentUrl('/b/catalog.html');
     }
