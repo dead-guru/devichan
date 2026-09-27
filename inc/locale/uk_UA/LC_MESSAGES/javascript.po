@@ -764,7 +764,7 @@ msgstr "Розфарбовувати ідентифікатори"
 
 #: ../../../../js/auto-reload.js:33
 msgid "Update"
-msgstr "Оновлення"
+msgstr "Оновити"
 
 #: ../../../../js/mod/ban-list.js:29
 msgid "IP address"

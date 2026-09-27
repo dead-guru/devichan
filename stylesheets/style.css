@@ -1459,6 +1459,7 @@ div.boardlist.bottom {
 
 .board-toolbar #thread-links > a,
 .board-toolbar #thread-links_header > a,
+.board-toolbar #updater > a,
 .watch-controls button,
 .board-toolbar .new-threads button {
     display: inline-flex;
@@ -1479,10 +1480,37 @@ div.boardlist.bottom {
 
 .board-toolbar #thread-links > a:not(:hover),
 .board-toolbar #thread-links_header > a:not(:hover),
+.board-toolbar #updater > a:not(:hover),
 .watch-controls button,
 .board-toolbar .new-threads button {
     color: var(--theme_default_link, inherit);
     text-decoration: none
+}
+
+.board-toolbar #updater {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .35em;
+    color: inherit;
+    font: inherit
+}
+
+.board-toolbar #updater label {
+    display: inline-flex;
+    align-items: center;
+    gap: .35em;
+    min-height: 1.9em;
+    cursor: pointer
+}
+
+.board-toolbar #auto_update_status {
+    margin: 0
+}
+
+.board-toolbar #update_secs {
+    min-width: 2ch;
+    font-variant-numeric: tabular-nums
 }
 
 .watch-controls button[aria-pressed="true"],
@@ -1655,6 +1683,8 @@ div.board-pages a.selected {
 
     .board-toolbar #thread-links > a,
     .board-toolbar #thread-links_header > a,
+    .board-toolbar #updater > a,
+    .board-toolbar #updater label,
     .board-toolbar button,
     .watch-controls button,
     .board-pages a,
