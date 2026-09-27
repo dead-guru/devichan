@@ -158,7 +158,9 @@ $(function () {
         bl.find('.watch-tracked').removeClass('watch-tracked').css({'font-style': '', 'font-weight': ''}).each(function () {
             $(this).html(this.origtitle);
         });
-        var pinned = $('<span id="watch-pinned">').attr('aria-label', _('Pinned boards')).appendTo(bl);
+        var pinned = $('<span id="watch-pinned">').attr({
+            'aria-label': _('Pinned boards'), title: _('Pinned boards')
+        }).appendTo(bl);
         var mobile = mobile_query.matches;
 
         bl.off('.watch');
@@ -179,8 +181,10 @@ $(function () {
                 if (st[i].pinned) {
                     if (!pinned.children().length) {
                         $('<i class="fa-solid fa-thumbtack watch-pin-icon" aria-hidden="true">').appendTo(pinned);
+                    } else {
+                        pinned.append(' / ');
                     }
-                    link = $('<a>').attr('href', modRoot + i + '/').text('/' + i + '/').appendTo(pinned);
+                    link = $('<a>').attr('href', modRoot + i + '/').text(i).appendTo(pinned);
                 } else {
                     link = bl.find('a').filter(function () {
                         return $(this).attr('href') == modRoot + i + '/' || $(this).attr('href') == modRoot + i + '/index.html';
@@ -197,13 +201,13 @@ $(function () {
                 }
 
                 if (st[i].watched) {
-                    link.css("font-weight", "bold");
+                    if (!st[i].pinned) link.css("font-weight", "bold");
                     if (status && status[i] && status[i].new_threads) {
                         link.html(link.html() + " (" + status[i].new_threads + ")");
                     }
                 }
                 if (st[i].threads && osize(st[i].threads)) {
-                    link.css("font-style", "italic");
+                    if (!st[i].pinned) link.css("font-style", "italic");
 
                     link.attr("data-board", i);
 
@@ -396,11 +400,11 @@ $(function () {
         $('#watch-pin').attr({
             'aria-pressed': is_pinned(bc),
             title: is_pinned(bc) ? _('Unpin from top') : _('Keep this board in the top board list')
-        }).find('span').text(_('Pin to top'));
+        }).find('span').text(is_pinned(bc) ? _('Unpin from top') : _('Pin to top'));
         $('#watch-board').attr({
             'aria-pressed': !!is_boardwatched(bc),
             title: is_boardwatched(bc) ? _('Stop watching this board') : _('Mark threads with new posts in the board list')
-        }).find('span').text(_('Watch this board'));
+        }).find('span').text(is_boardwatched(bc) ? _('Stop watching this board') : _('Watch this board'));
         $('#watch-thread').attr({
             'aria-pressed': !!is_threadwatched(bc, thread),
             title: is_threadwatched(bc, thread) ? _('Stop watching this thread') : _('Watch this thread')
