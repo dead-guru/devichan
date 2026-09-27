@@ -104,12 +104,11 @@ $.fn.scrollStopped = function(callback) {
 		var countdown_interval;
 
 		// Add an update link
-		$('span#thread-links').append("<span id='updater'><a href='#' id='update_thread' style='padding-left:0px'>"+_("Update")+"</a> <input type='checkbox' id='auto_update_status' checked> "+_("Auto")+" <span id='update_secs'></span></span>");
+		$('span#thread-links').append("<span id='updater'><a href='#' id='update_thread'>"+_("Update")+"</a><label><input type='checkbox' id='auto_update_status'>"+_("Auto")+"</label><span id='update_secs'></span></span>");
 
 		// Set the updater checkbox according to user setting
-		if (localStorage.auto_thread_update === 'true') {
-			$('#auto_update_status').prop('checked', true);
-		}
+		$('#auto_update_status').prop('checked', localStorage.auto_thread_update === 'true')
+			.parent().attr('title', _('Auto update thread'));
 
 		// Grab the settings
 		var settings = new script_settings('auto-reload');
