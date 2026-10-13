@@ -6,6 +6,23 @@
 
 defined('TINYBOARD') or exit;
 
+// Moderation lists that post actions return to instead of the board or thread.
+function mod_list_url($url) {
+	return (bool)preg_match('!^\?/(recent|reports|IP|search|bans)(/|&|$)!', $url);
+}
+
+function mod_list_referer() {
+	if (isset($_SERVER['HTTP_REFERER']) && preg_match('!/mod\.php(\?/[^#]*)$!', $_SERVER['HTTP_REFERER'], $match) && mod_list_url($match[1]))
+		return $match[1];
+	return false;
+}
+
+function mod_redirect_back($fallback) {
+	global $config;
+	
+	header('Location: ' . (mod_list_referer() ?: $fallback), true, $config['redirect_http']);
+}
+
 function mod_page($title, $template, $args, $subtitle = false) {
 	global $config, $mod;
 	
@@ -1041,9 +1058,7 @@ function mod_unban($ban_id) {
 	
 	Bans::delete($ban_id, true, $mod['boards']);
 	
-	// Return to the IP page or ban list the ban was removed from.
-	$back = isset($_SERVER['HTTP_REFERER']) && preg_match('!mod\.php(\?/(IP/[^#]+|bans))$!', $_SERVER['HTTP_REFERER'], $match) ? $match[1] . '#bans' : '?/bans';
-	header('Location: ' . $back, true, $config['redirect_http']);
+	mod_redirect_back('?/bans');
 }
 
 function mod_bans_json() {
@@ -1164,7 +1179,7 @@ function mod_lock($board, $unlock, $post) {
 		$query->execute() or error(db_error($query));
 	}
 	
-	header('Location: ?/' . sprintf($config['board_path'], $board) . $config['file_index'], true, $config['redirect_http']);
+	mod_redirect_back('?/' . sprintf($config['board_path'], $board) . $config['file_index']);
 	
 	if ($unlock)
 		event('unlock', $post);
@@ -1191,7 +1206,7 @@ function mod_sticky($board, $unsticky, $post) {
 		buildIndex();
 	}
 	
-	header('Location: ?/' . sprintf($config['board_path'], $board) . $config['file_index'], true, $config['redirect_http']);
+	mod_redirect_back('?/' . sprintf($config['board_path'], $board) . $config['file_index']);
 }
 
 function mod_cycle($board, $uncycle, $post) {
@@ -1213,7 +1228,7 @@ function mod_cycle($board, $uncycle, $post) {
 		buildIndex();
 	}
 	
-	header('Location: ?/' . sprintf($config['board_path'], $board) . $config['file_index'], true, $config['redirect_http']);
+	mod_redirect_back('?/' . sprintf($config['board_path'], $board) . $config['file_index']);
 }
 
 function mod_bumplock($board, $unbumplock, $post) {
@@ -1235,7 +1250,7 @@ function mod_bumplock($board, $unbumplock, $post) {
 		buildIndex();
 	}
 	
-	header('Location: ?/' . sprintf($config['board_path'], $board) . $config['file_index'], true, $config['redirect_http']);
+	mod_redirect_back('?/' . sprintf($config['board_path'], $board) . $config['file_index']);
 }
 
 function mod_move_reply($originBoard, $postID) {
@@ -1603,7 +1618,10 @@ function mod_ban_post($board, $delete, $post, $token = false) {
 			rebuildThemes('post-delete', $board);
 		}
 		
-		header('Location: ?/' . sprintf($config['board_path'], $board) . $config['file_index'], true, $config['redirect_http']);
+		if (isset($_POST['redirect']) && mod_list_url($_POST['redirect']))
+			header('Location: ' . $_POST['redirect'], true, $config['redirect_http']);
+		else
+			header('Location: ?/' . sprintf($config['board_path'], $board) . $config['file_index'], true, $config['redirect_http']);
 	}
 	
 	$args = array(
@@ -1613,7 +1631,8 @@ function mod_ban_post($board, $delete, $post, $token = false) {
 		'board' => $board,
 		'delete' => (bool)$delete,
 		'boards' => listBoards(),
-		'token' => $security_token
+		'token' => $security_token,
+		'redirect' => mod_list_referer()
 	);
 	
 	// Show the post being banned for, so the reason can be written without going back.
@@ -1777,7 +1796,7 @@ function mod_delete($board, $post) {
 	// Rebuild themes
 	rebuildThemes('post-delete', $board);
 	// Redirect
-	header('Location: ?/' . sprintf($config['board_path'], $board) . $config['file_index'], true, $config['redirect_http']);
+	mod_redirect_back('?/' . sprintf($config['board_path'], $board) . $config['file_index']);
 }
 
 function mod_deletefile($board, $post, $file) {
@@ -1800,7 +1819,7 @@ function mod_deletefile($board, $post, $file) {
 	rebuildThemes('post-delete', $board);
 	
 	// Redirect
-	header('Location: ?/' . sprintf($config['board_path'], $board) . $config['dir']['res'] . sprintf($config['file_page'], $thread) . '#' . $post, true, $config['redirect_http']);
+	mod_redirect_back('?/' . sprintf($config['board_path'], $board) . $config['dir']['res'] . sprintf($config['file_page'], $thread) . '#' . $post);
 }
 
 function mod_spoiler_image($board, $post, $file) {
@@ -1845,7 +1864,7 @@ function mod_spoiler_image($board, $post, $file) {
 	rebuildThemes('post-delete', $board);
 	
 	// Redirect
-	header('Location: ?/' . sprintf($config['board_path'], $board) . $config['file_index'], true, $config['redirect_http']);
+	mod_redirect_back('?/' . sprintf($config['board_path'], $board) . $config['file_index']);
 }
 
 function mod_deletebyip($boardName, $post, $global = false) {
@@ -1920,11 +1939,8 @@ function mod_deletebyip($boardName, $post, $global = false) {
 	$cip = cloak_ip($ip);
 	modLog("Deleted all posts by IP address: <a href=\"?/IP/$cip\">$cip</a>");
 	
-	// Redirect, staying on the IP page when the deletion started there
-	if (isset($_SERVER['HTTP_REFERER']) && preg_match('!mod\.php(\?/IP/[^#]+)$!', $_SERVER['HTTP_REFERER'], $match))
-		header('Location: ' . $match[1], true, $config['redirect_http']);
-	else
-		header('Location: ?/' . sprintf($config['board_path'], $boardName) . $config['file_index'], true, $config['redirect_http']);
+	// Redirect
+	mod_redirect_back('?/' . sprintf($config['board_path'], $boardName) . $config['file_index']);
 }
 
 function mod_user($uid) {
