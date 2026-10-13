@@ -1,98 +1,279 @@
-<form action="?step=3" method="post" autocomplete="off">
-	<fieldset>
-	<legend>Database (MySQL)</legend>
-		<label for="db_server">Server:</label> 
-		<input type="text" id="db_server" name="db[server]" value="{{ config.db.server }}">
+<style>
+	.installer-config {
+		max-width: 46em;
+		margin: 0 auto;
+	}
+	.installer-config > p {
+		text-align: center;
+	}
+	.installer-config fieldset {
+		margin: 0 0 1em;
+		padding: .3em .6em .6em;
+	}
+	.installer-config legend {
+		font-weight: bold;
+		padding: 0 .3em;
+	}
+	.installer-config table {
+		width: 100%;
+	}
+	.installer-config th {
+		width: 13em;
+		vertical-align: top;
+	}
+	.installer-config td {
+		padding: 2px 4px;
+	}
+	.installer-config td label {
+		display: inline-block;
+		margin-right: 1em;
+	}
+	.installer-config td .unimportant {
+		margin-top: 2px;
+	}
+	.installer-config input.wide,
+	.installer-config textarea {
+		width: 100%;
+		font-family: monospace;
+	}
+	.installer-config textarea {
+		min-height: 8em;
+	}
+	.installer-config input[readonly] {
+		opacity: .7;
+	}
+	.installer-config input[type=submit] {
+		height: auto;
+		padding: .3em 1.5em;
+	}
+	@media (max-width: 600px) {
+		.installer-config th,
+		.installer-config td {
+			display: block;
+			width: auto;
+		}
+	}
+</style>
 
-		<label for="db_db">Database:</label> 
-		<input type="text" id="db_db" name="db[database]" value="{{ config.db.database }}">
-
-		<label for="db_prefix">Table prefix (optional):</label> 
-		<input type="text" id="db_prefix" name="db[prefix]" value="{{ config.db.prefix }}">
-
-		<label for="db_user">Username:</label> 
-		<input type="text" id="db_user" name="db[user]" value="{{ config.db.user }}">
-
-		<label for="db_pass">Password:</label> 
-		<input type="password" id="db_pass" name="db[password]" value="">
-	</fieldset>
-	<p style="text-align:center" class="unimportant">The following is all later configurable. For more options, <a href="http://tinyboard.org/docs/?p=Config">edit your configuration files</a> after installing.</p>
-	<fieldset>
-	<legend>Cookies</legend>
-		<label for="cookies_mod">Moderator cookie:</label> 
-		<input type="text" id="cookies_mod" name="cookies[mod]" value="{{ config.cookies.mod }}">
-
-		<label for="cookies_salt">Secure salt:</label> 
-		<input type="text" id="cookies_salt" name="cookies[salt]" value="{{ config.cookies.salt }}" size="40">
-	</fieldset>
-
-	<fieldset>
-	<legend>Flood control</legend>
-		<label for="flood_time">Seconds before each post:</label> 
-		<input type="text" id="flood_time" name="flood_time" value="{{ config.flood_time }}">
-
-		<label for="flood_time_ip">Seconds before you can repost something (post the exact same text):</label> 
-		<input type="text" id="flood_time_ip" name="flood_time_ip" value="{{ config.flood_time_ip }}">
-
-		<label for="flood_time_same">Same as above, but with a different IP address:</label> 
-		<input type="text" id="flood_time_same" name="flood_time_same" value="{{ config.flood_time_same }}">
-
-		<label for="max_body">Maximum post body length:</label> 
-		<input type="text" id="max_body" name="max_body" value="{{ config.max_body }}">
-
-		<label for="reply_limit">Replies in a thread before it can no longer be bumped:</label> 
-		<input type="text" id="reply_limit" name="reply_limit" value="{{ config.reply_limit }}">
-
-		<label for="max_links">Maximum number of links in a single post:</label> 
-		<input type="text" id="max_links" name="max_links" value="{{ config.max_links }}">			
-	</fieldset>
-
-	<fieldset>
-	<legend>Images</legend>
-		<label for="max_filesize">Maximum image filesize (bytes):</label> 
-		<input type="text" id="max_filesize" name="max_filesize" value="{{ config.max_filesize }}">
-
-		<label for="thumb_width">Thumbnail width:</label> 
-		<input type="text" id="thumb_width" name="thumb_width" value="{{ config.thumb_width }}">
-
-		<label for="thumb_height">Thumbnail height:</label> 
-		<input type="text" id="thumb_height" name="thumb_height" value="{{ config.thumb_height }}">
-
-		<label for="max_width">Maximum image width:</label> 
-		<input type="text" id="max_width" name="max_width" value="{{ config.max_width }}">
-
-		<label for="max_height">Maximum image height:</label> 
-		<input type="text" id="max_height" name="max_height" value="{{ config.max_height }}">
-	</fieldset>
+<form class="installer-config" action="?step=3" method="post" autocomplete="off">
+	<p class="unimportant">Everything except the database can be changed later in <code>inc/secrets.php</code>. Every option and its default is described in <code>inc/config.php</code>.</p>
 
 	<fieldset>
-	<legend>Display</legend>
-		<label for="threads_per_page">Threads per page:</label> 
-		<input type="text" id="threads_per_page" name="threads_per_page" value="{{ config.threads_per_page }}">
-
-		<label for="max_pages">Page limit:</label> 
-		<input type="text" id="max_pages" name="max_pages" value="{{ config.max_pages }}">
-
-		<label for="threads_preview">Number of replies to show per thread on the index page:</label> 
-		<input type="text" id="threads_preview" name="threads_preview" value="{{ config.threads_preview }}">
+		<legend>Database (MySQL)</legend>
+		<table>
+			{% for field, label in {server: 'Server', database: 'Database', user: 'Username'} %}
+			<tr>
+				<th><label for="db_{{ field }}">{{ label }}</label></th>
+				<td>
+					<input type="text" id="db_{{ field }}" name="db[{{ field }}]" value="{{ config.db[field]|e }}" size="25" required{% if env[field] %} readonly{% endif %}>
+					{% if env[field] %}<div class="unimportant">From <code>{{ env[field] }}</code>.</div>{% endif %}
+				</td>
+			</tr>
+			{% endfor %}
+			<tr>
+				<th><label for="db_password">Password</label></th>
+				<td>
+					{% if env.password %}
+					<input type="password" id="db_password" name="db[password]" value="" size="25" readonly>
+					<div class="unimportant">From <code>{{ env.password }}</code>.</div>
+					{% else %}
+					<input type="password" id="db_password" name="db[password]" value="" size="25">
+					{% endif %}
+				</td>
+			</tr>
+			<tr>
+				<th><label for="db_prefix">Table prefix</label></th>
+				<td>
+					<input type="text" id="db_prefix" name="db[prefix]" value="{{ config.db.prefix|e }}" size="10">
+					<div class="unimportant">Optional. Lets several installations share one database.</div>
+				</td>
+			</tr>
+		</table>
 	</fieldset>
 
 	<fieldset>
-	<legend>Directories</legend>
-		<label for="root">Root URI (include trailing slash):</label> 
-		<input type="text" id="root" name="root" value="{{ config.root }}" size="40">
+		<legend>Site</legend>
+		<table>
+			<tr>
+				<th><label for="root">Root URI</label></th>
+				<td>
+					<input type="text" id="root" name="root" value="{{ config.root|e }}" size="25" required>
+					<div class="unimportant">Path from the domain root, with slashes on both ends: <code>/</code> or <code>/chan/</code>.</div>
+				</td>
+			</tr>
+		</table>
 	</fieldset>
 
 	<fieldset>
-	<legend>Miscellaneous</legend>
-		<label for="secure_trip_salt">Secure trip (##) salt:</label> 
-		<input type="text" id="secure_trip_salt" name="secure_trip_salt" value="{{ config.secure_trip_salt }}" size="40">
-
-		<label for="more">Additional configuration:</label>
-		<textarea id="more" name="more">{{ more }}</textarea>
+		<legend>Uploads</legend>
+		<table>
+			<tr>
+				<th>Formats</th>
+				<td>
+					<label><input type="checkbox" name="allowed_ext[]" value="webp"{% if media.webp %} checked{% else %} disabled{% endif %}> WebP</label>
+					<label><input type="checkbox" name="allowed_ext_files[]" value="webm" checked> WebM</label>
+					<label><input type="checkbox" name="allowed_ext_files[]" value="mp4"{% if media.ffmpeg %} checked{% else %} disabled{% endif %}> MP4</label>
+					<div class="unimportant">
+						JPEG, PNG, GIF and BMP are always allowed.
+						{% if not media.webp %}WebP is unavailable: GD or the thumbnailer cannot read it.{% endif %}
+						{% if not media.ffmpeg %}MP4 needs <code>ffmpeg</code> and <code>ffprobe</code>, which were not found; WebM will use the built-in parser.{% endif %}
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<th>Video</th>
+				<td>
+					{% if media.ffmpeg %}
+					<input type="hidden" name="webm[use_ffmpeg]" value="1">
+					<label><input type="checkbox" name="webm[allow_audio]" value="1" checked> Allow sound</label>
+					<label>Up to <input type="text" name="webm[max_length]" value="{{ config.webm.max_length|e }}" size="4" inputmode="numeric" pattern="[0-9]+"> seconds</label>
+					<div class="unimportant"><code>ffmpeg</code> checks length and sound and makes thumbnails.</div>
+					{% else %}
+					<div class="unimportant">Length and sound checks need <code>ffmpeg</code>.</div>
+					{% endif %}
+				</td>
+			</tr>
+			<tr>
+				<th><label for="max_filesize">Maximum file size</label></th>
+				<td>
+					<input type="text" id="max_filesize" name="max_filesize" value="{{ config.max_filesize|e }}" size="10" inputmode="numeric" pattern="[0-9]+"> bytes
+					<div class="unimportant">10485760 bytes = 10 MB. PHP upload limits must allow it too.</div>
+				</td>
+			</tr>
+			<tr>
+				<th><label for="max_width">Maximum image size</label></th>
+				<td>
+					<input type="text" id="max_width" name="max_width" value="{{ config.max_width|e }}" size="6" inputmode="numeric" pattern="[0-9]+">
+					&times;
+					<input type="text" id="max_height" name="max_height" value="{{ config.max_height|e }}" size="6" inputmode="numeric" pattern="[0-9]+" aria-label="Maximum image height"> px
+				</td>
+			</tr>
+		</table>
 	</fieldset>
 
-	<p style="text-align:center">
-		<input type="submit" value="Complete installation">
-	</p>
+	<fieldset>
+		<legend>Thumbnails</legend>
+		<table>
+			<tr>
+				<th><label for="thumb_method">Thumbnailer</label></th>
+				<td>
+					<select id="thumb_method" name="thumb_method">
+						{% for method, tool in media.thumb_methods %}
+						<option value="{{ method }}"{% if method == media.thumb_method %} selected{% endif %}>{{ tool.name }}{% if loop.first %} (recommended){% endif %}</option>
+						{% endfor %}
+					</select>
+					<div class="unimportant">Only the tools found on this server are listed.</div>
+				</td>
+			</tr>
+			<tr>
+				<th><label for="thumb_width">Thumbnail size</label></th>
+				<td>
+					<input type="text" id="thumb_width" name="thumb_width" value="{{ config.thumb_width|e }}" size="4" inputmode="numeric" pattern="[0-9]+">
+					&times;
+					<input type="text" id="thumb_height" name="thumb_height" value="{{ config.thumb_height|e }}" size="4" inputmode="numeric" pattern="[0-9]+" aria-label="Thumbnail height"> px
+				</td>
+			</tr>
+		</table>
+	</fieldset>
+
+	<fieldset>
+		<legend>Posting</legend>
+		<table>
+			<tr>
+				<th><label for="flood_time">Post cooldown</label></th>
+				<td>
+					<input type="text" id="flood_time" name="flood_time" value="{{ config.flood_time|e }}" size="4" inputmode="numeric" pattern="[0-9]+"> seconds
+					<div class="unimportant">Between any two posts from one IP address.</div>
+				</td>
+			</tr>
+			<tr>
+				<th><label for="flood_time_ip">Repeated text, same IP</label></th>
+				<td>
+					<input type="text" id="flood_time_ip" name="flood_time_ip" value="{{ config.flood_time_ip|e }}" size="4" inputmode="numeric" pattern="[0-9]+"> seconds
+				</td>
+			</tr>
+			<tr>
+				<th><label for="flood_time_same">Repeated text, any IP</label></th>
+				<td>
+					<input type="text" id="flood_time_same" name="flood_time_same" value="{{ config.flood_time_same|e }}" size="4" inputmode="numeric" pattern="[0-9]+"> seconds
+				</td>
+			</tr>
+			<tr>
+				<th><label for="max_body">Maximum post length</label></th>
+				<td>
+					<input type="text" id="max_body" name="max_body" value="{{ config.max_body|e }}" size="6" inputmode="numeric" pattern="[0-9]+"> characters
+				</td>
+			</tr>
+			<tr>
+				<th><label for="max_links">Links per post</label></th>
+				<td>
+					<input type="text" id="max_links" name="max_links" value="{{ config.max_links|e }}" size="4" inputmode="numeric" pattern="[0-9]+">
+				</td>
+			</tr>
+			<tr>
+				<th><label for="reply_limit">Bump limit</label></th>
+				<td>
+					<input type="text" id="reply_limit" name="reply_limit" value="{{ config.reply_limit|e }}" size="4" inputmode="numeric" pattern="[0-9]+"> replies
+				</td>
+			</tr>
+		</table>
+	</fieldset>
+
+	<fieldset>
+		<legend>Display</legend>
+		<table>
+			<tr>
+				<th><label for="threads_per_page">Threads per page</label></th>
+				<td>
+					<input type="text" id="threads_per_page" name="threads_per_page" value="{{ config.threads_per_page|e }}" size="4" inputmode="numeric" pattern="[0-9]+">
+				</td>
+			</tr>
+			<tr>
+				<th><label for="max_pages">Page limit</label></th>
+				<td>
+					<input type="text" id="max_pages" name="max_pages" value="{{ config.max_pages|e }}" size="4" inputmode="numeric" pattern="[0-9]+">
+					<div class="unimportant">Threads past the last page are deleted.</div>
+				</td>
+			</tr>
+			<tr>
+				<th><label for="threads_preview">Replies on index pages</label></th>
+				<td>
+					<input type="text" id="threads_preview" name="threads_preview" value="{{ config.threads_preview|e }}" size="4" inputmode="numeric" pattern="[0-9]+">
+				</td>
+			</tr>
+		</table>
+	</fieldset>
+
+	<fieldset>
+		<legend>Security</legend>
+		<table>
+			<tr>
+				<th><label for="cookies_mod">Moderator cookie</label></th>
+				<td>
+					<input type="text" id="cookies_mod" name="cookies[mod]" value="{{ config.cookies.mod|e }}" size="15" required>
+				</td>
+			</tr>
+			<tr>
+				<th><label for="cookies_salt">Cookie salt</label></th>
+				<td>
+					<input type="text" id="cookies_salt" name="cookies[salt]" value="{{ config.cookies.salt|e }}" class="wide" required>
+				</td>
+			</tr>
+			<tr>
+				<th><label for="secure_trip_salt">Secure tripcode salt</label></th>
+				<td>
+					<input type="text" id="secure_trip_salt" name="secure_trip_salt" value="{{ config.secure_trip_salt|e }}" class="wide" required>
+					<div class="unimportant">Both salts were generated for this installation. Changing the tripcode salt later changes every <code>##</code> tripcode.</div>
+				</td>
+			</tr>
+		</table>
+	</fieldset>
+
+	<fieldset>
+		<legend>Additional configuration</legend>
+		<textarea id="more" name="more" aria-label="Additional configuration"></textarea>
+		<div class="unimportant">PHP code appended to <code>inc/secrets.php</code>, for example <code>$config['country_flags'] = true;</code></div>
+	</fieldset>
+
+	<p><input type="submit" value="Complete installation"></p>
 </form>

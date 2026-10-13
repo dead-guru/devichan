@@ -2,6 +2,13 @@
 
 // Installation/upgrade file
 define('VERSION', '5.1.4');
+
+// inc/bootstrap.php needs the Composer autoloader, so this test cannot wait for the test page.
+if (!file_exists(__DIR__ . '/vendor/autoload.php')) {
+	http_response_code(500);
+	exit('Composer dependencies are missing. Run <code>composer install --no-dev</code> and reload this page.');
+}
+
 require 'inc/bootstrap.php';
 loadConfig();
 
@@ -655,9 +662,13 @@ function create_config_from_array(&$instance_config, &$array, $prefix = '') {
 			create_config_from_array($instance_config, $value, $prefix . '[\'' . addslashes($name) . '\']');
 			$instance_config .= "\n";
 		} else {
-			$instance_config .= '	$config' . $prefix . '[\'' . addslashes($name) . '\'] = ';
+			// Checked list items, such as upload formats, extend the defaults from inc/config.php.
+			$key = is_int($name) ? '[]' : '[\'' . addslashes($name) . '\']';
+			$instance_config .= '	$config' . $prefix . $key . ' = ';
 
-			if (is_numeric($value))
+			if (is_bool($value))
+				$instance_config .= $value ? 'true' : 'false';
+			elseif (is_numeric($value))
 				$instance_config .= $value;
 			else
 				$instance_config .= "'" . addslashes($value) . "'";
@@ -665,6 +676,63 @@ function create_config_from_array(&$instance_config, &$array, $prefix = '') {
 			$instance_config .= ";\n";
 		}
 	}
+}
+
+// Finds the thumbnailers and upload formats this server supports. The best thumbnailer comes first.
+function media_support() {
+	global $config;
+
+	$can_exec = function_exists('shell_exec') && trim((string) shell_exec('echo TEST')) === 'TEST';
+
+	// Use the same PATH as shell_exec_error(), which runs these tools after installation.
+	$shell = function ($command) use ($can_exec, $config) {
+		if (!$can_exec)
+			return '';
+		return trim((string) shell_exec('PATH="' . escapeshellcmd($config['shell_path']) . ':$PATH"; ' . $command . ' 2>/dev/null'));
+	};
+	$has_command = function ($command) use ($shell) {
+		return $shell('command -v ' . escapeshellarg($command)) !== '';
+	};
+
+	$media = array(
+		'imagemagick' => $has_command('convert') && $has_command('identify'),
+		'graphicsmagick' => $has_command('gm'),
+		'gifsicle' => $has_command('gifsicle'),
+		'ffmpeg' => $has_command('ffmpeg') && $has_command('ffprobe'),
+		'gd_webp' => function_exists('imagetypes') && (imagetypes() & IMG_WEBP),
+	);
+
+	// Ask each tool for the width of a 1x1 lossless WebP image.
+	$webp_sample = tempnam($config['tmp'], 'webp');
+	file_put_contents($webp_sample, base64_decode('UklGRhoAAABXRUJQVlA4TA0AAAAvAAAAEAcQERGIiP4HAA=='));
+	$tools = array(
+		'gm' => $media['graphicsmagick'] ? $shell('gm identify -format %w ' . escapeshellarg($webp_sample)) === '1' : null,
+		'convert' => $media['imagemagick'] ? $shell('identify -format %w ' . escapeshellarg($webp_sample)) === '1' : null,
+		'imagick' => extension_loaded('imagick') ? in_array('WEBP', Imagick::queryFormats('WEBP')) : null,
+		'gd' => $media['gd_webp'],
+	);
+	unlink($webp_sample);
+
+	$methods = array(
+		'gm+gifsicle' => 'GraphicsMagick + gifsicle',
+		'gm' => 'GraphicsMagick',
+		'convert+gifsicle' => 'ImageMagick + gifsicle',
+		'convert' => 'ImageMagick',
+		'imagick' => 'PHP Imagick',
+		'gd' => 'PHP GD',
+	);
+	$media['thumb_methods'] = array();
+	foreach ($methods as $method => $name) {
+		$parts = explode('+', $method);
+		if ($tools[$parts[0]] === null || (isset($parts[1]) && !$media['gifsicle']))
+			continue;
+		$media['thumb_methods'][$method] = array('name' => $name, 'webp' => $tools[$parts[0]]);
+	}
+	$media['thumb_method'] = array_key_first($media['thumb_methods']);
+	// Blurhash reads every image through GD, whichever tool makes the thumbnail.
+	$media['webp'] = $media['gd_webp'] && $media['thumb_methods'][$media['thumb_method']]['webp'];
+
+	return $media;
 }
 
 session_start();
@@ -680,161 +748,171 @@ if ($step == 0) {
 	echo Element('page.html', $page);
 } elseif ($step == 1) {
 	$page['title'] = 'Pre-installation test';
-	
-	$can_exec = true;
-	if (!function_exists('shell_exec'))
-		$can_exec = false;
-	elseif (in_array('shell_exec', array_map('trim', explode(', ', ini_get('disable_functions')))))
-		$can_exec = false;
-	elseif (ini_get('safe_mode'))
-		$can_exec = false;
-	elseif (trim(shell_exec('echo "TEST"')) !== 'TEST')
-		$can_exec = false;
-	
-	if (!defined('PHP_VERSION_ID')) {
-		$version = explode('.', PHP_VERSION);
-		define('PHP_VERSION_ID', ($version[0] * 10000 + $version[1] * 100 + $version[2]));
-	}
-	
-	// Required extensions
+
+	$media = media_support();
+	$thumb_method = $media['thumb_method'];
+
+	$ini_bytes = function ($name) {
+		$value = trim((string) ini_get($name));
+		$bytes = (int) $value;
+		// Each suffix falls through to the smaller ones.
+		switch (strtolower(substr($value, -1))) {
+			case 'g':
+				$bytes *= 1024;
+			case 'm':
+				$bytes *= 1024;
+			case 'k':
+				$bytes *= 1024;
+		}
+		return $bytes;
+	};
+	// post_max_size = 0 disables that limit.
+	$upload_limit = min($ini_bytes('upload_max_filesize'), $ini_bytes('post_max_size') ?: PHP_INT_MAX);
+
+	// Extensions required by composer.json and the locked dependencies.
 	$extensions = array(
-		'PDO' => array(
-			'installed' => extension_loaded('pdo'),
-			'required' => true
-		),
-		'GD' => array(
-			'installed' => extension_loaded('gd'),
-			'required' => true
-		),
-		'Imagick' => array(
-			'installed' => extension_loaded('imagick'),
-			'required' => false
-		),
-		'OpenSSL' => array(
-			'installed' => extension_loaded('openssl'),
-			'required' => false
-		)
+		'mbstring' => 'used for Unicode text handling',
+		'ctype' => 'used by Composer dependencies',
+		'iconv' => 'used to transliterate slugs',
+		'curl' => 'used for captcha checks and uploads by URL',
+		'fileinfo' => 'used to detect image types for blurhash',
+		'gettext' => 'used for translations',
+		'bcmath' => 'used for IP range bans',
+		'dom' => 'used for math markup',
 	);
 
 	$tests = array(
 		array(
 			'category' => 'PHP',
-			'name' => 'PHP &ge; 5.4',
-			'result' => PHP_VERSION_ID >= 50400,
+			'name' => 'PHP &ge; 8.1',
+			'result' => PHP_VERSION_ID >= 80100,
 			'required' => true,
-			'message' => 'vichan requires PHP 5.4 or better.',
+			'message' => 'devichan requires PHP 8.1 or newer.',
 		),
 		array(
 			'category' => 'PHP',
-			'name' => 'PHP &ge; 5.6',
-			'result' => PHP_VERSION_ID >= 50600,
+			'name' => 'PHP &le; 8.2',
+			'result' => PHP_VERSION_ID < 80300,
 			'required' => false,
-			'message' => 'vichan works best on PHP 5.6 or better.',
+			'message' => 'devichan is tested on PHP 8.1, and its locked dependencies support PHP up to 8.2. Newer PHP versions are untested and may show deprecation notices.',
 		),
 		array(
 			'category' => 'PHP',
-			'name' => 'mbstring extension installed',
-			'result' => extension_loaded('mbstring'),
+			'name' => 'File uploads enabled',
+			'result' => (bool) ini_get('file_uploads'),
 			'required' => true,
-			'message' => 'You must install the PHP <a href="http://www.php.net/manual/en/mbstring.installation.php">mbstring</a> extension.',
+			'message' => 'File uploads are disabled in php.ini (<code>file_uploads</code>), so nobody can post files.',
 		),
 		array(
 			'category' => 'PHP',
-			'name' => 'OpenSSL extension installed or PHP &ge; 7.0',
-			'result' => (extension_loaded('openssl') || (defined('PHP_MAJOR_VERSION') && PHP_MAJOR_VERSION >= 7)),
+			'name' => 'Upload limit &ge; ' . format_bytes($config['max_filesize']),
+			'result' => $upload_limit >= $config['max_filesize'],
 			'required' => false,
-			'message' => 'It is highly recommended that you install the PHP <a href="http://www.php.net/manual/en/openssl.installation.php">OpenSSL</a> extension and/or use PHP version 7 or above. <strong>If you do not, it is possible that the IP addresses of users of your site could be compromised &mdash; see <a href="https://github.com/vichan-devel/vichan/issues/284">vichan issue #284.</a></strong> Installing the OpenSSL extension allows vichan to generate a secure salt automatically for you.',
+			'message' => 'PHP accepts uploads up to ' . format_bytes($upload_limit) . ' (<code>upload_max_filesize</code>, <code>post_max_size</code>), but <code>$config[\'max_filesize\']</code> allows ' . format_bytes($config['max_filesize']) . '. Raise the php.ini limits or larger files will fail to upload.',
 		),
+	);
+
+	foreach ($extensions as $extension => $purpose) {
+		$tests[] = array(
+			'category' => 'PHP',
+			'name' => $extension . ' extension installed',
+			'result' => extension_loaded($extension),
+			'required' => true,
+			'message' => 'You must install the PHP <code>' . $extension . '</code> extension, ' . $purpose . '.',
+		);
+	}
+
+	$tests = array_merge($tests, array(
 		array(
 			'category' => 'Database',
 			'name' => 'PDO extension installed',
 			'result' => extension_loaded('pdo'),
 			'required' => true,
-			'message' => 'You must install the PHP <a href="http://www.php.net/manual/en/intro.pdo.php">PDO</a> extension.',
+			'message' => 'You must install the PHP <a href="https://www.php.net/manual/en/book.pdo.php">PDO</a> extension.',
 		),
 		array(
 			'category' => 'Database',
 			'name' => 'MySQL PDO driver installed',
 			'result' => extension_loaded('pdo') && in_array('mysql', PDO::getAvailableDrivers()),
 			'required' => true,
-			'message' => 'The required <a href="http://www.php.net/manual/en/ref.pdo-mysql.php">PDO MySQL driver</a> is not installed.',
+			'message' => 'The required <a href="https://www.php.net/manual/en/ref.pdo-mysql.php">PDO MySQL driver</a> is not installed.',
 		),
 		array(
 			'category' => 'Image processing',
 			'name' => 'GD extension installed',
 			'result' => extension_loaded('gd'),
 			'required' => true,
-			'message' => 'You must install the PHP <a href="http://www.php.net/manual/en/intro.image.php">GD</a> extension. GD is a requirement even if you have chosen another image processor for thumbnailing.',
+			'message' => 'You must install the PHP <a href="https://www.php.net/manual/en/book.image.php">GD</a> extension. GD is a requirement even if you have chosen another image processor for thumbnailing.',
 		),
 		array(
-		 	'category' => 'Image processing',
-		 	'name' => 'GD: JPEG',
+			'category' => 'Image processing',
+			'name' => 'GD: JPEG',
 			'result' => function_exists('imagecreatefromjpeg'),
 			'required' => true,
-			'message' => 'imagecreatefromjpeg() does not exist. This is a problem.',
+			'message' => 'GD was built without JPEG support.',
 		),
 		array(
 			'category' => 'Image processing',
 			'name' => 'GD: PNG',
 			'result' => function_exists('imagecreatefrompng'),
 			'required' => true,
-			'message' => 'imagecreatefrompng() does not exist. This is a problem.',
+			'message' => 'GD was built without PNG support.',
 		),
 		array(
 			'category' => 'Image processing',
 			'name' => 'GD: GIF',
 			'result' => function_exists('imagecreatefromgif'),
 			'required' => true,
-			'message' => 'imagecreatefromgif() does not exist. This is a problem.',
+			'message' => 'GD was built without GIF support.',
 		),
 		array(
 			'category' => 'Image processing',
-			'name' => '`convert` (command-line ImageMagick)',
-			'result' => $can_exec && shell_exec('which convert'),
+			'name' => 'GD: WebP',
+			'result' => $media['gd_webp'],
 			'required' => false,
-			'message' => '(Optional) `convert` was not found or executable; command-line ImageMagick image processing cannot be enabled.',
-			'effect' => function (&$config) { $config['thumb_method'] = 'convert'; },
+			'message' => '(Optional) GD was built without WebP support, so WebP uploads will be unavailable. Blurhash reads every image through GD, whichever thumbnailer you choose.',
 		),
 		array(
 			'category' => 'Image processing',
-			'name' => '`identify` (command-line ImageMagick)',
-			'result' => $can_exec && shell_exec('which identify'),
+			'name' => 'Imagick extension installed',
+			'result' => extension_loaded('imagick'),
+			'required' => true,
+			'message' => 'You must install the PHP <a href="https://www.php.net/manual/en/book.imagick.php">Imagick</a> extension. composer.json requires it, and the moderator attachment editor uses it to detect animated GIFs.',
+		),
+		array(
+			'category' => 'Image processing',
+			'name' => '`convert` and `identify` (command-line ImageMagick)',
+			'result' => $media['imagemagick'],
 			'required' => false,
-			'message' => '(Optional) `identify` was not found or executable; command-line ImageMagick image processing cannot be enabled.',
+			'message' => '(Optional) `convert` or `identify` was not found or executable; command-line ImageMagick thumbnailing cannot be enabled.',
 		),
 		array(
 			'category' => 'Image processing',
 			'name' => '`gm` (command-line GraphicsMagick)',
-			'result' => $can_exec && shell_exec('which gm'),
+			'result' => $media['graphicsmagick'],
 			'required' => false,
 			'message' => '(Optional) `gm` was not found or executable; command-line GraphicsMagick (faster than ImageMagick) cannot be enabled.',
-			'effect' => function (&$config) { $config['thumb_method'] = 'gm'; },
 		),
 		array(
 			'category' => 'Image processing',
-			'name' => '`gifsicle` (command-line animted GIF thumbnailing)',
-			'result' => $can_exec && shell_exec('which gifsicle'),
+			'name' => '`gifsicle` (command-line animated GIF thumbnailing)',
+			'result' => $media['gifsicle'],
 			'required' => false,
-			'message' => '(Optional) `gifsicle` was not found or executable; you may not use `convert+gifsicle` for better animated GIF thumbnailing.',
-			'effect' => function (&$config) { if ($config['thumb_method'] == 'gm')      $config['thumb_method'] = 'gm+gifsicle';
-							  if ($config['thumb_method'] == 'convert') $config['thumb_method'] = 'convert+gifsicle'; },
+			'message' => '(Optional) `gifsicle` was not found or executable; animated GIF thumbnails cannot use `gm+gifsicle` or `convert+gifsicle`.',
 		),
 		array(
 			'category' => 'Image processing',
-			'name' => '`md5sum` (quick file hashing on GNU/Linux)',
-			'prereq' => '',
-			'result' => $can_exec && shell_exec('echo "vichan" | md5sum') == "141225c362da02b5c359c45b665168de  -\n",
+			'name' => 'WebP thumbnails (' . $thumb_method . ')',
+			'result' => $media['thumb_methods'][$thumb_method]['webp'],
 			'required' => false,
-			'message' => '(Optional) `md5sum` was not found or executable; file hashing for multiple images will be slower. Ignore if not using Linux.',
-			'effect' => function (&$config) { $config['gnu_md5'] = true; },
+			'message' => '(Optional) The recommended thumbnailer (<code>' . $thumb_method . '</code>) cannot read WebP images, so WebP uploads will be unavailable. Install its WebP support (libwebp).',
 		),
 		array(
-			'category' => 'Image processing',
-			'name' => '`/sbin/md5` (quick file hashing on BSDs)',
-			'result' => $can_exec && shell_exec('echo "vichan" | /sbin/md5 -r') == "141225c362da02b5c359c45b665168de\n",
+			'category' => 'Video',
+			'name' => '`ffmpeg` and `ffprobe` (WebM and MP4)',
+			'result' => $media['ffmpeg'],
 			'required' => false,
-			'message' => '(Optional) `/sbin/md5` was not found or executable; file hashing for multiple images will be slower. Ignore if not using BSD.',
-			'effect' => function (&$config) { $config['bsd_md5'] = true; },
+			'message' => '(Optional) `ffmpeg` or `ffprobe` was not found or executable. WebM uploads will fall back to the built-in parser, and MP4 uploads will be unavailable.',
 		),
 		array(
 			'category' => 'File permissions',
@@ -866,37 +944,32 @@ if ($step == 0) {
 		),
 		array(
 			'category' => 'Misc',
-			'name' => 'Caching available (APC(u), XCache, Memcached or Redis)',
-			'result' => extension_loaded('apcu') || extension_loaded('apc') ||
-						extension_loaded('xcache') || extension_loaded('memcached') ||
-						extension_loaded('redis'),
+			'name' => 'Caching available (APCu, Memcached or Redis)',
+			'result' => extension_loaded('apcu') || extension_loaded('memcached') || extension_loaded('redis'),
 			'required' => false,
-			'message' => 'You will not be able to enable the additional caching system, designed to minimize SQL queries and significantly improve performance. <a href="http://php.net/manual/en/book.apc.php">APC</a> is the recommended method of caching, but <a href="http://xcache.lighttpd.net/">XCache</a>, <a href="http://www.php.net/manual/en/intro.memcached.php">Memcached</a> and <a href="http://pecl.php.net/package/redis">Redis</a> are also supported.'
+			'message' => 'You will not be able to enable the additional caching system, designed to minimize SQL queries and significantly improve performance. Install <a href="https://www.php.net/manual/en/book.apcu.php">APCu</a>, <a href="https://www.php.net/manual/en/book.memcached.php">Memcached</a> or <a href="https://pecl.php.net/package/redis">Redis</a>.'
 		),
 		array(
 			'category' => 'Misc',
-			'name' => 'vichan installed using git',
+			'name' => 'OpenSSL RC4-40 (IP cloaking)',
+			'result' => extension_loaded('openssl') && @openssl_encrypt("\0\0\0\0", 'rc4-40', 'devichan', OPENSSL_RAW_DATA) !== false,
+			'required' => false,
+			'message' => '(Optional) OpenSSL cannot use the RC4-40 cipher, so IP cloaking (<code>$config[\'ipcrypt_key\']</code>) will not work. With OpenSSL 3, enable the legacy provider as <code>php-fpm/Dockerfile</code> does.'
+		),
+		array(
+			'category' => 'Misc',
+			'name' => 'devichan installed using git',
 			'result' => is_dir('.git'),
 			'required' => false,
-			'message' => 'vichan is still beta software and it\'s not going to come out of beta any time soon. As there are often many months between releases yet changes and bug fixes are very frequent, it\'s recommended to use the git repository to maintain your vichan installation. Using git makes upgrading much easier.'
+			'message' => '(Optional) devichan was not installed from the git repository. Using git makes upgrading much easier.'
 		)
-	);
+	));
 
 	$config['font_awesome'] = true;
-	
-	$additional_config = array();
-	foreach ($tests as $test) {
-		if ($test['result'] && isset($test['effect'])) {
-			$test['effect']($additional_config);
-		}
-	}
-	$more = '';
-	create_config_from_array($more, $additional_config);
-	$_SESSION['more'] = $more;
+
 
 	echo Element('page.html', array(
 		'body' => Element('installer/check-requirements.html', array(
-			'extensions' => $extensions,
 			'tests' => $tests,
 			'config' => $config,
 		)),
@@ -912,15 +985,21 @@ if ($step == 0) {
 	$config['cookies']['salt'] = $sg->generate();
 	$config['secure_trip_salt'] = $sg->generate();
 
-	if (getenv('MYSQL_HOST')) $config['db']['server'] = getenv('MYSQL_HOST');
-	if (getenv('MYSQL_DATABASE')) $config['db']['database'] = getenv('MYSQL_DATABASE');
-	if (getenv('MYSQL_USER')) $config['db']['user'] = getenv('MYSQL_USER');
-	if (getenv('MYSQL_PASSWORD')) $config['db']['password'] = getenv('MYSQL_PASSWORD');
-	
+	// The generated inc/secrets.php reads these variables before the values from this form.
+	$env = array();
+	foreach (array('server' => 'MYSQL_HOST', 'database' => 'MYSQL_DATABASE', 'user' => 'MYSQL_USER', 'password' => 'MYSQL_PASSWORD') as $field => $variable) {
+		if (getenv($variable)) {
+			$env[$field] = $variable;
+			if ($field != 'password')
+				$config['db'][$field] = getenv($variable);
+		}
+	}
+
 	echo Element('page.html', array(
 		'body' => Element('installer/config.html', array(
 			'config' => $config,
-			'more' => $_SESSION['more'],
+			'env' => $env,
+			'media' => media_support(),
 		)),
 		'title' => 'Configuration',
 		'config' => $config
