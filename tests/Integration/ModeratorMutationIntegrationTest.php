@@ -82,12 +82,10 @@ final class ModeratorMutationIntegrationTest extends TestCase
         $_POST = [];
         self::assertStringContainsString('Ban appeals', $this->capture(static fn() => \mod_ban_appeals()));
 
-        $_POST = ['appeal_id' => $deniedAppeal, 'deny' => '1'];
-        $this->capture(static fn() => \mod_ban_appeals());
+        $this->capture(static fn() => \mod_ban_appeal($deniedAppeal, 'deny'));
         self::assertSame(1, (int) query("SELECT `denied` FROM ``ban_appeals`` WHERE `id` = {$deniedAppeal}")->fetchColumn());
 
-        $_POST = ['appeal_id' => $acceptedAppeal, 'unban' => '1'];
-        $this->capture(static fn() => \mod_ban_appeals());
+        $this->capture(static fn() => \mod_ban_appeal($acceptedAppeal, 'unban'));
         self::assertSame(0, (int) query("SELECT COUNT(*) FROM ``bans`` WHERE `id` = {$acceptedBan}")->fetchColumn());
         self::assertSame(0, (int) query("SELECT COUNT(*) FROM ``ban_appeals`` WHERE `id` = {$acceptedAppeal}")->fetchColumn());
     }
@@ -143,8 +141,7 @@ final class ModeratorMutationIntegrationTest extends TestCase
         self::assertSame(0, (int) query("SELECT `unread` FROM ``pms`` WHERE `id` = {$pmId}")->fetchColumn());
         self::assertStringContainsString('Integration unread PM', $this->capture(static fn() => \mod_pm($pmId, true)));
 
-        $_POST = ['delete' => '1'];
-        $this->capture(static fn() => \mod_pm($pmId));
+        $this->capture(static fn() => \mod_pm_delete($pmId));
         self::assertSame(0, (int) query("SELECT COUNT(*) FROM ``pms`` WHERE `id` = {$pmId}")->fetchColumn());
 
         $_POST = [];
@@ -174,7 +171,7 @@ final class ModeratorMutationIntegrationTest extends TestCase
         $_POST = [];
         self::assertStringContainsString('Report queue', $this->capture(static fn() => \mod_reports()));
         \mod_report_dismiss($firstReport);
-        \mod_report_dismiss($secondReport, true);
+        \mod_report_dismiss($secondReport, 'all');
         self::assertSame(0, (int) query('SELECT COUNT(*) FROM ``reports``')->fetchColumn());
 
         query("DELETE FROM ``mods`` WHERE `id` = {$recipient}");

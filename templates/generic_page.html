@@ -16,7 +16,7 @@
 			{% if board.title %}
 				{{ board.title|e }}
 			{% endif %}
-			{% if mod %}<p><a href="?/">{% trans %}Return to dashboard{% endtrans %}</a></p>{% endif %}
+			{% if mod and not mod_nav %}<p><a href="?/">{% trans %}Return to dashboard{% endtrans %}</a></p>{% endif %}
 		</div>
 	</header>
 	

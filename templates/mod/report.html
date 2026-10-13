@@ -1,26 +1,27 @@
-<div class="report">
-	<hr>
-	{% trans 'Board' %}: <a href="?/{{ report.board }}/{{ config.file_index }}">{{ config.board_abbreviation|sprintf(report.board) }}</a>
-	<br>
-	{% trans 'Reason' %}: {{ report.reason }}
-	<br>
-	{% trans 'Report date' %}: {{ report.time|date(config.post_date) }}
-	<br>
-	{% if mod|hasPermission(config.mod.show_ip, report.board) %}
-		{% trans 'Reported by' %}: <a href="?/IP/{{ report.ip|cloak_ip }}">{{ report.ip|cloak_ip }}</a>
-		<br>
-	{% endif %}
-	{% if mod|hasPermission(config.mod.report_dismiss, report.board) or mod|hasPermission(config.mod.report_dismiss_ip, report.board) %}
-		<hr>
-		{% if mod|hasPermission(config.mod.report_dismiss, report.board) %}
-			<a title="{% trans 'Discard abuse report' %}" href="?/reports/{{ report.id }}/dismiss/{{ token }}">Dismiss</a>
-		{% endif %}
-		{% if mod|hasPermission(config.mod.report_dismiss_ip, report.board) %}
-			{% if mod|hasPermission(config.mod.report_dismiss, report.board) %}
-			 | 
-			{% endif %}
-			<a title="{% trans 'Discard all abuse reports by this IP address' %}" href="?/reports/{{ report.id }}/dismissall/{{ token_all }}">Dismiss+</a>
-		{% endif %}
-	{% endif %}
+<div class="mod-report">
+	<div class="mod-report-head">
+		<a href="{{ group.link }}">{{ config.board_abbreviation|sprintf(group.board) }}</a> &middot; {% trans 'Reports' %}: {{ group.reports|length }}
+		{% if group.reports|length > 1 and mod|hasPermission(config.mod.report_dismiss, group.board) %} &middot; <a href="?/reports/{{ group.reports.0.id }}/dismisspost/{{ group.token_post }}">[{% trans 'Dismiss all for this post' %}]</a>{% endif %}
+	</div>
+	{{ group.post }}
+	<table class="modlog mod-report-list">
+		{% for report in group.reports %}
+			<tr>
+				<td>{{ report.reason }}</td>
+				<td class="minimal"><span title="{{ report.time|date(config.post_date) }}">{{ report.time|ago }}</span></td>
+				{% if mod|hasPermission(config.mod.show_ip, group.board) %}
+					<td class="minimal"><a href="?/IP/{{ report.ip|cloak_ip }}">{{ report.ip|cloak_ip }}</a></td>
+				{% endif %}
+				<td class="minimal">
+					{% if mod|hasPermission(config.mod.report_dismiss, group.board) %}
+						<a title="{% trans 'Discard abuse report' %}" href="?/reports/{{ report.id }}/dismiss/{{ report.token }}">[{% trans 'Dismiss' %}]</a>
+					{% endif %}
+					{% if mod|hasPermission(config.mod.report_dismiss_ip, group.board) %}
+						&nbsp;<a title="{% trans 'Discard all abuse reports by this IP address' %}" href="?/reports/{{ report.id }}/dismissall/{{ report.token_all }}">[{% trans 'Dismiss all by IP' %}]</a>
+					{% endif %}
+				</td>
+			</tr>
+		{% endfor %}
+	</table>
 </div>
-
+<hr>

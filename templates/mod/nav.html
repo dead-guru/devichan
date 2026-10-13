@@ -1,0 +1,3 @@
+<div class="mod-nav">
+	[ {% for link in mod_nav.links %}{% if not loop.first %} / {% endif %}<a href="{{ link.href }}">{{ link.label }}{% if link.count %} <strong>({{ link.count }})</strong>{% endif %}</a>{% endfor %} ] [ {{ mod_nav.username|e }} / <a href="?/logout/{{ mod_nav.logout_token }}">{% trans 'Logout' %}</a> ]
+</div>

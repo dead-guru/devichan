@@ -1,33 +1,44 @@
-{% for board_posts in posts %}
-	<fieldset>
-		<legend>
-			<a href="?/{{ config.board_path|sprintf(board_posts.board.uri) }}{{ config.file_index }}">
-				{{ config.board_abbreviation|sprintf(board_posts.board.uri) }}
-				 -
-				 {{ board_posts.board.title|e }}
-			</a>
-		</legend>
-		{{ board_posts.posts|join('<hr>') }}
+{% set post_count = 0 %}
+{% for board_posts in posts %}{% set post_count = post_count + board_posts.posts|length %}{% endfor %}
+{% set active_bans = 0 %}
+{% for ban in bans %}{% if not (ban.expires != 0 and ban.expires < time()) %}{% set active_bans = active_bans + 1 %}{% endif %}{% endfor %}
+
+<p class="mod-summary">
+	{% if active_bans %}<strong>{% trans 'Banned' %}</strong> &middot; {% endif %}
+	{% if mod|hasPermission(config.mod.view_ban) %}<a href="#bans">{% trans 'Bans' %}: {{ bans|length }}</a> &middot; {% endif %}
+	{% if mod|hasPermission(config.mod.view_notes) %}<a href="#notes">{% trans 'Notes' %}: {{ notes|length }}</a> &middot; {% endif %}
+	{% if mod|hasPermission(config.mod.view_telegrams) %}<a href="#telegrams">{% trans 'Telegrams' %}: {{ telegrams|length }}</a> &middot; {% endif %}
+	<a href="#posts">{% trans 'Recent posts' %}: {{ post_count }}</a>
+	{% if logs|length > 0 %} &middot; <a href="#history">{% trans 'History' %}: {{ logs|length }}</a>{% endif %}
+	{% for board_posts in posts|slice(0, 1) %}{% if mod|hasPermission(config.mod.deletebyip_global, board_posts.board.uri) %} &middot; {{ secure_link_confirm('[' ~ 'Delete all posts on all boards'|trans ~ ']', 'Delete all posts by IP across all boards'|trans, 'Are you sure you want to delete all posts by this IP address, across all boards?'|trans, config.board_path|sprintf(board_posts.board.uri) ~ 'deletebyip/' ~ board_posts.post_id ~ '/global') }}{% endif %}{% endfor %}
+</p>
+
+{% if mod|hasPermission(config.mod.view_ban) %}
+	<fieldset class="mod-section" id="bans">
+		<legend>{% trans 'Bans' %} ({{ bans|length }})</legend>
+
+		{% if bans|length > 0 %}
+			{% include 'mod/bans_table.html' with {actions: true} %}
+		{% else %}
+			<p class="unimportant mod-empty">({% trans 'No bans on record.' %})</p>
+		{% endif %}
 	</fieldset>
-{% endfor %}
+{% endif %}
+
+{% if mod|hasPermission(config.mod.ban) %}
+	<fieldset class="mod-section" id="new-ban">
+		<legend>{% trans 'New ban' %}</legend>
+		{% set redirect = '?/IP/' ~ ip|cloak_ip ~ '#bans' %}
+		{% include 'mod/ban_form.html' %}
+	</fieldset>
+{% endif %}
 
 {% if mod|hasPermission(config.mod.view_notes) %}
-	<fieldset id="notes">
-		<legend>
-			{% set notes_on_record = 'note' ~ (notes|count != 1 ? 's' : '') ~ ' on record' %}
-			<legend>{{ notes|count }} {% trans notes_on_record %}</legend>
-		</legend>
+	<fieldset class="mod-section" id="notes">
+		<legend>{% trans 'Notes' %} ({{ notes|length }})</legend>
 
-		{% if notes|count > 0 %}
+		{% if notes|length > 0 %}
 			<table class="modlog">
-				<tr>
-					<th>{% trans 'Staff' %}</th>
-					<th>{% trans 'Note' %}</th>
-					<th>{% trans 'Date' %}</th>
-					{% if mod|hasPermission(config.mod.remove_notes) %}
-						<th>{% trans 'Actions' %}</th>
-					{% endif %}
-				</tr>
 				{% for note in notes %}
 					<tr>
 						<td class="minimal">
@@ -37,17 +48,11 @@
 								<em>{% trans 'deleted?' %}</em>
 							{% endif %}
 						</td>
-						<td>
-							{{ note.body }}
-						</td>
-						<td class="minimal">
-							{{ note.time|date(config.post_date) }}
-						</td>
+						<td>{{ note.body }}</td>
+						<td class="minimal"><span title="{{ note.time|date(config.post_date) }}">{{ note.time|ago }}</span></td>
 						{% if mod|hasPermission(config.mod.remove_notes) %}
-							<td class="minimal">
-								<a href="?/IP/{{ ip|cloak_ip|url_encode(true) }}/remove_note/{{ note.id }}">
-									<small>[{% trans 'remove' %}]</small>
-								</a>
+							<td class="mod-actions">
+								<a href="?/IP/{{ ip|cloak_ip|url_encode(true) }}/remove_note/{{ note.id }}">[{% trans 'Remove' %}]</a>
 							</td>
 						{% endif %}
 					</tr>
@@ -56,138 +61,80 @@
 		{% endif %}
 
 		{% if mod|hasPermission(config.mod.create_notes) %}
-			<form action="" method="post" style="margin:0">
+			<form action="" method="post" class="mod-inline-form">
 				<input type="hidden" name="token" value="{{ security_token }}">
-				<table>
-					<tr>
-						<th>{% trans 'Staff' %}</th>
-						<td>{{ mod.username|e }}</td>
-					</tr>
-					<tr>
-						<th>
-							<label for="note">{% trans 'Note' %}</label>
-						</th>
-						<td>
-							<textarea id="note" name="note" rows="5" cols="30"></textarea>
-						</td>
-					</tr>
-					<tr>
-						<td></td>
-						<td><input type="submit" value="{% trans 'New note' %}"></td>
-					</tr>
-				</table>
+				<textarea id="note" name="note" rows="2" cols="50" aria-label="{% trans 'Note' %}" placeholder="{% trans 'Note' %}"></textarea>
+				<input type="submit" value="{% trans 'New note' %}">
 			</form>
 		{% endif %}
 	</fieldset>
 {% endif %}
 
 {% if mod|hasPermission(config.mod.view_telegrams) %}
-<fieldset id="telegrams">
-	<legend>
-		{% set telegrams_on_record = 'telegram' ~ (telegrams|count != 1 ? 's' : '') ~ ' on record' %}
-		<legend>{{ telegrams|count }} {% trans telegrams_on_record %}</legend>
-	</legend>
+	<fieldset class="mod-section" id="telegrams">
+		<legend>{% trans 'Telegrams' %} ({{ telegrams|length }})</legend>
 
-	{% if telegrams|count > 0 %}
-	<table class="modlog">
-		<tr>
-			<th>{% trans 'Staff' %}</th>
-			<th>{% trans 'Message' %}</th>
-			<th>{% trans 'Date' %}</th>
-			<th class="minimal">{% trans 'Seen' %}</th>
-			{% if mod|hasPermission(config.mod.remove_telegrams) %}
-			<th>{% trans 'Actions' %}</th>
-			{% endif %}
-		</tr>
-		{% for telegram in telegrams %}
-		<tr>
-			<td class="minimal">
-				{% if telegram.username %}
-				<a href="?/new_PM/{{ telegram.username|e }}">{{ telegram.username|e }}</a>
-				{% else %}
-				<em>{% trans 'deleted?' %}</em>
-				{% endif %}
-			</td>
-			<td>
-				{{ telegram.message }}
-			</td>
-			<td class="minimal">
-				{{ telegram.created_at|date(config.post_date) }}
-			</td>
-			<td>
-				{%  if telegram.seen %}
-				{% trans 'Yes' %}
-				{%  else %}
-				{% trans 'No' %}
-				{%  endif %}
-			</td>
-			{% if mod|hasPermission(config.mod.remove_telegrams) %}
-			<td class="minimal">
-				<a href="?/IP/{{ ip|cloak_ip|url_encode(true) }}/remove_telegram/{{ telegram.id }}">
-					<small>[{% trans 'remove' %}]</small>
-				</a>
-			</td>
-			{% endif %}
-		</tr>
-		{% endfor %}
-	</table>
-	{% endif %}
+		{% if telegrams|length > 0 %}
+			<table class="modlog">
+				<tr>
+					<th>{% trans 'Staff' %}</th>
+					<th>{% trans 'Message' %}</th>
+					<th>{% trans 'Date' %}</th>
+					<th class="minimal">{% trans 'Seen' %}</th>
+					{% if mod|hasPermission(config.mod.remove_telegrams) %}
+						<th></th>
+					{% endif %}
+				</tr>
+				{% for telegram in telegrams %}
+					<tr>
+						<td class="minimal">
+							{% if telegram.username %}
+								<a href="?/new_PM/{{ telegram.username|e }}">{{ telegram.username|e }}</a>
+							{% else %}
+								<em>{% trans 'deleted?' %}</em>
+							{% endif %}
+						</td>
+						<td>{{ telegram.message }}</td>
+						<td class="minimal">{{ telegram.created_at|date(config.post_date) }}</td>
+						<td class="minimal">{% if telegram.seen %}{% trans 'Yes' %}{% else %}{% trans 'No' %}{% endif %}</td>
+						{% if mod|hasPermission(config.mod.remove_telegrams) %}
+							<td class="mod-actions">
+								<a href="?/IP/{{ ip|cloak_ip|url_encode(true) }}/remove_telegram/{{ telegram.id }}">[{% trans 'Remove' %}]</a>
+							</td>
+						{% endif %}
+					</tr>
+				{% endfor %}
+			</table>
+		{% endif %}
 
-	{% if mod|hasPermission(config.mod.create_telegrams) %}
-	<form action="" method="post" style="margin:0">
-		<input type="hidden" name="token" value="{{ security_token }}">
-		<table>
-			<tr>
-				<th>{% trans 'Staff' %}</th>
-				<td>{{ mod.username|e }}</td>
-			</tr>
-			<tr>
-				<th>
-					<label for="telegram">{% trans 'Message' %}</label>
-				</th>
-				<td>
-					<textarea id="telegram" name="telegram" rows="5" cols="30"></textarea>
-				</td>
-			</tr>
-			<tr>
-				<td></td>
-				<td><input type="submit" value="{% trans 'New telegram' %}"></td>
-			</tr>
-		</table>
-	</form>
-	{% endif %}
-</fieldset>
-{% endif %}
-
-{% if bans|count > 0 and mod|hasPermission(config.mod.view_ban) %}
-	<fieldset id="bans">
-		{% set bans_on_record = 'ban' ~ (bans|count != 1 ? 's' : '') ~ ' on record' %}
-		<legend>{{ bans|count }} {% trans bans_on_record %}</legend>
-
-		{% for ban in bans %}
-			<form action="" method="post" style="text-align:center">
+		{% if mod|hasPermission(config.mod.create_telegrams) %}
+			<form action="" method="post" class="mod-inline-form">
 				<input type="hidden" name="token" value="{{ security_token }}">
-				{% include 'mod/ban_history.html' %}
-				<input type="hidden" name="ban_id" value="{{ ban.id }}">
-				<input type="submit" name="unban" value="{% trans 'Remove ban' %}">
-				<input type="submit" name="edit_ban" value="{% trans 'Edit ban' %}">
+				<textarea id="telegram" name="telegram" rows="2" cols="50" aria-label="{% trans 'Message' %}" placeholder="{% trans 'Message' %}"></textarea>
+				<input type="submit" value="{% trans 'New telegram' %}">
 			</form>
-		{% endfor %}
+		{% endif %}
 	</fieldset>
 {% endif %}
 
-{% if mod|hasPermission(config.mod.ban) %}
-	<fieldset>
-		<legend>{% trans 'New ban' %}</legend>
-		{% set redirect = '?/IP/' ~ ip|cloak_ip ~ '#bans' %}
-		{% include 'mod/ban_form.html' %}
-	</fieldset>
-{% endif %}
+<div id="posts">
+	{% for board_posts in posts %}
+		<fieldset class="mod-section">
+			<legend>
+				<a href="?/{{ config.board_path|sprintf(board_posts.board.uri) }}{{ config.file_index }}">{{ config.board_abbreviation|sprintf(board_posts.board.uri) }} - {{ board_posts.board.title|e }}</a> ({{ board_posts.posts|length }})
+				{% if mod|hasPermission(config.mod.deletebyip, board_posts.board.uri) %} {{ secure_link_confirm('[' ~ 'Delete all posts from this IP'|trans ~ ']', 'Delete all posts by IP'|trans, 'Are you sure you want to delete all posts by this IP address?'|trans, config.board_path|sprintf(board_posts.board.uri) ~ 'deletebyip/' ~ board_posts.post_id) }}{% endif %}
+			</legend>
+			{{ board_posts.posts|join('<hr>') }}
+		</fieldset>
+	{% else %}
+		<p class="unimportant mod-empty">({% trans 'No posts from this IP address.' %})</p>
+	{% endfor %}
+</div>
 
-{% if logs|count > 0  %}
-	<fieldset id="history">
-		<legend>History</legend>
-		<table class="modlog" style="width:100%">
+{% if logs|count > 0 %}
+	<fieldset class="mod-section" id="history">
+		<legend>{% trans 'History' %} ({{ logs|length }})</legend>
+		<table class="modlog">
 			<tr>
 				<th>{% trans 'Staff' %}</th>
 				<th>{% trans 'Time' %}</th>
@@ -215,9 +162,7 @@
 							-
 						{% endif %}
 					</td>
-					<td>
-						{{ log.text }}
-					</td>
+					<td>{{ log.text }}</td>
 				</tr>
 			{% endfor %}
 		</table>

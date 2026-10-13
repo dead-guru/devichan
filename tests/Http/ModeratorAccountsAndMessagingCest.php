@@ -43,7 +43,7 @@ final class ModeratorAccountsAndMessagingCest
         $I->amOnPage('/mod.php?/PM/' . $messageId);
         $this->assertHealthyPage($I);
         $I->see('E2E private message');
-        $I->submitForm('form[action=""]', ['delete' => 'Delete forever']);
+        $I->amOnPage($this->grabSecureAction($I, "PM/{$messageId}/delete"));
         $I->dontSeeInDatabase('pms', ['id' => $messageId]);
 
         $I->amOnPage('/mod.php?/users');
@@ -83,5 +83,16 @@ final class ModeratorAccountsAndMessagingCest
             'delete' => 'Delete user',
         ]);
         $I->dontSeeInDatabase('mods', ['id' => $userId]);
+    }
+
+    private function grabSecureAction(HttpTester $I, string $action): string
+    {
+        $I->assertSame(1, preg_match(
+            "/document\\.location='([^']*" . preg_quote($action, '/') . "\\/[a-f0-9]{8})'/",
+            $I->grabPageSource(),
+            $matches,
+        ));
+
+        return $matches[1];
     }
 }

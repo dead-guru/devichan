@@ -117,10 +117,7 @@ final class ModeratorBanAndDeletionCest
         ]);
 
         $I->amOnPage('/mod.php?/ban-appeals');
-        $I->submitForm('form[action=""]', [
-            'appeal_id' => $appealId,
-            'unban' => 'Unban',
-        ]);
+        $I->amOnPage($this->grabSecureAction($I, "ban-appeals/{$appealId}/unban"));
         $this->assertHealthyPage($I);
         $I->dontSeeInDatabase('ban_appeals', ['id' => $appealId]);
         $I->dontSeeInDatabase('bans', ['id' => $banId]);

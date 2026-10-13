@@ -1,44 +1,11 @@
-<form action="" method="post">
-	<table>
-		<tr>
-			<th>{% trans 'From' %}</th>
-			{% if username %}
-				<td><a href="?/new_PM/{{ username|e }}">{{ username|e }}</a></td>
-			{% else %}
-				<td><em>{% trans 'deleted?' %}</em></td>
-			{% endif %}
-		</tr>
-		{% if to != mod.id %}
-			<tr>
-				<th>To</th>
-				{% if to_username %}
-					<td><a href="?/new_PM/{{ to_username|e }}">{{ to_username|e }}</a></td>
-				{% else %}
-					<td><em>{% trans 'deleted?' %}</em></td>
-				{% endif %}
-			</tr>
-		{% endif %}
-		<tr>
-			<th>{% trans 'Date' %}</th>
-			<td>{{ time|date(config.post_date) }} <small>({{ time|ago }} ago)</small></td>
-			
-		</tr>
-		<tr>
-			<th>{% trans 'Message' %}</th>
-			<td>{{ message }}</td>
-		</tr>
-	</table>
-	
-	<ul style="list-style:none;text-align:center;padding:0">
-		<li style="padding:5px 0">
-			<input type="submit" name="delete" value="{% trans 'Delete forever' %}">
-		</li>
-		{% if mod|hasPermission(config.mod.create_pm) %}
-			<li style="padding:5px 0">
-				<a href="?/PM/{{ id }}/reply">
-					{% trans 'Reply with quote' %}
-				</a>
-			</li>
-		{% endif %}
-	</ul>
-</form>
+<div class="ban mod-entry">
+	<h2>
+		{% if username %}<a href="?/new_PM/{{ username|e }}">{{ username|e }}</a>{% else %}<em>{% trans 'deleted?' %}</em>{% endif %}{% if to != mod.id %} &rarr; {% if to_username %}<a href="?/new_PM/{{ to_username|e }}">{{ to_username|e }}</a>{% else %}<em>{% trans 'deleted?' %}</em>{% endif %}{% endif %} <small class="unimportant">&mdash; <span title="{{ time|date(config.post_date) }}">{{ time|ago }}</span></small>
+		<span class="mod-actions">
+			{% if mod|hasPermission(config.mod.create_pm) %}<a href="?/PM/{{ id }}/reply">[{% trans 'Reply' %}]</a> {% endif %}
+			{{ secure_link_confirm('[' ~ 'Delete'|trans ~ ']', 'Delete forever'|trans, 'Are you sure you want to delete this?'|trans, 'PM/' ~ id ~ '/delete') }}
+		</span>
+	</h2>
+	<p>{{ message }}</p>
+</div>
+<p class="mod-summary"><a href="?/inbox">[&laquo; {% trans 'PM inbox' %}]</a></p>

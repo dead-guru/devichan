@@ -1,14 +1,9 @@
-<fieldset style="margin-bottom:20px">
+<fieldset class="mod-section">
 	<legend>{% trans 'Search' %}</legend>
-
-	<ul>
-		<li>
-			{% include 'mod/search_form.html' %}
-		</li>
-	</ul>
+	{% include 'mod/search_form.html' %}
 </fieldset>
 
-<p style="text-align:center">Showing {{ result_count }} result{% if result_count != 1 %}s{% endif %}.</p>
+<p class="mod-summary">{% trans 'Results' %}: {{ result_count }}</p>
 
 {% if search_type == 'IP_notes' %}
 	<table class="modlog">
@@ -77,9 +72,7 @@
 					{% endif %}					
 				</td>
 				<td style="white-space: nowrap">
-					<span title="{{ ban.created|date(config.post_date) }}">
-						{{ ban.created|ago }} ago
-					</span>
+					<span title="{{ ban.created|date(config.post_date) }}">{{ ban.created|ago }}</span>
 				</td>
 				<td style="white-space: nowrap">
 					{% if ban.expires == 0 %}
@@ -171,20 +164,20 @@
 {% if search_type == 'posts' %}
 	<table class="modlog" style="word-wrap: break-word;">
 		<tr>
-			<th>Time</th>
-			<th>Board</th>
-			<th>ID</th>
-			<th>Thread</th>
-			<th>IP</th>
-			<th>Name</th>
-			<th>Subject</th>
-			<th>File</th>
-			<th>Body (snippet)</th>
+			<th>{% trans 'Time' %}</th>
+			<th>{% trans 'Board' %}</th>
+			<th>{% trans 'ID' %}</th>
+			<th>{% trans 'Thread' %}</th>
+			<th>{% trans 'IP' %}</th>
+			<th>{% trans 'Name' %}</th>
+			<th>{% trans 'Subject' %}</th>
+			<th>{% trans 'File' %}</th>
+			<th>{% trans 'Message' %}</th>
 		</tr>
 		{% for post in results %}
 			<tr>
 				<td class="minimal">
-					<small>{{ post.time | ago }} ago</small>
+					<span title="{{ post.time|date(config.post_date) }}">{{ post.time|ago }}</span>
 				</td>
 				<td class="minimal">
 					<a href="?/{{ config.board_path|sprintf(post.board) }}{{ config.file_index }}">{{ config.board_abbreviation|sprintf(post.board) }}</a>
@@ -259,10 +252,4 @@
 	</table>
 {% endif %}
 
-{% if result_count > results|count %}
-	<p class="unimportant" style="text-align:center;word-wrap:break-word">
-		{% for i in range(0, (result_count - 1) / config.mod.search_page) %}
-			<a href="?/search/{{ search_type }}/{{ search_query_escaped }}/{{ i + 1 }}">[{{ i + 1 }}]</a> 
-		{% endfor %}
-	</p>
-{% endif %}
+{% include 'mod/pagination.html' with {base: '?/search/' ~ search_type ~ '/' ~ search_query_escaped ~ '/', page: page|default(1), pages: ((result_count - 1) / config.mod.search_page)|round(0, 'floor') + 1} %}

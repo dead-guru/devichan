@@ -3381,7 +3381,7 @@ msgstr "журнал"
 
 #: ../../../../templates/cache/fc/8d/2b5f6c25d93a9966c429a79ee7ebdd921957079dab214aebbc665d67b9f4.php:226
 msgid "PM"
-msgstr "Приватне повідомлення"
+msgstr "ПП"
 
 #. line 6
 #: ../../../../templates/cache/32/3a/d7e02cef5846ec4f1f423bb0ad2d3c307845d29f70da3f8a90a41f873e7d.php:36
@@ -3983,3 +3983,324 @@ msgstr "Вниз"
 
 msgid "Search this board"
 msgstr "Пошук на дошці"
+
+msgid "1 day"
+msgstr "1 день"
+
+msgid "1 hour"
+msgstr "1 година"
+
+msgid "1 week"
+msgstr "1 тиждень"
+
+msgid "3 days"
+msgstr "3 дні"
+
+msgid "30 days"
+msgstr "30 днів"
+
+msgid "permanent"
+msgstr "назавжди"
+
+msgid "Appeals"
+msgstr "Оскарження"
+
+msgid "Banned"
+msgstr "Заблоковано"
+
+msgid "Debug: recent posts"
+msgstr "Налагодження: останні дописи"
+
+msgid "Dismiss"
+msgstr "Відхилити"
+
+msgid "Dismiss all by IP"
+msgstr "Відхилити всі від цієї IP"
+
+msgid "Dismiss all for this post"
+msgstr "Відхилити всі на цей допис"
+
+msgid "Dismiss reports above to load more."
+msgstr "Відхиліть скарги вище, щоб побачити наступні."
+
+msgid "Edit Ban"
+msgstr "Змінити блокування"
+
+msgid "For example \"2d1h30m\" or \"2 days\". Leave empty for a permanent ban."
+msgstr "Наприклад, «2d1h30m» або «2 days». Залиште порожнім для безстрокового блокування."
+
+msgid "Global static pages"
+msgstr "Глобальні статичні сторінки"
+
+msgid "History"
+msgstr "Історія"
+
+msgid "Inbox"
+msgstr "Вхідні"
+
+msgid "Log"
+msgstr "Журнал"
+
+msgid "New telegram"
+msgstr "Нова телеграма"
+
+msgid "No posts from this IP address."
+msgstr "Дописів з цієї IP-адреси немає."
+
+msgid "Notes"
+msgstr "Примітки"
+
+msgid "Reports"
+msgstr "Скарги"
+
+msgid "Telegrams"
+msgstr "Телеграми"
+
+msgid "Words to find. Prefix with mask:, reason:, board:, staff: or message: to search one column."
+msgstr "Слова для пошуку. Префікс mask:, reason:, board:, staff: або message: шукає лише в одній колонці."
+
+msgid "config"
+msgstr "конфіг"
+
+msgid "pages"
+msgstr "сторінки"
+
+msgid "Show all"
+msgstr "Показати все"
+
+msgid "Show"
+msgstr "Показати"
+
+msgid "Restore dismissed posts"
+msgstr "Повернути приховані дописи"
+
+msgid "Older posts"
+msgstr "Старіші дописи"
+
+msgid "Create a new user"
+msgstr "Створити користувача"
+
+msgid "Edit"
+msgstr "Редагувати"
+
+msgid "Config"
+msgstr "Конфіг"
+
+msgid "Remove"
+msgstr "Прибрати"
+
+msgid "Unban"
+msgstr "Розблокувати"
+
+msgid "Are you sure you want to remove this ban?"
+msgstr "Ви впевнені, що хочете зняти це блокування?"
+
+msgid "Accept the appeal and remove the ban"
+msgstr "Прийняти оскарження й зняти блокування"
+
+msgid "Address"
+msgstr "Адреса"
+
+msgid "All"
+msgstr "Усі"
+
+msgid "Any changes you make here will simply be appended to the configuration file. For full control, edit the file directly."
+msgstr "Зміни тут просто дописуються в кінець файлу конфігурації. Для повного контролю редагуйте файл напряму."
+
+msgid "Appeal"
+msgstr "Оскарження"
+
+msgid "Are you sure you want to deny this appeal?"
+msgstr "Ви впевнені, що хочете відхилити це оскарження?"
+
+msgid "Are you sure you want to permanently delete this board?"
+msgstr "Ви впевнені, що хочете назавжди видалити цю дошку?"
+
+msgid "Are you sure you want to permanently delete this user?"
+msgstr "Ви впевнені, що хочете назавжди видалити цього користувача?"
+
+msgid "Are you sure you want to uninstall this theme?"
+msgstr "Ви впевнені, що хочете видалити цю тему?"
+
+msgid "Back to themes"
+msgstr "До тем"
+
+msgid "Cancel"
+msgstr "Скасувати"
+
+msgid "Confirm"
+msgstr "Підтвердити"
+
+msgid "Create a new page"
+msgstr "Нова сторінка"
+
+msgid "Create board"
+msgstr "Створити дошку"
+
+msgid "Current ban"
+msgstr "Поточне блокування"
+
+msgid "Delete board"
+msgstr "Видалити дошку"
+
+msgid "Deleted file"
+msgstr "Видалений файл"
+
+msgid "Deny"
+msgstr "Відхилити"
+
+msgid "Deny appeal"
+msgstr "Відхилити оскарження"
+
+msgid "Existing pages"
+msgstr "Сторінки"
+
+msgid "Files"
+msgstr "Файли"
+
+msgid "Flush cache"
+msgstr "Скинути кеш"
+
+msgid "Full log"
+msgstr "Увесь журнал"
+
+msgid "Install theme"
+msgstr "Встановити тему"
+
+msgid "Installed"
+msgstr "Встановлено"
+
+msgid "Leave empty to make the reply a new thread."
+msgstr "Залиште порожнім, щоб зробити з відповіді новий тред."
+
+msgid "Markup method"
+msgstr "Розмітка"
+
+msgid "No bans on record."
+msgstr "Блокувань немає."
+
+msgid "No configuration required."
+msgstr "Налаштування не потрібні."
+
+msgid "No pages yet."
+msgstr "Сторінок ще немає."
+
+msgid "No private messages for you."
+msgstr "Приватних повідомлень немає."
+
+msgid "Open"
+msgstr "Відкрити"
+
+msgid "Page content"
+msgstr "Вміст сторінки"
+
+msgid "Rebuild Javascript"
+msgstr "Перебудувати Javascript"
+
+msgid "Rebuild again"
+msgstr "Перебудувати ще раз"
+
+msgid "Rebuild index pages"
+msgstr "Перебудувати сторінки дошок"
+
+msgid "Rebuild replies"
+msgstr "Перебудувати відповіді"
+
+msgid "Rebuild themes"
+msgstr "Перебудувати теми"
+
+msgid "Rebuild thread pages"
+msgstr "Перебудувати сторінки тредів"
+
+msgid "Rebuilt"
+msgstr "Перебудовано"
+
+msgid "Recent actions"
+msgstr "Останні дії"
+
+msgid "Replace"
+msgstr "Замінити"
+
+msgid "Results"
+msgstr "Результати"
+
+msgid "Save page"
+msgstr "Зберегти сторінку"
+
+msgid "Site-wide"
+msgstr "Увесь сайт"
+
+msgid "Subtitle"
+msgstr "Підзаголовок"
+
+msgid "Successfully installed and built theme."
+msgstr "Тему встановлено й зібрано."
+
+msgid "Successfully rebuilt the <strong>%s</strong> theme."
+msgstr "Тему <strong>%s</strong> перебудовано."
+
+msgid "The configuration file is not writable. Change its permissions or edit it manually."
+msgstr "Файл конфігурації недоступний для запису. Змініть його права або редагуйте вручну."
+
+msgid "The noticeboard is empty."
+msgstr "Дошка оголошень порожня."
+
+msgid "The previous ban will be replaced by the edited ban and the ban duration will start from the time of the edit. The ban public message will not be changed."
+msgstr "Попереднє блокування буде замінено зміненим, а строк рахуватиметься від моменту зміни. Публічне повідомлення про блокування не зміниться."
+
+msgid "There are no ban appeals."
+msgstr "Оскаржень немає."
+
+msgid "There are no news entries."
+msgstr "Новин немає."
+
+msgid "This page allows you to create static pages for your imageboard."
+msgstr "Тут можна створювати статичні сторінки сайту."
+
+msgid "Thread"
+msgstr "Тред"
+
+msgid "Title"
+msgstr "Заголовок"
+
+msgid "To"
+msgstr "Кому"
+
+msgid "Toggle all"
+msgstr "Усе"
+
+msgid "URI"
+msgstr "URI"
+
+msgid "URL"
+msgstr "URL"
+
+msgid "Undo change"
+msgstr "Скасувати зміну"
+
+msgid "Value"
+msgstr "Значення"
+
+msgid "Spam"
+msgstr "Спам"
+
+msgid "Wipe"
+msgstr "Вайп"
+
+msgid "Off-topic"
+msgstr "Офтоп"
+
+msgid "Illegal content"
+msgstr "Незаконний вміст"
+
+msgid "Ban evasion"
+msgstr "Обхід блокування"
+
+msgid "Delete all posts from this IP"
+msgstr "Видалити все з цієї IP"
+
+msgid "Delete all posts on all boards"
+msgstr "Видалити все на всіх дошках"
+
+msgid "Posts in 24 hours"
+msgstr "Дописів за 24 год"

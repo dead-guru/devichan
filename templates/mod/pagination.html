@@ -1,0 +1,8 @@
+{% if pages > 1 %}
+{% set suffix = suffix|default('') %}
+<p class="unimportant mod-pages">
+	{% if page > 1 %}<a href="{{ base }}{{ page - 1 }}{{ suffix }}">[&laquo; {% trans 'Previous' %}]</a> {% endif %}
+	{% for i in 1..pages %}{% if i == 1 or i == pages or (i >= page - 3 and i <= page + 3) %}{% if i == page %}<strong>[{{ i }}]</strong> {% else %}<a href="{{ base }}{{ i }}{{ suffix }}">[{{ i }}]</a> {% endif %}{% elseif i == 2 or i == pages - 1 %}&hellip; {% endif %}{% endfor %}
+	{% if page < pages %}<a href="{{ base }}{{ page + 1 }}{{ suffix }}">[{% trans 'Next' %} &raquo;]</a>{% endif %}
+</p>
+{% endif %}

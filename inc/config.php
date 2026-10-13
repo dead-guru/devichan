@@ -1550,6 +1550,8 @@
 	// "permanently" (with %LENGTH% being the uppercase equivalent).
 	$config['mod']['default_ban_message'] = _('USER WAS BANNED FOR THIS POST');
 	// $config['mod']['default_ban_message'] = 'USER WAS BANNED %LENGTH% FOR THIS POST';
+	// Reasons offered as one-click buttons next to the ban reason field. Set to an empty array to hide them.
+	$config['mod']['ban_reasons'] = array(_('Spam'), _('Wipe'), _('Off-topic'), _('Illegal content'), _('Ban evasion'));
 	// HTML to append to post bodies for public bans messages (where "%s" is the message).
 	$config['mod']['ban_message'] = '<span class="public_ban">(%s)</span>';
 

@@ -190,6 +190,43 @@ function create_pm_header() {
 	return $header;
 }
 
+// Links and counters for the navigation bar shown on every moderation page.
+function mod_nav() {
+	global $config, $mod;
+
+	$links = array(array('href' => '?/', 'label' => _('Dashboard')));
+
+	if (hasPermission($config['mod']['reports'])) {
+		$query = query('SELECT COUNT(*) FROM ``reports``') or error(db_error());
+		$links[] = array('href' => '?/reports', 'label' => _('Reports'), 'count' => (int) $query->fetchColumn());
+	}
+	if ($config['ban_appeals'] && hasPermission($config['mod']['view_ban_appeals'])) {
+		$query = query('SELECT COUNT(*) FROM ``ban_appeals`` WHERE `denied` != 1') or error(db_error());
+		$links[] = array('href' => '?/ban-appeals', 'label' => _('Appeals'), 'count' => (int) $query->fetchColumn());
+	}
+	if (hasPermission($config['mod']['recent']))
+		$links[] = array('href' => '?/recent/25', 'label' => _('Recent posts'));
+	if (hasPermission($config['mod']['view_banlist']))
+		$links[] = array('href' => '?/bans', 'label' => _('Bans'));
+	if (hasPermission($config['mod']['modlog']))
+		$links[] = array('href' => '?/log', 'label' => _('Log'));
+	if (hasPermission($config['mod']['noticeboard']))
+		$links[] = array('href' => '?/noticeboard', 'label' => _('Noticeboard'));
+
+	$pm = create_pm_header();
+	$links[] = array(
+		'href' => $pm ? '?/PM/' . $pm['id'] : '?/inbox',
+		'label' => _('Inbox'),
+		'count' => $pm ? $pm['waiting'] + 1 : 0,
+	);
+
+	return array(
+		'links' => $links,
+		'username' => $mod['username'],
+		'logout_token' => make_secure_link_token('logout'),
+	);
+}
+
 function make_secure_link_token($uri) {
 	global $mod, $config;
 	return substr(sha1($config['cookies']['salt'] . '-' . $uri . '-' . $mod['id']), 0, 8);

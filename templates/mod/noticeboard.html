@@ -1,7 +1,7 @@
 {% if mod|hasPermission(config.mod.noticeboard_post) %}
-	<fieldset>
+	<fieldset class="mod-section">
 		<legend>{% trans 'New post' %}</legend>
-		<form style="margin:0" action="?/noticeboard" method="post">
+		<form class="mod-form" action="?/noticeboard" method="post">
 			<input type="hidden" name="token" value="{{ token }}">
 			<table>
 				<tr>
@@ -10,57 +10,33 @@
 				</tr>
 				<tr>
 					<th><label for="subject">{% trans 'Subject' %}</label></th>
-					<td><input type="text" size="55" name="subject" id="subject" /></td>
+					<td><input type="text" size="55" name="subject" id="subject"></td>
 				</tr>
 				<tr>
-					<th>{% trans 'Body' %}</th>
-					<td><textarea name="body" style="width:100%;height:100px"></textarea></td>
+					<th><label for="body">{% trans 'Body' %}</label></th>
+					<td><textarea name="body" id="body" rows="5" cols="55"></textarea></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td><input type="submit" value="{% trans 'Post to noticeboard' %}"></td>
 				</tr>
 			</table>
-			<p style="text-align:center">
-				<input type="submit" value="{% trans 'Post to noticeboard' %}" />
-			</p>
 		</form>
 	</fieldset>
 {% endif %}
 
 {% for post in noticeboard %}
-	<div class="ban">
-		{% if mod|hasPermission(config.mod.noticeboard_delete) %}
-			<span style="float:right;padding:2px">
-				<a class="unimportant" href="?/noticeboard/delete/{{ post.id }}/{{ post.delete_token }}">[{% trans 'delete' %}]</a>
-			</span>
-		{% endif %}
+	<div class="ban mod-entry">
 		<h2 id="{{ post.id }}">
-			<small class="unimportant">
-				<a href="#{{ post.id }}">#</a>
-			</small> 
-			{% if post.subject %}
-				{{ post.subject|e }}
-			{% else %}
-				<em>{% trans 'no subject' %}</em>
-			{% endif %} 
-			<small class="unimportant">
-				&mdash; {% trans 'by' %} 
-				{% if post.username %}
-					{{ post.username|e }}
-				{% else %}
-					<em>{% trans 'deleted?' %}</em>
-				{% endif %} 
-				{% trans 'at' %} 
-				{{ post.time|date(config.post_date) }} 
-			</small>
+			<a href="#{{ post.id }}">#</a> {% if post.subject %}{{ post.subject|e }}{% else %}<em>{% trans 'no subject' %}</em>{% endif %} <small class="unimportant">&mdash; {% if post.username %}{{ post.username|e }}{% else %}<em>{% trans 'deleted?' %}</em>{% endif %}, <span title="{{ post.time|date(config.post_date) }}">{{ post.time|ago }}</span></small>
+			{% if mod|hasPermission(config.mod.noticeboard_delete) %}
+				<span class="mod-actions"><a href="?/noticeboard/delete/{{ post.id }}/{{ post.delete_token }}" onclick="return confirm('{% trans 'Are you sure you want to delete this?' %}')">[{% trans 'Delete' %}]</a></span>
+			{% endif %}
 		</h2>
-		<p>
-			{{ post.body }}
-		</p>
+		<p>{{ post.body }}</p>
 	</div>
+{% else %}
+	<p class="unimportant mod-empty">({% trans 'The noticeboard is empty.' %})</p>
 {% endfor %}
 
-{% if count > noticeboard|count %}
-	<p class="unimportant" style="text-align:center;word-wrap:break-word">
-		{% for i in range(0, (count - 1) / config.mod.noticeboard_page) %}
-			<a href="?/noticeboard/{{ i + 1 }}">[{{ i + 1 }}]</a> 
-		{% endfor %}
-	</p>
-{% endif %}
+{% include 'mod/pagination.html' with {base: '?/noticeboard/', page: page|default(1), pages: ((count - 1) / config.mod.noticeboard_page)|round(0, 'floor') + 1} %}

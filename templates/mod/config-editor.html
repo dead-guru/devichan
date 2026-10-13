@@ -1,17 +1,8 @@
-<p>
-	Any changes you make here will simply be appended to <code>{{ file }}</code>. If you wish to make the most of Tinyboard's customizability, you can instead edit the file directly. This page is intended for making quick changes and for those who don't have a basic understanding of PHP code.
-</p>
+<p class="unimportant mod-summary">{% trans %}Any changes you make here will simply be appended to the configuration file. For full control, edit the file directly.{% endtrans %} <code>{{ file }}</code></p>
 {% if boards|length %}
-	<ul>
-		{% if board %}
-			<li><a href="?/config">Edit site-wide config</a></li>
-		{% endif %}
-		{% for _board in boards|filter(_board => _board.uri != board) %}
-			<li>
-				<a href="?/config/{{ _board.uri }}">Edit config for {{ config.board_abbreviation|sprintf(_board.uri) }}</a>
-			</li>
-		{% endfor %}
-	</ul>
+	<p class="mod-summary">
+		{% if board %}<a href="?/config">[{% trans 'Site-wide' %}]</a>{% else %}<strong>[{% trans 'Site-wide' %}]</strong>{% endif %} {% for _board in boards %}{% if _board.uri == board %}<strong>[{{ config.board_abbreviation|sprintf(_board.uri) }}]</strong>{% else %}<a href="?/config/{{ _board.uri }}">[{{ config.board_abbreviation|sprintf(_board.uri) }}]</a>{% endif %} {% endfor %}
+	</p>
 {% endif %}
 <form method="post" action="">
 	<input type="hidden" name="token" value="{{ token }}">
@@ -73,7 +64,5 @@
 		{% endfor %}
 	</table>
 	
-	<ul style="padding:0;text-align:center;list-style:none">
-		<li><input name="save" type="submit" value="{% trans 'Save changes' %}"></li>
-	</ul>
+	<p class="mod-summary"><input name="save" type="submit" value="{% trans 'Save changes' %}"></p>
 </form>

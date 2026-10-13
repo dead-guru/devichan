@@ -1,44 +1,31 @@
-<form action="?/{{ board }}/move/{{ post }}" method="post" onsubmit="btnSubmit.disabled = true; return true;">
+<form class="mod-form" action="?/{{ board }}/move/{{ post }}" method="post" onsubmit="btnSubmit.disabled = true; return true;">
 	<input type="hidden" name="token" value="{{ token }}">
 	<table>
 		<tr>
-			<th>
-				{% trans 'Thread ID' %}
-			</th>
-			<td>
-				&gt;&gt;&gt;{{ config.board_abbreviation|sprintf(board) }}{{ post }}
-			</td>
+			<th>{% trans 'Thread ID' %}</th>
+			<td>&gt;&gt;&gt;{{ config.board_abbreviation|sprintf(board) }}{{ post }}</td>
 		</tr>
 		<tr>
-			<th>
-				{% trans 'Leave shadow thread' %}
-			</th>
+			<th>{% trans 'Leave shadow thread' %}</th>
 			<td>
-				<input type="checkbox" name="shadow" checked> 
-				<span class="unimportant">({% trans 'locks thread; replies to it with a link.' %})</span>
-				</td>
+				<input type="checkbox" name="shadow" id="shadow" checked> <label for="shadow" class="unimportant">({% trans 'locks thread; replies to it with a link.' %})</label>
+			</td>
 		</tr>
 		<tr>
 			<th>{% trans 'Target board' %}</th>
 			<td>
-				<ul style="list-style:none;padding:0">
+				<ul class="mod-choices">
 					{% for targetboard in boards %}
 						{% if targetboard.uri != board %}
-						<li>
-							<input type="radio" name="board" value="{{ targetboard.uri }}" id="ban-board-{{ targetboard.uri }}" {% if boards|count == 2 %}checked{% endif %}> 
-							<label style="display:inline" for="ban-board-{{ targetboard.uri }}">
-								{{ config.board_abbreviation|sprintf(targetboard.uri) }} - {{ targetboard.title|e }}
-							</label>
-						</li>
+							<li><input type="radio" name="board" value="{{ targetboard.uri }}" id="move-board-{{ targetboard.uri }}"{% if boards|length == 2 %} checked{% endif %}> <label for="move-board-{{ targetboard.uri }}">{{ config.board_abbreviation|sprintf(targetboard.uri) }} - {{ targetboard.title|e }}</label></li>
 						{% endif %}
 					{% endfor %}
 				</ul>
 			</td>
 		</tr>
+		<tr>
+			<td></td>
+			<td><input type="submit" name="btnSubmit" value="{% trans 'Move thread' %}"></td>
+		</tr>
 	</table>
-	
-	<ul style="padding:0;text-align:center;list-style:none">
-		<li><input type="submit" name="btnSubmit" value="{% trans 'Move thread' %}"></li>
-	</ul>
 </form>
-

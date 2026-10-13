@@ -82,6 +82,17 @@ function mod_dashboard() {
 	
 	$args['boards'] = listBoards();
 	
+	$query = query('SELECT `board`, COUNT(*) AS `count` FROM ``reports`` GROUP BY `board`') or error(db_error());
+	$reports = $query->fetchAll(PDO::FETCH_KEY_PAIR);
+	foreach ($args['boards'] as &$board) {
+		$query = prepare(sprintf('SELECT COUNT(*) FROM ``posts_%s`` WHERE `time` > :time', $board['uri']));
+		$query->bindValue(':time', time() - 60 * 60 * 24, PDO::PARAM_INT);
+		$query->execute() or error(db_error($query));
+		$board['posts_day'] = (int)$query->fetchColumn();
+		$board['reports'] = isset($reports[$board['uri']]) ? (int)$reports[$board['uri']] : 0;
+	}
+	unset($board);
+	
 	if (hasPermission($config['mod']['noticeboard'])) {
 		if (!$config['cache']['enabled'] || !$args['noticeboard'] = cache::get('noticeboard_preview')) {
 			$query = prepare("SELECT ``noticeboard``.*, `username` FROM ``noticeboard`` LEFT JOIN ``mods`` ON ``mods``.`id` = `mod` ORDER BY `id` DESC LIMIT :limit");
@@ -286,7 +297,8 @@ function mod_search($type, $search_query_escaped, $page_no = 1) {
 		'search_query' => $search_query,
 		'search_query_escaped' => $search_query_escaped,
 		'result_count' => $result_count,
-		'results' => $results
+		'results' => $results,
+		'page' => $page_no
 	));
 }
 
@@ -512,6 +524,7 @@ function mod_noticeboard($page_no = 1) {
 	mod_page(_('Noticeboard'), $config['file_mod_noticeboard'], array(
 		'noticeboard' => $noticeboard,
 		'count' => $count,
+		'page' => $page_no,
 		'token' => make_secure_link_token('noticeboard')
 	));
 }
@@ -582,7 +595,7 @@ function mod_news($page_no = 1) {
 	$query->execute() or error(db_error($query));
 	$count = $query->fetchColumn();
 	
-	mod_page(_('News'), $config['file_mod_news'], array('news' => $news, 'count' => $count, 'token' => make_secure_link_token('edit_news')));
+	mod_page(_('News'), $config['file_mod_news'], array('news' => $news, 'count' => $count, 'page' => $page_no, 'token' => make_secure_link_token('edit_news')));
 }
 
 function mod_news_delete($id) {
@@ -598,6 +611,12 @@ function mod_news_delete($id) {
 	modLog('Deleted a news entry');
 	
 	header('Location: ?/edit_news', true, $config['redirect_http']);
+}
+
+// Staff and boards to filter the moderation log by.
+function mod_log_filters() {
+	$query = query('SELECT `username` FROM ``mods`` ORDER BY `username`') or error(db_error());
+	return array('staff' => $query->fetchAll(PDO::FETCH_COLUMN), 'boards' => listBoards());
 }
 
 function mod_log($page_no = 1) {
@@ -622,7 +641,7 @@ function mod_log($page_no = 1) {
 	$query->execute() or error(db_error($query));
 	$count = $query->fetchColumn();
 	
-	mod_page(_('Moderation log'), $config['file_mod_log'], array('logs' => $logs, 'count' => $count));
+	mod_page(_('Moderation log'), $config['file_mod_log'], array_merge(mod_log_filters(), array('logs' => $logs, 'count' => $count, 'page' => $page_no)));
 }
 
 function mod_user_log($username, $page_no = 1) {
@@ -649,7 +668,7 @@ function mod_user_log($username, $page_no = 1) {
 	$query->execute() or error(db_error($query));
 	$count = $query->fetchColumn();
 	
-	mod_page(_('Moderation log'), $config['file_mod_log'], array('logs' => $logs, 'count' => $count, 'username' => $username));
+	mod_page(_('Moderation log'), $config['file_mod_log'], array_merge(mod_log_filters(), array('logs' => $logs, 'count' => $count, 'page' => $page_no, 'username' => $username)));
 }
 
 function mod_board_log($board, $page_no = 1, $hide_names = false, $public = false) {
@@ -685,7 +704,7 @@ function mod_board_log($board, $page_no = 1, $hide_names = false, $public = fals
 	$query->execute() or error(db_error($query));
 	$count = $query->fetchColumn();
 	
-	mod_page(_('Board log'), $config['file_mod_log'], array('logs' => $logs, 'count' => $count, 'board' => $board, 'hide_names' => $hide_names, 'public' => $public));
+	mod_page(_('Board log'), $config['file_mod_log'], array_merge($public ? array() : mod_log_filters(), array('logs' => $logs, 'count' => $count, 'page' => $page_no, 'board' => $board, 'hide_names' => $hide_names, 'public' => $public)));
 }
 
 function mod_view_catalog($boardName) {
@@ -866,8 +885,9 @@ function mod_page_ip($cip) {
 				$po = new Post($post, '?/', $mod);
 			}
 			
+			// Any post from this IP lets the deletebyip action find the address.
 			if (!isset($args['posts'][$board['uri']]))
-				$args['posts'][$board['uri']] = array('board' => $board, 'posts' => array());
+				$args['posts'][$board['uri']] = array('board' => $board, 'posts' => array(), 'post_id' => $post['id']);
 			$args['posts'][$board['uri']]['posts'][] = $po->build(true);
 		}
 	}
@@ -1013,6 +1033,19 @@ function mod_bans() {
 	));
 }
 
+function mod_unban($ban_id) {
+	global $config, $mod;
+	
+	if (!hasPermission($config['mod']['unban']))
+		error($config['error']['noaccess']);
+	
+	Bans::delete($ban_id, true, $mod['boards']);
+	
+	// Return to the IP page or ban list the ban was removed from.
+	$back = isset($_SERVER['HTTP_REFERER']) && preg_match('!mod\.php(\?/(IP/[^#]+|bans))$!', $_SERVER['HTTP_REFERER'], $match) ? $match[1] . '#bans' : '?/bans';
+	header('Location: ' . $back, true, $config['redirect_http']);
+}
+
 function mod_bans_json() {
         global $config, $mod;
 
@@ -1025,6 +1058,33 @@ function mod_bans_json() {
 	Bans::stream_json(false, false, !hasPermission($config['mod']['view_banstaff']), $mod['boards']);
 }
 
+function mod_ban_appeal($appeal_id, $action) {
+	global $config;
+	
+	if (!hasPermission($config['mod']['ban_appeals']))
+		error($config['error']['noaccess']);
+	
+	$query = query("SELECT *, ``ban_appeals``.`id` AS `id` FROM ``ban_appeals``
+		LEFT JOIN ``bans`` ON `ban_id` = ``bans``.`id`
+		WHERE ``ban_appeals``.`id` = " . (int)$appeal_id) or error(db_error());
+	if (!$ban = $query->fetch(PDO::FETCH_ASSOC)) {
+		error(_('Ban appeal not found!'));
+	}
+	
+	$ban['mask'] = cloak_mask(Bans::range_to_string(array($ban['ipstart'], $ban['ipend'])));
+	
+	if ($action == 'unban') {
+		modLog('Accepted ban appeal #' . $ban['id'] . ' for ' . $ban['mask']);
+		Bans::delete($ban['ban_id'], true);
+		query("DELETE FROM ``ban_appeals`` WHERE `id` = " . $ban['id']) or error(db_error());
+	} else {
+		modLog('Denied ban appeal #' . $ban['id'] . ' for ' . $ban['mask']);
+		query("UPDATE ``ban_appeals`` SET `denied` = 1 WHERE `id` = " . $ban['id']) or error(db_error());
+	}
+	
+	header('Location: ?/ban-appeals', true, $config['redirect_http']);
+}
+
 function mod_ban_appeals() {
 	global $config, $board;
 	
@@ -1034,32 +1094,6 @@ function mod_ban_appeals() {
 	// Remove stale ban appeals
 	query("DELETE FROM ``ban_appeals`` WHERE NOT EXISTS (SELECT 1 FROM ``bans`` WHERE `ban_id` = ``bans``.`id`)")
 		or error(db_error());
-	
-	if (isset($_POST['appeal_id']) && (isset($_POST['unban']) || isset($_POST['deny']))) {
-		if (!hasPermission($config['mod']['ban_appeals']))
-			error($config['error']['noaccess']);
-		
-		$query = query("SELECT *, ``ban_appeals``.`id` AS `id` FROM ``ban_appeals``
-			LEFT JOIN ``bans`` ON `ban_id` = ``bans``.`id`
-			WHERE ``ban_appeals``.`id` = " . (int)$_POST['appeal_id']) or error(db_error());
-		if (!$ban = $query->fetch(PDO::FETCH_ASSOC)) {
-			error(_('Ban appeal not found!'));
-		}
-		
-		$ban['mask'] = cloak_mask(Bans::range_to_string(array($ban['ipstart'], $ban['ipend'])));
-		
-		if (isset($_POST['unban'])) {
-			modLog('Accepted ban appeal #' . $ban['id'] . ' for ' . $ban['mask']);
-			Bans::delete($ban['ban_id'], true);
-			query("DELETE FROM ``ban_appeals`` WHERE `id` = " . $ban['id']) or error(db_error());
-		} else {
-			modLog('Denied ban appeal #' . $ban['id'] . ' for ' . $ban['mask']);
-			query("UPDATE ``ban_appeals`` SET `denied` = 1 WHERE `id` = " . $ban['id']) or error(db_error());
-		}
-		
-		header('Location: ?/ban-appeals', true, $config['redirect_http']);
-		return;
-	}
 	
 	$query = query("SELECT *, ``ban_appeals``.`id` AS `id` FROM ``ban_appeals``
 		LEFT JOIN ``bans`` ON `ban_id` = ``bans``.`id`
@@ -1100,8 +1134,7 @@ function mod_ban_appeals() {
 	}
 
 	mod_page(_('Ban appeals'), $config['file_mod_ban_appeals'], array(
-		'ban_appeals' => $ban_appeals,
-		'token' => make_secure_link_token('ban-appeals')
+		'ban_appeals' => $ban_appeals
 	));
 }
 
@@ -1527,8 +1560,7 @@ function mod_ban_post($board, $delete, $post, $token = false) {
 	
 	$security_token = make_secure_link_token($board . '/ban/' . $post);
 	
-	$query = prepare(sprintf('SELECT ' . ($config['ban_show_post'] ? '*' : '`ip`, `thread`') .
-		' FROM ``posts_%s`` WHERE `id` = :id', $board));
+	$query = prepare(sprintf('SELECT * FROM ``posts_%s`` WHERE `id` = :id', $board));
 	$query->bindValue(':id', $post);
 	$query->execute() or error(db_error($query));
 	if (!$_post = $query->fetch(PDO::FETCH_ASSOC))
@@ -1583,6 +1615,10 @@ function mod_ban_post($board, $delete, $post, $token = false) {
 		'boards' => listBoards(),
 		'token' => $security_token
 	);
+	
+	// Show the post being banned for, so the reason can be written without going back.
+	$po = $thread ? new Post($_post, '?/', $mod) : new Thread($_post, '?/', $mod, false);
+	$args['post_html'] = $po->build(true);
 	
 	mod_page(_('New ban'), $config['file_mod_ban_form'], $args);
 }
@@ -1884,8 +1920,11 @@ function mod_deletebyip($boardName, $post, $global = false) {
 	$cip = cloak_ip($ip);
 	modLog("Deleted all posts by IP address: <a href=\"?/IP/$cip\">$cip</a>");
 	
-	// Redirect
-	header('Location: ?/' . sprintf($config['board_path'], $boardName) . $config['file_index'], true, $config['redirect_http']);
+	// Redirect, staying on the IP page when the deletion started there
+	if (isset($_SERVER['HTTP_REFERER']) && preg_match('!mod\.php(\?/IP/[^#]+)$!', $_SERVER['HTTP_REFERER'], $match))
+		header('Location: ' . $match[1], true, $config['redirect_http']);
+	else
+		header('Location: ?/' . sprintf($config['board_path'], $boardName) . $config['file_index'], true, $config['redirect_http']);
 }
 
 function mod_user($uid) {
@@ -2143,20 +2182,6 @@ function mod_pm($id, $reply = false) {
 	if ((!$pm = $query->fetch(PDO::FETCH_ASSOC)) || ($pm['to'] != $mod['id'] && !hasPermission($config['mod']['master_pm'])))
 		error($config['error']['404']);
 	
-	if (isset($_POST['delete'])) {
-		$query = prepare("DELETE FROM ``pms`` WHERE `id` = :id");
-		$query->bindValue(':id', $id);
-		$query->execute() or error(db_error($query));
-		
-		if ($config['cache']['enabled']) {
-			cache::delete('pm_unread_' . $mod['id']);
-			cache::delete('pm_unreadcount_' . $mod['id']);
-		}
-		
-		header('Location: ?/', true, $config['redirect_http']);
-		return;
-	}
-	
 	if ($pm['unread'] && $pm['to'] == $mod['id']) {
 		$query = prepare("UPDATE ``pms`` SET `unread` = 0 WHERE `id` = :id");
 		$query->bindValue(':id', $id);
@@ -2183,6 +2208,27 @@ function mod_pm($id, $reply = false) {
 	} else {
 		mod_page(sprintf('%s &ndash; #%d', _('Private message'), $id), $config['file_mod_pm'], $pm);
 	}
+}
+
+function mod_pm_delete($id) {
+	global $mod, $config;
+	
+	$query = prepare("SELECT `to` FROM ``pms`` WHERE `id` = :id");
+	$query->bindValue(':id', $id);
+	$query->execute() or error(db_error($query));
+	if ((!$pm = $query->fetch(PDO::FETCH_ASSOC)) || ($pm['to'] != $mod['id'] && !hasPermission($config['mod']['master_pm'])))
+		error($config['error']['404']);
+	
+	$query = prepare("DELETE FROM ``pms`` WHERE `id` = :id");
+	$query->bindValue(':id', $id);
+	$query->execute() or error(db_error($query));
+	
+	if ($config['cache']['enabled']) {
+		cache::delete('pm_unread_' . $mod['id']);
+		cache::delete('pm_unreadcount_' . $mod['id']);
+	}
+	
+	header('Location: ?/inbox', true, $config['redirect_http']);
 }
 
 function mod_inbox() {
@@ -2337,91 +2383,75 @@ function mod_rebuild() {
 	));
 }
 
-function mod_reports() {
+function mod_reports($page_no = 1) {
 	global $config, $mod;
 	
 	if (!hasPermission($config['mod']['reports']))
 		error($config['error']['noaccess']);
 	
-	$query = prepare("SELECT * FROM ``reports`` ORDER BY `time` DESC LIMIT :limit");
+	$page_no = max(1, (int)$page_no);
+	
+	// Show each reported post once, with every report filed against it.
+	$query = prepare("SELECT `board`, `post`, MAX(`time`) AS `last` FROM ``reports`` GROUP BY `board`, `post` ORDER BY `last` DESC LIMIT :limit OFFSET :offset");
 	$query->bindValue(':limit', $config['mod']['recent_reports'], PDO::PARAM_INT);
+	$query->bindValue(':offset', ($page_no - 1) * $config['mod']['recent_reports'], PDO::PARAM_INT);
 	$query->execute() or error(db_error($query));
-	$reports = $query->fetchAll(PDO::FETCH_ASSOC);
+	$targets = $query->fetchAll(PDO::FETCH_ASSOC);
 	
-	$report_queries = array();
-	foreach ($reports as &$report) {
-		if (!isset($report_queries[$report['board']]))
-			$report_queries[$report['board']] = array();
-		$report_queries[$report['board']][] = $report['post'];
-	}
-	
-	$report_posts = array();
-	foreach ($report_queries as $board => $posts) {
-		$report_posts[$board] = array();
+	$groups = array();
+	foreach ($targets as $target) {
+		$board_uri = $target['board'];
+		if (!openBoard($board_uri))
+			continue;
 		
-		$query = query(sprintf('SELECT * FROM ``posts_%s`` WHERE `id` = ' . implode(' OR `id` = ', $posts), $board)) or error(db_error());
-		while ($post = $query->fetch(PDO::FETCH_ASSOC)) {
-			$report_posts[$board][$post['id']] = $post;
-		}
-	}
-	
-	$count = 0;
-	$body = '';
-	foreach ($reports as $report) {
-		if (!isset($report_posts[$report['board']][$report['post']])) {
-			// // Invalid report (post has since been deleted)
+		$query = prepare(sprintf('SELECT * FROM ``posts_%s`` WHERE `id` = :id', $board_uri));
+		$query->bindValue(':id', $target['post'], PDO::PARAM_INT);
+		$query->execute() or error(db_error($query));
+		if (!$post = $query->fetch(PDO::FETCH_ASSOC)) {
+			// The post has since been deleted.
 			$query = prepare("DELETE FROM ``reports`` WHERE `post` = :id AND `board` = :board");
-			$query->bindValue(':id', $report['post'], PDO::PARAM_INT);
-			$query->bindValue(':board', $report['board']);
+			$query->bindValue(':id', $target['post'], PDO::PARAM_INT);
+			$query->bindValue(':board', $board_uri);
 			$query->execute() or error(db_error($query));
 			continue;
 		}
 		
-		openBoard($report['board']);
-		
-		$post = &$report_posts[$report['board']][$report['post']];
-		
-		if (!$post['thread']) {
-			// Still need to fix this:
-			$po = new Thread($post, '?/', $mod, false);
-		} else {
-			$po = new Post($post, '?/', $mod);
+		$query = prepare("SELECT * FROM ``reports`` WHERE `board` = :board AND `post` = :post ORDER BY `time` DESC");
+		$query->bindValue(':board', $board_uri);
+		$query->bindValue(':post', $target['post'], PDO::PARAM_INT);
+		$query->execute() or error(db_error($query));
+		$reports = $query->fetchAll(PDO::FETCH_ASSOC);
+		foreach ($reports as &$report) {
+			$report['token'] = make_secure_link_token('reports/' . $report['id'] . '/dismiss');
+			$report['token_all'] = make_secure_link_token('reports/' . $report['id'] . '/dismissall');
 		}
 		
-		// a little messy and inefficient
-		$append_html = Element($config['file_mod_report'], array(
-			'report' => $report,
-			'config' => $config,
-			'mod' => $mod,
-			'token' => make_secure_link_token('reports/' . $report['id'] . '/dismiss'),
-			'token_all' => make_secure_link_token('reports/' . $report['id'] . '/dismissall')
-		));
+		$po = $post['thread'] ? new Post($post, '?/', $mod) : new Thread($post, '?/', $mod, false);
+		$po->body = truncate($po->body, $po->link());
 		
-		// Bug fix for https://github.com/savetheinternet/Tinyboard/issues/21
-		$po->body = truncate($po->body, $po->link(), $config['body_truncate'] - substr_count($append_html, '<br>'));
-		
-		if (mb_strlen($po->body) + mb_strlen($append_html) > $config['body_truncate_char']) {
-			// still too long; temporarily increase limit in the config
-			$__old_body_truncate_char = $config['body_truncate_char'];
-			$config['body_truncate_char'] = mb_strlen($po->body) + mb_strlen($append_html);
-		}
-		
-		$po->body .= $append_html;
-		
-		$body .= $po->build(true) . '<hr>';
-		
-		if (isset($__old_body_truncate_char))
-			$config['body_truncate_char'] = $__old_body_truncate_char;
-		
-		$count++;
+		$groups[] = array(
+			'board' => $board_uri,
+			'link' => $po->link(),
+			'post' => $po->build(true),
+			'reports' => $reports,
+			'token_post' => make_secure_link_token('reports/' . $reports[0]['id'] . '/dismisspost'),
+		);
 	}
 	
-	mod_page(sprintf('%s (%d)', _('Report queue'), $count), $config['file_mod_reports'], array('reports' => $body, 'count' => $count));
+	$total = query('SELECT COUNT(*) FROM ``reports``')->fetchColumn();
+	$posts = query('SELECT COUNT(DISTINCT `board`, `post`) FROM ``reports``')->fetchColumn();
+	
+	mod_page(sprintf('%s (%d)', _('Report queue'), $total), $config['file_mod_reports'], array(
+		'groups' => $groups,
+		'total' => $total,
+		'page' => $page_no,
+		'pages' => (int)ceil($posts / $config['mod']['recent_reports']),
+	));
 }
 
-function mod_report_dismiss($id, $all = false) {
+function mod_report_dismiss($id, $scope = false) {
 	global $config;
-	
+
 	$query = prepare("SELECT `post`, `board`, `ip` FROM ``reports`` WHERE `id` = :id");
 	$query->bindValue(':id', $id);
 	$query->execute() or error(db_error($query));
@@ -2432,15 +2462,19 @@ function mod_report_dismiss($id, $all = false) {
 	} else
 		error($config['error']['404']);
 	
-	if (!$all && !hasPermission($config['mod']['report_dismiss'], $board))
+	if ($scope != 'all' && !hasPermission($config['mod']['report_dismiss'], $board))
 		error($config['error']['noaccess']);
 	
-	if ($all && !hasPermission($config['mod']['report_dismiss_ip'], $board))
+	if ($scope == 'all' && !hasPermission($config['mod']['report_dismiss_ip'], $board))
 		error($config['error']['noaccess']);
 	
-	if ($all) {
+	if ($scope == 'all') {
 		$query = prepare("DELETE FROM ``reports`` WHERE `ip` = :ip");
 		$query->bindValue(':ip', $ip);
+	} elseif ($scope == 'post') {
+		$query = prepare("DELETE FROM ``reports`` WHERE `board` = :board AND `post` = :post");
+		$query->bindValue(':board', $board);
+		$query->bindValue(':post', $post, PDO::PARAM_INT);
 	} else {
 		$query = prepare("DELETE FROM ``reports`` WHERE `id` = :id");
 		$query->bindValue(':id', $id);
@@ -2448,47 +2482,53 @@ function mod_report_dismiss($id, $all = false) {
 	$query->execute() or error(db_error($query));
 	
 	$cip = cloak_ip($ip);
-	if ($all)
+	if ($scope == 'all')
 		modLog("Dismissed all reports by <a href=\"?/IP/$cip\">$cip</a>");
+	elseif ($scope == 'post')
+		modLog("Dismissed all reports for post #{$post}", $board);
 	else
-		modLog("Dismissed a report for post #{$id}", $board);
+		modLog("Dismissed a report for post #{$post}", $board);
 	
 	header('Location: ?/reports', true, $config['redirect_http']);
 }
 
-function mod_recent_posts($lim) {
+function mod_recent_posts($lim, $page_no = 1) {
 	global $config, $mod, $pdo;
 
 	if (!hasPermission($config['mod']['recent']))
 		error($config['error']['noaccess']);
 
-	$limit = (is_numeric($lim))? $lim : 25;
-	$last_time = (isset($_GET['last']) && is_numeric($_GET['last'])) ? $_GET['last'] : 0;
+	$limit = max(1, min(500, (int)$lim));
+	$page_no = max(1, (int)$page_no);
+	$filter = isset($_GET['board']) ? $_GET['board'] : '';
 
-	$mod_boards = array();
-	$boards = listBoards();
+	$boards = array();
+	$selected = array();
+	foreach (listBoards() as $board) {
+		if ($mod['boards'][0] != '*' && !in_array($board['uri'], $mod['boards']))
+			continue;
+		$boards[] = $board;
+		if ($filter === '' || $filter === $board['uri'])
+			$selected[] = $board;
+	}
+	if (!$selected)
+		error($config['error']['noboard']);
 
-	//if not all boards
-	if ($mod['boards'][0]!='*') {
-		foreach ($boards as $board) {
-			if (in_array($board['uri'], $mod['boards']))
-				$mod_boards[] = $board;
-		}
-	} else {
-		$mod_boards = $boards;
+	$posts_sql = array();
+	$count_sql = array();
+	foreach ($selected as $board) {
+		$posts_sql[] = sprintf('SELECT *, %s AS `board` FROM ``posts_%s``', $pdo->quote($board['uri']), $board['uri']);
+		$count_sql[] = sprintf('SELECT COUNT(*) AS `count` FROM ``posts_%s``', $board['uri']);
 	}
 
-	// Manually build an SQL query
-	$query = 'SELECT * FROM (';
-	foreach ($mod_boards as $board) {
-		$query .= sprintf('SELECT *, %s AS `board` FROM ``posts_%s`` UNION ALL ', $pdo->quote($board['uri']), $board['uri']);
-	}
-	// Remove the last "UNION ALL" seperator and complete the query
-	$query = preg_replace('/UNION ALL $/', ') AS `all_posts` WHERE (`time` < :last_time OR NOT :last_time) ORDER BY `time` DESC LIMIT ' . $limit, $query);
-	$query = prepare($query);
-	$query->bindValue(':last_time', $last_time);
+	$query = prepare('SELECT * FROM (' . implode(' UNION ALL ', $posts_sql) . ') AS `all_posts` ORDER BY `time` DESC LIMIT :limit OFFSET :offset');
+	$query->bindValue(':limit', $limit, PDO::PARAM_INT);
+	$query->bindValue(':offset', ($page_no - 1) * $limit, PDO::PARAM_INT);
 	$query->execute() or error(db_error($query));
 	$posts = $query->fetchAll(PDO::FETCH_ASSOC);
+
+	$query = query('SELECT SUM(`count`) FROM (' . implode(' UNION ALL ', $count_sql) . ') AS `counts`') or error(db_error());
+	$count = (int)$query->fetchColumn();
 
 	foreach ($posts as &$post) {
 		openBoard($post['board']);
@@ -2500,16 +2540,17 @@ function mod_recent_posts($lim) {
 			$po = new Post($post, '?/', $mod);
 			$post['built'] = $po->build(true);
 		}
-		$last_time = $post['time'];
 	}
 
-	echo mod_page(_('Recent posts'), $config['file_mod_recent_posts'],  array(
-			'posts' => $posts,
-			'limit' => $limit,
-			'last_time' => $last_time
-		)
-	);
-
+	mod_page(_('Recent posts'), $config['file_mod_recent_posts'], array(
+		'posts' => $posts,
+		'limit' => $limit,
+		'page' => $page_no,
+		'pages' => (int)ceil($count / $limit),
+		'count' => $count,
+		'boards' => $boards,
+		'filter' => $filter,
+	));
 }
 
 function mod_config($board_config = false) {

@@ -679,6 +679,122 @@ div.top_notice {
     margin: 5px auto
 }
 
+/* Moderation pages: shared layout pieces used by templates/mod. */
+
+div.mod-nav {
+    font-size: 9pt;
+    text-align: center;
+    margin: 4px auto
+}
+
+div.mod-nav a {
+    text-decoration: none;
+    white-space: nowrap
+}
+
+p.mod-summary, p.mod-pages, p.mod-empty {
+    text-align: center;
+    margin: 6px 0
+}
+
+p.mod-pages {
+    word-wrap: break-word
+}
+
+fieldset.mod-section {
+    margin: 0 0 10px
+}
+
+fieldset.mod-section > table.modlog, fieldset.mod-section > form {
+    margin: 0
+}
+
+table.modlog td {
+    vertical-align: top
+}
+
+table.modlog tr.expired td {
+    opacity: .6
+}
+
+table.modlog td.mod-actions {
+    width: 1%;
+    white-space: nowrap;
+    padding-right: 0
+}
+
+form.mod-form table {
+    margin: 0 auto
+}
+
+form.mod-form ul.mod-choices {
+    list-style: none;
+    margin: 0;
+    padding: 2px 5px
+}
+
+form.mod-form ul.mod-choices label {
+    display: inline
+}
+
+div.ban.mod-entry {
+    max-width: none;
+    margin: 0 0 10px
+}
+
+div.ban.mod-entry h2 .mod-actions {
+    float: right;
+    font-size: 9pt;
+    font-weight: 400
+}
+
+form.mod-inline-form {
+    display: flex;
+    align-items: flex-end;
+    gap: 6px;
+    margin: 6px 0 0
+}
+
+form.mod-inline-form textarea {
+    width: auto;
+    max-width: 100%
+}
+
+div.mod-fill-buttons {
+    margin: 2px 0
+}
+
+div.mod-fill-buttons button {
+    margin: 0 2px 2px 0
+}
+
+div.mod-dashboard {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 26em), 1fr));
+    gap: 0 10px;
+    align-items: start
+}
+
+div.mod-dashboard fieldset ul {
+    margin: 4px 0;
+    padding-left: 20px
+}
+
+div.mod-report-head {
+    margin: 4px 0;
+    font-weight: 700
+}
+
+table.modlog.mod-report-list {
+    clear: both;
+    width: auto;
+    margin: 4px 0 0
+}
+
+table.modlog.mod-report-list td.minimal {
+    width: auto
+}
+
 span.public_ban, span.toolong {
     display: block;
     margin-top: 15px
