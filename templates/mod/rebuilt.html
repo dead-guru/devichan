@@ -1,12 +1,9 @@
-<div class="ban">
-	<h2>{% trans 'Rebuilt' %}</h2>
-	<p>
-		<a href="?/rebuild">{% trans 'Go back and rebuild again' %}</a>.
-	</p>
+<fieldset class="mod-section">
+	<legend>{% trans 'Rebuilt' %}</legend>
 	<ul>
 		{% for log in logs %}
 			<li>{{ log }}</li>
 		{% endfor %}
 	</ul>
-</div>
-
+</fieldset>
+<p class="mod-summary"><a href="?/rebuild">[&laquo; {% trans 'Rebuild again' %}]</a></p>

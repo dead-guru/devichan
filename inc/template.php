@@ -34,6 +34,8 @@ function Element($templateFile, array $options) {
   
 	if (function_exists('create_pm_header') && ((isset($options['mod']) && $options['mod']) || isset($options['__mod'])) && !preg_match('!^mod/!', $templateFile)) {
 		$options['pm'] = create_pm_header();
+		if (in_array($templateFile, array($config['file_page_template'], $config['file_board_index'], $config['file_thread'])))
+			$options['mod_nav'] = mod_nav();
 	}
 	
 	if (isset($options['body']) && $config['debug']) {

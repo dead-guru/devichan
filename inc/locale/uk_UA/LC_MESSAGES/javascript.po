@@ -1435,3 +1435,9 @@ msgstr "Закладки ({0})"
 #: ../../../../js/options/general.js
 msgid "Scroll the menu with the page"
 msgstr "Рухати меню разом з сторінкою"
+
+msgid "Select all"
+msgstr "Вибрати всі"
+
+msgid "Unban"
+msgstr "Розблокувати"

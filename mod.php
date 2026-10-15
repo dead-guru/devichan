@@ -28,6 +28,7 @@ $pages = array(
 	
 	'/new_PM/([^/]+)'			=> 'secure_POST new_pm',	// create a new pm
 	'/PM/(\d+)(/reply)?'			=> 'pm',			// read a pm
+	'/PM/(\d+)/delete'			=> 'secure pm_delete',		// delete a pm
 	'/inbox'				=> 'inbox',			// pm inbox
 	
 	'/log'					=> 'log',			// modlog
@@ -55,7 +56,8 @@ $pages = array(
 	
 	'/rebuild'				=> 'secure_POST rebuild',	// rebuild static files
 	'/reports'				=> 'reports',			// report queue
-	'/reports/(\d+)/dismiss(all)?'		=> 'secure report_dismiss',	// dismiss a report
+	'/reports/(\d+)'			=> 'reports',			// report queue, page N
+	'/reports/(\d+)/dismiss(all|post)?'	=> 'secure report_dismiss',	// dismiss a report
 	
 	'/IP/([\w.:]+)'				=> 'secure_POST ip',		// view ip address
 	'/IP/([\w.:]+)/remove_note/(\d+)'	=> 'secure ip_remove_note',	// remove note from ip address
@@ -64,10 +66,13 @@ $pages = array(
 	'/ban'					=> 'secure_POST ban',		// new ban
 	'/bans'					=> 'secure_POST bans',		// ban list
 	'/bans.json'				=> 'secure bans_json',		// ban list JSON
+	'/bans/(\d+)/unban'			=> 'secure unban',		// remove one ban
     '/edit_ban/(\d+)'			=> 'secure_POST edit_ban',
-	'/ban-appeals'				=> 'secure_POST ban_appeals',	// view ban appeals
+	'/ban-appeals'				=> 'ban_appeals',		// view ban appeals
+	'/ban-appeals/(\d+)/(unban|deny)'	=> 'secure ban_appeal',		// accept or deny a ban appeal
 	
 	'/recent/(\d+)'				=> 'recent_posts',		// view recent posts
+	'/recent/(\d+)/(\d+)'			=> 'recent_posts',		// view recent posts, page N
 
 	'/search'				=> 'search_redirect',		// search
 	'/search/(posts|IP_notes|bans|log)/(.+)/(\d+)'	=> 'search',		// search

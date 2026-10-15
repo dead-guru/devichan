@@ -1,20 +1,15 @@
-{% if messages|count == 0 %}
-	<p style="text-align:center" class="unimportant">({% trans 'No private messages for you.' %})</p>
+{% if messages|length == 0 %}
+	<p class="unimportant mod-empty">({% trans 'No private messages for you.' %})</p>
 {% else %}
 	<table class="modlog">
 		<tr>
-			<th>{% trans 'ID' %}</th>
 			<th>{% trans 'From' %}</th>
 			<th>{% trans 'Date' %}</th>
-			<th>{% trans 'Message snippet' %}</th>
+			<th>{% trans 'Message' %}</th>
+			<th></th>
 		</tr>
 		{% for message in messages %}
 			<tr{% if message.unread %} style="font-weight:bold"{% endif %}>
-				<td class="minimal">
-					<a href="?/PM/{{ message.id }}">
-						{{ message.id }}
-					</a>
-				</td>
 				<td class="minimal">
 					{% if message.username %}
 						<a href="?/new_PM/{{ message.username|e }}">{{ message.username|e }}</a>
@@ -22,13 +17,10 @@
 						<em>{% trans 'deleted?' %}</em>
 					{% endif %}
 				</td>
-				<td class="minimal">
-					{{ message.time|date(config.post_date) }}
-				</td>
-				<td>
-					<a href="?/PM/{{ message.id }}">
-						{{ message.snippet }}
-					</a>
+				<td class="minimal"><span title="{{ message.time|date(config.post_date) }}">{{ message.time|ago }}</span></td>
+				<td><a href="?/PM/{{ message.id }}">{{ message.snippet }}</a></td>
+				<td class="mod-actions">
+					<a href="?/PM/{{ message.id }}">[{% trans 'Open' %}]</a> {{ secure_link_confirm('[' ~ 'Delete'|trans ~ ']', 'Delete forever'|trans, 'Are you sure you want to delete this?'|trans, 'PM/' ~ message.id ~ '/delete') }}
 				</td>
 			</tr>
 		{% endfor %}

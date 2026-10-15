@@ -1,6 +1,8 @@
-{% if reports %}
-	{{ reports }}
+{% if groups %}
+	{% for group in groups %}
+		{% include config.file_mod_report %}
+	{% endfor %}
+	{% include 'mod/pagination.html' with {base: '?/reports/', page: page, pages: pages} %}
 {% else %}
-	<p style="text-align:center" class="unimportant">({% trans 'There are no reports.' %})</p>
+	<p class="unimportant mod-empty">({% trans 'There are no reports.' %})</p>
 {% endif %}
-

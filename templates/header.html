@@ -10,7 +10,8 @@
 		<link rel="preconnect" href="https://unpkg.com" crossorigin>
 		<link rel="dns-prefetch" href="https://unpkg.com">
 		{% if config.url_favicon %}<link rel="icon" href="{{ config.url_favicon }}">{% endif %}
-		<script type="speculationrules">{"prefetch":[{"source":"document","where":{"href_matches":"/*"},"eagerness":"moderate"}]}</script>
+		{# Moderator links perform actions with GET requests, so they must never be prefetched. #}
+		{% if not mod %}<script type="speculationrules">{"prefetch":[{"source":"document","where":{"href_matches":"/*"},"eagerness":"moderate"}]}</script>{% endif %}
 		{% if config.default_stylesheet.1 != '' %}
 		<style>html:not(.style-ready){visibility:hidden}</style>
 		{% endif %}

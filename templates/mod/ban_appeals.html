@@ -1,107 +1,17 @@
 {% for ban in ban_appeals %}
-
-<form action="" method="post" style="margin: 10px 0">
-	<input type="hidden" name="token" value="{{ token }}">
-	<table style="margin: 5px 0">
-		<tr>
-			<th>{% trans 'Status' %}</th>
-			<td>
-				{% if config.mod.view_banexpired and ban.expires != 0 and ban.expires < time() %}
-					{% trans 'Expired' %}
-				{% else %}
-					{% trans 'Active' %}
-				{% endif %}
-			</td>
-		</tr>
-		{% if mod|hasPermission(config.mod.show_ip, board.uri) %}
-			<tr>
-				<th>{% trans 'IP' %}</th>
-				<td>{{ ban.mask|cloak_mask }}</td>
-			</tr>
-		{% endif %}
-		<tr>
-			<th>{% trans 'Reason' %}</th>
-			<td>
-				{% if ban.reason %}
-					{{ ban.reason }}
-				{% else %}
-					<em>{% trans 'no reason' %}</em>
-				{% endif %}
-			</td>
-		</tr>
-		<tr>
-			<th>{% trans 'Board' %}</th>
-			<td>
-				{% if ban.board %}
-					{{ config.board_abbreviation|sprintf(ban.board) }}
-				{% else %}
-					<em>{% trans 'all boards' %}</em>
-				{% endif %}
-			</td>
-		</tr>
-		<tr>
-			<th>{% trans 'Set' %}</th>
-			<td>{{ ban.created|date(config.post_date) }}</td>
-		</tr>
-		<tr>
-			<th>{% trans 'Expires' %}</th>
-			<td>
-				{% if ban.expires %}
-					{{ ban.expires|date(config.post_date) }}
-				{% else %}
-					<em>{% trans 'never' %}</em>
-				{% endif %}
-			</td>
-		</tr>
-		<tr>
-			<th>{% trans 'Seen' %}</th>
-			<td>
-				{%  if ban.seen %}
-					{% trans 'Yes' %}
-				{%  else %}
-					{% trans 'No' %}
-				{%  endif %}
-			</td>
-		</tr>
-		<tr>
-			<th>{% trans 'Staff' %}</th>
-			<td>
-				{% if ban.username %}
-					{{ ban.username|e }}
-				{% else %}
-					<em>{% trans 'deleted?' %}</em>
-				{% endif %}
-			</td>
-		</tr>
-	</table>
-
-	<table style="margin: 10px 0">
-		<tr>
-			<th>{% trans 'Appeal time' %}</th>
-			<td>{{ ban.time|date(config.post_date) }}</td>
-		</tr>
-		<tr>
-			<th>{% trans 'Appeal reason' %}</th>
-			<td>{{ ban.message|e }}</td>
-		</tr>
-		{% if mod|hasPermission(config.mod.ban_appeals, board.uri) %}
-			<tr>
-				<th>{% trans 'Action' %}</th>
-				<td>
-					<input type="hidden" name="appeal_id" value="{{ ban.id }}">
-					<input type="submit" name="unban" value="Unban"> 
-					<input type="submit" name="deny" value="Deny appeal">
-				</td>
-			</tr>
-		{% endif %}
-	</table>
-	
-	{% if ban.post %}
-		<div style="">
+	<div class="ban mod-entry">
+		<h2>
+			{% trans 'Appeal' %} #{{ ban.id }} <small class="unimportant">&mdash; <span title="{{ ban.time|date(config.post_date) }}">{{ ban.time|ago }}</span></small>
+			{% if mod|hasPermission(config.mod.ban_appeals) %}
+				<span class="mod-actions">{{ secure_link_confirm('[' ~ 'Unban'|trans ~ ']', 'Accept the appeal and remove the ban'|trans, 'Are you sure you want to remove this ban?'|trans, 'ban-appeals/' ~ ban.id ~ '/unban') }} {{ secure_link_confirm('[' ~ 'Deny'|trans ~ ']', 'Deny appeal'|trans, 'Are you sure you want to deny this appeal?'|trans, 'ban-appeals/' ~ ban.id ~ '/deny') }}</span>
+			{% endif %}
+		</h2>
+		<p>{{ ban.message|e }}</p>
+		{% include 'mod/bans_table.html' with {bans: [ban], actions: false, show_ip: mod|hasPermission(config.mod.show_ip, ban.board)} %}
+		{% if ban.post %}
 			{{ ban.post.build(true) }}
-		</div>
-	{% endif %}
-</form>
-<hr>
-
+		{% endif %}
+	</div>
+{% else %}
+	<p class="unimportant mod-empty">({% trans 'There are no ban appeals.' %})</p>
 {% endfor %}
