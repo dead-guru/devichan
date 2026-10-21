@@ -162,7 +162,7 @@
 							-
 						{% endif %}
 					</td>
-					<td>{{ log.text }}</td>
+					<td>{{ log.text|ip_flags }}</td>
 				</tr>
 			{% endfor %}
 		</table>

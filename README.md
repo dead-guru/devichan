@@ -139,7 +139,7 @@ DeVichan requires PHP 8.5 or newer. The Docker image includes PHP 8.5.
 
 **!!!Please remember to change the administrator account password.**
 
-**See also**: [Configuration](https://github.com/dead-guru/devichan/wiki/Configuraion).
+**See also**: [Configuration](https://github.com/dead-guru/devichan/wiki/Configuraion), [local GeoLite2 country flags](GEOIP.md).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 

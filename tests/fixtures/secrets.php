@@ -79,6 +79,20 @@ switch ($e2ePostCase) {
     case 'noko-email':
         $config['always_noko'] = false;
         break;
+    case 'geoip-private':
+    case 'geoip-public':
+    case 'geoip-opt-out':
+    case 'geoip-missing':
+    case 'geoip-corrupt':
+        $config['mod']['country_flags'] = true;
+        $config['country_flags'] = $e2ePostCase !== 'geoip-private';
+        $config['allow_no_country'] = $e2ePostCase === 'geoip-opt-out';
+        $config['geoip_database'] = match ($e2ePostCase) {
+            'geoip-missing' => 'tests/fixtures/geoip/missing.mmdb',
+            'geoip-corrupt' => 'tests/fixtures/geoip/README.md',
+            default => 'tests/fixtures/geoip/GeoIP2-Country-Test.mmdb',
+        };
+        break;
 }
 $config['debug'] = false;
 $config['syslog'] = false;

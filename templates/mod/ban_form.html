@@ -29,6 +29,7 @@
 			<td>
 				{% if not hide_ip %}
 				<input type="text" name="ip" id="ip" size="30" maxlength="40" value="{{ ip|cloak_ip|e }}">
+				{{ ip_flag(ip|default(null)) }}
 				{% else %}
 				<em>{% trans 'hidden' %}</em>
 				{% endif %}

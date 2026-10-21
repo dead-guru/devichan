@@ -10,7 +10,7 @@
 				<td>{{ report.reason }}</td>
 				<td class="minimal"><span title="{{ report.time|date(config.post_date) }}">{{ report.time|ago }}</span></td>
 				{% if mod|hasPermission(config.mod.show_ip, group.board) %}
-					<td class="minimal"><a href="?/IP/{{ report.ip|cloak_ip }}">{{ report.ip|cloak_ip }}</a></td>
+					<td class="minimal"><a href="?/IP/{{ report.ip|cloak_ip }}">{{ report.ip|cloak_ip }}</a>{{ ip_flag(report.ip) }}</td>
 				{% endif %}
 				<td class="minimal">
 					{% if mod|hasPermission(config.mod.report_dismiss, group.board) %}

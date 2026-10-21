@@ -9,10 +9,23 @@ var banlist_init = function(token, my_boards, inMod) {
             return f.access ? "<input type='checkbox' class='unban' name='ban_" + f.id + "' value='unban'>" : "";
         } },
         {name: _("IP address"), cls: "minimal", fmt: function(f) {
+            var $cell = $("<span>");
             if (inMod && f.single_addr && !f.masked) {
-                return "<a href='?/IP/" + f.mask + "'>" + f.mask + "</a>";
+                $cell.append($("<a>").attr("href", "?/IP/" + f.mask).text(f.mask));
+            } else {
+                $cell.text(f.mask);
             }
-            return f.mask;
+            if (inMod && !f.masked && f.country && /^[a-z]{2}$/.test(f.country.code)) {
+                $cell.append(" ", $("<img>", {
+                    "class": "flag mod-ip-flag",
+                    src: ($("#banlist").attr("data-flag-uri") || configRoot + "static/flags/%s.png").replace("%s", f.country.code),
+                    alt: f.country.name,
+                    title: f.country.name,
+                    width: 16,
+                    height: 11
+                }).css("vertical-align", "middle"));
+            }
+            return $cell.html();
         } },
         {name: _("Reason"), fmt: function(f) {
             var add = "", suf = "";

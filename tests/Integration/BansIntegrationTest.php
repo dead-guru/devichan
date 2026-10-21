@@ -101,6 +101,37 @@ final class BansIntegrationTest extends TestCase
         self::assertSame('?', $printed[0]['username']);
     }
 
+    public function testCountryDataIsOptInAndAbsentFromPublicAndRestrictedBans(): void
+    {
+        global $config;
+
+        $saved = $config;
+        $config['geoip_database'] = 'tests/fixtures/geoip/GeoIP2-Country-Test.mmdb';
+        $config['mod']['country_flags'] = true;
+        $accessible = $this->insertBan('81.2.69.142', null, 'b', null);
+        $restricted = $this->insertBan('2001:218::', null, 'sec', null);
+        try {
+            ob_start();
+            \Bans::stream_json(false, false, false, ['b'], true);
+            $rows = array_column(json_decode((string) ob_get_clean(), true, 512, JSON_THROW_ON_ERROR), null, 'id');
+            self::assertSame(['code' => 'gb', 'name' => 'United Kingdom'], $rows[$accessible]['country']);
+            self::assertArrayNotHasKey('country', $rows[$restricted]);
+
+            ob_start();
+            \Bans::stream_json(false, false, false, ['*']);
+            $rows = array_column(json_decode((string) ob_get_clean(), true, 512, JSON_THROW_ON_ERROR), null, 'id');
+            self::assertArrayNotHasKey('country', $rows[$accessible]);
+
+            ob_start();
+            \Bans::stream_json(false, true, true, ['*'], true);
+            foreach (json_decode((string) ob_get_clean(), true, 512, JSON_THROW_ON_ERROR) as $row) {
+                self::assertArrayNotHasKey('country', $row);
+            }
+        } finally {
+            $config = $saved;
+        }
+    }
+
     public function testFindSeenPurgeAndDeleteUseTheRealDatabase(): void
     {
         global $config;

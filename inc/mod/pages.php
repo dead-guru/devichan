@@ -31,6 +31,7 @@ function mod_page($title, $template, $args, $subtitle = false) {
 		'mod' => $mod,
 		'hide_dashboard_link' => $template == $config['file_mod_dashboard'],
 		'title' => $title,
+		'title_ip' => $args['title_ip'] ?? null,
 		'subtitle' => $subtitle,
 		'boardlist' => createBoardlist($mod),
 		'body' => Element($template,
@@ -880,6 +881,7 @@ function mod_page_ip($cip) {
 
 	$args = array();
 	$args['ip'] = $ip;
+	$args['title_ip'] = $ip;
 	$args['posts'] = array();
 	
 	if ($config['mod']['dns_lookup'] && empty($config['ipcrypt_key']))
@@ -1070,7 +1072,7 @@ function mod_bans_json() {
 	// Compress the json for faster loads
 	if (substr_count($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip')) ob_start("ob_gzhandler");
 
-	Bans::stream_json(false, false, !hasPermission($config['mod']['view_banstaff']), $mod['boards']);
+	Bans::stream_json(false, false, !hasPermission($config['mod']['view_banstaff']), $mod['boards'], !empty($config['mod']['country_flags']));
 }
 
 function mod_ban_appeal($appeal_id, $action) {

@@ -18,7 +18,7 @@
 
 	{% if mod_nav %}{% include 'mod/nav.html' %}{% elseif pm %}<div class="top_notice">You have <a href="?/PM/{{ pm.id }}">an unread PM</a>{% if pm.waiting > 0 %}, plus {{ pm.waiting }} more waiting{% endif %}.</div><hr>{% endif %}
 	<header>
-		<h1>{{ title }}</h1>
+		<h1>{{ title }}{% if title_ip %}{{ ip_flag(title_ip) }}{% endif %}</h1>
 		<div class="subtitle">
 			{% if subtitle %}
 				{{ subtitle }}

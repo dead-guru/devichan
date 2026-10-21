@@ -1,9 +1,9 @@
-<script src='main.js'></script>
-<script src='js/jquery.min.js'></script>
-<script src='js/mobile-style.js'></script>
-<script src='js/strftime.min.js'></script>
-<script src='js/mod/ban-list.js'></script>
-<link rel='stylesheet' href='stylesheets/mod/ban-list.css'>
+<script src='{{ config.root }}main.js'></script>
+<script src='{{ config.root }}js/jquery.min.js'></script>
+<script src='{{ config.root }}js/mobile-style.js'></script>
+<script src='{{ config.root }}js/strftime.min.js'></script>
+<script src='{{ config.root }}js/mod/ban-list.js'></script>
+<link rel='stylesheet' href='{{ config.root }}stylesheets/mod/ban-list.css'>
 
 <div class="banlist-opts mod-summary">
 	<input type="search" id="search" placeholder="{% trans %}Search{% endtrans %}" title="{% trans %}Words to find. Prefix with mask:, reason:, board:, staff: or message: to search one column.{% endtrans %}">
@@ -19,7 +19,7 @@
 		<input type="hidden" name="token" value="{{ token }}">
 	{% endif %}
 
-	<table class="modlog" id="banlist"></table>
+	<table class="modlog" id="banlist" data-flag-uri="{{ config.uri_flags|e('html_attr') }}"></table>
 
 	{% if mod %}
 		<p><input type="submit" name="unban" id="unban" value="{% trans 'Unban selected' %}"></p>

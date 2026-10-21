@@ -147,7 +147,7 @@ class Bans {
 		return $ban_list;
 	}
 
-	static public function stream_json($out = false, $filter_ips = false, $filter_staff = false, $board_access = false) {
+	static public function stream_json($out = false, $filter_ips = false, $filter_staff = false, $board_access = false, $country_flags = false) {
 		$query = query("SELECT ``bans``.*, `username` FROM ``bans``
 			LEFT JOIN ``mods`` ON ``mods``.`id` = `creator`
  			ORDER BY `created` DESC") or error(db_error());
@@ -189,6 +189,11 @@ class Bans {
 					$ban['mask'] .= "/$subnet";
 				}
 				$ban['masked'] = true;
+			}
+			if ($country_flags && empty($ban['masked']) && !empty($ban['access'])) {
+				$country = \DeVichan\Moderator\IpFlags::country($uncloaked_mask);
+				if ($country)
+					$ban['country'] = $country;
 			}
 
 			$json = json_encode($ban);

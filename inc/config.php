@@ -600,6 +600,12 @@
 	// Attach country flags to posts.
 	$config['country_flags'] = false;
 
+	// Local GeoLite2 Country or GeoIP2 Country MMDB. See GEOIP.md for setup and updates.
+	$config['geoip_database'] = '/var/lib/GeoIP/GeoLite2-Country.mmdb';
+
+	// Show country flags beside IP addresses visible to moderators.
+	$config['mod']['country_flags'] = false;
+
 	// Allow the user to decide whether or not he wants to display his country
 	$config['allow_no_country'] = false;
 

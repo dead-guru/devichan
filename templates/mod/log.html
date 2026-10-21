@@ -35,6 +35,7 @@
 			<td class="minimal">
 				{% if mod|hasPermission(config.mod.show_ip_modlog) %}
 					<a href="?/IP/{{ log.ip|cloak_ip }}">{{ log.ip|cloak_ip }}</a>
+					{% if not public %}{{ ip_flag(log.ip) }}{% endif %}
 				{% else %}
 					<em>hidden</em>
 				{% endif %}
@@ -50,7 +51,7 @@
 				{% endif %}
 			</td>
 			<td>
-				{{ log.text }}
+				{{ log.text|ip_flags(public|default(false)) }}
 			</td>
 		</tr>
 	{% endfor %}

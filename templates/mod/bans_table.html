@@ -14,7 +14,7 @@
 		{% set expired = ban.expires != 0 and ban.expires < time() %}
 		<tr{% if expired %} class="expired"{% endif %}>
 			<td class="minimal">{% if expired %}{% trans 'Expired' %}{% else %}<strong>{% trans 'Active' %}</strong>{% endif %}</td>
-			{% if show_ip is not defined or show_ip %}<td class="minimal">{{ ban.cmask|default(ban.mask|cloak_mask) }}</td>{% endif %}
+			{% if show_ip is not defined or show_ip %}<td class="minimal">{{ ban.cmask|default(ban.mask|cloak_mask) }}{{ ip_flag(ban.mask) }}</td>{% endif %}
 			<td>{% if ban.reason %}{{ ban.reason }}{% else %}<em>{% trans 'no reason' %}</em>{% endif %}</td>
 			<td class="minimal">{% if ban.board %}{{ config.board_abbreviation|sprintf(ban.board) }}{% else %}<em>{% trans 'all boards' %}</em>{% endif %}</td>
 			<td class="minimal"><span title="{{ ban.created|date(config.post_date) }}">{{ ban.created|ago }}</span></td>

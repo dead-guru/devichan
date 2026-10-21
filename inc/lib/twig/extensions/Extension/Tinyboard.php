@@ -30,6 +30,7 @@ class Twig_Extensions_Extension_Tinyboard extends Twig\Extension\AbstractExtensi
 			new \Twig\TwigFilter('addslashes', 'addslashes'),
 			new \Twig\TwigFilter('cloak_ip', 'cloak_ip'),
 			new \Twig\TwigFilter('cloak_mask', 'cloak_mask'),
+			new \Twig\TwigFilter('ip_flags', [\DeVichan\Moderator\IpFlags::class, 'decorate']),
 		);
 	}
 	
@@ -49,6 +50,7 @@ class Twig_Extensions_Extension_Tinyboard extends Twig\Extension\AbstractExtensi
 			new \Twig\TwigFunction('ratio', 'twig_ratio_function'),
 			new \Twig\TwigFunction('secure_link_confirm', 'twig_secure_link_confirm'),
 			new \Twig\TwigFunction('secure_link', 'twig_secure_link'),
+			new \Twig\TwigFunction('ip_flag', [\DeVichan\Moderator\IpFlags::class, 'render']),
 			new \Twig\TwigFunction('link_for', 'link_for')
 		);
 	}

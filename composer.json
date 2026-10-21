@@ -23,14 +23,17 @@
     "dead-guru/latex2mathml-php": "^1.5.1",
     "erusev/parsedown": "^1.8",
     "ezyang/htmlpurifier": "^4.19.1",
-    "geoip/geoip": "^1.17",
     "lifo/ip": "^1.1",
     "matthiasmullie/minify": "^1.3",
+    "maxmind-db/reader": "^1.14.0",
     "mrclay/jsmin-php": "^2.4",
     "php81_bc/strftime": "^0.7.6",
     "twig/twig": "^3.30"
   },
   "autoload": {
+    "psr-4": {
+      "DeVichan\\": "inc/"
+    },
     "classmap": [
       "inc/"
     ]
