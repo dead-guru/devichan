@@ -8,6 +8,25 @@ use PHPUnit\Framework\TestCase;
 
 final class CaptchaIntegrationTest extends TestCase
 {
+    public function testCaptchaRendersWithDecimalCommaAndRestoresLocale(): void
+    {
+        require_once 'inc/captcha/captcha.php';
+        $locale = setlocale(LC_ALL, '0');
+
+        try {
+            self::assertNotFalse(setlocale(LC_ALL, 'uk_UA.utf8'));
+            self::assertSame(',', localeconv()['decimal_point']);
+            $ukrainianLocale = setlocale(LC_ALL, '0');
+
+            $captcha = new \CzaksCaptcha('GHR279', 215, 80);
+            $image = getimagesizefromstring(base64_decode($captcha->to_image(), true));
+            self::assertSame([215, 80, IMAGETYPE_PNG], [$image[0], $image[1], $image[2]]);
+            self::assertSame($ukrainianLocale, setlocale(LC_ALL, '0'));
+        } finally {
+            setlocale(LC_ALL, $locale);
+        }
+    }
+
     public function testSixCharacterEndpointChallengesProducePngAtExpectedSize(): void
     {
         require_once 'inc/captcha/captcha.php';
