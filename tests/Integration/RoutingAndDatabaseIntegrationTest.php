@@ -5,12 +5,14 @@ declare(strict_types=1);
 namespace DevichanE2E\Integration;
 
 use PDO;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 final class RoutingAndDatabaseIntegrationTest extends TestCase
 {
     private array $originalConfig;
     private mixed $originalBoard;
+    private array $originalServer;
     private string $directory = 'tests/_output/integration-routing/';
 
     protected function setUp(): void
@@ -19,6 +21,7 @@ final class RoutingAndDatabaseIntegrationTest extends TestCase
 
         $this->originalConfig = $config;
         $this->originalBoard = $board ?? null;
+        $this->originalServer = $_SERVER;
         if (!is_dir($this->directory)) {
             mkdir($this->directory, 0777, true);
         }
@@ -38,7 +41,106 @@ final class RoutingAndDatabaseIntegrationTest extends TestCase
 
         $config = $this->originalConfig;
         $board = $this->originalBoard;
+        $_SERVER = $this->originalServer;
         openBoard('b');
+    }
+
+    #[DataProvider('rootRequests')]
+    public function testDefaultRootMatchesTheInstallation(
+        ?string $request,
+        ?string $script,
+        ?string $scriptName,
+        string $expected,
+        string $query = '',
+    ): void {
+        global $config;
+
+        unset($_SERVER['REQUEST_URI'], $_SERVER['SCRIPT_FILENAME'], $_SERVER['SCRIPT_NAME']);
+        if ($request !== null) {
+            $_SERVER['REQUEST_URI'] = $request;
+        }
+        if ($script !== null) {
+            $_SERVER['SCRIPT_FILENAME'] = getcwd() . '/' . $script;
+        }
+        if ($scriptName !== null) {
+            $_SERVER['SCRIPT_NAME'] = $scriptName;
+        }
+        $_SERVER['QUERY_STRING'] = $query;
+
+        require 'inc/config.php';
+
+        self::assertSame($expected, $config['root']);
+    }
+
+    public static function rootRequests(): array
+    {
+        return [
+            'root CAPTCHA' => ['/inc/captcha/entrypoint.php', 'inc/captcha/entrypoint.php', '/inc/captcha/entrypoint.php', '/'],
+            'subdirectory CAPTCHA with query' => ['/chan/inc/captcha/entrypoint.php?mode=get&extra=abc', 'inc/captcha/entrypoint.php', '/chan/inc/captcha/entrypoint.php', '/chan/', 'mode=get&extra=abc'],
+            'root script' => ['/chan/securimage.php?mode=get', 'securimage.php', '/chan/securimage.php', '/chan/', 'mode=get'],
+            'rewritten script name' => ['/chan/search/', 'search.php', '/chan/search.php', '/chan/'],
+            'rewritten fallback' => ['/chan/archive/search?q=test', 'search.php', '/chan/search/', '/chan/archive/', 'q=test'],
+            'missing CGI paths' => ['/chan/mod.php', null, null, '/chan/'],
+            'missing script file' => ['/chan/mod.php', 'does-not-exist.php', '/elsewhere/does-not-exist.php', '/chan/'],
+            'ambiguous suffix' => ['/chan/mod.php', 'inc/captcha/entrypoint.php', '/chan/xinc/captcha/entrypoint.php', '/chan/'],
+            'CLI' => [null, 'securimage.php', '/chan/securimage.php', '/'],
+        ];
+    }
+
+    public function testCaptchaFirstRequestKeepsTheCachedSiteRoot(): void
+    {
+        global $config, $board;
+
+        $root = getcwd();
+        foreach (['/' => null, '/chan/' => null, '/custom/' => 'https://boards.example/custom/'] as $base => $override) {
+            $directory = $root . '/' . $this->directory . 'config-' . bin2hex(random_bytes(4));
+            mkdir($directory . '/inc', 0777, true);
+            mkdir($directory . '/tmp/cache', 0777, true);
+            symlink($root . '/inc/config.php', $directory . '/inc/config.php');
+            symlink($root . '/inc/cache.php', $directory . '/inc/cache.php');
+            file_put_contents($directory . '/inc/instance-config.php', "<?php require 'inc/secrets.php';\n");
+            $settings = [
+                'cache' => ['enabled' => 'php', 'prefix' => 'e2e-root-'],
+                'cache_config' => true,
+                'minify_js' => false,
+                'allowed_ext_files' => [],
+                'locale' => 'en',
+            ];
+            if ($override !== null) {
+                $settings['root'] = $override;
+            }
+            file_put_contents($directory . '/inc/secrets.php', '<?php $config = array_replace_recursive($config, ' . var_export($settings, true) . ');');
+
+            try {
+                $board = null;
+                $config['cache']['enabled'] = 'php';
+                \Cache::init();
+                chdir($directory);
+                $_SERVER['SCRIPT_FILENAME'] = $root . '/inc/captcha/entrypoint.php';
+                $_SERVER['SCRIPT_NAME'] = $base . 'inc/captcha/entrypoint.php';
+                $_SERVER['REQUEST_URI'] = $_SERVER['SCRIPT_NAME'] . '?mode=get&extra=abc';
+                $_SERVER['QUERY_STRING'] = 'mode=get&extra=abc';
+
+                \loadConfig();
+
+                $expected = $override ?? $base;
+                self::assertSame($expected, $config['root']);
+                self::assertSame($expected, \Cache::get('config_')['root']);
+                self::assertFileExists('tmp/cache/cache_config.php');
+
+                $_SERVER['SCRIPT_FILENAME'] = $root . '/mod.php';
+                $_SERVER['SCRIPT_NAME'] = $base . 'mod.php';
+                $_SERVER['REQUEST_URI'] = $_SERVER['SCRIPT_NAME'];
+                $_SERVER['QUERY_STRING'] = '';
+                \loadConfig();
+
+                self::assertSame($expected, $config['root']);
+                self::assertSame($expected . 'post.php', $config['post_url']);
+            } finally {
+                chdir($root);
+                \rrmdir($directory);
+            }
+        }
     }
 
     public function testRouteMatchesBoardsApisThreadsThemesAndCustomEndpoints(): void
