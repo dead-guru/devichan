@@ -152,7 +152,7 @@ function modLog($action, $_board=null) {
 	$query->bindValue(':text', $action);
 	if (isset($_board))
 		$query->bindValue(':board', $_board);
-	elseif (isset($board))
+	elseif (isset($board['uri']))
 		$query->bindValue(':board', $board['uri']);
 	else
 		$query->bindValue(':board', null, PDO::PARAM_NULL);

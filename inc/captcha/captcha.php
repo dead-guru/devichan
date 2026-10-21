@@ -49,11 +49,21 @@ class CzaksCaptcha
         $Imagick = new Imagick();
         $bg = new ImagickPixel('#EEEEEE');
         $ImagickDraw = new ImagickDraw();
-        $ImagickDraw->setFont('font.ttf');
+        $ImagickDraw->setFont(__DIR__ . '/font.ttf');
         $ImagickDraw->setFontSize(65);
         
         $Imagick->newImage($width, $height, $bg);
         $Imagick->addNoiseImage($Imagick::NOISE_POISSON);
+
+        // Leave room for rotation and swirl at the image edges.
+        $metrics = $Imagick->queryFontMetrics($ImagickDraw, $string);
+        $angle = deg2rad(10);
+        $textHeight = $metrics['ascender'] - $metrics['descender'];
+        $rotatedWidth = $metrics['textWidth'] * cos($angle) + $textHeight * sin($angle);
+        $rotatedHeight = $metrics['textWidth'] * sin($angle) + $textHeight * cos($angle);
+        $scale = min(1, ($width - 20) / $rotatedWidth, ($height - 20) / $rotatedHeight);
+        $ImagickDraw->setFontSize(max(1, floor(65 * $scale)));
+        $ImagickDraw->setGravity(Imagick::GRAVITY_CENTER);
         
         for ($x = 0; $x <= 15; $x++) {
             $ImagickDraw->setStrokeOpacity(random_int(3, 7) / 10);
@@ -68,7 +78,7 @@ class CzaksCaptcha
         }
         $ImagickDraw->setStrokeWidth(1);
         $ImagickDraw->setFillColor(new ImagickPixel('#000000'));
-        $Imagick->annotateImage($ImagickDraw, 5, ($height+25) / 2, random_int(0, 10), $string);
+        $Imagick->annotateImage($ImagickDraw, 0, 0, random_int(0, 10), $string);
         $Imagick->blurImage(0.4, 1);
         $Imagick->swirlImage(20);
         $Imagick->drawImage($ImagickDraw);

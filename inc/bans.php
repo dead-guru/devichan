@@ -127,7 +127,7 @@ class Bans {
 			$query->bindValue(':board', $board, PDO::PARAM_STR);
         
         $query->bindValue(':id', $banid);
-		$query->bindValue(':ip', inet_pton($ip));
+		$query->bindValue(':ip', $ip === null ? null : inet_pton($ip), $ip === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
 		$query->execute() or error(db_error($query));
 		
 		$ban_list = array();

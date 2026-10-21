@@ -2,8 +2,8 @@ name: devichan-e2e
 
 services:
   workspace:
-    image: devichan-e2e-php:${PHP_VERSION:-8.1}
-    command: ["sh", "-ec", "chown -R www-data:www-data /var/www && chmod -R a+rwX /var/www/tests/_output"]
+    image: devichan-e2e-php:${PHP_VERSION:-8.5}
+    command: ["sh", "-ec", "touch /var/www/tests/_output/php-errors.log && chown -R www-data:www-data /var/www && chmod -R a+rwX /var/www/tests/_output"]
     volumes:
       - app_data:/var/www
       - ./tests/_output:/var/www/tests/_output
@@ -14,8 +14,8 @@ services:
       dockerfile: php-fpm/Dockerfile
       target: test
       args:
-        PHP_VERSION: ${PHP_VERSION:-8.1}
-    image: devichan-e2e-php:${PHP_VERSION:-8.1}
+        PHP_VERSION: ${PHP_VERSION:-8.5}
+    image: devichan-e2e-php:${PHP_VERSION:-8.5}
     working_dir: /var/www
     environment:
       MYSQL_HOST: cmysql
@@ -38,7 +38,8 @@ services:
         condition: service_started
 
   installer:
-    image: devichan-e2e-php:${PHP_VERSION:-8.1}
+    image: devichan-e2e-php:${PHP_VERSION:-8.5}
+    user: www-data
     working_dir: /var/www
     environment:
       MYSQL_HOST: cmysql-installer
@@ -61,7 +62,8 @@ services:
         condition: service_started
 
   smart-builder:
-    image: devichan-e2e-php:${PHP_VERSION:-8.1}
+    image: devichan-e2e-php:${PHP_VERSION:-8.5}
+    user: www-data
     working_dir: /var/www
     environment:
       MYSQL_HOST: cmysql
@@ -154,7 +156,7 @@ services:
     shm_size: 2gb
 
   prepare:
-    image: devichan-e2e-php:${PHP_VERSION:-8.1}
+    image: devichan-e2e-php:${PHP_VERSION:-8.5}
     user: www-data
     working_dir: /var/www
     environment:
@@ -169,6 +171,8 @@ services:
       - php tests/bin/prepare.php && test -f index.html && test -f b/index.html && test -f b/res/1.html && test -f recent.html && php tools/sync-caddy-routes.php
     volumes:
       - app_data:/var/www
+      - ./tests/_output:/var/www/tests/_output
+      - ./tests/coverage.ini:/usr/local/etc/php/conf.d/test-coverage.ini:ro
       - ./tests/fixtures/secrets.php:/var/www/inc/secrets.php:ro
       - ./tests/fixtures/installed:/var/www/.installed:ro
     depends_on:
@@ -180,7 +184,8 @@ services:
         condition: service_started
 
   runner:
-    image: devichan-e2e-php:${PHP_VERSION:-8.1}
+    image: devichan-e2e-php:${PHP_VERSION:-8.5}
+    user: www-data
     working_dir: /var/www
     environment:
       E2E_BASE_URL: http://caddy

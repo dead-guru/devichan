@@ -48,6 +48,9 @@ final class FreshInstallCest
             $I->amOnPage($route);
             $this->assertHealthyPage($I);
             $I->see($expectedText);
+            if ($route === '/install.php?step=1') {
+                $I->see('PHP ≥ 8.5');
+            }
         }
 
         $I->submitForm('form[action="?step=3"]', [

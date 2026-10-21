@@ -195,7 +195,6 @@ namespace DevichanE2E\Integration {
         private function resetCacheAdapter(): void
         {
             $property = new \ReflectionProperty(\Cache::class, 'cache');
-            $property->setAccessible(true);
             $property->setValue(null, null);
         }
     }

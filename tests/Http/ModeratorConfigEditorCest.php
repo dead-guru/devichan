@@ -67,7 +67,9 @@ final class ModeratorConfigEditorCest
         $I->haveHttpHeader('X-E2E-Config-Editor', 'php');
         $I->amOnPage('/mod.php?/config');
         $I->seeResponseCodeIs(200);
-        $I->see('does not have the required permissions');
-        $I->seeElement('textarea[readonly]');
+        $I->see('The configuration file is not writable.');
+        $I->seeElement('textarea[name="code"][readonly]');
+        $I->seeElement('input[name="save"][disabled]');
+        $I->dontSeeElement('form[method="post"]');
     }
 }

@@ -78,7 +78,44 @@ function twig_remove_whitespace_filter($data) {
 }
 
 function twig_date_filter($date, $format) {
-	return gmstrftime($format, $date);
+	$locale = setlocale(LC_TIME, '0');
+	if (preg_match('/^(?:C|POSIX)(?:\.|$)/i', $locale))
+		$locale = 'en_US_POSIX';
+	$date = (new DateTimeImmutable('@' . (int)$date))->setTimezone(new DateTimeZone('GMT'));
+	$expand = function ($format) use (&$expand, $date) {
+		return preg_replace_callback('/%%|%([EO]?)([a-zA-Z])/', function ($match) use (&$expand, $date) {
+			if ($match[0] === '%%') return '%%';
+			[, $modifier, $code] = $match;
+			if ($modifier === 'O') {
+				return nl_langinfo(ALT_DIGITS) === '' ? '%' . $code : $match[0];
+			}
+			$composites = ['c' => [D_T_FMT, ERA_D_T_FMT], 'x' => [D_FMT, ERA_D_FMT], 'X' => [T_FMT, ERA_T_FMT]];
+			if (isset($composites[$code])) {
+				[$normal, $era] = $composites[$code];
+				$pattern = $modifier === 'E' ? nl_langinfo($era) : '';
+				$pattern = $expand($pattern ?: nl_langinfo($normal));
+				// ICU can render these locales, but the library cannot expand their era/digit modifiers.
+				return preg_match('/%[EO][a-zA-Z]/', $pattern) ? '%' . $code : $pattern;
+			}
+			if ($modifier === 'E') {
+				return nl_langinfo(ERA) === '' ? '%' . $code : $match[0];
+			}
+			if ($code === 'r') return $expand(nl_langinfo(T_FMT_AMPM) ?: '%I:%M:%S %p');
+			if ($code === 'D') return '%m/%d/%y';
+			if ($code === 'a' || $code === 'A') {
+				return nl_langinfo(($code === 'a' ? ABDAY_1 : DAY_1) + (int)$date->format('w'));
+			}
+			if ($code === 'b' || $code === 'B' || $code === 'h') {
+				return nl_langinfo(($code === 'B' ? MON_1 : ABMON_1) + (int)$date->format('n') - 1);
+			}
+			if ($code === 'p' || $code === 'P') {
+				$period = nl_langinfo((int)$date->format('G') < 12 ? AM_STR : PM_STR);
+				return str_replace('%', '%%', $code === 'P' ? mb_strtolower($period) : $period);
+			}
+			return $match[0];
+		}, $format);
+	};
+	return \PHP81_BC\strftime($expand($format), $date, $locale);
 }
 
 function twig_hasPermission_filter($mod, $permission, $board = null) {
@@ -86,6 +123,7 @@ function twig_hasPermission_filter($mod, $permission, $board = null) {
 }
 
 function twig_extension_filter($value, $case_insensitive = true) {
+	$value ??= '';
 	$ext = mb_substr($value, mb_strrpos($value, '.') + 1);
 	if($case_insensitive)
 		$ext = mb_strtolower($ext);

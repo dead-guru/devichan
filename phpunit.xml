@@ -3,13 +3,19 @@
          xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.5/phpunit.xsd"
          bootstrap="tests/Integration/bootstrap.php"
          cacheDirectory="tests/_output/phpunit-cache"
-         colors="true">
+         colors="true"
+         failOnDeprecation="true"
+         failOnPhpunitDeprecation="true"
+         failOnWarning="true"
+         failOnNotice="true"
+         displayDetailsOnAllIssues="true">
     <testsuites>
         <testsuite name="Devichan integration">
             <directory suffix="Test.php">tests/Integration</directory>
         </testsuite>
     </testsuites>
-    <source>
+    <source ignoreSuppressionOfDeprecations="true"
+            ignoreSuppressionOfPhpDeprecations="true">
         <include>
             <directory suffix=".php">inc</directory>
             <directory suffix=".php">auth</directory>

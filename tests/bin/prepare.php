@@ -59,13 +59,13 @@ function writeFixtureImage(string $path, int $width, int $height, string $format
     $written = $format === 'jpg'
         ? imagejpeg($image, $path, 90)
         : imagepng($image, $path);
-    imagedestroy($image);
 
     if (!$written) {
         throw new RuntimeException("Unable to create fixture image {$path}.");
     }
 }
 
+writeFixtureImage($config['spoiler_image'], 128, 128, 'png');
 buildJavascript();
 
 foreach (listBoards(true) as $boardName) {

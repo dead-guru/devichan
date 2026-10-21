@@ -5,7 +5,7 @@ $post = (isset($_GET['post']) ? $_GET['post'] : false);
 $board = (isset($_GET['board']) ? $_GET['board'] : false);
 
 if (!$post || !preg_match('/^delete_\d+$/', $post) || !$board || !openBoard($board)) {
-	header('HTTP/1.1 400 Bad Request');
+	http_response_code(400);
 	error(_('Bad request.'));
 }
 

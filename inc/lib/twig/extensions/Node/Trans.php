@@ -9,6 +9,7 @@
  * file that was distributed with this source code.
  */
 
+use Twig\Attribute\YieldReady;
 use Twig\Compiler;
 use Twig\Node\CheckToStringNode;
 use Twig\Node\Expression\AbstractExpression;
@@ -16,15 +17,17 @@ use Twig\Node\Expression\ConstantExpression;
 use Twig\Node\Expression\FilterExpression;
 use Twig\Node\Expression\NameExpression;
 use Twig\Node\Expression\TempNameExpression;
+use Twig\Node\Expression\Variable\ContextVariable;
 use Twig\Node\Node;
 use Twig\Node\PrintNode;
 
 /**
  * @author Fabien Potencier <fabien@symfony.com>
  */
+#[YieldReady]
 class TransNode extends Node
 {
-    public function __construct(Node $body, Node $plural = null, AbstractExpression $count = null, Node $notes = null, $lineno, $tag = null)
+    public function __construct(Node $body, ?Node $plural, ?AbstractExpression $count, ?Node $notes, int $lineno)
     {
         $nodes = ['body' => $body];
         if (null !== $count) {
@@ -37,7 +40,7 @@ class TransNode extends Node
             $nodes['notes'] = $notes;
         }
         
-        parent::__construct($nodes, [], $lineno, $tag);
+        parent::__construct($nodes, [], $lineno);
     }
     
     public function compile(Compiler $compiler)
@@ -64,7 +67,7 @@ class TransNode extends Node
         
         if ($vars) {
             $compiler
-                ->write('echo strtr('.$function.'(')
+                ->write('yield strtr('.$function.'(')
                 ->subcompile($msg)
             ;
             
@@ -101,7 +104,7 @@ class TransNode extends Node
             $compiler->raw("));\n");
         } else {
             $compiler
-                ->write('echo '.$function.'(')
+                ->write('yield '.$function.'(')
                 ->subcompile($msg)
             ;
             
@@ -139,7 +142,7 @@ class TransNode extends Node
                         $n = $n->getNode('expr');
                     }
                     $msg .= sprintf('%%%s%%', $n->getAttribute('name'));
-                    $vars[] = new NameExpression($n->getAttribute('name'), $n->getTemplateLine());
+                    $vars[] = new ContextVariable($n->getAttribute('name'), $n->getTemplateLine());
                 } else {
                     $msg .= $node->getAttribute('data');
                 }
@@ -148,7 +151,7 @@ class TransNode extends Node
             $msg = $body->getAttribute('data');
         }
         
-        return [new Node([new ConstantExpression(trim($msg), $body->getTemplateLine())]), $vars];
+        return [new ConstantExpression(trim($msg), $body->getTemplateLine()), $vars];
     }
     
     private function getTransFunction(bool $plural): string

@@ -617,7 +617,7 @@ function purge($uri) {
 	$noescape_url = array_map("rawurlencode", $noescape);
 	$uri = str_replace($noescape_url, $noescape, $uri);
 
-	if (preg_match($config['referer_match'], $config['root']) && isset($_SERVER['REQUEST_URI'])) {
+	if ($config['referer_match'] !== false && preg_match($config['referer_match'], $config['root']) && isset($_SERVER['REQUEST_URI'])) {
 		$uri = (str_replace('\\', '/', dirname($_SERVER['REQUEST_URI'])) == '/' ? '/' : str_replace('\\', '/', dirname($_SERVER['REQUEST_URI'])) . '/') . $uri;
 	} else {
 		$uri = $config['root'] . $uri;
@@ -1146,10 +1146,10 @@ function deleteFile($id, $remove_entirely_if_already=true, $file=null) {
 	if (!$post = $query->fetch(PDO::FETCH_ASSOC))
 		error($config['error']['invalidpost']);
 	$thread = $post['thread'] ?: $id;
-	$files = json_decode($post['files']);
+	$files = $post['files'] === null ? array() : json_decode($post['files']);
+	if (!isset($files[0]) || ($file !== null && $file !== false && !isset($files[(int)$file])))
+		error(_('That post has no files.'));
 	$file_to_delete = $file !== false ? $files[(int)$file] : (object)array('file' => false);
-
-	if (!$files[0]) error(_('That post has no files.'));
 
 	if ($files[0]->file == 'deleted' && $post['num_files'] == 1 && !$post['thread'])
 		return $thread; // Can't delete OP's image completely.
@@ -1630,7 +1630,7 @@ function checkMute() {
 
 	if ($config['cache']['enabled']) {
 		// Cached mute?
-		if (($mute = cache::get("mute_${_SERVER['REMOTE_ADDR']}")) && ($mutetime = cache::get("mutetime_${_SERVER['REMOTE_ADDR']}"))) {
+		if (($mute = cache::get("mute_{$_SERVER['REMOTE_ADDR']}")) && ($mutetime = cache::get("mutetime_{$_SERVER['REMOTE_ADDR']}"))) {
 			error(sprintf($config['error']['youaremuted'], $mute['time'] + $mutetime - time()));
 		}
 	}
@@ -1649,8 +1649,8 @@ function checkMute() {
 
 		if ($mute['time'] + $mutetime > time()) {
 			if ($config['cache']['enabled']) {
-				cache::set("mute_${_SERVER['REMOTE_ADDR']}", $mute, $mute['time'] + $mutetime - time());
-				cache::set("mutetime_${_SERVER['REMOTE_ADDR']}", $mutetime, $mute['time'] + $mutetime - time());
+				cache::set("mute_{$_SERVER['REMOTE_ADDR']}", $mute, $mute['time'] + $mutetime - time());
+				cache::set("mutetime_{$_SERVER['REMOTE_ADDR']}", $mutetime, $mute['time'] + $mutetime - time());
 			}
 			// Not expired yet
 			error(sprintf($config['error']['youaremuted'], $mute['time'] + $mutetime - time()));
@@ -1848,11 +1848,11 @@ function buildJavascript() {
 function checkDNSBL() {
 	global $config;
 
-	if (isIPv6())
-		return; // No IPv6 support yet.
-
 	if (!isset($_SERVER['REMOTE_ADDR']))
 		return; // Fix your web server configuration
+
+	if (isIPv6())
+		return; // No IPv6 support yet.
 
 	if (preg_match("/^(::(ffff:)?)?(127\.|192\.168\.|10\.|172\.(1[6-9]|2[0-9]|3[0-1])\.|0\.|255\.)/", $_SERVER['REMOTE_ADDR']))
 		return; // It's pointless to check for local IP addresses in dnsbls, isn't it?
@@ -2273,6 +2273,8 @@ function escape_markup_modifiers($string) {
 }
 
 function defined_flags_accumulate($desired_flags) {
+	global $config;
+
 	$output_flags = 0x0;
 	foreach ($desired_flags as $flagname) {
 		if (defined($flagname)) {
@@ -2563,7 +2565,7 @@ function hcf($a, $b){
 		for ($i=round($a/2);$i;$i--) {
 			if ($a == round($a/$i)*$i && $b == round($b/$i)*$i) {
 				$gcd = $i;
-				$i = false;
+				break;
 			}
 		}
 	}
@@ -2845,7 +2847,7 @@ function link_for($post, $page50 = false, $foreignlink = false, $thread = false)
 }
 
 function prettify_textarea($s){
-	return str_replace("\t", '&#09;', str_replace("\n", '&#13;&#10;', htmlentities($s)));
+	return str_replace("\t", '&#09;', str_replace("\n", '&#13;&#10;', htmlentities($s ?? '')));
 }
 
 /*class HTMLPurifier_URIFilter_NoExternalImages extends HTMLPurifier_URIFilter {
@@ -3087,7 +3089,6 @@ function trace_url($url) {
     ));
     curl_exec($ch);
     $url = curl_getinfo($ch, CURLINFO_EFFECTIVE_URL);
-    curl_close($ch);
     return $url;
 }
 

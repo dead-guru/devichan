@@ -17,6 +17,8 @@ function recentposts_build($action, $settings, $board)
 // Wrap functions in a class so they don't interfere with normal Tinyboard operations
 class RecentPosts
 {
+    public $excluded;
+
     public function build($action, $settings)
     {
         global $config;
@@ -71,6 +73,7 @@ class RecentPosts
 
                 if ($files[0]->thumb == 'spoiler') {
                     $tn_size = @getimagesize($config['spoiler_image']);
+                    if ($tn_size === false) continue;
                     $post['src'] = $config['spoiler_image'];
                     $post['thumbwidth'] = $tn_size[0];
                     $post['thumbheight'] = $tn_size[1];
@@ -159,7 +162,7 @@ class RecentPosts
         $top_boards_q = query($query_top_boards)->fetchAll(PDO::FETCH_ASSOC);
 
         $board_map = [];
-        foreach ($boards as &$_board) { $board_map[$_board['uri']] = $_board['name']; }
+        foreach ($boards as &$_board) { $board_map[$_board['uri']] = $_board['title']; }
 
         foreach ($top_boards_q as $row) {
             $stats['top_boards'][] = [

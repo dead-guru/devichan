@@ -81,6 +81,27 @@ final class ModeratorFunctionIntegrationTest extends TestCase
         self::assertNotSame('', $this->capture(static fn() => \mod_recent_posts(5)));
     }
 
+    public function testBoardLogPermissionsRemainIndependentOfTheMainLog(): void
+    {
+        global $config, $mod;
+
+        self::assertSame(JANITOR, $config['mod']['mod_board_log']);
+        self::assertSame(ADMIN, $config['mod']['modlog']);
+        $mod['type'] = JANITOR;
+        $mod['boards'] = ['b'];
+
+        self::assertFalse(hasPermission($config['mod']['modlog']));
+        self::assertFalse(hasPermission($config['mod']['mod_board_log'], 'sec'));
+        self::assertStringContainsString('Board log', $this->capture(static fn() => \mod_board_log('b')));
+
+        $config['mod']['mod_board_log'] = ADMIN;
+        self::assertFalse(hasPermission($config['mod']['mod_board_log'], 'b'));
+        self::assertStringContainsString('Board log', $this->capture(static fn() => \mod_board_log('b', 1, true, true)));
+
+        $mod['type'] = ADMIN;
+        self::assertStringContainsString('Board log', $this->capture(static fn() => \mod_board_log('b')));
+    }
+
     public function testDebugPagesExerciseAntispamRecentPostsAndSqlResultShapes(): void
     {
         global $pdo;

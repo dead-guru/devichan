@@ -1,4 +1,4 @@
-ARG PHP_VERSION=8.1
+ARG PHP_VERSION=8.5
 
 FROM composer:2 AS composer
 
@@ -28,9 +28,11 @@ RUN apt-get update && apt-get install -y \
         locales locales-all \
     && docker-php-ext-configure gd --with-webp=/usr/include/webp --with-jpeg=/usr/include --with-freetype=/usr/include/freetype2/ \
     && pecl install redis imagick igbinary \
-    && docker-php-ext-install exif gd zip opcache intl pdo_mysql mysqli bcmath gettext iconv mbstring curl \
+    && docker-php-ext-install exif gd zip intl pdo_mysql mysqli bcmath gettext iconv mbstring curl \
     && docker-php-ext-enable igbinary redis imagick \
     && rm -rf /var/lib/apt/lists/*
+
+RUN printf 'register_argc_argv=Off\n' > "$PHP_INI_DIR/conf.d/devichan.ini"
 
 # IP cloaking uses RC4-40, which OpenSSL 3 provides in its legacy module.
 RUN printf '\n%s\n' \

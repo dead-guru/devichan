@@ -57,7 +57,6 @@ final class ToolEntrypointsCest
         $image = imagecreatetruecolor(24, 24);
         imagefill($image, 0, 0, imagecolorallocate($image, 80, 120, 160));
         $I->assertTrue(imagepng($image, $source));
-        imagedestroy($image);
 
         $benchmark = $this->run('benchmark', [
             'php', '-d', 'auto_prepend_file=' . self::PREPEND,

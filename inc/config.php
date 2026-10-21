@@ -1124,6 +1124,7 @@
 
 	// Minify Javascript using http://code.google.com/p/minify/.
 	$config['minify_js'] = false;
+	$config['minify_css'] = false;
 
 	// Dispatch thumbnail loading and image configuration with JavaScript. It will need a certain javascript
 	// code to work.
@@ -1720,6 +1721,8 @@
 	$config['mod']['createusers'] = ADMIN;
 	// View the moderation log
 	$config['mod']['modlog'] = ADMIN;
+	// View the moderation log for an assigned board
+	$config['mod']['mod_board_log'] = JANITOR;
 	// View IP addresses of other mods in ?/log
 	$config['mod']['show_ip_modlog'] = ADMIN;
 	// View relevant moderation log entries on IP address pages (ie. ban history, etc.) Warning: Can be
@@ -2012,3 +2015,4 @@
 
 	// Whether to append domain names to IP cloaks
 	$config['ipcrypt_dns'] = false;
+	$config['bcrypt_ip_addresses'] = false;

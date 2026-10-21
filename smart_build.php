@@ -28,6 +28,7 @@ else {
 }
 
 function die_404() { global $config;
+  header("X-Accel-Expires: 120");
   if (!$config['page_404']) {
     header("HTTP/1.1 404 Not Found");
     header("Status: 404 Not Found");
@@ -36,7 +37,6 @@ function die_404() { global $config;
   else {
     header("Location: ".$config['page_404']);
   }
-  header("X-Accel-Expires: 120");
   die();
 }
 

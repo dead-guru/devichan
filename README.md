@@ -108,6 +108,8 @@ To get a local copy up and running follow these simple example steps.
 
 ### Prerequisites
 
+DeVichan requires PHP 8.5 or newer. The Docker image includes PHP 8.5.
+
 1) Install Docker
 2) Install docker-compose
 
@@ -168,7 +170,6 @@ Either run `git pull` to update your files, if you used git, or backup your `inc
 - [x] Update deps
 - [ ] Archive Feature (https://github.com/dead-guru/devichan/tree/feature/arhcive1)
 - [ ] Cloak IP and hash ip to db
-- [ ] migrate to php 8.2
 
 See the [open issues](https://github.com/dead-guru/devichan/issues) for a full list of proposed features (and known issues).
 

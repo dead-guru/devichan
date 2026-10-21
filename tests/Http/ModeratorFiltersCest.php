@@ -54,7 +54,6 @@ final class ModeratorFiltersCest
         $image = imagecreatetruecolor(64, 64);
         imagefill($image, 0, 0, imagecolorallocate($image, 20, 60, 120));
         $I->assertTrue(imagepng($image, $generatedImage));
-        imagedestroy($image);
 
         $I->amOnPage('/b/');
         $I->attachFile('form[name="post"] input[name="file"]', $filename);

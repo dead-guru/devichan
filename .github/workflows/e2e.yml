@@ -16,7 +16,7 @@ permissions:
 
 jobs:
   codeception:
-    name: PHP 8.1 and Twig 2
+    name: PHP 8.5
     runs-on: ubuntu-latest
     timeout-minutes: 40
 

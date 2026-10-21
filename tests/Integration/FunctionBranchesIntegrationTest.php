@@ -63,6 +63,21 @@ final class FunctionBranchesIntegrationTest extends TestCase
         self::assertFalse(hasPermission(30, 'b', $mod));
     }
 
+    public function testPurgeAcceptsDisabledRefererChecks(): void
+    {
+        global $config, $debug;
+
+        $config['debug'] = true;
+        $config['purge'] = [];
+        $config['referer_match'] = false;
+        $config['root'] = '/';
+        $debug = ['purge' => []];
+
+        purge('b/index.html');
+
+        self::assertSame(['/b/index.html'], $debug['purge']);
+    }
+
     public function testPurgeFilesystemEventsAndRecursiveRemovalStayInsideTestOutput(): void
     {
         global $config, $debug;
@@ -173,11 +188,18 @@ final class FunctionBranchesIntegrationTest extends TestCase
     {
         global $config;
 
-        query("UPDATE ``posts_b`` SET `filehash` = 'integration-hash' WHERE `id` = 1");
-        self::assertSame(1, (int) getPostByHash('integration-hash')['id']);
-        self::assertSame(1, (int) getPostByHashInThread('integration-hash', 1)['id']);
-        self::assertFalse(getPostByHash('missing-hash'));
-        self::assertFalse(getPostByHashInThread('missing-hash', 1));
+        $originalHash = query('SELECT `filehash` FROM ``posts_b`` WHERE `id` = 1')->fetchColumn();
+        $hash = md5('integration-hash');
+        $updateHash = prepare('UPDATE ``posts_b`` SET `filehash` = ? WHERE `id` = 1');
+        $updateHash->execute([$hash]);
+        try {
+            self::assertSame(1, (int) getPostByHash($hash)['id']);
+            self::assertSame(1, (int) getPostByHashInThread($hash, 1)['id']);
+            self::assertFalse(getPostByHash('missing-hash'));
+            self::assertFalse(getPostByHashInThread('missing-hash', 1));
+        } finally {
+            $updateHash->execute([$originalHash]);
+        }
 
         $source = $this->directory . '/source.tmp';
         $thumb = $this->directory . '/thumb.tmp';

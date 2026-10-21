@@ -69,6 +69,13 @@ vendor/bin/codecept run -c codeception.yml Cli --no-colors \
     --xml "cli.junit.xml" \
     || status=1
 
+for error_log in "$chunk_directory"/cli-*.error.log; do
+    if [ -s "$error_log" ]; then
+        cat "$error_log" >&2
+        status=1
+    fi
+done
+
 set -- "$chunk_directory"/cli-*.cov
 if [ -e "$1" ]; then
     php tests/bin/combine-coverage.php "$chunk_directory/cli.cov" "$@" || status=1
@@ -83,8 +90,6 @@ php tests/bin/prepare.php || exit 1
 vendor/bin/phpunit -c phpunit.xml \
     --coverage-php "$project_directory/$chunk_directory/integration.cov" \
     --log-junit "$project_directory/$output_directory/integration.junit.xml" \
-    --display-warnings \
-    --display-deprecations \
     || status=1
 
 php tests/bin/merge-coverage.php \
@@ -95,5 +100,7 @@ php tests/bin/merge-coverage.php \
     "$chunk_directory/cli.cov" \
     "$chunk_directory/integration.cov" \
     || status=1
+
+tests/bin/check-php-errors.sh || status=1
 
 exit "$status"

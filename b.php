@@ -48,9 +48,6 @@ $path = $dir . DIRECTORY_SEPARATOR . $selected;
 
 $finfo = function_exists('finfo_open') ? finfo_open(FILEINFO_MIME_TYPE) : false;
 $type = $finfo ? finfo_file($finfo, $path) : null;
-if ($finfo) {
-    finfo_close($finfo);
-}
 if (!$type) {
     $ext = strtolower(pathinfo($selected, PATHINFO_EXTENSION));
     $map = [

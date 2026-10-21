@@ -165,11 +165,8 @@ if (isset($_POST['delete'])) {
         if ($resp === false) {
             $error = curl_error($ch);
             $errno = curl_errno($ch);
-            curl_close($ch);
             error(sprintf("%s (cURL Error %d: %s)", $config['error']['captcha'], $errno, $error));
         }
-
-        curl_close($ch);
 
         if ($resp !== '1') {
             error($config['error']['captcha']);
@@ -290,11 +287,8 @@ if (isset($_POST['delete'])) {
             if ($resp === false) {
                 $error = curl_error($ch);
                 $errno = curl_errno($ch);
-                curl_close($ch);
                 error(sprintf("%s (cURL Error %d: %s)", $config['error']['captcha'], $errno, $error));
             }
-
-            curl_close($ch);
 
             if ($resp !== '1') {
                 error($config['error']['captcha'] .
@@ -302,8 +296,8 @@ if (isset($_POST['delete'])) {
             }
         }
 
-		if (!(($post['op'] && $_POST['post'] == $config['button_newtopic']) ||
-			(!$post['op'] && $_POST['post'] == $config['button_reply'])) && !$fromApi)
+		if (!$fromApi && (!isset($_POST['post']) || !(($post['op'] && $_POST['post'] == $config['button_newtopic']) ||
+			(!$post['op'] && $_POST['post'] == $config['button_reply']))))
 			error($config['error']['bot']);
 	
 		// Check the referrer
@@ -430,14 +424,11 @@ if (isset($_POST['delete'])) {
 		curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 5);
 		curl_setopt($curl, CURLOPT_TIMEOUT, $config['upload_by_url_timeout']);
 		curl_setopt($curl, CURLOPT_USERAGENT, 'Tinyboard');
-		curl_setopt($curl, CURLOPT_BINARYTRANSFER, true);
 		curl_setopt($curl, CURLOPT_FILE, $fp);
 		curl_setopt($curl, CURLOPT_PROTOCOLS, CURLPROTO_HTTP | CURLPROTO_HTTPS);
 		
 		if (curl_exec($curl) === false)
 			error($config['error']['nomove'] . '<br/>Curl says: ' . curl_error($curl));
-		
-		curl_close($curl);
 		
 		fclose($fp);
 

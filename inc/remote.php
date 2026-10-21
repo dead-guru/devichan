@@ -7,6 +7,8 @@
 defined('TINYBOARD') or exit;
 
 class Remote {
+	public $auth, $connection, $host, $port, $type;
+
 	public function __construct($config) {
 		foreach ($config as $name => $value) {
 			$this->{$name} = $value;
