@@ -29,5 +29,8 @@ trait AttachmentCleanup
         $this->attachmentPostIds = [];
         $I->amOnPage('/mod.php?/b/edit/1');
         $I->click('input[name="post"]');
+        if ($I instanceof BrowserTester) {
+            $I->waitForElement('#op_1');
+        }
     }
 }
