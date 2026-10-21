@@ -39,7 +39,6 @@ function caddy_request(string $method, string $path, ?string $json_body = null):
     
     $result = curl_exec($ch);
     $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    curl_close($ch);
     
     return ['code' => $code, 'body' => $result];
 }

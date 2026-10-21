@@ -16,7 +16,6 @@ final class ModeratorAttachmentsCest
         $image = imagecreatetruecolor(1800, 1200);
         imagefill($image, 0, 0, imagecolorallocate($image, 64, 128, 192));
         imagepng($image, 'b/src/' . $name);
-        imagedestroy($image);
         copy('static/banners/default.png', 'b/thumb/' . $name);
         $files = [['file' => $name, 'thumb' => $name, 'filename' => 'original.png',
             'size' => filesize('b/src/' . $name), 'width' => 1800, 'height' => 1200,
@@ -59,7 +58,6 @@ final class ModeratorAttachmentsCest
         $I->assertFileDoesNotExist('b/thumb/' . $name);
         $image = imagecreatefrompng('b/src/' . $new['file']);
         $I->assertSame(0xFFFFFF, imagecolorat($image, 0, 0) & 0xFFFFFF);
-        imagedestroy($image);
         $I->seeInDatabase('posts_b', ['id' => $id, 'body_nomarkup' => 'Paint fixture', 'time' => 1700000000, 'bump' => 1700000000]);
     }
 

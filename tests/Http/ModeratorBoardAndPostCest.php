@@ -7,11 +7,13 @@ namespace DevichanE2E\Http;
 use DevichanE2E\Support\AdminSession;
 use DevichanE2E\Support\HttpAssertions;
 use DevichanE2E\Support\HttpTester;
+use DevichanE2E\Support\PostFixture;
 
 final class ModeratorBoardAndPostCest
 {
     use AdminSession;
     use HttpAssertions;
+    use PostFixture;
 
     public function administratorCanCreateEditAndDeleteABoard(HttpTester $I): void
     {
@@ -117,6 +119,28 @@ final class ModeratorBoardAndPostCest
         $I->dontSeeInDatabase('posts_b', ['id' => $threadId]);
     }
 
+    public function deletingAFileFromATextOnlyPostLeavesItUnchanged(HttpTester $I): void
+    {
+        $this->loginAsAdmin($I);
+        $postId = $this->createPost($I, 'b', '198.51.100.243', 1);
+
+        $I->amOnPage('/mod.php?/b/deletefile/' . $postId . '/0');
+        $this->assertHealthyPage($I);
+        $confirmUrl = $I->grabAttributeFrom(
+            'a[href*="?/b/deletefile/' . $postId . '/0/"]',
+            'href',
+        );
+        $I->amOnPage($confirmUrl);
+        $I->seeResponseCodeIs(400);
+        $I->see('That post has no files.');
+        $I->seeInDatabase('posts_b', [
+            'id' => $postId,
+            'thread' => 1,
+            'files' => null,
+            'num_files' => 0,
+        ]);
+    }
+
     public function administratorCanSpoilerAndDeleteAnUploadedFile(HttpTester $I): void
     {
         $this->loginAsAdmin($I);
@@ -155,14 +179,46 @@ final class ModeratorBoardAndPostCest
         ]);
         $I->assertGreaterThan($threadId, $replyId);
 
+        $originalFiles = (string) $I->grabFromDatabase('posts_b', 'files', ['id' => $replyId]);
+        $files = json_decode($originalFiles, true, flags: JSON_THROW_ON_ERROR);
+        $source = '/var/www/b/src/' . $files[0]['file'];
+        $thumbnail = '/var/www/b/thumb/' . $files[0]['thumb'];
+        $I->assertFileExists($source);
+        $I->assertFileExists($thumbnail);
+        $I->amOnPage('/mod.php?/b/deletefile/' . $replyId . '/99');
+        $this->assertHealthyPage($I);
+        $confirmUrl = $I->grabAttributeFrom(
+            'a[href*="?/b/deletefile/' . $replyId . '/99/"]',
+            'href',
+        );
+        $I->amOnPage($confirmUrl);
+        $I->seeResponseCodeIs(400);
+        $I->see('That post has no files.');
+        $I->seeInDatabase('posts_b', ['id' => $replyId, 'files' => $originalFiles, 'num_files' => 1]);
+        $I->assertFileExists($source);
+        $I->assertFileExists($thumbnail);
+
         $I->amOnPage('/mod.php?/b/res/' . $threadId . '.html');
         $spoilerUrl = $this->grabConfirmedAction(
             $I,
             "b/spoiler/{$replyId}/0",
         );
         $I->amOnPage($spoilerUrl);
-        $files = (string) $I->grabFromDatabase('posts_b', 'files', ['id' => $replyId]);
-        $I->assertStringContainsString('"thumb":"spoiler"', $files);
+        $this->assertHealthyPage($I);
+        $files = json_decode(
+            (string) $I->grabFromDatabase('posts_b', 'files', ['id' => $replyId]),
+            true,
+            flags: JSON_THROW_ON_ERROR,
+        );
+        $I->assertSame('spoiler', $files[0]['thumb']);
+        $I->assertSame(128, $files[0]['thumbwidth']);
+        $I->assertSame(128, $files[0]['thumbheight']);
+        $spoilerImage = trim($I->grabAttributeFrom('#reply_' . $replyId . ' img.post-image', 'src'));
+        $I->amOnPage($spoilerImage);
+        $I->seeResponseCodeIs(200);
+        $dimensions = getimagesizefromstring($I->grabPageSource());
+        $I->assertIsArray($dimensions);
+        $I->assertSame([128, 128], [$dimensions[0], $dimensions[1]]);
 
         $I->amOnPage('/mod.php?/b/res/' . $threadId . '.html');
         $deleteFileUrl = $this->grabConfirmedAction(

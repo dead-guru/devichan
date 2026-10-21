@@ -5,7 +5,7 @@ defined('TINYBOARD') or exit;
 function mod_prepare_attachments(&$uploads, $post) {
 	global $config, $board;
 
-	$files = json_decode($post['files'], true) ?: array();
+	$files = $post['files'] === null ? array() : (json_decode($post['files'], true) ?: array());
 	foreach ($_FILES as $name => $upload) {
 		if ($upload['error'] === UPLOAD_ERR_NO_FILE) continue;
 		if (!preg_match('/^replacement_(\d+)$/', $name, $m) || !isset($files[$m[1]]))

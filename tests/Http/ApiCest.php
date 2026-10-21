@@ -8,6 +8,16 @@ use DevichanE2E\Support\HttpTester;
 
 final class ApiCest
 {
+    public function recentFeedIncludesBoardTitles(HttpTester $I): void
+    {
+        $I->amOnPage('/recent.json');
+        $I->seeResponseCodeIs(200);
+        $feed = json_decode($I->grabPageSource(), true, flags: JSON_THROW_ON_ERROR);
+        $titles = array_column($feed['stats']['top_boards'], 'name', 'uri');
+
+        $I->assertSame('Random', $titles['b']);
+    }
+
     public function boardAndThreadApisReturnJson(HttpTester $I): void
     {
         $routes = [

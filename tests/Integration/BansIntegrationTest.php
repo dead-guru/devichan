@@ -139,6 +139,20 @@ final class BansIntegrationTest extends TestCase
         self::assertSame((int) $stored['id'], $returnedId, 'Bans::new_ban() must return the ID it inserted.');
     }
 
+    public function testFindByIdDoesNotRequireAnIpAddress(): void
+    {
+        $id = $this->insertBan('198.51.100.47', null, 'b', null);
+        $this->insertBan('198.51.100.0', '198.51.100.255', 'b', null);
+
+        $found = \Bans::find(null, false, true, $id);
+
+        self::assertCount(1, $found);
+        self::assertSame($id, (int) $found[0]['id']);
+        self::assertSame('198.51.100.47', $found[0]['mask']);
+        self::assertSame('admin', $found[0]['username']);
+        self::assertSame([], \Bans::find(null, false, true));
+    }
+
     public function testNewBanStoresAndFindsItsSourcePost(): void
     {
         global $board, $config;

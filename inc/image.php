@@ -135,7 +135,7 @@ class ImageGD {
 }
 
 class ImageBase extends ImageGD {
-	public $image, $src, $original, $original_width, $original_height, $width, $height;
+	public $image, $src, $format, $original, $original_width, $original_height, $width, $height;
 	public function valid() {
 		return (bool)$this->image;
 	}
@@ -170,8 +170,9 @@ class ImageBase extends ImageGD {
 	public function _destroy() {
 		if (method_exists($this, 'destroy'))
 			return $this->destroy();
-		// use default GD functions
-		return imagedestroy($this->image);
+		$this->image = null;
+		$this->original = null;
+		return true;
 	}
 	public function _resize($original, $width, $height) {
 		$this->original = &$original;

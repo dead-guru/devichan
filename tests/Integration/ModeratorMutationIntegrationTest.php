@@ -72,12 +72,15 @@ final class ModeratorMutationIntegrationTest extends TestCase
         $deniedBan = $this->insertBan('198.51.100.31', 'integration denied appeal');
         $deniedAppeal = $this->insertAppeal($deniedBan, null);
         $acceptedBan = $this->insertBan('198.51.100.32', 'integration accepted appeal');
-        $acceptedAppeal = $this->insertAppeal($acceptedBan, json_encode([
+        $snapshot = query('SELECT * FROM ``posts_b`` WHERE `id` = 1')->fetch(PDO::FETCH_ASSOC);
+        self::assertIsArray($snapshot);
+        $acceptedAppeal = $this->insertAppeal($acceptedBan, json_encode(array_replace($snapshot, [
             'board' => 'b',
             'id' => 999999,
             'thread' => null,
             'body' => 'deleted post snapshot',
-        ], JSON_THROW_ON_ERROR));
+            'body_nomarkup' => 'deleted post snapshot',
+        ]), JSON_THROW_ON_ERROR));
 
         $_POST = [];
         self::assertStringContainsString('Ban appeals', $this->capture(static fn() => \mod_ban_appeals()));
@@ -88,6 +91,106 @@ final class ModeratorMutationIntegrationTest extends TestCase
         $this->capture(static fn() => \mod_ban_appeal($acceptedAppeal, 'unban'));
         self::assertSame(0, (int) query("SELECT COUNT(*) FROM ``bans`` WHERE `id` = {$acceptedBan}")->fetchColumn());
         self::assertSame(0, (int) query("SELECT COUNT(*) FROM ``ban_appeals`` WHERE `id` = {$acceptedAppeal}")->fetchColumn());
+    }
+
+    public function testModeratorCanEditAPostWithoutAttachments(): void
+    {
+        $requestMethod = $_SERVER['REQUEST_METHOD'] ?? null;
+        $uploads = $_FILES;
+        $post = query('SELECT * FROM ``posts_b`` WHERE `id` = 1')->fetch(PDO::FETCH_ASSOC);
+        self::assertIsArray($post);
+        $post['has_file'] = false;
+        $post['op'] = true;
+        $post['mod'] = true;
+        $postId = (int) post($post);
+
+        try {
+            $_FILES = [];
+            $_SERVER['REQUEST_METHOD'] = 'GET';
+            $page = $this->capture(static fn() => \mod_edit_post('b', false, $postId));
+            self::assertStringContainsString('id="edit-post"', $page);
+            self::assertStringNotContainsString('name="replacement_', $page);
+
+            $_SERVER['REQUEST_METHOD'] = 'POST';
+            $_POST = ['name' => 'Edited name', 'email' => '', 'subject' => 'Edited subject', 'body' => 'Edited text-only post'];
+            $this->capture(static fn() => \mod_edit_post('b', false, $postId));
+            $stored = query("SELECT `body_nomarkup`, `files`, `num_files` FROM ``posts_b`` WHERE `id` = {$postId}")->fetch(PDO::FETCH_ASSOC);
+            self::assertSame('Edited text-only post', $stored['body_nomarkup']);
+            self::assertNull($stored['files']);
+            self::assertSame(0, (int) $stored['num_files']);
+        } finally {
+            deletePost($postId, false, false);
+            $_FILES = $uploads;
+            if ($requestMethod === null) unset($_SERVER['REQUEST_METHOD']);
+            else $_SERVER['REQUEST_METHOD'] = $requestMethod;
+        }
+    }
+
+    public function testNewsHtmlSettingControlsMarkupAndSanitization(): void
+    {
+        global $config;
+
+        $newsIds = [];
+        try {
+            $config['news_html'] = false;
+            $_POST = ['subject' => 'Markup news', 'body' => '[b]Bold news[/b] <em>literal HTML</em>'];
+            $this->capture(static fn() => \mod_news());
+            $newsIds[] = (int) query('SELECT MAX(`id`) FROM ``news``')->fetchColumn();
+            $body = query('SELECT `body` FROM ``news`` WHERE `id` = ' . end($newsIds))->fetchColumn();
+            self::assertStringContainsString('<strong>Bold news</strong>', $body);
+            self::assertStringContainsString('&lt;em&gt;literal HTML&lt;/em&gt;', $body);
+
+            $config['news_html'] = true;
+            $_POST = ['subject' => 'HTML news', 'body' => '<strong>HTML news</strong><script>alert(1)</script>'];
+            $this->capture(static fn() => \mod_news());
+            $newsIds[] = (int) query('SELECT MAX(`id`) FROM ``news``')->fetchColumn();
+            $body = query('SELECT `body` FROM ``news`` WHERE `id` = ' . end($newsIds))->fetchColumn();
+            self::assertStringContainsString('<strong>HTML news</strong>', $body);
+            self::assertStringNotContainsString('<script', $body);
+            self::assertStringNotContainsString('alert(1)', $body);
+        } finally {
+            foreach ($newsIds as $id) query('DELETE FROM ``news`` WHERE `id` = ' . $id);
+        }
+    }
+
+    public function testMissingSpoilerImagePreservesTheAttachment(): void
+    {
+        global $board, $config;
+
+        $filename = 'spoiler-guard-' . bin2hex(random_bytes(6)) . '.png';
+        $source = $board['dir'] . $config['dir']['img'] . $filename;
+        $thumb = $board['dir'] . $config['dir']['thumb'] . $filename;
+        self::assertTrue(copy('static/banners/default.png', $source));
+        self::assertTrue(copy($source, $thumb));
+        [$width, $height] = getimagesize($source);
+        $post = query('SELECT * FROM ``posts_b`` WHERE `id` = 1')->fetch(PDO::FETCH_ASSOC);
+        self::assertIsArray($post);
+        $post['op'] = true;
+        $post['mod'] = true;
+        $post['has_file'] = true;
+        $post['num_files'] = 1;
+        $post['filehash'] = md5_file($source);
+        $post['files'] = [[
+            'file' => $filename, 'thumb' => $filename, 'name' => $filename, 'filename' => $filename,
+            'size' => filesize($source), 'width' => $width, 'height' => $height,
+            'thumbwidth' => $width, 'thumbheight' => $height,
+        ]];
+        $postId = (int) post($post);
+
+        try {
+            $original = query("SELECT `files` FROM ``posts_b`` WHERE `id` = {$postId}")->fetchColumn();
+            $code = 'require "tests/Integration/bootstrap.php"; require "inc/mod/pages.php";'
+                . '$mod = ["id" => 1, "type" => 30, "username" => "admin", "boards" => ["*"]];'
+                . 'openBoard("b"); $config["spoiler_image"] = "tests/_output/' . $filename . '";'
+                . 'mod_spoiler_image("b", ' . $postId . ', 0);';
+            $output = shell_exec_error(escapeshellarg(PHP_BINARY) . ' -r ' . escapeshellarg($code));
+            self::assertStringContainsString('The spoiler image is missing or invalid.', $output);
+            self::assertSame($original, query("SELECT `files` FROM ``posts_b`` WHERE `id` = {$postId}")->fetchColumn());
+            self::assertFileExists($source);
+            self::assertFileExists($thumb);
+        } finally {
+            deletePost($postId, false, false);
+        }
     }
 
     public function testIpNotesTelegramsAndThreadStateMutationsRunEndToEnd(): void

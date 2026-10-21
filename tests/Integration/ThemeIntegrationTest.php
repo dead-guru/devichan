@@ -114,6 +114,51 @@ final class ThemeIntegrationTest extends TestCase
         self::assertFileExists($this->outputDirectory . 'bans.json');
     }
 
+    public function testIndexHandlesTextPostsAcrossBoardsAndMissingSpoilerImages(): void
+    {
+        global $config;
+
+        require_once 'templates/themes/index/theme.php';
+        $original = [];
+        foreach (['b', 'sec'] as $uri) {
+            $original[$uri] = query(sprintf('SELECT `id`, `files`, `num_files` FROM ``posts_%s``', $uri))
+                ->fetchAll(\PDO::FETCH_UNIQUE | \PDO::FETCH_ASSOC);
+        }
+        self::assertArrayHasKey(1, $original['b']);
+        self::assertArrayHasKey(2, $original['b']);
+        $files = json_decode($original['b'][1]['files'], true, 512, JSON_THROW_ON_ERROR);
+        $files[0]['thumb'] = 'spoiler';
+        $files[0]['size'] = 1024;
+
+        $update = prepare('UPDATE ``posts_b`` SET `files` = :files, `num_files` = :num_files WHERE `id` = :id');
+        try {
+            foreach (array_keys($original) as $uri) {
+                query(sprintf('UPDATE ``posts_%s`` SET `files` = NULL, `num_files` = 0', $uri));
+            }
+            $update->execute(['files' => json_encode([$files[0]], JSON_THROW_ON_ERROR), 'num_files' => 1, 'id' => 1]);
+            $config['spoiler_image'] = $this->outputDirectory . 'missing-spoiler.png';
+            self::assertFileDoesNotExist($config['spoiler_image']);
+
+            $settings = themeSettings('index');
+            $theme = new \index();
+            $theme->excluded = array_diff(listBoards(true), ['b', 'sec']);
+            $settings['exclude'] = implode(' ', $theme->excluded);
+            $page = $theme->homepage($settings);
+
+            self::assertStringContainsString('Seed reply', $page);
+            self::assertStringContainsString('Secret board content', $page);
+            self::assertStringContainsString('Active content: 1 KB', $page);
+            self::assertStringNotContainsString('missing-spoiler.png', $page);
+        } finally {
+            foreach ($original as $uri => $posts) {
+                $update = prepare(sprintf('UPDATE ``posts_%s`` SET `files` = :files, `num_files` = :num_files WHERE `id` = :id', $uri));
+                foreach ($posts as $id => $post) {
+                    $update->execute(['files' => $post['files'], 'num_files' => $post['num_files'], 'id' => $id]);
+                }
+            }
+        }
+    }
+
     public function testUkkoRendersDatabaseContent(): void
     {
         global $config, $pdo;

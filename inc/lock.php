@@ -1,5 +1,7 @@
 <?php
 class Lock {
+  public $f;
+
   function __construct($key) { global $config;
     if ($config['lock']['enabled'] == 'fs') {
       $key = str_replace('/', '::', $key);

@@ -230,7 +230,6 @@ final class PostingBranchMatrixCest
         $color = imagecolorallocate($image, 40, 120, 180);
         imagefill($image, 0, 0, $color);
         $I->assertTrue(imagepng($image, $path));
-        imagedestroy($image);
 
         return $filename;
     }

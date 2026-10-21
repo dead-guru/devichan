@@ -191,7 +191,6 @@ final class ImageIntegrationTest extends TestCase
             'webp' => imagewebp($resource, $path),
             'bmp' => imagebmp($resource, $path),
         };
-        imagedestroy($resource);
     }
 
     private function createAnimatedGif(string $path): void

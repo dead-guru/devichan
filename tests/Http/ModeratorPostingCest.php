@@ -115,7 +115,6 @@ final class ModeratorPostingCest
             imagefill($image, 0, 0, $color);
             $writer = 'image' . $extension;
             $I->assertTrue($writer($image, $generatedImage));
-            imagedestroy($image);
 
             $body = 'E2E GD ' . strtoupper($extension) . ' upload ' . bin2hex(random_bytes(4));
             $I->amOnPage('/mod.php?/b/');
@@ -148,7 +147,6 @@ final class ModeratorPostingCest
         $color = imagecolorallocate($image, 30, 100, random_int(120, 240));
         imagefill($image, 0, 0, $color);
         $I->assertTrue(imagejpeg($image, $generatedImage));
-        imagedestroy($image);
 
         $body = 'E2E Imagick upload ' . bin2hex(random_bytes(4));
         $I->amOnPage('/mod.php?/b/');
@@ -181,7 +179,6 @@ final class ModeratorPostingCest
         $color = imagecolorallocate($image, 120, random_int(40, 200), 70);
         imagefill($image, 0, 0, $color);
         $I->assertTrue(imagewebp($image, $generatedImage));
-        imagedestroy($image);
 
         $body = 'E2E WebP upload ' . bin2hex(random_bytes(4));
         $I->amOnPage('/mod.php?/b/');
@@ -213,7 +210,6 @@ final class ModeratorPostingCest
         $color = imagecolorallocate($image, 80, 120, random_int(1, 254));
         imagefill($image, 0, 0, $color);
         $I->assertTrue(imagejpeg($image, $generatedImage));
-        imagedestroy($image);
 
         $body = 'E2E URL image upload ' . bin2hex(random_bytes(4));
         $I->amOnPage('/mod.php?/b/');

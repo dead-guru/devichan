@@ -52,6 +52,26 @@ final class RuntimeInfrastructureIntegrationTest extends TestCase
         self::assertTrue(hasPermission(20, 'missing'));
     }
 
+    public function testModeratorLogRecordsGlobalActionsWithoutAnOpenBoard(): void
+    {
+        global $board;
+
+        $board = false;
+        $action = 'Integration global action ' . uniqid();
+
+        try {
+            modLog($action);
+            $query = prepare('SELECT `board` FROM ``modlogs`` WHERE `text` = :action');
+            $query->bindValue(':action', $action);
+            $query->execute();
+            self::assertNull($query->fetchColumn());
+        } finally {
+            $query = prepare('DELETE FROM ``modlogs`` WHERE `text` = :action');
+            $query->bindValue(':action', $action);
+            $query->execute();
+        }
+    }
+
     public function testPhpFilesystemAndRedisCacheBackendsRoundTrip(): void
     {
         global $config, $debug;

@@ -9,6 +9,9 @@ paths:
 actor_suffix: Tester
 params:
     - env
+settings:
+    error_level: E_ALL
+    convert_deprecations_to_exceptions: true
 extensions:
     enabled:
         - Codeception\Extension\RunFailed

@@ -15,6 +15,8 @@
 	
 	// Wrap functions in a class so they don't interfere with normal Tinyboard operations
 	class index {
+		public $excluded;
+
 		public function build($action, $settings) {
 			global $config, $_theme;
 			
@@ -67,10 +69,9 @@
 			while ($post = $query->fetch(PDO::FETCH_ASSOC)) {
 				openBoard($post['board']);
 
-				if (isset($post['files']))
-					$files = json_decode($post['files']);
+				$files = json_decode($post['files']);
 
-                if ($files[0]->file == 'deleted' || $files[0]->thumb == 'file') continue;
+                if (empty($files[0]) || $files[0]->file == 'deleted' || $files[0]->thumb == 'file') continue;
 				
 				// board settings won't be available in the template file, so generate links now
 				$post['link'] = $config['root'] . $board['dir'] . $config['dir']['res']
@@ -79,6 +80,7 @@
 				if ($files) {
 					if ($files[0]->thumb == 'spoiler') {
 						$tn_size = @getimagesize($config['spoiler_image']);
+						if ($tn_size === false) continue;
 						$post['src'] = $config['spoiler_image'];
 						$post['thumbwidth'] = $tn_size[0];
 						$post['thumbheight'] = $tn_size[1];
@@ -117,7 +119,7 @@
 			}
 			
 			// Total posts
-			$query = 'SELECT SUM(`top`) FROM (';
+			$query = 'SELECT COALESCE(SUM(`top`), 0) FROM (';
 			foreach ($boards as &$_board) {
 				if (in_array($_board['uri'], $this->excluded))
 					continue;
@@ -143,9 +145,9 @@
 			foreach ($boards as &$_board) {
 				if (in_array($_board['uri'], $this->excluded))
 					continue;
-				$query .= sprintf("SELECT `files` FROM ``posts_%s`` UNION ALL ", $_board['uri']);
+				$query .= sprintf("SELECT `files` FROM ``posts_%s`` WHERE `num_files` > 0 AND `files` IS NOT NULL UNION ALL ", $_board['uri']);
 			}
-			$query = preg_replace('/UNION ALL $/', ' WHERE `num_files` > 0) AS `posts_all`', $query);
+			$query = preg_replace('/UNION ALL $/', ') AS `posts_all`', $query);
 			$query = query($query) or error(db_error());
 			$files = $query->fetchAll();
 			$stats['active_content'] = 0;

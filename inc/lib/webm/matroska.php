@@ -317,11 +317,11 @@ class EBMLElementList extends EBMLElement implements Iterator {
         $this->_position = 0;
     }
 
-    public function rewind() {
+    public function rewind(): void {
         $this->_position = 0;
     }
 
-    public function current() {
+    public function current(): mixed {
         if ($this->valid()) {
             return $this->_cache[$this->_position];
         } else {
@@ -329,18 +329,18 @@ class EBMLElementList extends EBMLElement implements Iterator {
         }
     }
 
-    public function key() {
+    public function key(): mixed {
         return $this->_position;
     }
 
-    public function next() {
+    public function next(): void {
         $this->_position += $this->current()->size();
         if ($this->content()->size() !== NULL && $this->_position > $this->content()->size()) {
             throw new Exception('unexpected end of data');
         }
     }
 
-    public function valid() {
+    public function valid(): bool {
         global $EBML_ELEMENTS;
         if (isset($this->_cache[$this->_position])) return TRUE;
         $this->content()->setPosition($this->_position);
@@ -389,7 +389,7 @@ class EBMLElementList extends EBMLElement implements Iterator {
         foreach ($this as $element) {
             $iElement++;
             if ($iElement > self::$MAX_ELEMENTS) throw new Exception('not supported: too many elements');
-            if (strtoupper($element->name()) == strtoupper($name)) {
+            if ($element->name() !== NULL && strtoupper($element->name()) == strtoupper($name)) {
                 return $element->value();
             }
         }

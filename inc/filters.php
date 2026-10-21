@@ -8,6 +8,7 @@ defined('TINYBOARD') or exit;
 
 class Filter {
 	public $flood_check;
+	public $action, $add_note, $all_boards, $expires, $message, $reason, $reject;
 	private $condition;
 	private $post;
 	

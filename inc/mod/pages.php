@@ -574,11 +574,11 @@ function mod_news($page_no = 1) {
 		if (!hasPermission($config['mod']['news']))
 			error($config['error']['noaccess']);
         
-        if($config['html_news'] === false) {
+        if($config['news_html'] === false) {
             $_POST['body'] = escape_markup_modifiers($_POST['body']);
             markup($_POST['body']);
         } else {
-            purify_html($_POST['body']);
+            $_POST['body'] = purify_html($_POST['body']);
         }
 		
 		$query = prepare('INSERT INTO ``news`` VALUES (NULL, :name, :time, :subject, :body)');
@@ -694,7 +694,7 @@ function mod_board_log($board, $page_no = 1, $hide_names = false, $public = fals
 	if ($page_no < 1)
 		error($config['error']['404']);
 	
-	if (!hasPermission($config['mod']['mod_board_log'], $board) && !$public)
+	if (!$public && !hasPermission($config['mod']['mod_board_log'], $board))
 		error($config['error']['noaccess']);
 	
 	$query = prepare("SELECT `username`, `mod`, `ip`, `board`, `time`, `text` FROM ``modlogs`` LEFT JOIN ``mods`` ON `mod` = ``mods``.`id` WHERE `board` = :board ORDER BY `time` DESC LIMIT :offset, :limit");
@@ -1327,7 +1327,7 @@ function mod_move_reply($originBoard, $postID) {
 		// trigger themes
 		rebuildThemes('post', $targetBoard);
 		// mod log
-		modLog("Moved post #${postID} to " . sprintf($config['board_abbreviation'], $targetBoard) . " (#${newID})", $originBoard);
+		modLog("Moved post #{$postID} to " . sprintf($config['board_abbreviation'], $targetBoard) . " (#{$newID})", $originBoard);
 		
 		// return to original board
 		openBoard($originBoard);
@@ -1498,7 +1498,7 @@ function mod_move($originBoard, $postID) {
 			}
 		}
 		
-		modLog("Moved thread #${postID} to " . sprintf($config['board_abbreviation'], $targetBoard) . " (#${newID})", $originBoard);
+		modLog("Moved thread #{$postID} to " . sprintf($config['board_abbreviation'], $targetBoard) . " (#{$newID})", $originBoard);
 		
 		// build new thread
 		buildThread($newID);
@@ -1722,7 +1722,7 @@ function mod_edit_post($board, $edit_raw_html, $postID) {
 		}
 		$saved = true;
 		$deleted = true;
-		$old_files = json_decode($post['files'], true) ?: array();
+		$old_files = $post['files'] === null ? array() : (json_decode($post['files'], true) ?: array());
 		foreach ($uploads['files'] as $i => $file) {
 			$old = $old_files[$i];
 			foreach (array('file' => $config['dir']['img'], 'thumb' => $config['dir']['thumb']) as $key => $dir) {
@@ -1758,7 +1758,8 @@ function mod_edit_post($board, $edit_raw_html, $postID) {
 
 		$attachments = array();
 		if ($can_edit_files) {
-			foreach (json_decode($post['files'], true) ?: array() as $i => $file) {
+			$files = $post['files'] === null ? array() : (json_decode($post['files'], true) ?: array());
+			foreach ($files as $i => $file) {
 				if (!$file) continue;
 				$file['url'] = $config['uri_img'] . $file['file'];
 				if (($file['thumb'] ?? null) === 'spoiler')
@@ -1835,12 +1836,19 @@ function mod_spoiler_image($board, $post, $file) {
 	$query = prepare(sprintf("SELECT `files`, `thread` FROM ``posts_%s`` WHERE id = :id", $board));
 	$query->bindValue(':id', $post, PDO::PARAM_INT);
 	$query->execute() or error(db_error($query));
-	$result = $query->fetch(PDO::FETCH_ASSOC);
-	$files = json_decode($result['files']);
+	if (!$result = $query->fetch(PDO::FETCH_ASSOC))
+		error($config['error']['invalidpost']);
+	$files = $result['files'] === null ? array() : json_decode($result['files']);
+	if (!isset($files[$file]) || $files[$file]->file === 'deleted')
+		error(_('That post has no files.'));
 
-
-	$size_spoiler_image = @getimagesize($config['spoiler_image']);
-	file_unlink($board . '/' . $config['dir']['thumb'] . $files[$file]->thumb);
+	$size_spoiler_image = is_file($config['spoiler_image']) ? @getimagesize($config['spoiler_image']) : false;
+	if (!$size_spoiler_image) {
+		http_response_code(500);
+		error(_('The spoiler image is missing or invalid.'));
+	}
+	if (!empty($files[$file]->thumb) && !in_array($files[$file]->thumb, array('file', 'spoiler')))
+		file_unlink($GLOBALS['board']['dir'] . $config['dir']['thumb'] . $files[$file]->thumb);
 	$files[$file]->thumb = 'spoiler';
 	$files[$file]->thumbwidth = $size_spoiler_image[0];
 	$files[$file]->thumbheight = $size_spoiler_image[1];
@@ -2586,15 +2594,18 @@ function mod_config($board_config = false) {
 		if (!$readonly && isset($_POST['code'])) {
 			$code = $_POST['code'];
 			// Save previous instance_config if php_check_syntax fails
-			$old_code = file_get_contents($config_file);
+			$old_code = is_file($config_file) ? file_get_contents($config_file) : null;
 			file_put_contents($config_file, $code);
-			$resp = shell_exec_error('php -l ' . $config_file);
+			$resp = shell_exec_error('php -d log_errors=0 -l ' . escapeshellarg($config_file));
 			if (preg_match('/No syntax errors detected/', $resp)) {
 				header('Location: ?/config' . ($board_config ? '/' . $board_config : ''), true, $config['redirect_http']);
 				return;
 			}
 			else {
-				file_put_contents($config_file, $old_code);
+				if ($old_code === null)
+					unlink($config_file);
+				else
+					file_put_contents($config_file, $old_code);
 				error($config['error']['badsyntax'] . $resp);
 			}
 		}

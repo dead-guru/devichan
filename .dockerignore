@@ -1,4 +1,8 @@
 .git
+.artifacts
+.agents
+AGENTS.md
+CLAUDE.md
 .idea
 .vscode
 .env
@@ -14,6 +18,7 @@ b
 sec
 inc/secrets.php
 static/fonts
+static/spoiler.png
 tests/_output
 tests/Support/_generated
 templates/cache

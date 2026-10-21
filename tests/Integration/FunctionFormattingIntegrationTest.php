@@ -82,6 +82,7 @@ final class FunctionFormattingIntegrationTest extends TestCase
         );
         self::assertSame('ab', strip_combining_chars("a\u{0301}b"));
         self::assertSame('a&#13;&#10;b&#09;c', prettify_textarea("a\nb\tc"));
+        self::assertSame('', prettify_textarea(null));
         self::assertSame(['https://example.com/path'], get_urls('Go to https://example.com/path.'));
 
         $offset = 0;

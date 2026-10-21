@@ -122,6 +122,9 @@ $config['enable_embedding'] = true;
 $config['always_noko'] = true;
 if ($e2ePostCase === 'report-captcha') {
     $config['report_captcha'] = true;
+    $config['internal_domain'] = 'http://caddy';
+    $config['captcha']['provider_check'] = 'securimage.php';
+    $config['captcha']['extra'] = 'e2e-report-captcha';
 }
 if ($e2ePostCase === 'noko-email') {
     $config['always_noko'] = false;
@@ -249,6 +252,6 @@ if (($_COOKIE['e2e_load_config'] ?? null) === 'defaults') {
     $config['anonymous'] = ['E2E Anonymous'];
     $config['debug'] = true;
     $config['verbose_errors'] = true;
-    $config['deprecation_errors'] = false;
+    $config['deprecation_errors'] = true;
     $config['cache']['enabled'] = 'php';
 }

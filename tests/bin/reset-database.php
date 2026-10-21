@@ -15,7 +15,7 @@ $pdo = new PDO(
     getenv('MYSQL_PASSWORD') ?: 'devichan_e2e',
     [
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-        PDO::MYSQL_ATTR_MULTI_STATEMENTS => true,
+        Pdo\Mysql::ATTR_MULTI_STATEMENTS => true,
     ],
 );
 

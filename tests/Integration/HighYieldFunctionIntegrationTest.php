@@ -98,8 +98,8 @@ final class HighYieldFunctionIntegrationTest extends TestCase
         $threadId = $this->insertPost(null, null, 0);
 
         $files = [
-            ['file' => 'one.png', 'thumb' => 'one.png'],
-            ['file' => 'two.png', 'thumb' => 'two.png'],
+            ['file' => 'one.png', 'thumb' => 'one.png', 'name' => 'one.png', 'filename' => 'one.png', 'size' => 6],
+            ['file' => 'two.png', 'thumb' => 'two.png', 'name' => 'two.png', 'filename' => 'two.png', 'size' => 6],
         ];
         foreach ($files as $file) {
             file_put_contents($board['dir'] . $config['dir']['img'] . $file['file'], 'source');
@@ -114,7 +114,7 @@ final class HighYieldFunctionIntegrationTest extends TestCase
 
         $deletedOp = $this->insertPost(
             null,
-            json_encode([['file' => 'deleted']], JSON_THROW_ON_ERROR),
+            json_encode([['file' => 'deleted', 'name' => 'deleted.png', 'filename' => 'deleted.png']], JSON_THROW_ON_ERROR),
             1,
         );
         deleteFile($deletedOp);
@@ -123,7 +123,10 @@ final class HighYieldFunctionIntegrationTest extends TestCase
             (int) query("SELECT COUNT(*) FROM ``posts_b`` WHERE `id` = {$deletedOp}")->fetchColumn(),
         );
 
-        $cleanupFiles = [['file' => 'cleanup.png', 'thumb' => 'cleanup.png']];
+        $cleanupFiles = [[
+            'file' => 'cleanup.png', 'thumb' => 'cleanup.png',
+            'name' => 'cleanup.png', 'filename' => 'cleanup.png', 'size' => 6,
+        ]];
         file_put_contents($board['dir'] . $config['dir']['img'] . 'cleanup.png', 'source');
         file_put_contents($board['dir'] . $config['dir']['thumb'] . 'cleanup.png', 'thumb');
         $cleanupReply = $this->insertPost(
@@ -207,13 +210,13 @@ final class HighYieldFunctionIntegrationTest extends TestCase
         $spoiler = imagecreatetruecolor(16, 16);
         imagefill($spoiler, 0, 0, imagecolorallocate($spoiler, 20, 20, 20));
         self::assertTrue(imagepng($spoiler, $config['spoiler_image']));
-        imagedestroy($spoiler);
 
         file_put_contents($board['dir'] . $config['dir']['img'] . 'moderated.png', 'source');
         file_put_contents($board['dir'] . $config['dir']['thumb'] . 'moderated.png', 'thumb');
         $files = [[
             'file' => 'moderated.png',
             'thumb' => 'moderated.png',
+            'name' => 'moderated.png',
             'filename' => 'moderated.png',
             'size' => 6,
             'width' => 16,

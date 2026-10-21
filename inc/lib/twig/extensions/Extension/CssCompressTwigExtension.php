@@ -27,7 +27,7 @@ class CssCompressTwigExtension extends Twig\Extension\AbstractExtension
     {
         global $config;
         
-        if($config['minify_css'] === false) {
+        if($config['minify_css'] === false || $filepath === '') {
             return $filepath;
         }
         
@@ -40,7 +40,7 @@ class CssCompressTwigExtension extends Twig\Extension\AbstractExtension
                 $path_parts['basename']
             );
         
-        if (file_exists($root . $newPath)) {
+        if (is_file($root . $newPath)) {
             if(!str_contains($newPath, '?v=')) {
                 $newPath .= '?v=' . md5_file($root . $newPath);
             }

@@ -95,13 +95,36 @@ final class ModeratorOperationsCest
     public function administratorCanResolveBanAppeals(HttpTester $I): void
     {
         $this->loginAsAdmin($I);
-        $I->amOnPage('/mod.php?/ban-appeals');
-        $I->submitForm('form[action=""]', [
-            'appeal_id' => 1,
-            'deny' => 'Deny appeal',
+        $I->amOnPage('/mod.php?/ban');
+        $I->submitForm('form[action="?/ban"]', [
+            'ip' => '198.51.100.65',
+            'reason' => 'E2E appeal denial',
+            'length' => '1 day',
+            'board' => 'b',
+            'new_ban' => 'New Ban',
         ]);
         $this->assertHealthyPage($I);
-        $I->seeInDatabase('ban_appeals', ['id' => 1, 'denied' => 1]);
+        $banId = (int) $I->grabFromDatabase('bans', 'id', [
+            'reason' => 'E2E appeal denial',
+        ]);
+        $appealId = $I->haveInDatabase('ban_appeals', [
+            'ban_id' => $banId,
+            'time' => time(),
+            'message' => 'E2E denied appeal',
+            'denied' => 0,
+        ]);
+
+        $I->amOnPage('/mod.php?/ban-appeals');
+        $I->assertSame(1, preg_match(
+            "~document\\.location='([^']*ban-appeals/{$appealId}/deny/[a-f0-9]{8})'~",
+            $I->grabPageSource(),
+            $matches,
+        ));
+        $I->amOnPage($matches[1]);
+        $this->assertHealthyPage($I);
+        $I->seeInDatabase('ban_appeals', ['id' => $appealId, 'denied' => 1]);
+        $I->seeInDatabase('bans', ['id' => $banId]);
+        $I->dontSee('E2E denied appeal');
     }
 
     public function administratorCanRebuildGeneratedContent(HttpTester $I): void

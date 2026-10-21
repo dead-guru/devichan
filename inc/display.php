@@ -337,7 +337,7 @@ function embed_html($link) {
 	return 'Embedding error.';
 }
 
-class Post {
+class Post extends stdClass {
 	public function __construct($post, $root=null, $mod=false) {
 		global $config;
 		if (!isset($root))
@@ -397,7 +397,7 @@ class Post {
 	}
 };
 
-class Thread {
+class Thread extends stdClass {
 	public function __construct($post, $root = null, $mod = false, $hr = true) {
 		global $config;
 		if (!isset($root))

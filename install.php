@@ -777,6 +777,8 @@ if ($step == 0) {
 		'curl' => 'used for captcha checks and uploads by URL',
 		'fileinfo' => 'used to detect image types for blurhash',
 		'gettext' => 'used for translations',
+		'intl' => 'used to format translated dates',
+		'exif' => 'used to read image metadata for blurhash',
 		'bcmath' => 'used for IP range bans',
 		'dom' => 'used for math markup',
 	);
@@ -784,17 +786,10 @@ if ($step == 0) {
 	$tests = array(
 		array(
 			'category' => 'PHP',
-			'name' => 'PHP &ge; 8.1',
-			'result' => PHP_VERSION_ID >= 80100,
+			'name' => 'PHP &ge; 8.5',
+			'result' => PHP_VERSION_ID >= 80500,
 			'required' => true,
-			'message' => 'devichan requires PHP 8.1 or newer.',
-		),
-		array(
-			'category' => 'PHP',
-			'name' => 'PHP &le; 8.2',
-			'result' => PHP_VERSION_ID < 80300,
-			'required' => false,
-			'message' => 'devichan is tested on PHP 8.1, and its locked dependencies support PHP up to 8.2. Newer PHP versions are untested and may show deprecation notices.',
+			'message' => 'devichan requires PHP 8.5 or newer.',
 		),
 		array(
 			'category' => 'PHP',

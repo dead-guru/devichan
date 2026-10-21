@@ -1,11 +1,12 @@
 <?php
 require_once('inc/bootstrap.php');
+require_once('inc/captcha/captcha.php');
 $expires_in = 120;
 
 function rand_string($length, $charset) {
 	$ret = "";
 	while ($length--) {
-		$ret .= mb_substr($charset, rand(0, mb_strlen($charset, 'utf-8')-1), 1, 'utf-8');
+		$ret .= mb_substr($charset, random_int(0, mb_strlen($charset, 'utf-8')-1), 1, 'utf-8');
 	}
 	return $ret;
 }
@@ -22,21 +23,20 @@ switch ($mode) {
 		if (!isset ($_GET['extra'])) {
 			$_GET['extra'] = $config['captcha']['extra'];
 		}
+		if (isset($_GET['raw'])) {
+			session_start();
+		}
 
 		header("Content-type: application/json");
 		$extra = $_GET['extra'];
 		$cookie = rand_string(20, "abcdefghijklmnopqrstuvwxyz");
-		$i = new Securimage(['send_headers' => false, 'no_exit' => true]);
-		$i->createCode();
-		ob_start();
-		$i->show();
-		$rawimg = ob_get_contents();
+		$text = rand_string(6, 'ABCDEFGHKLMNPRSTUVWYZabcdefghklmnprstuvwyz23456789');
+		$captcha = new CzaksCaptcha($text, 215, 80);
+		$rawimg = base64_decode($captcha->to_image());
 		$b64img = 'data:image/png;base64,'.base64_encode($rawimg);
 		$html = '<img src="'.$b64img.'">';
-		ob_end_clean();
-		$cdata = $i->getCode();
 		$query = prepare("INSERT INTO `captchas` (`cookie`, `extra`, `text`, `created_at`) VALUES (?, ?, ?, ?)");
-		$query->execute([$cookie, $extra, $cdata->code_display, $cdata->creationTime]);
+		$query->execute([$cookie, $extra, $text, time()]);
 		if (isset($_GET['raw'])) {
 			$_SESSION['captcha_cookie'] = $cookie;
 			header('Content-Type: image/png');

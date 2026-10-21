@@ -15,6 +15,7 @@ function load_twig() {
 	$loader->setPaths($config['dir']['template']);
 	$twig = new \Twig\Environment($loader, array(
 		'autoescape' => false,
+		'use_yield' => true,
 		'cache' => is_writable('templates') || (is_dir('templates/cache') && is_writable('templates/cache')) ?
 			"{$config['dir']['template']}/cache" : false,
 		'debug' => $config['debug']
@@ -60,7 +61,7 @@ function Element($templateFile, array $options) {
 	}
 	
 	// Read the template file
-	if (@file_get_contents("{$config['dir']['template']}/${templateFile}")) {
+	if (@file_get_contents("{$config['dir']['template']}/{$templateFile}")) {
         $body = $twig->render($templateFile, $options);
         
         if ($config['minify_html'] && preg_match('/\.html$/', $templateFile)) {
@@ -69,7 +70,7 @@ function Element($templateFile, array $options) {
 		
 		return $body;
 	} else {
-		throw new Exception("Template file '${templateFile}' does not exist or is empty in '{$config['dir']['template']}'!");
+		throw new Exception("Template file '{$templateFile}' does not exist or is empty in '{$config['dir']['template']}'!");
 	}
 }
 

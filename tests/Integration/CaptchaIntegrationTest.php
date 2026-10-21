@@ -8,6 +8,20 @@ use PHPUnit\Framework\TestCase;
 
 final class CaptchaIntegrationTest extends TestCase
 {
+    public function testSixCharacterEndpointChallengesProducePngAtExpectedSize(): void
+    {
+        require_once 'inc/captcha/captcha.php';
+
+        foreach (['WWWWWW', 'MMMMMM', 'GHR279'] as $text) {
+            $captcha = new \CzaksCaptcha($text, 215, 80);
+            $image = new \Imagick();
+            $image->readImageBlob(base64_decode($captcha->to_image(), true));
+            self::assertSame(215, $image->getImageWidth());
+            self::assertSame(80, $image->getImageHeight());
+            self::assertSame('PNG', $image->getImageFormat());
+        }
+    }
+
     public function testCaptchaProducesHtmlAndPngAndCleansExpiredChallenges(): void
     {
         global $pdo;

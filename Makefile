@@ -15,6 +15,7 @@ e2e:
 
 e2e-reset:
 	$(COMPOSE) down -v --remove-orphans
+	rm -f tests/_output/php-errors.log
 
 e2e-build:
 	$(COMPOSE) build cphp
@@ -31,7 +32,11 @@ e2e-run:
 
 e2e-suite: e2e-reset e2e-build e2e-up e2e-prepare
 	@test -n "$(SUITE)" || (echo "Set SUITE. Example: make e2e-suite SUITE=Http" >&2; exit 2)
-	$(COMPOSE) run --rm runner vendor/bin/codecept run $(SUITE) --no-colors
+	$(COMPOSE) run --rm runner sh -c '\
+		status=0; \
+		vendor/bin/codecept run "$(SUITE)" --no-colors || status=$$?; \
+		tests/bin/check-php-errors.sh || { [ "$$status" -ne 0 ] || status=1; }; \
+		exit $$status'
 
 e2e-down:
 	$(COMPOSE) down -v --remove-orphans
