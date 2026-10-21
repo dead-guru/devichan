@@ -27,6 +27,7 @@ services:
       - app_data:/var/www
       - ./tests/_output:/var/www/tests/_output
       - ./tests/coverage.ini:/usr/local/etc/php/conf.d/test-coverage.ini:ro
+      - ./php-fpm/www.conf:/usr/local/etc/php-fpm.d/www.conf:ro
       - ./tests/fixtures/secrets.php:/var/www/inc/secrets.php:ro
       - ./tests/fixtures/installed:/var/www/.installed:ro
     depends_on:
