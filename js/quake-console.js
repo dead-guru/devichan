@@ -170,7 +170,9 @@
     let consoleOpen = false;
     let nickname = localStorage.getItem('irc_nickname') || generateDefaultNickname();
 
-    const IRC_SERVER = window.location.protocol === 'https:' ? 'wss://irc.websocket.localhost:8097/' : 'ws://irc.websocket.localhost:8097/';
+    // Set tb_settings['quake-console'].server in a settings script loaded before this plugin.
+    const settings = new script_settings('quake-console');
+    const IRC_SERVER = settings.get('server', window.location.protocol === 'https:' ? 'wss://irc.websocket.localhost:8097/' : 'ws://irc.websocket.localhost:8097/');
     const IRC_CHANNEL = '#deadach';
 
     let ws = null;

@@ -1,16 +1,14 @@
 <?php
-// We are using a custom path here to connect to the database.
-// Why? Performance reasons.
+chdir(dirname(__DIR__, 2));
+require_once __DIR__ . '/../bootstrap.php';
 
-$pdo = new PDO("mysql:dbname=dead;host=cmysql", "dead", "a*%)@FD43fs%34fddjh35", array(Pdo\Mysql::ATTR_INIT_COMMAND => 'SET NAMES utf8'));
+$status = http_response_code();
+// A database outage is not a rejected challenge.
+http_response_code(500);
+sql_open();
+http_response_code($status ?: 200);
 
-
-// Captcha expiration:
-$expires_in = 120; // 120 seconds
-
-// Captcha dimensions:
+$expires_in = 120;
 $width = 250;
 $height = 80;
-
-// Captcha length:
 $length = 6;

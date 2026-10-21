@@ -1,7 +1,7 @@
 <?php
 $mode = @$_GET['mode'];
 
-require_once("captcha.php");
+require_once __DIR__ . '/captcha.php';
 
 function rand_string($length, $charset) {
   $ret = "";
@@ -27,7 +27,7 @@ case "get":
   $extra = $_GET['extra'];
   $raw = isset($_GET['raw']) && $_GET['raw'] == '1';
 
-  require_once("config.php");
+  require_once __DIR__ . '/config.php';
 
   $text = rand_string($length, $extra);
 
@@ -69,7 +69,7 @@ case "check":
     die();
   }
 
-  require_once("config.php");
+  require_once __DIR__ . '/config.php';
 
   cleanup($pdo, $expires_in);
 

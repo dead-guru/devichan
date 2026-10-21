@@ -1260,6 +1260,18 @@
 		$config['root']	 = str_replace('\\', '/', dirname($request_uri)) == '/'
 			? '/' : str_replace('\\', '/', dirname($request_uri)) . '/';
 		unset($request_uri);
+
+		// Nested entrypoints share the same installation root and config cache.
+		if (isset($_SERVER['SCRIPT_FILENAME'], $_SERVER['SCRIPT_NAME'])) {
+			$script_file = realpath($_SERVER['SCRIPT_FILENAME']);
+			$root_dir = str_replace('\\', '/', dirname(__DIR__)) . '/';
+			if ($script_file !== false && str_starts_with(str_replace('\\', '/', $script_file), $root_dir)) {
+				$script_path = substr(str_replace('\\', '/', $script_file), strlen($root_dir));
+				if ($script_path !== '' && str_ends_with($_SERVER['SCRIPT_NAME'], '/' . $script_path))
+					$config['root'] = substr($_SERVER['SCRIPT_NAME'], 0, -strlen($script_path));
+			}
+			unset($script_file, $root_dir, $script_path);
+		}
 	} else
 		$config['root'] = '/'; // CLI mode
 
