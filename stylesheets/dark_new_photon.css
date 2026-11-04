@@ -1476,8 +1476,7 @@ div.subtitle {
 }
 
 #alert_div {
-    width: 500px;
-    border: 2px solid var(--theme_default_border);
+    border-color: var(--theme_default_border);
     background: var(--theme_default_postbg);
 }
 

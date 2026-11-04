@@ -71,39 +71,60 @@ var datelocale =
 
 
 function alert(a, do_confirm, confirm_ok_action, confirm_cancel_action) {
-      var handler, div, bg, closebtn, okbtn;
-      var close = function() {
-              handler.fadeOut(400, function() { handler.remove(); });
-              return false;
-      };
+    var previous_focus = document.activeElement;
+    var handler = $("<div id='alert_handler'></div>").appendTo('body');
+    var bg = $("<div id='alert_background'></div>").appendTo(handler);
+    var div = $("<div id='alert_div' role='alertdialog' aria-modal='true' aria-labelledby='alert_message'></div>").appendTo(handler);
+    var closebtn = $("<button type='button' id='alert_close'>&times;</button>")
+        .attr('aria-label', _('Close')).appendTo(div);
 
-      handler = $("<div id='alert_handler'></div>").hide().appendTo('body');
+    $("<div id='alert_message'></div>").html(a).appendTo(div);
+    var okbtn = $("<button type='button' class='button alert_button'></button>").text(_('OK')).appendTo(div);
 
-      bg = $("<div id='alert_background'></div>").appendTo(handler);
+    var close = function(confirmed, event) {
+        handler.remove();
+        if (previous_focus && document.contains(previous_focus)) {
+            previous_focus.focus();
+        }
+        var action = confirmed ? confirm_ok_action : confirm_cancel_action;
+        if (do_confirm && typeof action === 'function') {
+            action.call(this, event);
+        }
+        return false;
+    };
+    var cancel = function(event) {
+        return close.call(this, false, event);
+    };
 
-      div = $("<div id='alert_div'></div>").appendTo(handler);
-      closebtn = $("<a id='alert_close' href='javascript:void(0)'><i class='fa fa-times'></i></div>")
-              .appendTo(div);
-
-      $("<div id='alert_message'></div>").html(a).appendTo(div);
-
-      okbtn = $("<button class='button alert_button'>"+_("OK")+"</button>").appendTo(div);
-
-      if (do_confirm) {
-              confirm_ok_action = (typeof confirm_ok_action !== "function") ? function(){} : confirm_ok_action;
-              confirm_cancel_action = (typeof confirm_cancel_action !== "function") ? function(){} : confirm_cancel_action;
-              okbtn.click(confirm_ok_action);
-              $("<button class='button alert_button'>"+_("Cancel")+"</button>").click(confirm_cancel_action).click(close).appendTo(div);
-              bg.click(confirm_cancel_action);
-              okbtn.click(confirm_cancel_action);
-              closebtn.click(confirm_cancel_action);
-      }
-
-      bg.click(close);
-      okbtn.click(close);
-      closebtn.click(close);
-
-      handler.fadeIn(400);
+    okbtn.on('click', function(event) {
+        return close.call(this, true, event);
+    });
+    if (do_confirm) {
+        $("<button type='button' class='button alert_button'></button>")
+            .text(_('Cancel')).on('click', cancel).appendTo(div);
+    }
+    bg.on('click', cancel);
+    closebtn.on('click', cancel);
+    handler.on('keydown', function(event) {
+        if (event.key === 'Escape') {
+            return cancel.call(this, event);
+        }
+        if (event.key === 'Tab') {
+            var controls = div.find('a[href], button, input, select, textarea, [tabindex]')
+                .filter(':visible').not(':disabled, [tabindex="-1"]');
+            var first = controls[0];
+            var last = controls[controls.length - 1];
+            if (event.shiftKey && document.activeElement === first) {
+                last.focus();
+                return false;
+            }
+            if (!event.shiftKey && document.activeElement === last) {
+                first.focus();
+                return false;
+            }
+        }
+    });
+    okbtn.trigger('focus');
 }
 
 var saved = {};

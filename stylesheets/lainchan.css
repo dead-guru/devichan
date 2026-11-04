@@ -641,14 +641,8 @@ fieldset input {
     display: none;
 }
 
-#alert_handler {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
+#alert_div {
     background: #070707;
-    box-shadow: 3px 3px 0px #000000;
-    padding: 2rem;
 }
 
 #overheader {

@@ -99,7 +99,13 @@ $config['syslog'] = false;
 $config['referer_match'] = false;
 $config['minify_css'] = false;
 $config['purge'] = [];
+$config['additional_javascript'][] = 'js/ajax.js';
 $config['additional_javascript'][] = 'js/threadfilelist.js';
+$config['stylesheets']['Dark'] = 'dark.css';
+$config['stylesheets']['Photon'] = 'photon.css';
+$config['stylesheets']['Dark New Photon'] = 'dark_new_photon.css';
+$config['stylesheets']['Lainchan'] = 'lainchan.css';
+$config['stylesheets']['Caffe'] = 'caffe.css';
 if (($_COOKIE['e2e_paint'] ?? null) === '1') {
     $config['additional_javascript'][] = 'js/paint-tool.js';
 }

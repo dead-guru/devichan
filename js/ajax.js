@@ -45,9 +45,30 @@ $(window).ready(function() {
 				$(form).find('input[type="submit"]').val(_('Posting... (#%)').replace('#', percentage));
 			};
 
+			var show_error = function(post_response) {
+				if (post_response.banned) {
+					// Submit normally to show the ban page.
+					do_not_ajax = true;
+					$(form).find('input[type="submit"]').each(function() {
+						var $replacement = $('<input type="hidden">');
+						$replacement.attr('name', $(this).attr('name'));
+						$replacement.val(submit_txt);
+						$(this)
+							.after($replacement)
+							.replaceWith($('<input type="button">').val(submit_txt));
+					});
+					$(form).submit();
+				} else {
+					alert(post_response.error);
+					$(form).find('input[type="submit"]').val(submit_txt);
+					$(form).find('input[type="submit"]').removeAttr('disabled');
+				}
+			};
+
 			$.ajax({
 				url: this.action,
 				type: 'POST',
+				dataType: 'json',
 				xhr: function() {
 					var xhr = $.ajaxSettings.xhr();
 					if(xhr.upload) {
@@ -57,23 +78,7 @@ $(window).ready(function() {
 				},
 				success: function(post_response) {
 					if (post_response.error) {
-						if (post_response.banned) {
-							// You are banned. Must post the form normally so the user can see the ban message.
-							do_not_ajax = true;
-							$(form).find('input[type="submit"]').each(function() {
-								var $replacement = $('<input type="hidden">');
-								$replacement.attr('name', $(this).attr('name'));
-								$replacement.val(submit_txt);
-								$(this)
-									.after($replacement)
-									.replaceWith($('<input type="button">').val(submit_txt));
-							});
-							$(form).submit();
-						} else {
-							alert(post_response.error);
-							$(form).find('input[type="submit"]').val(submit_txt);
-							$(form).find('input[type="submit"]').removeAttr('disabled');
-						}
+						show_error(post_response);
 					} else if (post_response.redirect && post_response.id) {
 						if (!$(form).find('input[name="thread"]').length
 							|| (!settings.get('always_noko_replies', true) && !post_response.noko)) {
@@ -121,8 +126,12 @@ $(window).ready(function() {
 						$(form).find('input[type="submit"]').removeAttr('disabled');
 					}
 				},
-				error: function(xhr, status, er) {
-					alert(_('The server took too long to submit your post. Your post was probably still submitted. If it wasn\'t, we might be experiencing issues right now -- please try your post again later. Error information: ') + "<div><textarea>" + JSON.stringify(xhr) + "</textarea></div>");
+				error: function(xhr) {
+					if (xhr.responseJSON && xhr.responseJSON.error) {
+						show_error(xhr.responseJSON);
+						return;
+					}
+					alert(_('Could not confirm whether your post was sent. Check the thread before trying again.'));
 					$(form).find('input[type="submit"]').val(submit_txt);
 					$(form).find('input[type="submit"]').removeAttr('disabled');
 				},
@@ -130,7 +139,7 @@ $(window).ready(function() {
 				cache: false,
 				contentType: false,
 				processData: false
-			}, 'json');
+			});
 			
 			$(form).find('input[type="submit"]').val(_('Posting...'));
 			$(form).find('input[type="submit"]').attr('disabled', true);

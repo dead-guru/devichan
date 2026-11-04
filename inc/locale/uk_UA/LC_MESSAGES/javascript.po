@@ -882,12 +882,9 @@ msgstr "тиждень(тижнів)"
 msgid "year(s)"
 msgstr "рік(років)"
 
-#: ../../../../js/ajax.js:119
-msgid ""
-"The server took too long to submit your post. Your post was probably still "
-"submitted. If it wasn't, we might be experiencing issues right now -- please "
-"try your post again later. Error information: "
-msgstr ""
+#: ../../../../js/ajax.js
+msgid "Could not confirm whether your post was sent. Check the thread before trying again."
+msgstr "Не вдалося підтвердити, чи надіслано допис. Перевірте нитку перед повторною спробою."
 
 #: ../../../../js/captcha.js:30
 msgid "Verification"
