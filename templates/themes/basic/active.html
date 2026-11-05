@@ -1,0 +1,107 @@
+{% macro plural(n, forms) -%}
+    {%- autoescape 'html' -%}
+    {{- forms[n % 100 >= 11 and n % 100 <= 14 ? 2 : (n % 10 == 1 ? 0 : (n % 10 >= 2 and n % 10 <= 4 ? 1 : 2))] -}}
+    {%- endautoescape -%}
+{%- endmacro %}
+
+{% macro news_item(item, timezone, open) %}
+    {% autoescape 'html' %}
+    <details class="news-item" id="{{ item.id }}"{% if open %} open{% endif %}>
+        <summary><time datetime="{{ item.time|date('Y-m-d', timezone) }}">{{ item.time|date('d.m.Y', timezone) }}</time><span class="news-title">{{ item.subject|default('Без теми') }}</span></summary>
+        <div class="news-body">{{ item.body|raw }}<a class="news-permalink" href="#{{ item.id }}" aria-label="Посилання на новину">#{{ item.id }}</a></div>
+    </details>
+    {% endautoescape %}
+{% endmacro %}
+
+{% autoescape 'html' %}
+{% import _self as ui %}
+{% set title = settings.head_title|default(settings.title) %}
+{% set description = settings.description|default(config.meta_description|default('')) %}
+{% set canonical = settings.canonical_url|default(config.root starts with 'http://' or config.root starts with 'https://' ? config.root : config.domain ~ config.root) %}
+{% set locale = config.locale|default('uk')|split('.')|first %}
+{% set stats = activity.stats %}
+{% set metrics = [
+    {value: stats.posts_24h|number_format(0, ',', ' '), label: ui.plural(stats.posts_24h, ['пост', 'пости', 'постів']) ~ ' / 24 год'},
+    {value: stats.replies_24h|number_format(0, ',', ' '), label: ui.plural(stats.replies_24h, ['відповідь', 'відповіді', 'відповідей']) ~ ' / 24 год'},
+    {value: stats.threads_24h|number_format(0, ',', ' '), label: ui.plural(stats.threads_24h, ['новий тред', 'нові треди', 'нових тредів']) ~ ' / 24 год'},
+    {value: stats.total_threads|number_format(0, ',', ' '), label: ui.plural(stats.total_threads, ['тред', 'треди', 'тредів'])}
+] %}
+{% if stats.media_bytes is not null %}
+    {% set metrics = metrics|merge([{value: (stats.media_bytes / 1000000000)|number_format(2, ',', ' '), label: 'ГБ файлів'}]) %}
+{% endif %}
+{% set metrics = metrics|merge([
+    {value: stats.peak_hour|number_format(0, ',', ' '), label: ui.plural(stats.peak_hour, ['пост', 'пости', 'постів']) ~ ' / год · пік'},
+    {value: stats.threads_7d|number_format(0, ',', ' '), label: ui.plural(stats.threads_7d, ['новий тред', 'нові треди', 'нових тредів']) ~ ' / 7 діб'}
+]) %}
+{% for board in activity.boards|sort((a, b) => b.posts_7d <=> a.posts_7d)|slice(0, 3) %}
+    {% set metrics = metrics|merge([{value: board.posts_7d|number_format(0, ',', ' '), label: '/' ~ board.uri ~ '/ · ' ~ ui.plural(board.posts_7d, ['пост', 'пости', 'постів']) ~ ' за 7 діб'}]) %}
+{% endfor %}
+<!doctype html>
+<html lang="{{ locale|split('_')|first }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="referrer" content="same-origin">
+    <title>{{ title }}</title>
+    {% if description %}<meta name="description" content="{{ description }}">{% endif %}
+    <link rel="canonical" href="{{ canonical }}">
+    <meta property="og:title" content="{{ title }}">
+    {% if description %}<meta property="og:description" content="{{ description }}">{% endif %}
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ canonical }}">
+    <meta property="og:locale" content="{{ locale }}">
+    {% if config.url_favicon %}<link rel="icon" href="{{ config.url_favicon }}">{% endif %}
+    <link rel="stylesheet" href="{{ assets.css }}">
+    <script src="{{ assets.js }}" defer></script>
+</head>
+<body class="theme-retro">
+    <a class="skip" href="#boards">До дошок</a>
+    <div class="page">
+        <div class="top">
+            <header class="identity">
+                {% if logos %}<a class="brand" href="{{ config.root }}" aria-label="{{ title }}"><img class="logo" src="{{ logos[0] }}" width="432" height="144" alt="{{ title }}"{% if logos|length > 1 %} data-logos="{{ logos|json_encode|e('html_attr') }}"{% endif %}></a>{% endif %}
+                <div class="lead"><h1>{{ settings.title|default(title) }}</h1>{% if settings.subtitle %}<p>{{ settings.subtitle }}</p>{% endif %}<nav class="site-links" aria-label="Головна навігація"><a href="{{ config.root }}*/">Оверборда</a><a href="{{ config.root }}rules.html">Правила</a></nav></div>
+            </header>
+            <nav class="board-index" id="boards" aria-labelledby="boards-title">
+                <h2 id="boards-title">Дошки <span>пости за 7 діб</span></h2>
+                <ul>{% for board in navigation %}<li><a href="{{ board.link }}"><code>/{{ board.uri }}/</code><span class="board-name">{{ board.title }}{% if board.adult %} <small>18+</small>{% endif %}</span>{% if board.posts_7d is not null %}<span class="board-count" title="{{ board.posts_7d|number_format(0, ',', ' ') }} {{ ui.plural(board.posts_7d, ['пост', 'пости', 'постів']) }} за 7 діб" aria-label="{{ board.posts_7d|number_format(0, ',', ' ') }} {{ ui.plural(board.posts_7d, ['пост', 'пости', 'постів']) }} за 7 діб">{{ board.posts_7d|number_format(0, ',', ' ') }}</span>{% endif %}</a></li>{% endfor %}</ul>
+            </nav>
+        </div>
+        <main>
+            <section class="stats" aria-label="Статистика борди">
+                <div class="ticker"><div class="ticker-track">{% for copy in 0..1 %}<ul class="ticker-items"{% if copy %} aria-hidden="true"{% endif %}>{% for metric in metrics %}<li><span class="metric-value">{{ metric.value }}</span><span class="metric-label">{{ metric.label }}</span></li>{% endfor %}</ul>{% endfor %}</div></div>
+                <div class="activity-chart"><div class="sparkline" role="img" aria-label="{{ stats.posts_24h }} {{ ui.plural(stats.posts_24h, ['пост', 'пости', 'постів']) }} за останні 24 години. Найбільше за годину: {{ stats.peak_hour }}.">{% for hour in activity.hours %}<span aria-hidden="true" style="--bar-height:{{ (hour.count / max(1, stats.peak_hour) * 24)|round }}px" title="{{ hour.time|date('d.m H:i', config.timezone) }}–{{ (hour.time + 3600)|date('H:i', config.timezone) }} · {{ hour.count }} {{ ui.plural(hour.count, ['пост', 'пости', 'постів']) }}"></span>{% endfor %}</div><small>24 год</small></div>
+                <button class="ticker-toggle" type="button" aria-pressed="false" aria-label="Призупинити рух метрик" title="Призупинити рух метрик" hidden><span aria-hidden="true">Ⅱ</span></button>
+            </section>
+            <div class="content-grid">
+                <section class="activity" aria-labelledby="activity-title">
+                    <div class="section-top"><h2 id="activity-title">Обговорення</h2><div class="feed-switch" hidden><button type="button" data-feed="threads" aria-controls="feed-threads" aria-pressed="true">Треди</button><button type="button" data-feed="replies" aria-controls="feed-replies" aria-pressed="false">Відповіді</button></div></div>
+                    {% for kind, label in {threads: 'Активні треди', replies: 'Останні відповіді'} %}
+                    <div class="feed-panel" id="feed-{{ kind }}"><h3 class="feed-heading">{{ label }}</h3><ul class="feed-list">
+                        {% for item in attribute(activity, kind) %}
+                        <li><a class="feed-link" href="{{ item.link }}"><span class="board">/{{ item.board }}/</span><span class="feed-title">{{ item.title }}</span><span class="reply-count" title="{{ kind == 'threads' ? 'Відповідей у треді' : 'Номер відповіді' }}" aria-label="{{ kind == 'threads' ? item.replies|number_format(0, ',', ' ') ~ ' ' ~ ui.plural(item.replies, ['відповідь', 'відповіді', 'відповідей']) : 'Відповідь №' ~ item.id }}">{{ kind == 'threads' ? item.replies|number_format(0, ',', ' ') : '№' ~ item.id }}</span><time datetime="{{ item.time|date('c', config.timezone) }}" title="{{ item.time|date('d.m.Y H:i T', config.timezone) }}">{{ item.time|date('d.m', config.timezone) }} · {{ item.time|date('H:i', config.timezone) }}</time><span class="hover-preview" aria-hidden="true">{% if kind == 'replies' %}<b>{{ item.thread_title }}</b>{% endif %}{{ item.text }}</span></a></li>
+                        {% else %}<li class="feed-empty">{{ kind == 'threads' ? 'Поки немає тредів.' : 'Поки немає відповідей.' }}</li>{% endfor %}
+                    </ul></div>
+                    {% endfor %}
+                    <a class="all-activity" href="{{ config.root }}recent.html">Усі активні треди →</a>
+                </section>
+                <section class="news" aria-labelledby="news-title">
+                    <h2 id="news-title">Новини</h2>
+                    {% for item in news|slice(0, 3) %}{{ ui.news_item(item, config.timezone, loop.first) }}{% endfor %}
+                    {% if news|length > 3 %}<details class="news-archive"><summary>Ще {{ news|length - 3 }} {{ ui.plural(news|length - 3, ['новина', 'новини', 'новин']) }}</summary>{% for item in news|slice(3) %}{{ ui.news_item(item, config.timezone, false) }}{% endfor %}</details>{% endif %}
+                </section>
+            </div>
+            {% if settings.meta %}<section class="about" aria-label="Про борду">{{ settings.meta|raw }}</section>{% endif %}
+            {% if settings.irc or settings.i2p or settings.irc_i2p %}
+            <section class="connections" aria-label="Інші способи підключення"><details><summary>IRC / I2P</summary><dl>
+                {% if settings.irc %}<dt>IRC · TLS</dt><dd><a href="ircs://{{ settings.irc }}">{{ settings.irc }}</a><button class="copy" type="button" data-copy="{{ settings.irc }}" hidden>Копіювати</button></dd>{% endif %}
+                {% if settings.i2p %}<dt>I2P</dt><dd><a href="{{ settings.i2p }}">{{ settings.i2p|replace({'http://': '', 'https://': ''})|trim('/') }}</a><button class="copy" type="button" data-copy="{{ settings.i2p }}" hidden>Копіювати</button></dd>{% endif %}
+                {% if settings.irc_i2p %}<dt>IRC через I2P · TLS</dt><dd><code>{{ settings.irc_i2p }}</code><button class="copy" type="button" data-copy="{{ settings.irc_i2p }}" hidden>Копіювати</button></dd>{% endif %}
+            </dl>{% if settings.irc_i2p %}<p class="irc-note">Для IRC через I2P: SOCKS5 і TLS у клієнті, не irc2p.</p>{% endif %}<p class="copy-status" role="status"></p></details></section>
+            {% endif %}
+        </main>
+        <footer><span>{{ canonical|replace({'http://': '', 'https://': ''})|trim('/') }}</span><nav aria-label="Службові посилання"><a href="https://github.com/dead-guru/devichan">GitHub</a></nav></footer>
+    </div>
+</body>
+</html>
+{% endautoescape %}
