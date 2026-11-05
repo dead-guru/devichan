@@ -45,7 +45,7 @@ class Basic {
     }
 
     public static function homepage($settings, bool $refresh = false) {
-        global $config;
+        global $config, $twig;
 
         $settings['no_recent'] = (int)$settings['no_recent'];
         $logos = preg_split('/\s*[\r\n]+\s*/', trim($settings['logo'] ?? ''), -1, PREG_SPLIT_NO_EMPTY);
@@ -67,7 +67,16 @@ class Basic {
             $data['assets'][$extension] = $config['root'] . trim($config['dir']['themes_uri'], '/') . '/basic/' . $file
                 . '?v=' . substr(hash_file('sha256', __DIR__ . '/' . $file), 0, 12);
         }
-        return Element('themes/basic/active.html', $data);
+        if (!$twig) {
+            load_twig();
+        }
+        $cache = $twig->getCache();
+        $twig->setCache(false);
+        try {
+            return Element('themes/basic/active.html', $data);
+        } finally {
+            $twig->setCache($cache);
+        }
     }
 
     private static function navigation(array $settings, array $activity): array {

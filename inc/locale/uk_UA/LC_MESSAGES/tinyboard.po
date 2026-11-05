@@ -4304,3 +4304,179 @@ msgstr "Видалити все на всіх дошках"
 
 msgid "Posts in 24 hours"
 msgstr "Дописів за 24 год"
+
+#: ../../../../templates/themes/basic/active.html
+msgid "Link to news item"
+msgstr "Посилання на новину"
+
+#: ../../../../templates/themes/basic/active.html
+msgid "Skip to boards"
+msgstr "До дошок"
+
+#: ../../../../templates/themes/basic/active.html
+msgid "posts in the last 7 days"
+msgstr "пости за 7 діб"
+
+#: ../../../../templates/themes/basic/active.html
+msgid "Board statistics"
+msgstr "Статистика борди"
+
+#: ../../../../templates/themes/basic/active.html
+msgid "GB of files"
+msgstr "ГБ файлів"
+
+#: ../../../../templates/themes/basic/active.html
+msgid "24 h"
+msgstr "24 год"
+
+#: ../../../../templates/themes/basic/active.html
+msgid "Pause metrics"
+msgstr "Призупинити рух метрик"
+
+#: ../../../../templates/themes/basic/active.html
+msgid "Resume metrics"
+msgstr "Продовжити рух метрик"
+
+#: ../../../../templates/themes/basic/active.html
+msgid "Discussions"
+msgstr "Обговорення"
+
+#: ../../../../templates/themes/basic/active.html
+msgid "Threads"
+msgstr "Треди"
+
+#: ../../../../templates/themes/basic/active.html
+msgid "Replies"
+msgstr "Відповіді"
+
+#: ../../../../templates/themes/basic/active.html
+msgid "Active threads"
+msgstr "Активні треди"
+
+#: ../../../../templates/themes/basic/active.html
+msgid "Latest replies"
+msgstr "Останні відповіді"
+
+#: ../../../../templates/themes/basic/active.html
+msgid "Replies in thread"
+msgstr "Відповідей у треді"
+
+#: ../../../../templates/themes/basic/active.html
+msgid "Reply number"
+msgstr "Номер відповіді"
+
+#: ../../../../templates/themes/basic/active.html
+msgid "Reply #%id%"
+msgstr "Відповідь №%id%"
+
+#: ../../../../templates/themes/basic/active.html
+msgid "No threads yet."
+msgstr "Поки немає тредів."
+
+#: ../../../../templates/themes/basic/active.html
+msgid "No replies yet."
+msgstr "Поки немає відповідей."
+
+#: ../../../../templates/themes/basic/active.html
+msgid "About the site"
+msgstr "Про сайт"
+
+#: ../../../../templates/themes/basic/active.html
+msgid "Footer links"
+msgstr "Службові посилання"
+
+#: ../../../../templates/themes/basic/active.html
+msgid "Copy"
+msgstr "Копіювати"
+
+#: ../../../../templates/themes/basic/active.html
+msgid "Copied"
+msgstr "Скопійовано"
+
+#: ../../../../templates/themes/basic/active.html
+msgid "Could not copy. Select the address and copy it manually."
+msgstr "Не вдалося скопіювати. Виділи адресу й скопіюй її вручну."
+
+#: ../../../../templates/themes/basic/active.html
+msgid "post / 24 h"
+msgid_plural "posts / 24 h"
+msgstr[0] "пост / 24 год"
+msgstr[1] "пости / 24 год"
+msgstr[2] "постів / 24 год"
+
+#: ../../../../templates/themes/basic/active.html
+msgid "reply / 24 h"
+msgid_plural "replies / 24 h"
+msgstr[0] "відповідь / 24 год"
+msgstr[1] "відповіді / 24 год"
+msgstr[2] "відповідей / 24 год"
+
+#: ../../../../templates/themes/basic/active.html
+msgid "new thread / 24 h"
+msgid_plural "new threads / 24 h"
+msgstr[0] "новий тред / 24 год"
+msgstr[1] "нові треди / 24 год"
+msgstr[2] "нових тредів / 24 год"
+
+#: ../../../../templates/themes/basic/active.html
+msgid "thread"
+msgid_plural "threads"
+msgstr[0] "тред"
+msgstr[1] "треди"
+msgstr[2] "тредів"
+
+#: ../../../../templates/themes/basic/active.html
+msgid "post / hour (peak)"
+msgid_plural "posts / hour (peak)"
+msgstr[0] "пост / год · пік"
+msgstr[1] "пости / год · пік"
+msgstr[2] "постів / год · пік"
+
+#: ../../../../templates/themes/basic/active.html
+msgid "new thread / 7 days"
+msgid_plural "new threads / 7 days"
+msgstr[0] "новий тред / 7 діб"
+msgstr[1] "нові треди / 7 діб"
+msgstr[2] "нових тредів / 7 діб"
+
+#: ../../../../templates/themes/basic/active.html
+msgid "post in the last 7 days"
+msgid_plural "posts in the last 7 days"
+msgstr[0] "пост за 7 діб"
+msgstr[1] "пости за 7 діб"
+msgstr[2] "постів за 7 діб"
+
+#: ../../../../templates/themes/basic/active.html
+msgid "%count% post in the last 7 days"
+msgid_plural "%count% posts in the last 7 days"
+msgstr[0] "%count% пост за 7 діб"
+msgstr[1] "%count% пости за 7 діб"
+msgstr[2] "%count% постів за 7 діб"
+
+#: ../../../../templates/themes/basic/active.html
+msgid "%count% post in the last 24 hours. Peak: %peak% in one hour."
+msgid_plural "%count% posts in the last 24 hours. Peak: %peak% in one hour."
+msgstr[0] "%count% пост за останні 24 години. Найбільше за годину: %peak%."
+msgstr[1] "%count% пости за останні 24 години. Найбільше за годину: %peak%."
+msgstr[2] "%count% постів за останні 24 години. Найбільше за годину: %peak%."
+
+#: ../../../../templates/themes/basic/active.html
+msgid "%count% post"
+msgid_plural "%count% posts"
+msgstr[0] "%count% пост"
+msgstr[1] "%count% пости"
+msgstr[2] "%count% постів"
+
+#: ../../../../templates/themes/basic/active.html
+msgid "%count% reply"
+msgid_plural "%count% replies"
+msgstr[0] "%count% відповідь"
+msgstr[1] "%count% відповіді"
+msgstr[2] "%count% відповідей"
+
+#: ../../../../templates/themes/basic/active.html
+msgid "%count% more news item"
+msgid_plural "%count% more news items"
+msgstr[0] "Ще %count% новина"
+msgstr[1] "Ще %count% новини"
+msgstr[2] "Ще %count% новин"

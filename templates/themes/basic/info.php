@@ -84,10 +84,7 @@
 	);
 	foreach (Array(
 		'description' => Array('Search description', 'A short plain-text description of the site.'),
-		'canonical_url' => Array('Canonical URL', 'Full homepage URL, including https://.'),
-		'irc' => Array('IRC address', 'TLS host:port. Optional.'),
-		'i2p' => Array('I2P address', 'Full I2P homepage URL. Optional.'),
-		'irc_i2p' => Array('IRC over I2P', 'TLS host:port. Optional.')
+		'canonical_url' => Array('Canonical URL', 'Full homepage URL, including https://.')
 	) as $name => $field) {
 		$theme['config'][] = Array(
 			'title' => $field[0], 'name' => $name, 'type' => 'text',

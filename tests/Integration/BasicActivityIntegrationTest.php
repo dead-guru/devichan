@@ -236,9 +236,18 @@ final class BasicActivityIntegrationTest extends TestCase
         self::assertFalse($page->querySelector('#feed-replies')->hasAttribute('hidden'));
         self::assertTrue($page->querySelector('.feed-switch')->hasAttribute('hidden'));
         self::assertSame('/hpb/res/1.html#2', $page->querySelector('#feed-replies .feed-link')->getAttribute('href'));
+        $replyTime = $page->querySelector('#feed-replies time');
+        self::assertMatchesRegularExpression('/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}[+-]\d{2}:?\d{2}$/', $replyTime->getAttribute('datetime'));
+        self::assertSame($this->now - 10, (new \DateTimeImmutable($replyTime->getAttribute('datetime')))->getTimestamp());
+        self::assertSame(gmdate('d.m · H:i', $this->now - 10), $replyTime->textContent);
+        self::assertSame(gmdate('d.m.Y H:i', $this->now - 10) . ' GMT', $replyTime->getAttribute('title'));
         self::assertStringContainsString('Seed news', $page->querySelector('.news-item summary')->textContent);
         self::assertStringContainsString('Seed news body', $page->querySelector('.news-body')->textContent);
         self::assertTrue($page->querySelector('.news-item')->hasAttribute('open'));
+        $newsTime = (int)query('SELECT `time` FROM ``news`` ORDER BY `time` DESC LIMIT 1')->fetchColumn();
+        self::assertSame(gmdate('Y-m-d', $newsTime), $page->querySelector('.news-item time')->getAttribute('datetime'));
+        self::assertSame(gmdate('d.m.Y', $newsTime), $page->querySelector('.news-item time')->textContent);
+        self::assertMatchesRegularExpression('/^\d{2}\.\d{2} \d{2}:\d{2}–\d{2}:\d{2}/', $page->querySelector('.sparkline span')->getAttribute('title'));
         self::assertSame(1, $page->querySelectorAll('script')->length);
         self::assertSame('', trim($page->querySelector('script')->textContent));
         self::assertStringContainsString('<script>alert(1)</script>', $page->querySelector('#feed-replies')->textContent);
@@ -274,6 +283,59 @@ final class BasicActivityIntegrationTest extends TestCase
         clearstatcache(true, $path);
         self::assertSame(0640, fileperms($path) & 0777);
         self::assertSame([], glob($this->outputDirectory . '.homepage-*'));
+    }
+
+    public function testInterfaceUsesTheSiteLocaleAndKeepsInstanceLinksInOwnerContent(): void
+    {
+        global $config, $current_locale;
+
+        $locale = setlocale(LC_ALL, '0');
+        $currentLocale = $current_locale;
+        $settings = array_replace($this->settings, [
+            'title' => 'Fixture imageboard',
+            'canonical_url' => 'https://example.org/',
+            'board_links' => "hpa Board A\nhpb Board B\nhpunlisted Board without public statistics",
+            'meta' => '<nav id="owner-links"><a href="ircs://chat.example.org:6697">IRC</a><a href="/custom-rules">Rules</a></nav>',
+            'irc' => 'must-not-render.example:6697',
+            'i2p' => 'http://must-not-render.example.i2p/',
+            'irc_i2p' => 'must-not-render.example.i2p:6697',
+        ]);
+
+        try {
+            foreach ([
+                'en_US.UTF-8' => ['en', 'Boards', 'News', 'Latest replies', 'Pause metrics', 'posts / 24 h'],
+                'uk_UA.UTF-8' => ['uk', 'Дошки', 'Новини', 'Останні відповіді', 'Призупинити рух метрик', 'постів / 24 год'],
+            ] as $name => [$lang, $boards, $news, $replies, $pause, $posts]) {
+                $config['locale'] = $current_locale = $name;
+                init_locale($name);
+                $html = \Basic::homepage($settings, true);
+                $page = \Dom\HTMLDocument::createFromString($html, LIBXML_NOERROR);
+
+                self::assertSame($lang, $page->documentElement->getAttribute('lang'));
+                self::assertStringContainsString($boards, $page->querySelector('#boards-title')->textContent);
+                self::assertSame($news, trim($page->querySelector('#news-title')->textContent));
+                self::assertSame($replies, trim($page->querySelector('#feed-replies .feed-heading')->textContent));
+                self::assertSame($pause, $page->querySelector('.ticker-toggle')->getAttribute('data-pause-label'));
+                self::assertSame($posts, trim($page->querySelector('.metric-label')->textContent));
+                self::assertSame('ircs://chat.example.org:6697', $page->querySelector('#owner-links a')->getAttribute('href'));
+                self::assertNull($page->querySelector('a[href="/*/"]'));
+                self::assertNull($page->querySelector('a[href="/recent.html"]'));
+                self::assertNull($page->querySelector('a[href="/rules.html"]'));
+                self::assertStringNotContainsString('must-not-render.example', $html);
+                if ($lang === 'en') {
+                    self::assertDoesNotMatchRegularExpression('/[\x{0400}-\x{04ff}]/u', $html);
+                }
+            }
+        } finally {
+            $current_locale = $currentLocale;
+            setlocale(LC_ALL, $locale);
+        }
+
+        require 'templates/themes/basic/info.php';
+        $fields = array_column($theme['config'], 'name');
+        self::assertNotContains('irc', $fields);
+        self::assertNotContains('i2p', $fields);
+        self::assertNotContains('irc_i2p', $fields);
     }
 
     private function cachedSnapshot(): array

@@ -32,11 +32,11 @@
         const status = document.querySelector('.copy-status');
         try {
           await navigator.clipboard.writeText(button.dataset.copy);
-          button.textContent = 'Скопійовано';
-          status.textContent = '';
-          setTimeout(() => { button.textContent = 'Копіювати'; }, 1800);
+          button.textContent = document.body.dataset.copiedLabel;
+          if (status) status.textContent = '';
+          setTimeout(() => { button.textContent = document.body.dataset.copyLabel; }, 1800);
         } catch {
-          status.textContent = 'Не вдалося скопіювати. Виділи адресу й скопіюй її вручну.';
+          if (status) status.textContent = document.body.dataset.copyError;
         }
       });
     }
@@ -49,7 +49,7 @@
     toggle.hidden = false;
     toggle.addEventListener('click', () => {
       const paused = stats.classList.toggle('is-paused');
-      const label = paused ? 'Продовжити рух метрик' : 'Призупинити рух метрик';
+      const label = paused ? toggle.dataset.resumeLabel : toggle.dataset.pauseLabel;
       toggle.setAttribute('aria-pressed', String(paused));
       toggle.setAttribute('aria-label', label);
       toggle.title = label;
