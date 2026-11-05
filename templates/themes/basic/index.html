@@ -38,8 +38,8 @@
     {% endif %}
 </head>
 <body class="8chan main vichan {% if mod %}is-moderator{% else %}is-not-moderator{% endif %}" data-stylesheet="{% if config.default_stylesheet.1 != '' %}{{ config.default_stylesheet.1 }}{% else %}default{% endif %}">
-<header class="header">
-    <img {% if logos|length > 1 %}id="site-logo" data-logos="{{ logos|json_encode|e('html_attr') }}" {% endif %}src="{{ logos[0]|default('')|e('html_attr') }}" style="max-width: 460px; width: 100%; height: auto;{% if logos|length > 1 %} image-rendering: pixelated;{% endif %}" alt="Logo">
+<header class="header"{% if logos|length > 1 %} style="width: 100%;"{% endif %}>
+    <img {% if logos|length > 1 %}id="site-logo" width="600" height="200" data-logos="{{ logos|json_encode|e('html_attr') }}" {% endif %}src="{{ logos[0]|default('')|e('html_attr') }}" style="{% if logos|length > 1 %}display: block; width: 460px; max-width: 100%; height: auto; aspect-ratio: 3 / 1; object-fit: contain; margin: 0 auto; image-rendering: pixelated;{% else %}max-width: 460px; width: 100%; height: auto;{% endif %}" alt="Logo">
     {% if logos|length > 1 %}
     <script>
     (function(){

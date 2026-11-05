@@ -128,6 +128,10 @@ final class ThemeIntegrationTest extends TestCase
         self::assertNotNull($logo);
         self::assertSame($url, $logo->getAttribute('src'));
         self::assertFalse($logo->hasAttribute('data-logos'));
+        self::assertFalse($logo->hasAttribute('width'));
+        self::assertFalse($logo->hasAttribute('height'));
+        self::assertStringNotContainsString('aspect-ratio', $logo->getAttribute('style'));
+        self::assertStringNotContainsString('object-fit', $logo->getAttribute('style'));
         self::assertStringNotContainsString('pixelated', $logo->getAttribute('style'));
         self::assertStringNotContainsString('Math.random', $html);
     }
@@ -153,6 +157,10 @@ final class ThemeIntegrationTest extends TestCase
         self::assertNotNull($logo);
         self::assertSame($urls[0], $logo->getAttribute('src'));
         self::assertSame($urls, json_decode($logo->getAttribute('data-logos'), true, 512, JSON_THROW_ON_ERROR));
+        self::assertGreaterThan(0, (int) $logo->getAttribute('height'));
+        self::assertSame(3 * (int) $logo->getAttribute('height'), (int) $logo->getAttribute('width'));
+        self::assertStringContainsString('aspect-ratio: 3 / 1', $logo->getAttribute('style'));
+        self::assertStringContainsString('object-fit: contain', $logo->getAttribute('style'));
         self::assertStringContainsString('image-rendering: pixelated', $logo->getAttribute('style'));
         self::assertSame(1, $page->querySelectorAll('header img')->length);
     }
