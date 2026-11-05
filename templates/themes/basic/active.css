@@ -36,8 +36,7 @@ h2 { font-size:17px; font-weight:400; }
 .feed-switch button[aria-pressed=true] { background:var(--surface); border-color:var(--line); }
 .feed-switch button:hover { color:var(--accent); }
 .feed-heading { font-size:14px; font-weight:400; margin:10px 0; }
-.enhanced #feed-threads .feed-heading { display:none; }
-.enhanced #feed-replies .feed-heading { font-size:11px; color:var(--muted); margin:0 0 9px; }
+.enhanced .feed-heading { display:none; }
 .feed-list { padding:0; margin:0; list-style:none; }
 .feed-link { position:relative; display:grid; grid-template-columns:35px minmax(0,1fr) auto; column-gap:12px; align-items:baseline; padding:10px 0; border-top:1px solid var(--line); text-decoration:none; }
 .feed-link .board { font:11px/1.5 'Courier New',monospace; color:var(--muted); }
