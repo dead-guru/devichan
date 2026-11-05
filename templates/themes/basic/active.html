@@ -61,7 +61,7 @@
         <div class="top">
             <header class="identity">
                 {% if logos %}<a class="brand" href="{{ config.root }}" aria-label="{{ title }}"><img class="logo" src="{{ logos[0] }}" width="432" height="144" alt="{{ title }}"{% if logos|length > 1 %} data-logos="{{ logos|json_encode|e('html_attr') }}"{% endif %}></a>{% endif %}
-                <div class="lead"><h1>{{ settings.title|default(title) }}</h1>{% if settings.subtitle %}<p>{{ settings.subtitle }}</p>{% endif %}</div>
+                <div class="lead"><h1>{{ settings.title|default(title) }}</h1>{% if settings.subtitle %}<p>{{ settings.subtitle }}</p>{% endif %}{% if settings.header_links %}<nav class="site-links">{{ settings.header_links|raw }}</nav>{% endif %}</div>
             </header>
             <nav class="board-index" id="boards" aria-labelledby="boards-title">
                 <h2 id="boards-title">{{ 'Boards'|trans }} <span>{{ 'posts in the last 7 days'|trans }}</span></h2>

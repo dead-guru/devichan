@@ -38,6 +38,13 @@
 		'comment' => 'One image URL per line. Each page load picks a random logo.'
 	);
 	$theme['config'][] = Array(
+		'title' => 'Header links',
+		'name' => 'header_links',
+		'type' => 'textarea',
+		'default' => '',
+		'comment' => 'Optional HTML links below the slogan on the active homepage.'
+	);
+	$theme['config'][] = Array(
 		'title' => 'meta',
 		'name' => 'meta',
 		'type' => 'textarea',
