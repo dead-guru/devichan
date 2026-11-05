@@ -39,7 +39,20 @@
 </head>
 <body class="8chan main vichan {% if mod %}is-moderator{% else %}is-not-moderator{% endif %}" data-stylesheet="{% if config.default_stylesheet.1 != '' %}{{ config.default_stylesheet.1 }}{% else %}default{% endif %}">
 <header class="header">
-    <img src="{{ settings.logo }}" style="max-width: 460px; width: 100%; height: auto;" alt="Logo">
+    <img {% if logos|length > 1 %}id="site-logo" data-logos="{{ logos|json_encode|e('html_attr') }}" {% endif %}src="{{ logos[0]|default('')|e('html_attr') }}" style="max-width: 460px; width: 100%; height: auto;{% if logos|length > 1 %} image-rendering: pixelated;{% endif %}" alt="Logo">
+    {% if logos|length > 1 %}
+    <script>
+    (function(){
+        var logo = document.getElementById('site-logo');
+        var logos = JSON.parse(logo.getAttribute('data-logos'));
+        logo.onerror = function(){
+            this.onerror = null;
+            this.src = logos[0];
+        };
+        logo.src = logos[Math.floor(Math.random() * logos.length)];
+    })();
+    </script>
+    {% endif %}
     <h1>{{ settings.title }}</h1>
     <div class="subtitle">{{ settings.subtitle }}</div>
 </header>

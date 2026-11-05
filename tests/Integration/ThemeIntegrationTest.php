@@ -114,6 +114,49 @@ final class ThemeIntegrationTest extends TestCase
         self::assertFileExists($this->outputDirectory . 'bans.json');
     }
 
+    public function testBasicSingleLogoWorksWithoutRotation(): void
+    {
+        global $config;
+
+        require_once 'templates/themes/basic/theme.php';
+
+        $url = '/static/logo.png?v=1&style="plain"';
+        $html = \Basic::homepage(['logo' => $url, 'no_recent' => '1']);
+        $page = \Dom\HTMLDocument::createFromString($html, LIBXML_NOERROR);
+        $logo = $page->querySelector('header img');
+
+        self::assertNotNull($logo);
+        self::assertSame($url, $logo->getAttribute('src'));
+        self::assertFalse($logo->hasAttribute('data-logos'));
+        self::assertStringNotContainsString('pixelated', $logo->getAttribute('style'));
+        self::assertStringNotContainsString('Math.random', $html);
+    }
+
+    public function testBasicLogoListKeepsStaticFallbackAndCacheableUrls(): void
+    {
+        global $config;
+
+        require_once 'templates/themes/basic/theme.php';
+
+        $urls = [
+            '/static/logos/one-a1b2c3d4.png',
+            '/static/logos/two-e5f6a7b8.png?v=1&style="pixel"',
+            '/static/logos/three-c9d0e1f2.png',
+        ];
+        $html = \Basic::homepage([
+            'logo' => " \r\n" . $urls[0] . "\r\n\r\n " . $urls[1] . " \r" . $urls[2] . "\n\t",
+            'no_recent' => '1',
+        ]);
+        $page = \Dom\HTMLDocument::createFromString($html, LIBXML_NOERROR);
+        $logo = $page->querySelector('header img');
+
+        self::assertNotNull($logo);
+        self::assertSame($urls[0], $logo->getAttribute('src'));
+        self::assertSame($urls, json_decode($logo->getAttribute('data-logos'), true, 512, JSON_THROW_ON_ERROR));
+        self::assertStringContainsString('image-rendering: pixelated', $logo->getAttribute('style'));
+        self::assertSame(1, $page->querySelectorAll('header img')->length);
+    }
+
     public function testIndexHandlesTextPostsAcrossBoardsAndMissingSpoilerImages(): void
     {
         global $config;

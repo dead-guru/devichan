@@ -24,12 +24,14 @@
 			global $config;
 			
 			$settings['no_recent'] = (int) $settings['no_recent'];
+			$logos = preg_split('/\s*[\r\n]+\s*/', trim($settings['logo'] ?? ''), -1, PREG_SPLIT_NO_EMPTY);
 			
 			$query = query("SELECT * FROM ``news`` ORDER BY `time` DESC" . ($settings['no_recent'] ? ' LIMIT ' . $settings['no_recent'] : '')) or error(db_error());
 			$news = $query->fetchAll(PDO::FETCH_ASSOC);
 			
 			return Element('themes/basic/index.html', Array(
 				'settings' => $settings,
+				'logos' => $logos,
 				'config' => $config,
 				'boardlist' => createBoardlist(),
 				'news' => $news

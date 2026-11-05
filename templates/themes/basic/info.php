@@ -33,9 +33,9 @@
 	$theme['config'][] = Array(
 		'title' => 'Logo',
 		'name' => 'logo',
-		'type' => 'text',
+		'type' => 'textarea',
         'default' => '/static/dd2.png',
-		'comment' => '/static/dd2.png'
+		'comment' => 'One image URL per line. Each page load picks a random logo.'
 	);
 	$theme['config'][] = Array(
 		'title' => 'meta',
