@@ -1,6 +1,6 @@
 <?php
 $baseDir = realpath(__DIR__ . '/static/banners') ?: (__DIR__ . '/static/banners');
-$dir = $baseDir;
+$dirs = [$baseDir];
 
 if (isset($_GET['board']) && is_string($_GET['board'])) {
     $board = trim($_GET['board']);
@@ -10,26 +10,28 @@ if (isset($_GET['board']) && is_string($_GET['board'])) {
         $real = realpath($candidate);
         $baseReal = realpath($baseDir) ?: $baseDir;
         if ($real !== false && is_dir($real) && str_starts_with($real, $baseReal . DIRECTORY_SEPARATOR)) {
-            $dir = $real;
+            $dirs[] = $real;
         }
     }
 }
 
 $allowedExtensions = ['gif', 'jpg', 'jpeg', 'png', 'webp', 'svg', 'apng'];
-$entries = @scandir($dir, SCANDIR_SORT_NONE) ?: [];
 $images = [];
 
-foreach ($entries as $file) {
-    if ($file === '.' || $file === '..' || $file === '' || $file[0] === '.') {
-        continue;
-    }
-    $path = $dir . DIRECTORY_SEPARATOR . $file;
-    if (!is_file($path)) {
-        continue;
-    }
-    $ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
-    if (in_array($ext, $allowedExtensions, true)) {
-        $images[] = $file;
+foreach ($dirs as $dir) {
+    $entries = @scandir($dir, SCANDIR_SORT_NONE) ?: [];
+    foreach ($entries as $file) {
+        if ($file === '.' || $file === '..' || $file === '' || $file[0] === '.') {
+            continue;
+        }
+        $path = $dir . DIRECTORY_SEPARATOR . $file;
+        if (!is_file($path)) {
+            continue;
+        }
+        $ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+        if (in_array($ext, $allowedExtensions, true)) {
+            $images[] = $path;
+        }
     }
 }
 
@@ -43,8 +45,8 @@ if (!$images) {
     exit;
 }
 
-$selected = $images[array_rand($images)];
-$path = $dir . DIRECTORY_SEPARATOR . $selected;
+$path = $images[array_rand($images)];
+$selected = basename($path);
 
 $finfo = function_exists('finfo_open') ? finfo_open(FILEINFO_MIME_TYPE) : false;
 $type = $finfo ? finfo_file($finfo, $path) : null;
