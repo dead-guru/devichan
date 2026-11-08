@@ -2316,14 +2316,6 @@ form[name="post"] input[type="password"]:focus {
     outline: none;
 }
 
-form[name="post"] input[type="submit"],
-button[type="submit"],
-input[type="submit"] {
-    height: auto;
-    line-height: 1.2;
-    vertical-align: middle;
-}
-
 .format-text {
     margin-bottom: 8px;
     padding-bottom: 8px;
