@@ -669,6 +669,17 @@ table, table td {
     border-style: none;
 }
 
+table.modlog tr th,
+table.test tr.h th,
+table.mod.config-editor tr:first-child th {
+    background: var(--theme_default_postbghighlight);
+    color: var(--theme_default_title);
+}
+
+table.mod.config-editor td {
+    border-bottom-color: var(--theme_default_border);
+}
+
 .nothumb {
     background-color: var(--theme_default_altbtnbghover);
     border: 2px dashed var(--theme_default_border);
