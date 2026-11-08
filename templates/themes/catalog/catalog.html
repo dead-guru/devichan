@@ -19,20 +19,15 @@
 		</div>
 	</header>
 
-        <span>{% trans 'Sort by' %}: </span>
-        <select id="sort_by" style="display: inline-block">
+        <div class="catalog-controls">
+        <a href="{{link}}">← {% trans 'Back to board' %}</a>
+        <select id="sort_by" aria-label="{% trans 'Sort by' %}">
                 <option selected value="bump:desc">{% trans 'Bump order' %}</option>
                 <option value="time:desc">{% trans 'Creation date' %}</option>
                 <option value="reply:desc">{% trans 'Reply count' %}</option>
                 <option value="random:desc">{% trans 'Random' %}</option>
         </select>
-
-        <span>{% trans 'Image size' %}: </span>
-        <select id="image_size" style="display: inline-block">
-                <option value="vsmall">{% trans 'Very small' %}</option>
-                <option selected value="small">{% trans 'Small' %}</option>
-                <option value="large">{% trans 'Large' %}</option>
-        </select>
+        </div>
         <div class="threads">
                 <div id="Grid">
                 {% for post in recent_posts %}
@@ -46,7 +41,7 @@
 				 data-sticky="{% if post.sticky %}true{% else %}false{% endif %}"
 				 data-locked="{% if post.locked %}true{% else %}false{% endif %}"
 			>
-                                <div class="thread grid-li grid-size-small">
+                                <div class="thread grid-li grid-size-large">
                                         <a href="{{post.link}}">
 						{% if post.youtube %}
 							<img src="//img.youtube.com/vi/{{ post.youtube }}/0.jpg" data-fullimage="//img.youtube.com/vi/{{ post.youtube }}/0.jpg"
@@ -56,7 +51,7 @@
                                                  id="img-{{ post.id }}" data-subject="{% if post.subject %}{{ post.subject|e }}{% endif %}" data-name="{{ post.name|e }}" data-muhdifference="{{ post.muhdifference }}" class="{{post.board}} thread-image" title="{{post.bump|date('%b %d %H:%M')}}" loading="lazy" decoding="async" alt="">
                                         </a>
                                                 <div class="replies">
-                                                        <strong>{% trans %}R{% endtrans %}: {{ post.reply_count }} / {% trans %}I{% endtrans %}: {{ post.image_count }}{% if post.sticky %} (sticky){% endif %}</strong>
+                                                        <strong>{% trans 'Replies' %}: {{ post.reply_count }} · {% trans 'Files' %}: {{ post.image_count }}{% if post.sticky %} ({% trans 'Sticky' %}){% endif %}</strong>
                                                         {% if post.subject %}
 								<p class="intro">
 									<span class="subject">

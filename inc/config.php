@@ -1015,6 +1015,7 @@
 	// available stylesheets (or create your own).
 	$config['stylesheets']['Yotsuba B'] = ''; // Default; there is no additional/custom stylesheet for this.
 	$config['stylesheets']['Yotsuba'] = 'yotsuba.css';
+	$config['stylesheets']['Deadach'] = 'deadach.css';
 	// $config['stylesheets']['Futaba'] = 'futaba.css';
 	// $config['stylesheets']['Dark'] = 'dark.css';
 

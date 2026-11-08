@@ -943,6 +943,47 @@ pre {
     font-family: monospace
 }
 
+.catalog-controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: .75em;
+    margin: 1.5em 0;
+}
+
+.theme-catalog #Grid.catalog-filterable > .mix {
+    display: none;
+}
+
+.catalog-controls > label {
+    display: flex;
+    align-items: center;
+    gap: .5em;
+}
+
+.catalog-controls select,
+.catalog-controls input {
+    box-sizing: border-box;
+    max-width: 100%;
+    margin: 0;
+    font: inherit;
+}
+
+.catalog-controls .catalog_search input {
+    width: 16em;
+}
+
+@media (max-width: 600px) {
+    .catalog-controls .catalog_search {
+        width: 100%;
+    }
+
+    .catalog-controls .catalog_search input {
+        width: 100%;
+    }
+}
+
 .theme-catalog div.thread img {
     float: none !important;
     margin: auto;

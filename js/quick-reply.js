@@ -56,21 +56,31 @@
 		}\
 		#quick-reply th, #quick-reply td {\
 			margin: 0;\
-			padding: 0;\
+			padding: 4px 8px;\
+			vertical-align: top;\
 		}\
 		#quick-reply th {\
 			text-align: center;\
-			padding: 2px 0;\
 			border: 1px solid #222;\
 		}\
 		#quick-reply th .handle {\
-			float: left;\
+			position: relative;\
+			float: none;\
 			width: 100%;\
-			display: inline-block;\
+			box-sizing: border-box;\
+			display: block;\
+			padding: 0 24px;\
+			line-height: 24px;\
 		}\
 		#quick-reply th .close-btn {\
-			float: right;\
-			padding: 0 5px;\
+			position: absolute;\
+			top: 0;\
+			right: 0;\
+			float: none;\
+			width: 24px;\
+			height: 24px;\
+			padding: 0;\
+			line-height: 24px;\
 			font-size: 20px;\
 		}\
 		#quick-reply input[type="text"], #quick-reply select, #quick-reply input[type="submit"] {\
@@ -84,6 +94,7 @@
 			vertical-align: middle;\
 		}\
 		#quick-reply textarea {\
+			display: block;\
 			width: 100%;\
 			min-width: 100%;\
 			box-sizing: border-box;\
@@ -94,7 +105,14 @@
 			padding: .4em .5em 1.7em;\
 		}\
 		#quick-reply input, #quick-reply select, #quick-reply textarea {\
-			margin: 0 0 1px 0;\
+			margin: 0;\
+		}\
+		#quick-reply .format-text {\
+			margin-bottom: 6px;\
+			padding-bottom: 0;\
+		}\
+		#quick-reply .dropzone {\
+			padding: 0 !important;\
 		}\
 		#quick-reply input[type="file"] {\
 			padding: 5px 2px;\
@@ -104,10 +122,10 @@
 		}\
 		#quick-reply td.submit {\
 			width: 1%;\
+			padding-left: 0;\
 		}\
 		#quick-reply td.recaptcha {\
 			text-align: center;\
-			padding: 0 0 1px 0;\
 		}\
 		#quick-reply td.recaptcha span {\
 			display: inline-block;\
@@ -115,9 +133,6 @@
 			background: white;\
 			border: 1px solid #ccc;\
 			cursor: pointer;\
-		}\
-		#quick-reply td.recaptcha-response {\
-			padding: 0 0 1px 0;\
 		}\
 		@media screen and (max-width: 768px) {\
 			#quick-reply {\
@@ -138,14 +153,6 @@
 				max-height: 100% !important;\
 				overflow-y: auto !important;\
 			}\
-			#quick-reply th {\
-				padding: 8px 5px !important;\
-			}\
-			#quick-reply th .close-btn {\
-				font-size: 20px;\
-				padding: 0 10px;\
-				line-height: 1;\
-			}\
 			#quick-reply textarea {\
 				min-height: 120px;\
 			}\
@@ -162,6 +169,11 @@
                 width: 100% !important;\
                 padding-bottom: 1.7em;\
             }\
+		}\
+		@media screen and (max-width: 480px) {\
+			#quick-reply .format-text {\
+				gap: 2px;\
+			}\
 		}\
 		</style>').appendTo($('head'));
     };
