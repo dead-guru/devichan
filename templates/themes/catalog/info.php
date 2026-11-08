@@ -14,7 +14,7 @@
 		'title' => 'Title',
 		'name' => 'title',
 		'type' => 'text',
-		'default' => 'Catalog'
+		'default' => _('Catalog')
 	);
 	
 	$__boards = listBoards();

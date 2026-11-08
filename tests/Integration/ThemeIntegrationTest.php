@@ -288,7 +288,7 @@ final class ThemeIntegrationTest extends TestCase
         self::assertFileDoesNotExist($directory . '/index.rss');
     }
 
-    public function testCatalogTranslatesItsDefaultTitleAndKeepsCustomTitles(): void
+    public function testCatalogLocalizesItsDefaultAndPreservesConfiguredTitles(): void
     {
         global $config, $current_locale;
 
@@ -305,9 +305,12 @@ final class ThemeIntegrationTest extends TestCase
             $config['dir']['home'] = $this->outputDirectory;
             $config['locale'] = $current_locale = 'uk_UA.UTF-8';
             init_locale($config['locale']);
+            $theme = loadThemeConfig('catalog');
+            $defaults = array_column($theme['config'], 'default', 'name');
+            self::assertSame('Каталог', $defaults['title']);
             $catalog = new \Catalog();
 
-            foreach (['Catalog' => 'Каталог', 'Files' => 'Files', '' => ''] as $title => $expected) {
+            foreach ([$defaults['title'], 'Catalog', 'Files', ''] as $title) {
                 $catalog->build([
                     'title' => $title,
                     'boards' => 'b',
@@ -317,7 +320,7 @@ final class ThemeIntegrationTest extends TestCase
                 $html = (string) file_get_contents($directory . '/catalog.html');
                 $page = \Dom\HTMLDocument::createFromString($html, LIBXML_NOERROR);
 
-                self::assertSame(trim($expected . ' (/b/)'), trim($page->querySelector('header h1')->textContent));
+                self::assertSame(trim($title . ' (/b/)'), trim($page->querySelector('header h1')->textContent));
             }
 
             self::assertSame('← На дошку', trim($page->querySelector('.catalog-controls a')->textContent));
