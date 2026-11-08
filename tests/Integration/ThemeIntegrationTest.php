@@ -288,6 +288,49 @@ final class ThemeIntegrationTest extends TestCase
         self::assertFileDoesNotExist($directory . '/index.rss');
     }
 
+    public function testCatalogTranslatesItsDefaultTitleAndKeepsCustomTitles(): void
+    {
+        global $config, $current_locale;
+
+        require_once 'templates/themes/catalog/theme.php';
+        $locale = setlocale(LC_ALL, '0');
+        $currentLocale = $current_locale;
+        $configLocale = $config['locale'];
+        $directory = $this->outputDirectory . 'b';
+        if (!is_dir($directory)) {
+            mkdir($directory, 0777, true);
+        }
+
+        try {
+            $config['dir']['home'] = $this->outputDirectory;
+            $config['locale'] = $current_locale = 'uk_UA.UTF-8';
+            init_locale($config['locale']);
+            $catalog = new \Catalog();
+
+            foreach (['Catalog' => 'Каталог', 'Files' => 'Files', '' => ''] as $title => $expected) {
+                $catalog->build([
+                    'title' => $title,
+                    'boards' => 'b',
+                    'update_on_posts' => '1',
+                    'use_tooltipster' => '1',
+                ], 'b');
+                $html = (string) file_get_contents($directory . '/catalog.html');
+                $page = \Dom\HTMLDocument::createFromString($html, LIBXML_NOERROR);
+
+                self::assertSame(trim($expected . ' (/b/)'), trim($page->querySelector('header h1')->textContent));
+            }
+
+            self::assertSame('← На дошку', trim($page->querySelector('.catalog-controls a')->textContent));
+            self::assertSame('За бампом', trim($page->querySelector('option[value="bump:desc"]')->textContent));
+            self::assertStringContainsString('Відповіді:', $page->querySelector('.replies strong')->textContent);
+            self::assertStringContainsString('Файли:', $page->querySelector('.replies strong')->textContent);
+        } finally {
+            $config['locale'] = $configLocale;
+            $current_locale = $currentLocale;
+            setlocale(LC_ALL, $locale);
+        }
+    }
+
     public function testCatalogUsesTheNextAvailableThumbnailAfterADeletedFile(): void
     {
         global $pdo;
