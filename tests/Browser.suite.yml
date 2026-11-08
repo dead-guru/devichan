@@ -8,6 +8,7 @@ modules:
             host: '%E2E_WEBDRIVER_HOST%'
             port: 4444
             browser: chrome
+            restart: true
             window_size: 1440x1000
             debug_log_entries: 100
             log_js_errors: true

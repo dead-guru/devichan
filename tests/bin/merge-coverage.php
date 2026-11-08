@@ -45,13 +45,15 @@ foreach ($chunkFiles as $chunkFile) {
 
     if ($coverage === null) {
         $coverage = $chunk;
-        continue;
+    } else {
+        $data = $coverage->getData();
+        $data->merge($chunk->getData());
+        $coverage->setData($data);
+        $coverage->setTests(array_merge($coverage->getTests(), $chunk->getTests()));
+        unset($data);
     }
 
-    $data = $coverage->getData();
-    $data->merge($chunk->getData());
-    $coverage->setData($data);
-    $coverage->setTests(array_merge($coverage->getTests(), $chunk->getTests()));
+    unset($chunk, $contents);
 }
 
 $coverage->clearCache();

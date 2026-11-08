@@ -92,7 +92,7 @@ vendor/bin/phpunit -c phpunit.xml \
     --log-junit "$project_directory/$output_directory/integration.junit.xml" \
     || status=1
 
-php tests/bin/merge-coverage.php \
+php -d memory_limit=256M tests/bin/merge-coverage.php \
     "$chunk_directory/browser.cov" \
     "$chunk_directory/http.cov" \
     "$chunk_directory/installer.cov" \
