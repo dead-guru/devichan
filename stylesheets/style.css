@@ -1822,6 +1822,7 @@ div.boardlist.bottom {
     flex: 1;
     min-width: 0;
     width: 100%;
+    height: auto;
     margin: 0;
     padding: .25em .45em;
     border: 0;
