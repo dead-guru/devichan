@@ -68,6 +68,8 @@ html {
     overflow-y: scroll;
     font-family: var(--theme_font);
     font-size: 14px;
+    scrollbar-color: var(--theme_sbthumb) var(--theme_sbtrack);
+    scrollbar-width: thin;
 }
 
 body {
@@ -85,24 +87,6 @@ body {
 ::selection {
     background: var(--theme_default_link);
     color: #fff8e8;
-}
-
-::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-}
-
-::-webkit-scrollbar-track {
-    background: var(--theme_sbtrack);
-}
-
-::-webkit-scrollbar-thumb {
-    background: var(--theme_sbthumb);
-    border: 1px solid var(--theme_default_border);
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: var(--theme_default_link);
 }
 
 .fullsize, video {
@@ -225,7 +209,7 @@ div.boardlist a:active {
 }
 
 div.boardlist #options_button {
-    margin-left: auto;
+    margin: 0 0 0 auto;
     flex-shrink: 0;
 }
 
