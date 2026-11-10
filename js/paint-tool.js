@@ -13,6 +13,12 @@
         return;
     }
 
+    function escapeHtml(text) {
+        return text.replace(/[&<>"']/g, char => ({
+            '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+        })[char]);
+    }
+
     class PaintState {
         constructor() {
             this.color = '#000000';
@@ -268,23 +274,23 @@
             const s = this.engine.state;
             return `
                 <div class="paint-toolbar-group">
-                    <span class="paint-lbl">Size</span>
-                    <input type="range" title="Size" class="paint-range size-ctl" min="1" max="50" value="${s.brushSize}">
+                    <span class="paint-lbl">${escapeHtml(_('Size'))}</span>
+                    <input type="range" title="${escapeHtml(_('Size'))}" class="paint-range size-ctl" min="1" max="50" value="${s.brushSize}">
                     <span class="paint-lbl size-val">${s.brushSize}px</span>
                 </div>
                 <div class="paint-toolbar-group">
-                    <span class="paint-lbl">Opacity</span>
-                    <input type="range" title="Opacity" class="paint-range opacity-ctl" min="0" max="100" value="${s.opacity*100}">
+                    <span class="paint-lbl">${escapeHtml(_('Opacity'))}</span>
+                    <input type="range" title="${escapeHtml(_('Opacity'))}" class="paint-range opacity-ctl" min="0" max="100" value="${s.opacity*100}">
                     <span class="paint-lbl opacity-val">${Math.round(s.opacity*100)}%</span>
                 </div>
                 <div class="paint-toolbar-group">
-                    <span class="paint-lbl">Smooth</span>
-                    <input type="range" title="Smoothing" class="paint-range smoothing-ctl" min="0" max="100" value="${s.smoothing}">
+                    <span class="paint-lbl">${escapeHtml(_('Smoothing'))}</span>
+                    <input type="range" title="${escapeHtml(_('Smoothing'))}" class="paint-range smoothing-ctl" min="0" max="100" value="${s.smoothing}">
                     <span class="paint-lbl smoothing-val">${s.smoothing}%</span>
                 </div>
                 <div class="paint-toolbar-group">
-                    <span class="paint-lbl">Taper</span>
-                    <input type="range" title="Taper" class="paint-range taper-ctl" min="0" max="100" value="${s.taper}">
+                    <span class="paint-lbl">${escapeHtml(_('Taper'))}</span>
+                    <input type="range" title="${escapeHtml(_('Taper'))}" class="paint-range taper-ctl" min="0" max="100" value="${s.taper}">
                     <span class="paint-lbl taper-val">${s.taper}%</span>
                 </div>
             `;
@@ -324,8 +330,8 @@
             const s = this.engine.state;
             return `
                 <div class="paint-toolbar-group">
-                    <span class="paint-lbl">Size</span>
-                    <input type="range" title="Size" class="paint-range size-ctl" min="1" max="50" value="${s.brushSize}">
+                    <span class="paint-lbl">${escapeHtml(_('Size'))}</span>
+                    <input type="range" title="${escapeHtml(_('Size'))}" class="paint-range size-ctl" min="1" max="50" value="${s.brushSize}">
                     <span class="paint-lbl size-val">${s.brushSize}px</span>
                 </div>
             `;
@@ -356,13 +362,13 @@
             const s = this.engine.state;
             return `
                 <div class="paint-toolbar-group">
-                    <span class="paint-lbl">Size</span>
-                    <input type="range" title="Size" class="paint-range size-ctl" min="1" max="50" value="${s.brushSize}">
+                    <span class="paint-lbl">${escapeHtml(_('Size'))}</span>
+                    <input type="range" title="${escapeHtml(_('Size'))}" class="paint-range size-ctl" min="1" max="50" value="${s.brushSize}">
                     <span class="paint-lbl size-val">${s.brushSize}px</span>
                 </div>
                 <div class="paint-toolbar-group">
-                    <span class="paint-lbl">Opacity</span>
-                    <input type="range" title="Opacity" class="paint-range opacity-ctl" min="0" max="100" value="${s.opacity*100}">
+                    <span class="paint-lbl">${escapeHtml(_('Opacity'))}</span>
+                    <input type="range" title="${escapeHtml(_('Opacity'))}" class="paint-range opacity-ctl" min="0" max="100" value="${s.opacity*100}">
                     <span class="paint-lbl opacity-val">${Math.round(s.opacity*100)}%</span>
                 </div>
             `;
@@ -389,7 +395,7 @@
         getOptionsPanel() {
             return super.getOptionsPanel() + `
                 <label class="paint-toolbar-group paint-lbl">
-                    <input type="checkbox" class="rect-fill-ctl" ${this.engine.state.rectFill ? 'checked' : ''}> Fill
+                    <input type="checkbox" class="rect-fill-ctl" ${this.engine.state.rectFill ? 'checked' : ''}> ${escapeHtml(_('Fill'))}
                 </label>`;
         }
     }
@@ -428,7 +434,7 @@
             const max = Math.max(eng.pixelSize, Math.round(Math.max(eng.canvas.width, eng.canvas.height) / 10));
             return `
                 <div class="paint-toolbar-group">
-                    <label class="paint-lbl" for="paint-pixel-size">Block size</label>
+                    <label class="paint-lbl" for="paint-pixel-size">${escapeHtml(_('Block size'))}</label>
                     <input id="paint-pixel-size" type="range" class="paint-range pixel-size-ctl" min="2" max="${max}" value="${eng.pixelSize}">
                     <span class="paint-lbl pixel-size-val">${eng.pixelSize}px</span>
                 </div>`;
@@ -447,29 +453,48 @@
 
     class TextTool extends Tool {
         onStart(x, y) {
-            const text = prompt('Enter text:');
-            if (!text) return;
-            const ctx = this.engine.ctx;
-            const fontSize = Math.max(16, this.engine.state.brushSize * 4);
-            ctx.globalAlpha = this.engine.state.opacity;
-            ctx.font = `${fontSize}px Arial`;
-            ctx.fillStyle = this.engine.state.color;
-            ctx.fillText(text, x, y);
-            ctx.globalAlpha = 1;
-            this.engine.commitState();
+            const dialog = $('<dialog class="paint-text-dialog ui-dialog" aria-labelledby="paint-text-title">');
+            const close = $('<button type="button" class="ui-dialog-close">').attr('aria-label', _('Close'));
+            const input = $('<input type="text" id="paint-text" autocomplete="off">');
+            const form = $('<form class="paint-text-form ui-dialog-body">');
+            dialog.append($('<div class="ui-dialog-header">').append(
+                $('<h3 id="paint-text-title" class="ui-dialog-title">').text(_('Text')), close));
+            form.append($('<label for="paint-text">').text(_('Enter text:')), input,
+                $('<div class="ui-dialog-actions">').append(
+                    $('<button type="button">').text(_('Cancel')).on('click', () => dialog[0].close()),
+                    $('<button type="submit">').text(_('Apply'))));
+            form.on('submit', event => {
+                event.preventDefault();
+                const text = input.val();
+                if (text) {
+                    const ctx = this.engine.ctx;
+                    const fontSize = Math.max(16, this.engine.state.brushSize * 4);
+                    ctx.globalAlpha = this.engine.state.opacity;
+                    ctx.font = `${fontSize}px Arial`;
+                    ctx.fillStyle = this.engine.state.color;
+                    ctx.fillText(text, x, y);
+                    ctx.globalAlpha = 1;
+                    this.engine.commitState();
+                }
+                dialog[0].close();
+            });
+            dialog.append(form).appendTo('body');
+            openDialog(dialog[0]);
+            dialog.one('close', () => dialog.remove());
+            input.trigger('focus');
         }
 
         getOptionsPanel() {
             const s = this.engine.state;
             return `
                 <div class="paint-toolbar-group">
-                    <span class="paint-lbl">Size</span>
-                    <input type="range" title="Size" class="paint-range size-ctl" min="1" max="50" value="${s.brushSize}">
+                    <span class="paint-lbl">${escapeHtml(_('Size'))}</span>
+                    <input type="range" title="${escapeHtml(_('Size'))}" class="paint-range size-ctl" min="1" max="50" value="${s.brushSize}">
                     <span class="paint-lbl size-val">${s.brushSize}px</span>
                 </div>
                 <div class="paint-toolbar-group">
-                    <span class="paint-lbl">Opacity</span>
-                    <input type="range" title="Opacity" class="paint-range opacity-ctl" min="0" max="100" value="${s.opacity*100}">
+                    <span class="paint-lbl">${escapeHtml(_('Opacity'))}</span>
+                    <input type="range" title="${escapeHtml(_('Opacity'))}" class="paint-range opacity-ctl" min="0" max="100" value="${s.opacity*100}">
                     <span class="paint-lbl opacity-val">${Math.round(s.opacity*100)}%</span>
                 </div>
             `;
@@ -574,13 +599,13 @@
             const s = this.engine.state;
             return `
                 <div class="paint-toolbar-group">
-                    <span class="paint-lbl">Tolerance</span>
-                    <input type="range" title="Tolerance" class="paint-range tolerance-ctl" min="0" max="100" value="${s.fillTolerance}">
+                    <span class="paint-lbl">${escapeHtml(_('Tolerance'))}</span>
+                    <input type="range" title="${escapeHtml(_('Tolerance'))}" class="paint-range tolerance-ctl" min="0" max="100" value="${s.fillTolerance}">
                     <span class="paint-lbl tolerance-val">${s.fillTolerance}</span>
                 </div>
                 <div class="paint-toolbar-group">
-                    <span class="paint-lbl">Gap Close</span>
-                    <input type="range" title="Gap Close" class="paint-range gapclose-ctl" min="0" max="5" value="${s.fillGapClose}">
+                    <span class="paint-lbl">${escapeHtml(_('Gap Close'))}</span>
+                    <input type="range" title="${escapeHtml(_('Gap Close'))}" class="paint-range gapclose-ctl" min="0" max="5" value="${s.fillGapClose}">
                     <span class="paint-lbl gapclose-val">${s.fillGapClose}px</span>
                 </div>
             `;
@@ -791,15 +816,15 @@
             //   MODIFIED: stamps current floating, snaps it back to original position for next stamp
             return `
                 <div class="paint-toolbar-group">
-                    <button class="paint-btn paint-btn-done" data-action="apply" title="Apply (Enter)"><i class="fa-solid fa-check"></i> Apply</button>
-                    <button class="paint-btn" data-action="selCancel" title="Cancel (Esc)"><i class="fa-solid fa-xmark"></i> Cancel</button>
+                    <button class="paint-btn paint-btn-done" data-action="apply" title="${escapeHtml(_('Apply (Enter)'))}"><i class="fa-solid fa-check"></i> ${escapeHtml(_('Apply'))}</button>
+                    <button class="paint-btn" data-action="selCancel" title="${escapeHtml(_('Cancel (Esc)'))}"><i class="fa-solid fa-xmark"></i> ${escapeHtml(_('Cancel'))}</button>
                 </div>
                 <div class="paint-toolbar-group">
-                    <button class="paint-btn" data-action="flipH" title="Flip horizontal"><i class="fa-solid fa-arrows-left-right"></i> Flip H</button>
-                    <button class="paint-btn" data-action="flipV" title="Flip vertical"><i class="fa-solid fa-arrows-up-down"></i> Flip V</button>
+                    <button class="paint-btn" data-action="flipH" title="${escapeHtml(_('Flip horizontal'))}"><i class="fa-solid fa-arrows-left-right"></i> ${escapeHtml(_('Flip H'))}</button>
+                    <button class="paint-btn" data-action="flipV" title="${escapeHtml(_('Flip vertical'))}"><i class="fa-solid fa-arrows-up-down"></i> ${escapeHtml(_('Flip V'))}</button>
                 </div>
                 <div class="paint-toolbar-group">
-                    <button class="paint-btn" data-action="duplicate" title="Duplicate / Stamp (Alt/Shift+drag)"><i class="fa-solid fa-stamp"></i> Duplicate</button>
+                    <button class="paint-btn" data-action="duplicate" title="${escapeHtml(_('Duplicate / Stamp (Alt/Shift+drag)'))}"><i class="fa-solid fa-stamp"></i> ${escapeHtml(_('Duplicate'))}</button>
                 </div>
             `;
         }
@@ -1764,11 +1789,11 @@
         }
 
         open(imageUrl) {
-            if ($('.paint-modal-overlay').length) return;
+            if ($('.paint-modal').length) return;
             const isMobile = window.innerWidth <= 600;
             const dims = {
                 w: isMobile ? Math.min(window.innerWidth - 40, 400) : 600,
-                h: isMobile ? Math.min(window.innerHeight - 250, 400) : 400
+                h: isMobile ? Math.max(100, Math.min(window.innerHeight - 250, 400)) : 400
             };
 
             this.renderModal(dims);
@@ -1795,10 +1820,22 @@
         }
 
         fitCanvas(w, h) {
-            const chrome = $('.paint-header, .paint-toolbar, .paint-tool-options, .paint-footer')
-                .toArray().reduce((height, el) => height + $(el).outerHeight(), 0);
-            const scale = Math.min(1, Math.max(100, window.innerWidth * 0.95 - 44) / w,
-                Math.max(100, window.innerHeight * 0.95 - chrome - 44) / h);
+            const modal = $('.paint-modal')[0];
+            const container = modal.querySelector('.paint-canvas-container');
+            const modalStyle = getComputedStyle(modal);
+            const containerStyle = getComputedStyle(container);
+            const canvasStyle = getComputedStyle(modal.querySelector('.paint-canvas'));
+            const chrome = $(modal).children('.paint-header, .paint-toolbar, .paint-tool-options, .paint-footer')
+                .toArray().reduce((height, el) => height + $(el).outerHeight(true), 0);
+            const width = container.clientWidth - parseFloat(containerStyle.paddingLeft) - parseFloat(containerStyle.paddingRight)
+                - modal.querySelector('.paint-ruler-left').getBoundingClientRect().width
+                - parseFloat(canvasStyle.borderLeftWidth) - parseFloat(canvasStyle.borderRightWidth);
+            const height = (parseFloat(modalStyle.maxHeight) || window.innerHeight) - chrome
+                - parseFloat(modalStyle.borderTopWidth) - parseFloat(modalStyle.borderBottomWidth)
+                - parseFloat(containerStyle.paddingTop) - parseFloat(containerStyle.paddingBottom)
+                - modal.querySelector('.paint-ruler-top').getBoundingClientRect().height
+                - parseFloat(canvasStyle.borderTopWidth) - parseFloat(canvasStyle.borderBottomWidth);
+            const scale = Math.min(1, Math.max(1, Math.floor(width)) / w, Math.max(80, height) / h);
             $('.paint-canvas-host, .paint-canvas-host > canvas').css({ width: w * scale, height: h * scale });
             const eng = this.controller.engine;
             eng.scale = scale;
@@ -1809,34 +1846,33 @@
         renderModal(dims) {
             const dpr = 1;
             const html = `
-                <div class="paint-modal-overlay">
-                    <div class="paint-modal">
-                        <div class="paint-header"><h3>Dead Paint</h3><button class="paint-close">&times;</button></div>
+                <dialog class="paint-modal ui-dialog" aria-labelledby="paint-title">
+                        <div class="paint-header ui-dialog-header"><h3 id="paint-title" class="ui-dialog-title">Dead Paint</h3><button type="button" class="paint-close ui-dialog-close" aria-label="${escapeHtml(_('Close'))}">&times;</button></div>
                         <div class="paint-toolbar">
                             <div class="paint-toolbar-group">
                                 ${[
-                                    {n: 'brush',     i: 'fa-solid fa-paintbrush',    t: 'Brush'},
-                                    {n: 'eraser',    i: 'fa-solid fa-eraser',        t: 'Eraser'},
-                                    {n: 'line',      i: 'fa-solid fa-slash',         t: 'Line'},
-                                    {n: 'rect',      i: 'fa-regular fa-square',      t: 'Rectangle'},
-                                    {n: 'pixelate',  i: 'fa-solid fa-border-all',    t: 'Pixelate'},
-                                    {n: 'circle',    i: 'fa-regular fa-circle',      t: 'Circle'},
-                                    {n: 'fill',      i: 'fa-solid fa-fill-drip',     t: 'Fill'},
-                                    {n: 'text',      i: 'fa-solid fa-font',          t: 'Text'},
-                                    {n: 'selection', i: 'fa-solid fa-vector-square', t: 'Selection'}
+                                    {n: 'brush',     i: 'fa-solid fa-paintbrush',    t: _('Brush')},
+                                    {n: 'eraser',    i: 'fa-solid fa-eraser',        t: _('Eraser')},
+                                    {n: 'line',      i: 'fa-solid fa-slash',         t: _('Line')},
+                                    {n: 'rect',      i: 'fa-regular fa-square',      t: _('Rectangle')},
+                                    {n: 'pixelate',  i: 'fa-solid fa-border-all',    t: _('Pixelate')},
+                                    {n: 'circle',    i: 'fa-regular fa-circle',      t: _('Circle')},
+                                    {n: 'fill',      i: 'fa-solid fa-fill-drip',     t: _('Fill')},
+                                    {n: 'text',      i: 'fa-solid fa-font',          t: _('Text')},
+                                    {n: 'selection', i: 'fa-solid fa-vector-square', t: _('Selection')}
                                 ].map(t =>
-                                    `<button class="paint-btn ${t.n === 'brush' ? 'active' : ''}" title="${t.t}" data-tool="${t.n}"><i class="${t.i}"></i></button>`
+                                    `<button class="paint-btn ${t.n === 'brush' ? 'active' : ''}" title="${escapeHtml(t.t)}" data-tool="${t.n}"><i class="${t.i}"></i></button>`
                                 ).join('')}
                             </div>
                             <div class="paint-toolbar-group">
-                                <input type="color" class="paint-color-input" value="${this.state.color}">
+                                <input type="color" title="${escapeHtml(_('Color'))}" aria-label="${escapeHtml(_('Color'))}" class="paint-color-input" value="${this.state.color}">
                             </div>
                             <div class="paint-toolbar-group">
-                                <button class="paint-btn action-btn" data-action="undo" title="Undo"><i class="fa-solid fa-rotate-left"></i></button>
-                                <button class="paint-btn action-btn" data-action="redo" title="Redo"><i class="fa-solid fa-rotate-right"></i></button>
-                                <button class="paint-btn action-btn" data-action="clear" title="Clear"><i class="fa-solid fa-trash"></i></button>
-                                <button class="paint-btn action-btn" data-action="load" title="Load"><i class="fa-solid fa-folder-open"></i></button>
-                                <button class="paint-btn action-btn" data-action="save" title="Save"><i class="fa-solid fa-floppy-disk"></i></button>
+                                <button class="paint-btn action-btn" data-action="undo" title="${escapeHtml(_('Undo'))}"><i class="fa-solid fa-rotate-left"></i></button>
+                                <button class="paint-btn action-btn" data-action="redo" title="${escapeHtml(_('Redo'))}"><i class="fa-solid fa-rotate-right"></i></button>
+                                <button class="paint-btn action-btn" data-action="clear" title="${escapeHtml(_('Clear'))}"><i class="fa-solid fa-trash"></i></button>
+                                <button class="paint-btn action-btn" data-action="load" title="${escapeHtml(_('Load'))}"><i class="fa-solid fa-folder-open"></i></button>
+                                <button class="paint-btn action-btn" data-action="save" title="${escapeHtml(_('Save'))}"><i class="fa-solid fa-floppy-disk"></i></button>
                             </div>
                         </div>
                         <div class="paint-tool-options"></div>
@@ -1853,18 +1889,19 @@
                         </div>
                         <div class="paint-footer">
                             <div class="paint-dimensions">
-                                <input type="number" id="paint-w" class="paint-dim" value="${dims.w}"> x
-                                <input type="number" id="paint-h" class="paint-dim" value="${dims.h}">
-                                <button class="paint-btn" data-action="resize" title="Resize"><i class="fa-solid fa-up-right-and-down-left-from-center"></i></button>
+                                <input type="number" id="paint-w" title="${escapeHtml(_('Width'))}" aria-label="${escapeHtml(_('Width'))}" class="paint-dim" value="${dims.w}"> x
+                                <input type="number" id="paint-h" title="${escapeHtml(_('Height'))}" aria-label="${escapeHtml(_('Height'))}" class="paint-dim" value="${dims.h}">
+                                <button class="paint-btn" data-action="resize" title="${escapeHtml(_('Resize'))}"><i class="fa-solid fa-up-right-and-down-left-from-center"></i></button>
                             </div>
-                            <div class="paint-actions">
-                                <button class="paint-btn" data-action="cancel" title="Cancel"><i class="fa-solid fa-xmark"></i> Cancel</button>
-                                <button class="paint-btn paint-btn-done" data-action="done" title="Done"><i class="fa-solid fa-check"></i> <span>Done</span></button>
+                            <div class="paint-actions ui-dialog-actions">
+                                <button class="paint-btn" data-action="cancel" title="${escapeHtml(_('Cancel'))}"><span>${escapeHtml(_('Cancel'))}</span></button>
+                                <button class="paint-btn paint-btn-done" data-action="done" title="${escapeHtml(_('Done'))}"><span>${escapeHtml(_('Done'))}</span></button>
                             </div>
                         </div>
-                    </div>
-                </div>`;
-            $(html).appendTo('body');
+                </dialog>`;
+            const modal = $(html).appendTo('body');
+            openDialog(modal[0]);
+            modal.one('close', () => this.controller.close());
         }
 
         bindEvents() {
@@ -1967,9 +2004,7 @@
                 else if (eng && eng[action]) eng[action]();
             });
 
-            $('.paint-close, [data-action="cancel"]').on('click', function(e) {
-                if (e.target === this) self.controller.close();
-            });
+            $('.paint-modal [data-action="cancel"]').on('click', () => self.controller.close());
 
             const canvas = $('.paint-canvas')[0];
             const getCoords = (e) => {
@@ -2089,7 +2124,7 @@
                 if (canvas.style.cursor !== 'crosshair') canvas.style.cursor = 'crosshair';
             });
             
-            $(document).on('keydown.paint', (e) => {
+            $modal.on('keydown.paint', (e) => {
                 const eng = self.controller.engine;
                 const seltool = eng && eng.tools && eng.tools.selection;
                 const sel = eng && eng.state.selection;
@@ -2106,7 +2141,6 @@
                         return;
                     }
                 }
-                if (e.key === 'Escape') self.controller.close();
                 if ((e.ctrlKey || e.metaKey) && ['z', 'y'].includes(e.key.toLowerCase()) &&
                     !$(e.target).is('input, textarea, [contenteditable]')) {
                     e.preventDefault();
@@ -2115,7 +2149,7 @@
                 }
             });
             
-            $(document).on('paste.paint', (e) => self.controller.handlePaste(e));
+            $modal.on('paste.paint', (e) => self.controller.handlePaste(e));
             $(window).on('resize.paint', () => {
                 const eng = self.controller.engine;
                 if (eng) self.fitCanvas(eng.canvas.width, eng.canvas.height);
@@ -2168,8 +2202,10 @@
                 this.controller.engine.guides.reset();
                 this.controller.engine.guides = null;
             }
-            $('.paint-modal-overlay').remove();
-            $(document).off('.paint');
+            const modal = $('.paint-modal');
+            modal.off('close');
+            if (modal[0] && modal[0].open) modal[0].close();
+            modal.remove();
             $(window).off('.paint');
         }
 
@@ -2177,14 +2213,12 @@
         injectStyles() {
             if ($('#paint-tool-styles').length) return;
             const css = `
-                .paint-modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 9800; display: flex; align-items: center; justify-content: center; }
-                .paint-modal { background: #f0f0f0; border: 1px solid #888; box-shadow: 2px 2px 10px rgba(0,0,0,0.3); display: flex; flex-direction: column; max-width: 95vw; max-height: 95vh; }
-                .paint-header { display: flex; justify-content: space-between; padding: 6px 10px; background: #e0e0e0; border-bottom: 1px solid #888; }
-                .paint-header h3 { margin: 0; font-size: 13px; color: #333; }
-                .paint-close { cursor: pointer; border: 1px solid #888; background: #ddd; width: 20px; padding: 0; margin: 0; }
-                .paint-toolbar { display: flex; flex-wrap: wrap; gap: 4px; padding: 4px; background: #d4d4d4; border-bottom: 1px solid #888; }
-                .paint-toolbar-group { display: flex; gap: 2px; padding: 0 6px; border-right: 1px solid #aaa; align-items: center; }
-                .paint-tool-options { display: flex; flex-wrap: wrap; gap: 4px; padding: 4px; background: #cdcdcd; border-bottom: 1px solid #888; min-height: 28px; box-sizing: content-box; }
+                .paint-modal { padding: 0; width: 760px; scrollbar-gutter: stable; }
+                .paint-modal[open] { display: flex; flex-direction: column; }
+                .paint-header { flex: none; }
+                .paint-toolbar { display: flex; flex: none; flex-wrap: wrap; gap: 4px; padding: 4px; background: #d4d4d4; border-bottom: 1px solid #888; }
+                .paint-toolbar-group { display: flex; flex-wrap: wrap; max-width: 100%; min-width: 0; box-sizing: border-box; gap: 2px; padding: 0 6px; border-right: 1px solid #aaa; align-items: center; }
+                .paint-tool-options { display: flex; flex: none; flex-wrap: wrap; gap: 4px; padding: 4px; background: #cdcdcd; border-bottom: 1px solid #888; min-height: 28px; box-sizing: content-box; }
                 .paint-btn { cursor: pointer; min-width: 28px; min-height: 28px; margin: 0; display: inline-flex; align-items: center; justify-content: center; gap: 4px; }
                 .paint-btn i { font-size: 14px; line-height: 1; pointer-events: none; }
                 .paint-btn.active { outline: 2px solid currentColor; outline-offset: -3px; }
@@ -2195,10 +2229,10 @@
                     50% { box-shadow: 0 0 0 6px rgba(255, 180, 0, 0); background: #ffe890; }
                     100% { box-shadow: 0 0 0 0 rgba(255, 180, 0, 0); background: #e8e8e8; }
                 }
-                .paint-color-input { width: 28px; height: 28px; border: 1px solid #888; padding: 0; cursor: pointer; }
-                .paint-canvas-container { flex: 1; overflow: auto; background: #808080; padding: 10px; display: flex; justify-content: center; }
+                .paint-color-input { width: var(--ui-control-height); height: var(--ui-control-height); border: 1px solid #888; padding: 0; cursor: pointer; }
+                .paint-canvas-container { flex: none; min-width: 0; overflow: auto; background: #808080; padding: 10px; display: flex; justify-content: center; }
                 .paint-canvas { background: #fff; box-shadow: 2px 2px 5px rgba(0,0,0,0.3); cursor: crosshair; touch-action: none; }
-                .paint-footer { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; justify-content: space-between; padding: 6px 10px; background: #d4d4d4; border-top: 1px solid #888; }
+                .paint-footer { display: flex; flex: none; align-items: center; gap: 6px; flex-wrap: wrap; justify-content: space-between; padding: 6px 10px; background: #d4d4d4; border-top: 1px solid #888; }
                 .paint-dim { width: 70px; text-align: center; }
                 .paint-lbl { font-size: 11px; min-width: 30px; text-align: right; }
                 .paint-range { width: 60px; height: 18px; cursor: pointer; }
@@ -2242,9 +2276,12 @@
                     pointer-events: none;
                 }
                 .paint-actions, .paint-dimensions { display: flex; align-items: center; gap: 6px; }
-                .paint-actions { margin-left: auto; }
-                .paint-modal .paint-btn { box-sizing: border-box; vertical-align: middle; }
-                .paint-modal .paint-dim { box-sizing: border-box; height: 28px; margin: 0; }
+                .paint-actions { margin: 0 0 0 auto; }
+                .paint-modal .paint-btn { box-sizing: border-box; min-width: var(--ui-control-height); height: var(--ui-control-height); padding: 4px 8px; font: inherit; vertical-align: middle; }
+                .paint-modal .paint-dim { box-sizing: border-box; height: var(--ui-control-height); margin: 0; padding: 4px; font: inherit; }
+                .paint-text-dialog { width: 360px; padding: 0; }
+                .paint-text-form label { display: block; margin-bottom: 6px; }
+                .paint-text-form input { box-sizing: border-box; width: 100%; min-height: var(--ui-control-height); margin: 0; font: inherit; }
             `;
             $('<style id="paint-tool-styles">').text(css).appendTo('head');
         }
@@ -2280,7 +2317,7 @@
 
         addToolbarButtons() {
             const self = this;
-            const btnHtml = '<button type="button" class="paint-toolbar-btn" title="' + _('Draw (D)') + '">D</button>';
+            const btnHtml = '<button type="button" class="paint-toolbar-btn" title="' + escapeHtml(_('Draw (D)')) + '">D</button>';
             
             $(document).on('click', '.paint-toolbar-btn', function(e) {
                 e.preventDefault();
@@ -2307,6 +2344,7 @@
                     if (!$imgLink.length || !/\.(jpg|png|gif|webp)$/i.test($imgLink.attr('href'))) return;
 
                     const $btn = $('<a href="#" class="paint-edit-image"><i class="fa fa-pencil"></i></a>')
+                        .attr({'title': _('Edit image'), 'aria-label': _('Edit image')})
                         .on('click', (e) => {
                             e.preventDefault();
                             let pid = null;
@@ -2339,8 +2377,9 @@
         }
 
         showFileIndicator(file) {
-            const $indicator = $(`<div class="paint-file-indicator" style="padding:4px;border:1px solid green;background:#e0ffe0;margin-top:5px;font-size:11px;">[paint] ${file.name} </div>`);
-            $indicator.append($('<a href="#" style="color:red;margin-left:5px;">[x]</a>').click((e) => {
+            const $indicator = $('<div class="paint-file-indicator" style="padding:4px;border:1px solid green;background:#e0ffe0;margin-top:5px;font-size:11px;">')
+                .text('[' + _('Drawing') + '] ' + file.name + ' ');
+            $indicator.append($('<a href="#" style="color:red;margin-left:5px;">[x]</a>').attr('title', _('Remove')).click((e) => {
                 e.preventDefault();
                 this.files = this.files.filter(f => f !== file);
                 $indicator.remove();
@@ -2359,7 +2398,7 @@
         }
 
         open(url, opts = {}) {
-            if ($('.paint-modal-overlay').length) return;
+            if ($('.paint-modal').length) return;
             this.replyTo = opts.replyTo;
             this.onExport = opts.onExport;
             this.ui.open(url);

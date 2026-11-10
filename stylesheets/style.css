@@ -1224,7 +1224,7 @@ table.fileboard .intro a {
 }
 
 
-#alert_handler, #options_handler {
+#alert_handler {
     position: fixed;
     top: 0;
     left: 0;
@@ -1238,7 +1238,7 @@ table.fileboard .intro a {
     visibility: hidden
 }
 
-#alert_background, #options_background {
+#alert_background {
     background: #000;
     opacity: .5;
     position: absolute;
@@ -1252,19 +1252,145 @@ table.fileboard .intro a {
     visibility: visible
 }
 
-#alert_div, #options_div {
-    background-color: #d6daf0;
-    border: 1px solid #000;
-    display: inline-block;
-    position: relative;
-    margin-top: 20px;
-    background: inherit;
-    visibility: visible
+body.dialog-open {
+    overflow: hidden;
 }
 
-#options_div, #watchlist {
+.ui-dialog {
+    --ui-control-height: 32px;
+    box-sizing: border-box;
+    max-width: calc(100vw - 16px);
+    max-height: calc(100dvh - 16px);
+    margin: auto;
+    padding: 16px;
+    overflow: auto;
+    overscroll-behavior: contain;
+    border: 1px solid var(--theme_default_border, currentColor);
+    border-radius: 4px;
+    background: var(--theme_default_postbg, inherit);
+    color: inherit;
+    box-shadow: 0 4px 20px #0003;
+    font-family: inherit;
+    font-size: 14px;
+    line-height: 1.5;
+    text-align: left;
+}
+
+.ui-dialog::backdrop {
+    background: #0007;
+}
+
+.ui-dialog-header {
+    position: relative;
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+    min-height: 48px;
+    padding: 12px 52px 12px 16px;
+    border-bottom: 1px solid var(--theme_default_border, currentColor);
+    background: transparent;
+}
+
+.ui-dialog .ui-dialog-title {
+    margin: 0;
+    padding: 0;
+    color: inherit;
+    font-family: inherit;
+    font-size: 16px;
+    line-height: 1.5;
+    font-weight: bold;
+    letter-spacing: normal;
+    text-transform: none;
+    text-align: left;
+}
+
+.ui-dialog .ui-dialog-close {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    display: block;
+    box-sizing: border-box;
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+    min-height: 32px;
+    margin: 0;
+    padding: 0;
+    border: 1px solid transparent;
+    border-radius: 2px;
+    background: transparent;
+    color: inherit;
+    box-shadow: none;
+    font-size: 0;
+    line-height: 1;
+    text-shadow: none;
+    cursor: pointer;
+}
+
+.ui-dialog .ui-dialog-close::before,
+.ui-dialog .ui-dialog-close::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 14px;
+    height: 2px;
+    background: currentColor;
+    transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.ui-dialog .ui-dialog-close::after {
+    transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+.ui-dialog .ui-dialog-close:hover {
+    border-color: var(--theme_default_border, currentColor);
+    background: var(--theme_default_altbtnbghover, #8882);
+    color: inherit;
+    box-shadow: none;
+    text-shadow: none;
+}
+
+.ui-dialog :focus-visible {
+    outline: 2px solid var(--theme_default_link, currentColor);
+    outline-offset: 2px;
+}
+
+.ui-dialog > form.ui-dialog-body {
+    margin: 0;
+    padding: 16px;
+}
+
+.ui-dialog-body textarea {
+    box-sizing: border-box;
+    max-width: 100%;
+}
+
+.ui-dialog-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 16px;
+}
+
+.ui-dialog .ui-dialog-actions button,
+.ui-dialog .ui-dialog-actions input[type="submit"],
+.ui-dialog .ui-dialog-actions input[type="button"] {
+    box-sizing: border-box;
+    height: var(--ui-control-height);
+    min-height: var(--ui-control-height);
+    margin: 0;
+    padding: 4px 12px;
+    border-width: 1px;
+    font-family: inherit;
+    font-size: 14px;
+    line-height: 22px;
+}
+
+#watchlist {
     border: 1px solid;
-    overflow: auto
+    overflow: auto;
 }
 
 #alert_handler {
@@ -1272,87 +1398,33 @@ table.fileboard .intro a {
     align-items: center;
     justify-content: center;
     box-sizing: border-box;
-    padding: 12px
+    padding: 12px;
 }
 
 #alert_background {
-    opacity: .3
+    opacity: .3;
 }
 
 #alert_div {
-    box-sizing: border-box;
     width: 360px;
-    max-width: 100%;
-    max-height: 100%;
-    margin: 0;
-    padding: 12px;
-    overflow: auto;
-    border: 1px solid var(--theme_default_alttext, currentColor);
-    border-radius: 0;
-    font-size: 14px;
-    line-height: 1.4;
-    text-align: left
 }
 
 #alert_message {
-    margin: 0 20px 12px 0;
-    overflow-wrap: anywhere
+    margin: 0 32px 0 0;
+    overflow-wrap: anywhere;
 }
 
-#alert_div .alert_button {
-    min-width: 48px;
-    height: auto;
-    margin: 0 6px 0 0;
-    padding: 2px 10px;
-    border-width: 1px;
-    border-style: solid;
-    border-radius: 0;
-    font: inherit;
-    line-height: 1.4
-}
-
-#alert_close {
-    top: 2px;
-    right: 2px;
-    position: absolute;
-    width: 24px;
-    height: 24px;
-    margin: 0;
-    padding: 0;
-    border: 0;
-    border-radius: 0;
-    background: transparent;
-    color: inherit;
-    font-size: 20px;
-    font-weight: normal;
-    line-height: 1;
-    cursor: pointer
-}
-
-#alert_close:hover {
-    border: 0;
-    background: transparent;
-    color: inherit;
-    font-weight: normal;
-    box-shadow: none
-}
-
-@media (pointer: coarse) {
-    #alert_close {
-        top: 0;
-        right: 0;
+@media (pointer: coarse), (max-width: 600px) {
+    .ui-dialog {
+        --ui-control-height: 44px;
+    }
+    .ui-dialog .ui-dialog-close {
+        top: 2px;
+        right: 2px;
         width: 44px;
-        height: 44px
+        height: 44px;
     }
 
-    #alert_message {
-        margin-right: 32px
-    }
-
-    #alert_div .alert_button {
-        min-width: 56px;
-        min-height: 44px
-    }
 }
 
 #gallery_main {
@@ -1372,46 +1444,16 @@ table.fileboard .intro a {
     float: right
 }
 
-body.options-open {
-    overflow: hidden;
-}
-
-#options_handler {
-    background-image: none;
-}
-
 #options_div {
-    display: inline-grid;
     grid-template-columns: 180px minmax(0, 1fr);
-    width: min(900px, calc(100% - 32px));
-    height: min(640px, calc(100% - 48px));
-    margin-top: 24px;
+    width: 900px;
+    height: min(640px, calc(100dvh - 32px));
+    padding: 0;
     overflow: hidden;
-    box-sizing: border-box;
-    background-image: none;
-    border-color: var(--theme_default_border, currentColor);
-    border-radius: 6px;
-    box-shadow: 0 8px 32px #0004;
-    text-align: left;
-    font-size: 14px;
-    line-height: 1.5;
 }
 
-#options_div #options_close {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    z-index: 1;
-    width: 32px;
-    height: 32px;
-    margin: 0;
-    padding: 0;
-    border: 0;
-    background: transparent;
-    box-shadow: none;
-    color: inherit;
-    font: 26px/1 sans-serif;
-    cursor: pointer;
+#options_div[open] {
+    display: grid;
 }
 
 #options_tablist {
@@ -1456,27 +1498,23 @@ body.options-open {
     background-color: var(--theme_default_altbtnbg, #8882);
 }
 
-#options_tablist .options_tab_icon:hover, #options_div #options_close:hover {
+#options_tablist .options_tab_icon:hover {
     background-color: var(--theme_default_altbtnbghover, #8883);
-}
-
-#options_div :focus-visible {
-    outline: 2px solid var(--theme_default_link, currentColor);
-    outline-offset: 2px;
 }
 
 #options_div .options_tab {
     min-width: 0;
-    padding: 20px 24px;
+    padding: 12px 16px 16px;
     overflow: auto;
     scrollbar-gutter: stable;
     overscroll-behavior: contain;
 }
 
 #options_div h2 {
-    margin: 0 24px 20px 0;
+    margin: 0 32px 16px 0;
     color: inherit;
-    font-size: 18px;
+    font-size: 16px;
+    line-height: 1.5;
     text-align: left;
 }
 
@@ -1500,15 +1538,15 @@ body.options-open {
     cursor: pointer;
 }
 
-#options_div input, #options_div select, #options_div textarea, #options_div button {
+#options_div input, #options_div select, #options_div textarea, #options_div button:not(.ui-dialog-close) {
     box-sizing: border-box;
     max-width: 100%;
     font-size: inherit;
 }
 
-#options_div select, #options_div button, #options_div input[type="button"] {
+#options_div select, #options_div button:not(.ui-dialog-close), #options_div input[type="button"] {
     height: auto;
-    min-height: 32px;
+    min-height: var(--ui-control-height);
     line-height: 1.5;
 }
 
@@ -1525,7 +1563,7 @@ body.options-open {
     padding: 4px 8px;
 }
 
-#options_div button, #options_div input[type="button"] {
+#options_div button:not(.ui-dialog-close), #options_div input[type="button"] {
     padding: 6px 12px;
     cursor: pointer;
 }
@@ -1561,8 +1599,7 @@ body.options-open {
         grid-template-columns: minmax(0, 1fr) 48px;
         grid-template-rows: auto minmax(0, 1fr);
         width: calc(100% - 16px);
-        height: calc(100% - 16px);
-        margin-top: 8px;
+        height: calc(100dvh - 16px);
     }
 
     #options_tablist {
@@ -1585,7 +1622,9 @@ body.options-open {
     }
 
     #options_div #options_close {
-        position: static;
+        position: relative;
+        top: auto;
+        right: auto;
         grid-column: 2;
         grid-row: 1;
         align-self: center;
@@ -2835,44 +2874,17 @@ div.post, div.thread {
     margin-left: 1em;
 }
 
+#options-import,
 .post-action-dialog {
-    box-sizing: border-box;
-    width: 28em;
-    max-width: calc(100vw - 2em);
-    max-height: calc(100dvh - 2em);
-    margin: auto;
-    padding: 1em 1.2em;
-    border: 1px solid #666;
-    border-radius: 6px;
-    color: inherit;
-    font: inherit;
-    text-align: left;
-    box-shadow: 0 8px 32px #0004;
-}
-
-.post-action-dialog::backdrop {
-    background: #0008;
-}
-
-.post-action-dialog h2 {
-    margin: 0 1.5em .8em 0;
+    width: 448px;
     padding: 0;
-    color: inherit;
-    font: bold 1em/1.4 sans-serif;
-    letter-spacing: normal;
-    text-align: left;
 }
 
-.post-action-dialog .post-action-close {
-    position: absolute;
-    top: .35em;
-    right: .5em;
-    padding: 0 .2em;
-    border: 0;
-    background: transparent;
-    color: inherit;
-    font-size: 1.3em;
-    cursor: pointer;
+#options-import-data {
+    display: block;
+    width: 100%;
+    margin-top: 8px;
+    resize: vertical;
 }
 
 .post-action-dialog form,
@@ -2910,14 +2922,6 @@ div.post, div.thread {
     width: 100%;
     min-height: 2.6em;
     resize: vertical;
-}
-
-.post-action-dialog .post-action-buttons {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-end;
-    gap: .3em;
-    margin-top: 2em;
 }
 
 .post-action-dialog .post-action-message:not([hidden]) {

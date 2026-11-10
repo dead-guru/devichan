@@ -1470,16 +1470,6 @@ div.subtitle {
     display: none;
 }
 
-#options_div {
-    border: 2px solid var(--theme_default_border);
-    background: var(--theme_default_postbg);
-}
-
-#alert_div {
-    border-color: var(--theme_default_border);
-    background: var(--theme_default_postbg);
-}
-
 .postarea .format-text button {
     margin-left: 0;
     margin-right: 5px;
@@ -1690,74 +1680,6 @@ div.post.reply {
     text-shadow: 0 0 8px #ff4444 !important;
 }
 
-.paint-modal-overlay {
-    position: fixed !important;
-    top: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    bottom: 0 !important;
-    background: rgba(12, 12, 12, 0.92) !important;
-    z-index: 10000 !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    backdrop-filter: blur(4px) !important;
-}
-
-.paint-modal {
-    background: var(--theme_default_postbg) !important;
-    border: 2px solid var(--theme_default_border) !important;
-    box-shadow: 0 0 30px rgba(0, 255, 136, 0.2), 0 0 60px rgba(0, 0, 0, 0.5) !important;
-    display: flex !important;
-    flex-direction: column !important;
-    max-width: 95vw !important;
-    max-height: 95vh !important;
-}
-
-.paint-header {
-    display: flex !important;
-    justify-content: space-between !important;
-    align-items: center !important;
-    padding: 8px 12px !important;
-    background: linear-gradient(90deg, var(--theme_default_border) 0%, transparent 100%) !important;
-    border-bottom: 2px solid var(--theme_default_border) !important;
-}
-
-.paint-header h3 {
-    margin: 0 !important;
-    font-size: 12px !important;
-    color: var(--theme_default_title) !important;
-    text-transform: uppercase !important;
-    letter-spacing: 2px !important;
-    font-family: var(--theme_font_mono) !important;
-}
-
-.paint-header h3::before {
-    content: "// " !important;
-    color: var(--theme_default_link) !important;
-    text-shadow: 0 0 3px var(--theme_default_link) !important;
-}
-
-.paint-close {
-    cursor: pointer !important;
-    border: 2px solid var(--theme_default_border) !important;
-    background: var(--theme_default_bg) !important;
-    color: var(--theme_default_text) !important;
-    width: 24px !important;
-    height: 24px !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    font-size: 16px !important;
-    line-height: 20px !important;
-    transition: all 0.15s ease !important;
-}
-
-.paint-close:hover {
-    border-color: #ff4444 !important;
-    color: #ff4444 !important;
-    text-shadow: 0 0 8px #ff4444 !important;
-}
-
 .paint-toolbar {
     display: flex !important;
     flex-wrap: wrap !important;
@@ -1784,14 +1706,7 @@ div.post.reply {
     border: 2px solid var(--theme_default_border) !important;
     color: var(--theme_default_text) !important;
     cursor: pointer !important;
-    min-width: 28px !important;
-    height: 28px !important;
-    font-size: 11px !important;
-    padding: 0 8px !important;
     margin: 0 !important;
-    font-family: var(--theme_font_mono) !important;
-    text-transform: uppercase !important;
-    transition: all 0.1s ease !important;
 }
 
 .paint-btn:hover {
@@ -1821,8 +1736,6 @@ div.post.reply {
 }
 
 .paint-color-input {
-    width: 28px !important;
-    height: 28px !important;
     border: 2px solid var(--theme_default_border) !important;
     padding: 0 !important;
     cursor: pointer !important;
@@ -1830,7 +1743,6 @@ div.post.reply {
 }
 
 .paint-canvas-container {
-    flex: 1 !important;
     overflow: auto !important;
     background: var(--theme_default_bg) !important;
     padding: 15px !important;
@@ -1858,7 +1770,7 @@ div.post.reply {
     display: flex !important;
     justify-content: space-between !important;
     align-items: center !important;
-    padding: 8px 12px !important;
+    padding: 8px 16px !important;
     background: var(--theme_default_bg) !important;
     border-top: 2px solid var(--theme_default_border) !important;
 }
@@ -1876,9 +1788,6 @@ div.post.reply {
     background: var(--theme_default_postbg) !important;
     border: 2px solid var(--theme_default_border) !important;
     color: var(--theme_default_text) !important;
-    font-family: var(--theme_font_mono) !important;
-    height: 28px !important;
-    line-height: 24px !important;
 }
 
 .paint-lbl {
@@ -2445,41 +2354,12 @@ input[type="submit"] {
     text-shadow: 0 0 6px var(--theme_default_link);
 }
 
-#quick-reply {
-    background: var(--theme_default_postbg);
-    border: 2px solid var(--theme_default_border);
-    box-shadow: 0 0 30px rgba(0, 0, 0, 0.5), 0 0 10px rgba(0, 255, 136, 0.1);
-}
-
-#quick-reply::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-image: var(--theme_dither);
-    pointer-events: none;
-    opacity: 0.1;
-}
-
 #quick-reply table {
     border-collapse: collapse;
     background: var(--theme_default_postbg) !important;
     border: none !important;
     margin: 0;
     width: 100%;
-}
-
-#quick-reply th {
-    background: linear-gradient(90deg, var(--theme_default_border) 0%, transparent 100%);
-    color: var(--theme_default_title);
-    padding: 8px 12px;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    font-size: 10px;
-    text-align: left;
-    border: none !important;
 }
 
 #quick-reply input[type="text"],

@@ -19,14 +19,6 @@
     var do_css = function () {
         $('#quick-reply-css').remove();
 
-        // Find background of reply posts
-        var dummy_reply = $('<div class="post reply"></div>').appendTo($('body'));
-        var reply_background = dummy_reply.css('backgroundColor');
-        var reply_border_style = dummy_reply.css('borderStyle');
-        var reply_border_color = dummy_reply.css('borderColor');
-        var reply_border_width = dummy_reply.css('borderWidth');
-        dummy_reply.remove();
-
         $('<style type="text/css" id="quick-reply-css">\
 		#quick-reply {\
 			position: fixed;\
@@ -35,15 +27,17 @@
 			float: right;\
 			display: block;\
 			padding: 0 0 0 0;\
+			margin: 0;\
 			width: 410px;\
+			max-width: calc(100% - 16px);\
+			max-height: calc(100dvh - 16px);\
+			overflow: auto;\
 			z-index: 2147443647;\
 		}\
 		#quick-reply table {\
 			border-collapse: collapse;\
-			background: ' + reply_background + ';\
-			border-style: ' + reply_border_style + ';\
-			border-width: ' + reply_border_width + ';\
-			border-color: ' + reply_border_color + ';\
+			background: transparent;\
+			border: 0;\
 			margin: 0;\
 			width: 100%;\
 		}\
@@ -59,48 +53,32 @@
 			padding: 4px 8px;\
 			vertical-align: top;\
 		}\
-		#quick-reply th {\
-			text-align: center;\
-			border: 1px solid #222;\
-		}\
-		#quick-reply th .handle {\
-			position: relative;\
-			float: none;\
-			width: 100%;\
-			box-sizing: border-box;\
-			display: block;\
-			padding: 0 24px;\
-			line-height: 24px;\
-		}\
-		#quick-reply th .close-btn {\
-			position: absolute;\
-			top: 0;\
-			right: 0;\
-			float: none;\
-			width: 24px;\
-			height: 24px;\
+		#quick-reply th.quick-reply-heading {\
 			padding: 0;\
-			line-height: 24px;\
-			font-size: 20px;\
+			border: 0;\
+			background: transparent;\
+			color: inherit;\
 		}\
 		#quick-reply input[type="text"], #quick-reply select, #quick-reply input[type="submit"] {\
 			width: 100%;\
-			padding: 2px;\
-			font-size: 10pt;\
+			padding: 4px 8px;\
+			font-family: inherit;\
+			font-size: inherit;\
 			box-sizing: border-box;\
-			-webkit-box-sizing:border-box;\
-			-moz-box-sizing: border-box;\
-			height: 2em;\
+			height: var(--ui-control-height, 32px);\
+			min-height: var(--ui-control-height, 32px);\
 			vertical-align: middle;\
+		}\
+		#quick-reply select {\
+			padding-right: 28px;\
 		}\
 		#quick-reply textarea {\
 			display: block;\
 			width: 100%;\
 			min-width: 100%;\
 			box-sizing: border-box;\
-			-webkit-box-sizing:border-box;\
-			-moz-box-sizing: border-box;\
-			font-size: 10pt;\
+			font-family: inherit;\
+			font-size: inherit;\
 			resize: vertical horizontal;\
 			padding: .4em .5em 1.7em;\
 		}\
@@ -110,6 +88,10 @@
 		#quick-reply .format-text {\
 			margin-bottom: 6px;\
 			padding-bottom: 0;\
+		}\
+		#quick-reply .format-text button {\
+			height: 32px;\
+			min-height: 32px;\
 		}\
 		#quick-reply .dropzone {\
 			padding: 0 !important;\
@@ -136,15 +118,14 @@
 		}\
 		@media screen and (max-width: 768px) {\
 			#quick-reply {\
-				top: 0 !important;\
-				left: 0 !important;\
-				right: 0 !important;\
-				bottom: 0 !important;\
-				width: 100% !important;\
-				height: 100% !important;\
-				padding: 10px !important;\
+				top: 8px !important;\
+				left: 8px !important;\
+				right: auto !important;\
+				bottom: auto !important;\
+				width: calc(100% - 16px) !important;\
+				height: auto !important;\
+				padding: 0 !important;\
 				margin: 0 !important;\
-				background: rgba(0, 0, 0, 0.1) !important;\
 				box-sizing: border-box !important;\
 			}\
 			#quick-reply table {\
@@ -161,8 +142,8 @@
 				padding: 8px;\
                 width: 100% !important;\
 			}\
-			#quick-reply input[type="text"], #quick-reply select, #quick-reply input[type="submit"] {\
-				height: 2.5em;\
+			#quick-reply select {\
+				padding-right: 28px;\
 			}\
             #quick-reply textarea {\
                 min-height: 120px !important;\
@@ -185,6 +166,7 @@
 
         if ($('#quick-reply').length != 0)
             return;
+        var opener = document.activeElement;
         showE('form[name="post"]');
         do_css();
         var $postForm = $('form[name="post"]').clone();
@@ -340,20 +322,18 @@
         $postForm.find('textarea:not([name="body"]),input[type="hidden"]:not(.captcha_cookie)').removeAttr('id').appendTo($dummyStuff);
 
         $postForm.find('br').remove();
-        $postForm.find('table').prepend('<tr><th colspan="2">\
-			<span class="handle">\
-				<a class="close-btn" href="javascript:void(0)">×</a>\
-				' + _('Quick Reply') + '\
-			</span>\
-			</th></tr>');
+        var $header = $('<div class="handle ui-dialog-header"></div>')
+            .append($('<h2 id="quick-reply-title" class="ui-dialog-title"></h2>').text(_('Quick Reply')))
+            .append($('<button type="button" class="close-btn ui-dialog-close">×</button>').attr('aria-label', _('Close')));
+        $postForm.find('table').prepend($('<tr><th class="quick-reply-heading" colspan="2"></th></tr>').find('th').append($header).end());
 
-        $postForm.attr('id', 'quick-reply');
+        $postForm.attr({id: 'quick-reply', role: 'dialog', 'aria-labelledby': 'quick-reply-title'}).addClass('ui-dialog');
 
         $postForm.appendTo($('body')).hide();
-        $origPostForm = $('form[name="post"]:first');
+        var $origPostForm = $('form[name="post"]:first');
 
         // Synchronise body text with original post form
-        $origPostForm.find('textarea[name="body"]').on('change input propertychange', function () {
+        $origPostForm.find('textarea[name="body"]').on('change.quickReply input.quickReply propertychange.quickReply', function () {
             $postForm.find('textarea[name="body"]').val($(this).val());
             $postForm.find('textarea[name="body"]').trigger('keyup');
         });
@@ -365,12 +345,12 @@
             $origPostForm.find('textarea[name="body"]').removeAttr('id');
             $(this).attr('id', 'body');
         });
-        $origPostForm.find('textarea[name="body"]').focus(function () {
+        $origPostForm.find('textarea[name="body"]').on('focus.quickReply', function () {
             $postForm.find('textarea[name="body"]').removeAttr('id');
             $(this).attr('id', 'body');
         });
         // Synchronise other inputs
-        $origPostForm.find('input[type="text"],select').on('change input propertychange', function () {
+        $origPostForm.find('input[type="text"],select').on('change.quickReply input.quickReply propertychange.quickReply', function () {
             $postForm.find('[name="' + $(this).attr('name') + '"]').val($(this).val());
         });
         $postForm.find('input[type="text"],select').on('change input propertychange', function () {
@@ -382,10 +362,10 @@
                 var offset = JSON.parse(localStorage.quickReplyPosition);
                 if (offset.top < 0)
                     offset.top = 0;
-                if (offset.right > $(window).width() - $postForm.width())
-                    offset.right = $(window).width() - $postForm.width();
-                if (offset.top > $(window).height() - $postForm.height())
-                    offset.top = $(window).height() - $postForm.height();
+                if (offset.right > $(window).width() - $postForm.outerWidth())
+                    offset.right = $(window).width() - $postForm.outerWidth();
+                if (offset.top > $(window).height() - $postForm.outerHeight())
+                    offset.top = Math.max(0, $(window).height() - $postForm.outerHeight());
                 $postForm.css('right', offset.right).css('top', offset.top);
             }
             $postForm.draggable({
@@ -396,7 +376,7 @@
                 stop: function () {
                     var offset = {
                         top: $(this).offset().top - $(window).scrollTop(),
-                        right: $(window).width() - $(this).offset().left - $(this).width(),
+                        right: $(window).width() - $(this).offset().left - $(this).outerWidth(),
                     };
                     localStorage.quickReplyPosition = JSON.stringify(offset);
 
@@ -406,10 +386,23 @@
             $postForm.find('th .handle').css('cursor', 'move');
         }
 
-        $postForm.find('th .close-btn').click(function () {
+        var close = function () {
             $origPostForm.find('textarea[name="body"]').attr('id', 'body');
+            $origPostForm.find('input, select, textarea').off('.quickReply');
+            $(window).off('.quickReply');
             $postForm.remove();
             floating_link();
+            if (opener && opener.isConnected)
+                opener.focus({preventScroll: true});
+        };
+
+        $postForm.find('th .close-btn').on('click', close);
+        $postForm.on('keydown', function (e) {
+            if (e.key === 'Escape' && !e.isDefaultPrevented() && !document.querySelector('dialog.ui-dialog[open]')) {
+                e.preventDefault();
+                e.stopPropagation();
+                close();
+            }
         });
 
         // Fix bug when table gets too big for form. Shouldn't exist, but crappy CSS etc.
@@ -423,7 +416,7 @@
 
         $(window).ready(function () {
             if (settings.get('hide_at_top', true)) {
-                $(window).scroll(function () {
+                $(window).on('scroll.quickReply', function () {
                     if ($(this).scrollTop() < $origPostForm.offset().top + $origPostForm.height() - 100)
                         $postForm.fadeOut(100);
                     else
@@ -433,7 +426,7 @@
                 $postForm.show();
             }
 
-            $(window).on('stylesheet', function () {
+            $(window).on('stylesheet.quickReply', function () {
                 do_css();
                 if ($('link#stylesheet').attr('href')) {
                     $('link#stylesheet')[0].onload = do_css;

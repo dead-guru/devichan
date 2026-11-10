@@ -116,6 +116,10 @@ if (($_COOKIE['e2e_options'] ?? null) === '1') {
     $config['stylesheets']['Photon'] = 'photon.css';
     $config['default_stylesheet'] = ['Photon', 'photon.css'];
 }
+if (($_COOKIE['e2e_post_controls'] ?? null) === '1') {
+    $config['additional_javascript'][] = 'js/post-menu.js';
+    $config['additional_javascript'][] = 'js/quick-post-controls.js';
+}
 
 $config['captcha']['enabled'] = false;
 $config['new_thread_capt'] = false;

@@ -37,7 +37,7 @@ final class ModeratorAttachmentsCest
         $I->click('.edit-attachment-image');
         $I->waitForElementVisible('.paint-canvas');
         $I->click('.paint-actions [data-action="cancel"]');
-        $I->dontSeeElement('.paint-modal-overlay');
+        $I->dontSeeElement('.paint-modal');
         $I->assertSame(0, $I->executeJS('return document.querySelector("#replacement-0").files.length;'));
 
         $this->drawAndApply($I, 1800, 1200);
@@ -146,7 +146,7 @@ final class ModeratorAttachmentsCest
         $I->makeScreenshot('moderator-paint-' . $width);
         $I->click('.paint-toolbar [data-action="clear"]');
         $I->click('.paint-actions [data-action="done"]');
-        $I->waitForElementNotVisible('.paint-modal-overlay');
+        $I->waitForElementNotVisible('.paint-modal');
         $I->assertSame(1, $I->executeJS('return document.querySelector("#replacement-0").files.length;'));
     }
 }

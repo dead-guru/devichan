@@ -6,6 +6,7 @@ namespace DevichanE2E\Browser;
 
 use DevichanE2E\Support\BrowserTester;
 use Facebook\WebDriver\Remote\RemoteWebDriver;
+use Facebook\WebDriver\WebDriverBy;
 use Facebook\WebDriver\WebDriverKeys;
 
 final class AlertCest
@@ -25,11 +26,16 @@ final class AlertCest
     {
         $I->click('h1.open-form a');
         $I->click('form[name="post"] textarea[name="body"]');
-        $I->executeJS("alert('Flood detected; Post discarded.');");
+        $I->executeJS(<<<'JS'
+            window.pageEscapes = 0;
+            document.addEventListener('keydown', event => {
+                if (event.key === 'Escape') window.pageEscapes++;
+            });
+            alert('Flood detected; Post discarded.');
+            JS);
         $I->seeElement('#alert_div[role="alertdialog"][aria-modal="true"]');
+        $I->assertSame('hidden', $I->executeJS('return getComputedStyle(document.body).overflow;'));
         $I->assertSame('OK', $I->executeJS('return document.activeElement.textContent;'));
-        $I->pressKey('#alert_div .alert_button', WebDriverKeys::TAB);
-        $I->assertSame('alert_close', $I->executeJS('return document.activeElement.id;'));
         $I->executeInSelenium(static function(RemoteWebDriver $driver): void {
             $driver->action()
                 ->keyDown(null, WebDriverKeys::SHIFT)
@@ -37,9 +43,15 @@ final class AlertCest
                 ->keyUp(null, WebDriverKeys::SHIFT)
                 ->perform();
         });
+        $I->assertSame('alert_close', $I->executeJS('return document.activeElement.id;'));
+        $I->pressKey('#alert_close', WebDriverKeys::TAB);
+        $I->assertSame('OK', $I->executeJS('return document.activeElement.textContent;'));
+        $I->executeJS('document.querySelector(\'form[name="post"] textarea[name="body"]\').focus();');
         $I->assertSame('OK', $I->executeJS('return document.activeElement.textContent;'));
         $I->pressKey('#alert_div .alert_button', WebDriverKeys::ESCAPE);
-        $I->dontSeeElement('#alert_handler');
+        $I->waitForJS('return !document.querySelector("#alert_div");');
+        $I->dontSeeElement('body.dialog-open');
+        $I->assertSame(0, $I->executeJS('return window.pageEscapes;'));
         $I->assertTrue($I->executeJS('return document.activeElement.matches(\'form[name="post"] textarea[name="body"]\');'));
     }
 
@@ -67,14 +79,32 @@ final class AlertCest
                     $I->click('#alert_close');
                     break;
                 case 'backdrop':
-                    $I->executeJS('document.querySelector("#alert_background").click();');
+                    $I->executeInSelenium(static function(RemoteWebDriver $driver): void {
+                        $dialog = $driver->findElement(WebDriverBy::id('alert_div'));
+                        $driver->action()->moveToElement($dialog)
+                            ->moveByOffset(-(int) ceil($dialog->getSize()->getWidth() / 2) - 4, 0)
+                            ->click()->perform();
+                    });
                     break;
             }
-            $I->dontSeeElement('#alert_handler');
+            $I->waitForJS('return !document.querySelector("#alert_div");');
             $I->assertSame($action === 'ok' ? [1, 0] : [0, 1], $I->executeJS(
                 'return [window.confirmed, window.cancelled];',
             ));
         }
+    }
+
+    public function draggingOutOfTheContentDoesNotDismissTheDialog(BrowserTester $I): void
+    {
+        $I->executeJS("alert('Select this message without dismissing it.');");
+        $I->executeInSelenium(static function(RemoteWebDriver $driver): void {
+            $message = $driver->findElement(WebDriverBy::id('alert_message'));
+            $driver->action()->moveToElement($message)->clickAndHold()
+                ->moveByOffset(-400, 0)->release()->perform();
+        });
+        $I->seeElement('dialog#alert_div[open]');
+        $I->click('#alert_close');
+        $I->waitForJS('return !document.querySelector("#alert_div");');
     }
 
     public function dialogFitsDesktopAndPhoneInLightAndDarkThemes(BrowserTester $I): void

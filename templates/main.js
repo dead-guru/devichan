@@ -70,59 +70,76 @@ var datelocale =
         };
 
 
-function alert(a, do_confirm, confirm_ok_action, confirm_cancel_action) {
+function openDialog(dialog) {
+    if (dialog.open) return;
     var previous_focus = document.activeElement;
-    var handler = $("<div id='alert_handler'></div>").appendTo('body');
-    var bg = $("<div id='alert_background'></div>").appendTo(handler);
-    var div = $("<div id='alert_div' role='alertdialog' aria-modal='true' aria-labelledby='alert_message'></div>").appendTo(handler);
-    var closebtn = $("<button type='button' id='alert_close'>&times;</button>")
+    var backdrop_down = false;
+
+    function outside(event) {
+        var rect = dialog.getBoundingClientRect();
+        return event.target === dialog &&
+            (event.clientX < rect.left || event.clientX > rect.right ||
+             event.clientY < rect.top || event.clientY > rect.bottom);
+    }
+    function pointerdown(event) {
+        backdrop_down = event.button === 0 && outside(event);
+    }
+    function click(event) {
+        var close = event.target.closest('.ui-dialog-close');
+        if ((close && close.closest('dialog') === dialog) || (backdrop_down && outside(event))) {
+            event.preventDefault();
+            dialog.close();
+        }
+        backdrop_down = false;
+    }
+    function keydown(event) {
+        event.stopPropagation();
+    }
+    function closed() {
+        dialog.removeEventListener('pointerdown', pointerdown);
+        dialog.removeEventListener('click', click);
+        dialog.removeEventListener('keydown', keydown);
+        document.body.classList.toggle('dialog-open', !!document.querySelector('dialog.ui-dialog[open]'));
+        if (previous_focus && document.contains(previous_focus)) previous_focus.focus();
+    }
+
+    dialog.classList.add('ui-dialog');
+    dialog.showModal();
+    document.body.classList.add('dialog-open');
+    dialog.addEventListener('pointerdown', pointerdown);
+    dialog.addEventListener('click', click);
+    dialog.addEventListener('keydown', keydown);
+    dialog.addEventListener('close', closed, {once: true});
+}
+
+function alert(a, do_confirm, confirm_ok_action, confirm_cancel_action) {
+    var confirmed = false;
+    var action_event, action_target;
+    var div = $("<dialog id='alert_div' class='ui-dialog' role='alertdialog' aria-modal='true' aria-labelledby='alert_message'></dialog>")
+        .appendTo('body');
+    $("<button type='button' id='alert_close' class='ui-dialog-close'>&times;</button>")
         .attr('aria-label', _('Close')).appendTo(div);
+    $("<div id='alert_message' class='ui-dialog-body'></div>").html(a).appendTo(div);
+    var actions = $("<div class='ui-dialog-actions'></div>").appendTo(div);
+    var okbtn = $("<button type='button' class='button alert_button'></button>").text(_('OK')).appendTo(actions);
 
-    $("<div id='alert_message'></div>").html(a).appendTo(div);
-    var okbtn = $("<button type='button' class='button alert_button'></button>").text(_('OK')).appendTo(div);
-
-    var close = function(confirmed, event) {
-        handler.remove();
-        if (previous_focus && document.contains(previous_focus)) {
-            previous_focus.focus();
-        }
-        var action = confirmed ? confirm_ok_action : confirm_cancel_action;
-        if (do_confirm && typeof action === 'function') {
-            action.call(this, event);
-        }
-        return false;
-    };
-    var cancel = function(event) {
-        return close.call(this, false, event);
-    };
-
-    okbtn.on('click', function(event) {
-        return close.call(this, true, event);
+    div.on('click cancel', function(event) {
+        action_event = event;
+        action_target = event.target;
+    });
+    okbtn.on('click', function() {
+        confirmed = true;
+        div[0].close();
     });
     if (do_confirm) {
         $("<button type='button' class='button alert_button'></button>")
-            .text(_('Cancel')).on('click', cancel).appendTo(div);
+            .text(_('Cancel')).on('click', function() { div[0].close(); }).appendTo(actions);
     }
-    bg.on('click', cancel);
-    closebtn.on('click', cancel);
-    handler.on('keydown', function(event) {
-        if (event.key === 'Escape') {
-            return cancel.call(this, event);
-        }
-        if (event.key === 'Tab') {
-            var controls = div.find('a[href], button, input, select, textarea, [tabindex]')
-                .filter(':visible').not(':disabled, [tabindex="-1"]');
-            var first = controls[0];
-            var last = controls[controls.length - 1];
-            if (event.shiftKey && document.activeElement === first) {
-                last.focus();
-                return false;
-            }
-            if (!event.shiftKey && document.activeElement === last) {
-                first.focus();
-                return false;
-            }
-        }
+    openDialog(div[0]);
+    div.on('close', function() {
+        div.remove();
+        var action = confirmed ? confirm_ok_action : confirm_cancel_action;
+        if (do_confirm && typeof action === 'function') action.call(action_target, action_event);
     });
     okbtn.trigger('focus');
 }

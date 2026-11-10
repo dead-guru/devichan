@@ -1450,16 +1450,6 @@ div.subtitle {
     display: none;
 }
 
-#options_div {
-    border: 1px solid var(--theme_default_border);
-    background: var(--theme_default_postbg);
-}
-
-#alert_div {
-    border-color: var(--theme_default_border);
-    background: var(--theme_default_postbg);
-}
-
 .postarea .format-text button {
     margin-left: 0;
     margin-right: 5px;
@@ -1671,68 +1661,6 @@ div.post.reply {
     color: var(--theme_default_text) !important;
 }
 
-.paint-modal-overlay {
-    position: fixed !important;
-    top: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    bottom: 0 !important;
-    background: rgba(228, 224, 212, 0.96) !important;
-    z-index: 10000 !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-}
-
-.paint-modal {
-    background: var(--theme_default_postbg) !important;
-    border: 1px solid var(--theme_default_border) !important;
-    box-shadow: none !important;
-    display: flex !important;
-    flex-direction: column !important;
-    max-width: 95vw !important;
-    max-height: 95vh !important;
-}
-
-.paint-header {
-    display: flex !important;
-    justify-content: space-between !important;
-    align-items: center !important;
-    padding: 8px 12px !important;
-    background: var(--theme_default_postbghighlight) !important;
-    border-bottom: 1px solid var(--theme_default_border) !important;
-}
-
-.paint-header h3 {
-    margin: 0 !important;
-    font-size: 12px !important;
-    color: var(--theme_default_title) !important;
-    font-family: var(--theme_font) !important;
-}
-
-.paint-header h3::before {
-    content: "// " !important;
-    color: var(--theme_default_link) !important;
-}
-
-.paint-close {
-    cursor: pointer !important;
-    border: 1px solid var(--theme_default_border) !important;
-    background: var(--theme_default_bg) !important;
-    color: var(--theme_default_text) !important;
-    width: 24px !important;
-    height: 24px !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    font-size: 16px !important;
-    line-height: 20px !important;
-}
-
-.paint-close:hover {
-    border-color: #9a3d30 !important;
-    color: #9a3d30 !important;
-}
-
 .paint-toolbar {
     display: flex !important;
     flex-wrap: wrap !important;
@@ -1765,12 +1693,7 @@ div.post.reply {
     border: 1px solid var(--theme_default_btnborder) !important;
     color: var(--theme_default_text) !important;
     cursor: pointer !important;
-    min-width: 28px !important;
-    height: 28px !important;
-    font-size: 12px !important;
-    padding: 0 8px !important;
     margin: 0 !important;
-    font-family: var(--theme_font) !important;
 }
 
 .paint-btn:hover {
@@ -1802,8 +1725,6 @@ div.post.reply {
 }
 
 .paint-color-input {
-    width: 28px !important;
-    height: 28px !important;
     border: 1px solid var(--theme_default_btnborder) !important;
     padding: 0 !important;
     cursor: pointer !important;
@@ -1811,7 +1732,6 @@ div.post.reply {
 }
 
 .paint-canvas-container {
-    flex: 1 !important;
     overflow: auto !important;
     background: var(--theme_default_bg) !important;
     padding: 15px !important;
@@ -1832,7 +1752,7 @@ div.post.reply {
     display: flex !important;
     justify-content: space-between !important;
     align-items: center !important;
-    padding: 8px 12px !important;
+    padding: 8px 16px !important;
     background: var(--theme_default_bg) !important;
     border-top: 1px solid var(--theme_default_border) !important;
 }
@@ -1850,9 +1770,6 @@ div.post.reply {
     background: var(--theme_default_postbg) !important;
     border: 1px solid var(--theme_default_border) !important;
     color: var(--theme_default_text) !important;
-    font-family: var(--theme_font) !important;
-    height: 28px !important;
-    line-height: 24px !important;
 }
 
 .paint-lbl {
@@ -2319,24 +2236,12 @@ form[name="post"] input[type="password"]:focus {
     color: var(--theme_default_link);
 }
 
-#quick-reply {
-    background: var(--theme_default_postbg);
-    border: 1px solid var(--theme_default_border);
-}
-
 #quick-reply table {
     border-collapse: collapse;
     background: var(--theme_default_postbg) !important;
     border: none !important;
     margin: 0;
     width: 100%;
-}
-
-#quick-reply th {
-    background: var(--theme_default_postbghighlight);
-    color: var(--theme_default_title);
-    font-size: 12px;
-    border: none !important;
 }
 
 form#quick-reply select {

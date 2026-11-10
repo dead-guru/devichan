@@ -1438,3 +1438,147 @@ msgstr "Вибрати всі"
 
 msgid "Unban"
 msgstr "Розблокувати"
+
+#: ../../../../js/paint-tool.js
+msgid "Size"
+msgstr "Розмір"
+
+#: ../../../../js/paint-tool.js
+msgid "Opacity"
+msgstr "Непрозорість"
+
+#: ../../../../js/paint-tool.js
+msgid "Smoothing"
+msgstr "Згладжування"
+
+#: ../../../../js/paint-tool.js
+msgid "Taper"
+msgstr "Звуження"
+
+#: ../../../../js/paint-tool.js
+msgid "Block size"
+msgstr "Розмір блока"
+
+#: ../../../../js/paint-tool.js
+msgid "Enter text:"
+msgstr "Введіть текст:"
+
+#: ../../../../js/paint-tool.js
+msgid "Tolerance"
+msgstr "Допуск"
+
+#: ../../../../js/paint-tool.js
+msgid "Gap Close"
+msgstr "Закриття прогалин"
+
+#: ../../../../js/paint-tool.js
+msgid "Apply (Enter)"
+msgstr "Застосувати (Enter)"
+
+#: ../../../../js/paint-tool.js
+msgid "Apply"
+msgstr "Застосувати"
+
+#: ../../../../js/paint-tool.js
+msgid "Cancel (Esc)"
+msgstr "Скасувати (Esc)"
+
+#: ../../../../js/paint-tool.js
+msgid "Flip horizontal"
+msgstr "Віддзеркалити горизонтально"
+
+#: ../../../../js/paint-tool.js
+msgid "Flip H"
+msgstr "Горизонтально"
+
+#: ../../../../js/paint-tool.js
+msgid "Flip vertical"
+msgstr "Віддзеркалити вертикально"
+
+#: ../../../../js/paint-tool.js
+msgid "Flip V"
+msgstr "Вертикально"
+
+#: ../../../../js/paint-tool.js
+msgid "Duplicate / Stamp (Alt/Shift+drag)"
+msgstr "Дублювати / штамп (Alt/Shift + перетягування)"
+
+#: ../../../../js/paint-tool.js
+msgid "Duplicate"
+msgstr "Дублювати"
+
+#: ../../../../js/paint-tool.js
+msgid "Brush"
+msgstr "Пензель"
+
+#: ../../../../js/paint-tool.js
+msgid "Eraser"
+msgstr "Гумка"
+
+#: ../../../../js/paint-tool.js
+msgid "Line"
+msgstr "Лінія"
+
+#: ../../../../js/paint-tool.js
+msgid "Rectangle"
+msgstr "Прямокутник"
+
+#: ../../../../js/paint-tool.js
+msgid "Pixelate"
+msgstr "Пікселізація"
+
+#: ../../../../js/paint-tool.js
+msgid "Circle"
+msgstr "Коло"
+
+#: ../../../../js/paint-tool.js
+msgid "Text"
+msgstr "Текст"
+
+#: ../../../../js/paint-tool.js
+msgid "Selection"
+msgstr "Виділення"
+
+#: ../../../../js/paint-tool.js
+msgid "Color"
+msgstr "Колір"
+
+#: ../../../../js/paint-tool.js
+msgid "Undo"
+msgstr "Скасувати дію"
+
+#: ../../../../js/paint-tool.js
+msgid "Redo"
+msgstr "Повторити дію"
+
+#: ../../../../js/paint-tool.js
+msgid "Width"
+msgstr "Ширина"
+
+#: ../../../../js/paint-tool.js
+msgid "Height"
+msgstr "Висота"
+
+#: ../../../../js/paint-tool.js
+msgid "Resize"
+msgstr "Змінити розмір"
+
+#: ../../../../js/paint-tool.js
+msgid "Done"
+msgstr "Готово"
+
+#: ../../../../js/paint-tool.js
+msgid "Edit image"
+msgstr "Редагувати зображення"
+
+#: ../../../../js/paint-tool.js
+msgid "Drawing"
+msgstr "Малюнок"
+
+#: ../../../../js/paint-tool.js
+msgid "Remove"
+msgstr "Прибрати"
+
+#: ../../../../js/paint-tool.js
+msgid "Could not load image."
+msgstr "Не вдалося завантажити зображення."

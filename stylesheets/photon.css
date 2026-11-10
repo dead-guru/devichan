@@ -1077,9 +1077,6 @@ div.subtitle {
 .hidden_thread .new-posts {
     display: none;
 }
-#options_div {
-    border-radius: 7px;
-}
 
 .postarea .format-text button {
     margin-left: 0;

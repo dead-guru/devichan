@@ -56,31 +56,51 @@ $(function(){
       .attr('aria-label', _('Storage')).appendTo(stor).val(str).trigger('focus').select();
   });
   $("<button type='button'>"+_("Import")+"</button>").appendTo(actions).on("click", function() {
-    var str = prompt(_("Paste your storage data"));
-    if (!str) return false;
-    var obj;
-    try {
-      obj = JSON.parse(str);
-      if (!obj || typeof obj !== 'object' || Array.isArray(obj) || Object.keys(obj).some(function (key) {
-        return typeof obj[key] !== 'string';
-      })) throw new Error('Invalid storage');
-    } catch (err) {
-      alert(_('Invalid storage data.'));
-      return false;
-    }
+    var dialog = $('<dialog id="options-import" class="ui-dialog" aria-labelledby="options-import-title">');
+    var close = $('<button type="button" class="ui-dialog-close">').attr('aria-label', _('Close'));
+    var input = $('<textarea id="options-import-data" rows="6" spellcheck="false"></textarea>');
+    var form = $('<form class="ui-dialog-body">');
+    dialog.append($('<div class="ui-dialog-header">').append(
+      $('<h2 id="options-import-title" class="ui-dialog-title">').text(_('Import')), close));
+    form.append($('<label for="options-import-data">').text(_('Paste your storage data')), input,
+      $('<div class="ui-dialog-actions">').append(
+        $('<button type="button">').text(_('Cancel')).on('click', function() { dialog[0].close(); }),
+        $('<button type="submit">').text(_('Import'))));
+    form.on('submit', function(event) {
+      event.preventDefault();
+      var str = input.val();
+      if (!str) {
+        dialog[0].close();
+        return;
+      }
+      var obj;
+      try {
+        obj = JSON.parse(str);
+        if (!obj || typeof obj !== 'object' || Array.isArray(obj) || Object.keys(obj).some(function (key) {
+          return typeof obj[key] !== 'string';
+        })) throw new Error('Invalid storage');
+      } catch (err) {
+        alert(_('Invalid storage data.'));
+        return;
+      }
 
-    localStorage.clear();
-    for (var i in obj) {
-      localStorage[i] = obj[i];
-    }
+      localStorage.clear();
+      for (var i in obj) {
+        localStorage[i] = obj[i];
+      }
 
-    document.location.reload();
+      document.location.reload();
+    });
+    dialog.append(form).appendTo('body');
+    openDialog(dialog[0]);
+    dialog.one('close', function() { dialog.remove(); });
+    input.trigger('focus');
   });
   $("<button type='button'>"+_("Erase")+"</button>").appendTo(actions).on("click", function() {
-    if (confirm(_("Are you sure you want to erase your storage? This involves your hidden threads, watched threads, post password and many more."))) {
+    alert(_("Are you sure you want to erase your storage? This involves your hidden threads, watched threads, post password and many more."), true, function() {
       localStorage.clear();
       document.location.reload();
-    }
+    });
   });
 
 

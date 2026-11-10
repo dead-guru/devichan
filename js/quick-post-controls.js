@@ -18,14 +18,14 @@ $(function () {
 	var $controls = $('form[name="postcontrols"]');
 	if (!$controls.length) return;
 
-	function openDialog(action, $post, button) {
+	function showPostDialog(action, $post, button) {
 		var id = $post.children('.intro').find('input.delete').attr('name');
 		var board = $post.closest('.thread').data('board');
 		var reporting = action === 'report';
 		var title = reporting ? _('Report post No.{0}') : _('Delete post No.{0}');
-		var $dialog = $('<dialog class="post-action-dialog" aria-labelledby="post-action-title">');
-		var $close = $('<button type="button" class="post-action-close">').text('×').attr('aria-label', _('Close'));
-		var $form = $('<form class="post-actions" method="post">').attr('action', $controls.attr('action'));
+		var $dialog = $('<dialog class="post-action-dialog ui-dialog" aria-labelledby="post-action-title">');
+		var $close = $('<button type="button" class="post-action-close ui-dialog-close">').text('×').attr('aria-label', _('Close'));
+		var $form = $('<form class="post-actions ui-dialog-body" method="post">').attr('action', $controls.attr('action'));
 		var $fields = $('<div class="post-action-fields">');
 		var $message = $('<p class="post-action-message" role="status" aria-live="polite" hidden>');
 		var $submit = $('<input type="submit">').attr('name', action).val(reporting ? _('Report') : _('Delete'));
@@ -67,20 +67,16 @@ $(function () {
 				$('<p>').append($('<label>').append('<input type="checkbox" name="file">', ' ', document.createTextNode(_('File only')))));
 		}
 
-		$dialog.append($close, $('<h2 id="post-action-title">').text(fmt(title, [id.replace('delete_', '')])), $form);
-		$form.append($fields, $message, $('<div class="post-action-buttons">').append($submit, $cancel));
-		$dialog.css('background-color', $('body').css('background-color')).appendTo('body');
+		$dialog.append($('<div class="ui-dialog-header">').append(
+			$('<h2 id="post-action-title" class="ui-dialog-title">').text(fmt(title, [id.replace('delete_', '')])), $close), $form);
+		$form.append($fields, $message, $('<div class="post-action-buttons ui-dialog-actions">').append($submit, $cancel));
+		$dialog.appendTo('body');
 
 		function close() { $dialog[0].close(); }
-		$close.add($cancel).on('click', close);
-		$dialog.on('click', function (e) {
-			if (e.target !== this) return;
-			var rect = this.getBoundingClientRect();
-			if (e.clientX < rect.left || e.clientX > rect.right || e.clientY < rect.top || e.clientY > rect.bottom) close();
-		}).on('close', function () {
+		$cancel.on('click', close);
+		$dialog.on('close', function () {
 			if (captchaRequest) captchaRequest.abort();
 			$dialog.remove();
-			button.focus();
 		});
 		$form.on('post-action-success', function () {
 			if (reporting) {
@@ -94,7 +90,8 @@ $(function () {
 				window.location.reload();
 			}
 		});
-		$dialog[0].showModal();
+		button.focus();
+		openDialog($dialog[0]);
 		$fields.find('input, textarea').first().focus();
 
 		// The report page owns CAPTCHA generation, including per-board settings.
@@ -126,7 +123,7 @@ $(function () {
 		Menu.add_item('report_menu', _('Report'));
 		if ($controls.find('#delete-fields').length) Menu.add_item('delete_post_menu', _('Delete'));
 		Menu.onclick(function (e, $menu) {
-			var button = e.target;
+			var button = $(e.target).closest('.post-btn')[0];
 			var $post = $(button).closest('.post');
 			$menu.find('#reply_post_menu').on('click', function () {
 				$post.children('.intro').find('a.post_no').last()[0].click();
@@ -134,8 +131,8 @@ $(function () {
 			$menu.find('#hide_post_menu').text($post.hasClass('post-hidden') ? _('Show') : _('Hide')).on('click', function () {
 				$(document).trigger('toggle_post', [$post]);
 			});
-			$menu.find('#report_menu').on('click', function () { openDialog('report', $post, button); });
-			$menu.find('#delete_post_menu').on('click', function () { openDialog('delete', $post, button); });
+			$menu.find('#report_menu').on('click', function () { showPostDialog('report', $post, button); });
+			$menu.find('#delete_post_menu').on('click', function () { showPostDialog('delete', $post, button); });
 		});
 		$controls.addClass('has-post-menu');
 	}

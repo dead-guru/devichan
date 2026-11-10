@@ -63,20 +63,77 @@ final class PaintCest
         $before = $this->pixels($I);
         $I->click('[data-tool="text"]');
         $I->click('.paint-canvas');
-        $I->typeInPopup('Undo text');
-        $I->acceptPopup();
+        $I->fillField('#paint-text', 'Undo text');
+        $I->click('.paint-text-dialog button[type="submit"]');
+        $I->waitForElementNotVisible('.paint-text-dialog');
         $text = $this->pixels($I);
         $I->assertNotSame($before, $text);
         $I->click('[data-action="clear"]');
         $I->assertSame($before, $this->pixels($I));
         $this->history($I, 'undo');
         $I->assertSame($text, $this->pixels($I));
-        $I->pressKey('body', ['ctrl', 'z']);
+        $I->pressKey('.paint-close', ['ctrl', 'z']);
         $I->waitForJS('return !window.paintTool.engine.historyLoad;', 10);
         $I->assertSame($before, $this->pixels($I));
-        $I->pressKey('body', [WebDriverKeys::CONTROL, WebDriverKeys::SHIFT, 'z']);
+        $I->pressKey('.paint-close', [WebDriverKeys::CONTROL, WebDriverKeys::SHIFT, 'z']);
         $I->waitForJS('return !window.paintTool.engine.historyLoad;', 10);
         $I->assertSame($text, $this->pixels($I));
+    }
+
+    public function cancellingTextKeepsTheDrawingAndPaintOpen(BrowserTester $I): void
+    {
+        $before = $this->pixels($I);
+        $I->click('[data-tool="text"]');
+        foreach (['cancel', 'escape'] as $action) {
+            $I->click('.paint-canvas');
+            $I->fillField('#paint-text', 'Do not draw this.');
+            if ($action === 'cancel') {
+                $I->click('.paint-text-form button[type="button"]');
+            } else {
+                $I->pressKey('#paint-text', WebDriverKeys::ESCAPE);
+            }
+            $I->waitForElementNotVisible('.paint-text-dialog');
+            $I->seeElement('.paint-modal[open]');
+            $I->seeElement('body.dialog-open');
+            $I->assertSame($before, $this->pixels($I));
+        }
+    }
+
+    public function toolsKeepTheDialogWidthAndCanvasInsideNarrowViewports(BrowserTester $I): void
+    {
+        $I->executeJS(file_get_contents('inc/locale/uk_UA/LC_MESSAGES/javascript.js'));
+        foreach ([[1440, 1000], [390, 844], [320, 568], [390, 320]] as [$width, $height]) {
+            $I->executeJS('window.paintTool.close();');
+            $I->resizeWindow($width, $height);
+            $I->assertSame($width, $I->executeJS('return innerWidth;'));
+            $I->executeJS('window.paintTool.open();');
+            $dialogWidth = $I->executeJS('return document.querySelector(".paint-modal").getBoundingClientRect().width;');
+            foreach (['brush', 'fill', 'pixelate', 'selection'] as $tool) {
+                $I->click('[data-tool="' . $tool . '"]');
+                if ($tool === 'selection') $this->drag($I, 20, 20, 120, 80);
+                $I->assertSame($dialogWidth, $I->executeJS('return document.querySelector(".paint-modal").getBoundingClientRect().width;'));
+                $I->assertTrue($I->executeJS(<<<'JS'
+                    const modal = document.querySelector('.paint-modal'), box = modal.getBoundingClientRect();
+                    const container = modal.querySelector('.paint-canvas-container');
+                    const frame = modal.querySelector('.paint-canvas-frame').getBoundingClientRect();
+                    const canvas = modal.querySelector('.paint-canvas').getBoundingClientRect();
+                    const area = container.getBoundingClientRect(), style = getComputedStyle(container);
+                    return box.left >= 0 && box.right <= innerWidth && box.top >= 0 && box.bottom <= innerHeight &&
+                        modal.scrollWidth <= modal.clientWidth + 1 &&
+                        frame.left >= area.left + parseFloat(style.paddingLeft) - 1 &&
+                        frame.right <= area.right - parseFloat(style.paddingRight) + 1 &&
+                        canvas.right <= area.right - parseFloat(style.paddingRight) + 1;
+                    JS));
+            }
+            $I->executeJS('document.querySelector(".paint-actions").scrollIntoView({block: "nearest"});');
+            $I->assertTrue($I->executeJS(<<<'JS'
+                const actions = document.querySelector('.paint-actions').getBoundingClientRect();
+                const modal = document.querySelector('.paint-modal').getBoundingClientRect();
+                return actions.top >= modal.top && actions.bottom <= modal.bottom;
+                JS));
+            $I->click('.paint-actions [data-action="cancel"]');
+            $I->waitForElementNotVisible('.paint-modal');
+        }
     }
 
     public function fillWorksInsideShapesOnLightAndDarkBackgrounds(BrowserTester $I): void
@@ -306,7 +363,7 @@ final class PaintCest
                 source.toBlob(blob => {
                     const data = new DataTransfer();
                     data.items.add(new File([blob], 'paste.png', {type: 'image/png'}));
-                    document.dispatchEvent(new ClipboardEvent('paste', {clipboardData: data, bubbles: true}));
+                    document.querySelector('.paint-modal').dispatchEvent(new ClipboardEvent('paste', {clipboardData: data, bubbles: true}));
                 });
             JS);
             $I->waitForJS('return !window.paintTool.state.selection.active;', 10);
@@ -339,18 +396,18 @@ final class PaintCest
         $I->waitForText('Could not load image.', 10, '#alert_message');
         $I->makeScreenshot('paint-load-error');
         $I->click('#alert_div .alert_button');
-        $I->waitForElementNotVisible('#alert_handler');
+        $I->waitForElementNotVisible('#alert_div');
         $I->assertFalse($I->executeJS('return document.querySelector(".paint-actions [data-action=done]").disabled;'));
         $I->assertSame($before, $this->pixels($I));
         $I->executeJS('window.paintTool.onExport = blob => { window.paintExportSize = blob.size; };');
         $I->click('.paint-actions [data-action="done"]');
-        $I->waitForElementNotVisible('.paint-modal-overlay');
+        $I->waitForElementNotVisible('.paint-modal');
         $I->assertGreaterThan(0, $I->executeJS('return window.paintExportSize;'));
 
         $I->executeJS('window.paintTool.open("/tests/Support/Data/invalid-image.png");');
         $I->waitForText('Could not load image.', 10, '#alert_message');
         $I->click('#alert_div .alert_button');
-        $I->waitForElementNotVisible('#alert_handler');
+        $I->waitForElementNotVisible('#alert_div');
         $I->assertTrue($I->executeJS('return document.querySelector(".paint-actions [data-action=done]").disabled;'));
         $I->executeJS('window.paintTool.loadImage("/static/banners/default.png");');
         $I->waitForJS('return window.paintTool.engine.canvas.width === 300;', 10);
