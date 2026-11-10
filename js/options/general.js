@@ -104,7 +104,7 @@ $(function(){
   });
 
 
-  var style = $('#style-select').detach().css('float', 'none');
+  var style = $('#style-select').detach().addClass('options-row').css('float', 'none');
   style.find('select').attr('aria-label', _('Style: '));
   tab.content.children('h2').after(style);
 });

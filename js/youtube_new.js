@@ -25,7 +25,14 @@
 //YT auto play
 $(document).ready(function () {
     if (window.Options && Options.get_tab('general')) {
-        Options.extend_tab("general", "<span id='youtube-size'>" + _('YouTube size') + ": <input type='number' id='youtube-width' value='360'>x<input type='number' id='youtube-height' value='270'>");
+        var size = $('<div id="youtube-size" class="options-row">')
+            .append($('<span>').text(_('YouTube size') + ':'));
+        $('<span class="options-dimensions">').append(
+            $('<input type="number" id="youtube-width" value="360">').attr('aria-label', _('Width')),
+            'x',
+            $('<input type="number" id="youtube-height" value="270">').attr('aria-label', _('Height'))
+        ).appendTo(size);
+        Options.extend_tab('general', size);
 
         if (typeof localStorage.youtube_size === 'undefined') {
             localStorage.youtube_size = '{"width":360,"height":270}';

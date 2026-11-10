@@ -2,6 +2,7 @@
 :root {
     --theme_font: Arial, Helvetica, sans-serif;
     --theme_font_mono: 'Courier New', Courier, monospace;
+    --theme_default_radius: 0px;
 
     --theme_default_bg: #e4e0d4;
     --theme_default_postbg: #efecdf;
@@ -1085,7 +1086,7 @@ input[type="file"]::file-selector-button:hover {
 
 input[type="file"]:focus-visible {
     outline: 2px solid var(--theme_default_link);
-    outline-offset: 2px;
+    outline-offset: -2px;
 }
 
 input.index-search-input {
@@ -1533,6 +1534,7 @@ div.post.reply {
 
 .dropzone:focus {
     outline: 2px solid var(--theme_default_link) !important;
+    outline-offset: -2px;
     border-color: var(--theme_default_link) !important;
 }
 

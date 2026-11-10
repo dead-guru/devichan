@@ -54,7 +54,10 @@
     Options.extend_tab = function (id, content) {
         var tab = options_tabs[id];
         if (!tab) return false;
-        tab.content.append(content);
+        var controls = $('<div>').append(content).contents();
+        var section = tab.content.children('fieldset').first();
+        if (section.length && !controls.is('fieldset')) controls.insertBefore(section);
+        else tab.content.append(controls);
         return tab;
     };
 
