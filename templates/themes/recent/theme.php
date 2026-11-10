@@ -44,6 +44,9 @@ class RecentPosts
     {
         global $config, $board;
 
+        $stylesheet = $config['root'] . $settings['css'] . '?v='
+            . substr(hash_file('sha256', $config['dir']['home'] . $settings['css']), 0, 12);
+
         $recent_images = array();
         $recent_posts = array();
         $stats = array();
@@ -199,6 +202,7 @@ class RecentPosts
         
         return Element('themes/recent/recent.html', array(
             'settings' => $settings,
+            'stylesheet' => $stylesheet,
             'config' => $config,
             'boardlist' => createBoardlist(),
             'recent_images' => $recent_images,

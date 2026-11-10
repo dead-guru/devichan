@@ -778,7 +778,7 @@ fieldset input {
 
 #quick-reply textarea#body {
     line-height: 1.333 !important;
-    font-size: 0.9rem !important;
+    font-size: 0.9rem;
 }
 
 #quick-reply table, #quick-reply tbody, #quick-reply th, #quick-reply tr, #quick-reply td {

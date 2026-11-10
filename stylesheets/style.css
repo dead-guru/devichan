@@ -1424,6 +1424,23 @@ body.dialog-open {
     :root {
         --ui-control-height: 44px;
     }
+
+    /* iOS zooms focused fields when their text is smaller than 16px. */
+    input:not([type]),
+    input[type="text"],
+    input[type="password"],
+    input[type="search"],
+    input[type="email"],
+    input[type="url"],
+    input[type="tel"],
+    input[type="number"],
+    textarea,
+    select,
+    [contenteditable="true"],
+    [contenteditable=""] {
+        font-size: max(16px, 1em) !important;
+    }
+
     .ui-dialog .ui-dialog-close {
         top: 2px;
         right: 2px;

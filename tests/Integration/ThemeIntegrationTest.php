@@ -210,6 +210,36 @@ final class ThemeIntegrationTest extends TestCase
         }
     }
 
+    public function testRecentStylesheetTracksGeneratedContentUnderTheSiteRoot(): void
+    {
+        global $config;
+
+        require_once 'templates/themes/recent/theme.php';
+        $theme = new \RecentPosts();
+        $theme->excluded = array_diff(listBoards(true), ['b']);
+        $settings = themeSettings('recent');
+        $settings['css'] = 'recent-version.css';
+        $path = $this->outputDirectory . $settings['css'];
+
+        $render = function () use ($theme, $settings): string {
+            global $config;
+            $config['dir']['home'] = $this->outputDirectory;
+            $config['root'] = '/imageboard/';
+            $page = \Dom\HTMLDocument::createFromString($theme->homepage($settings), LIBXML_NOERROR);
+            return $page->querySelector('link[href*="recent-version.css"]')->getAttribute('href');
+        };
+
+        file_put_contents($path, '.portal-wrap { color: red; }');
+        $first = $render();
+        self::assertStringStartsWith('/imageboard/recent-version.css?v=', $first);
+        self::assertSame($first, $render());
+
+        file_put_contents($path, '.portal-wrap { color: blue; }');
+        $second = $render();
+        self::assertNotSame($first, $second);
+        self::assertSame($second, $render());
+    }
+
     public function testUkkoRendersDatabaseContent(): void
     {
         global $config, $pdo;
