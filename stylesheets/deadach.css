@@ -1322,11 +1322,6 @@ div.ban h2 {
     border: none;
 }
 
-#search {
-    height: 28px;
-    line-height: 24px;
-}
-
 button, input[type=button], input[type=submit] {
     border: 1px solid var(--theme_default_btnborder);
     font-weight: normal;
@@ -2301,17 +2296,6 @@ form#quick-reply select {
 
 .search-row input[type="text"]:focus {
     border-color: var(--theme_default_link);
-}
-
-.search-row input[type="submit"] {
-    background: var(--theme_default_postbg);
-    border: 1px solid var(--theme_default_btnborder);
-    color: var(--theme_default_link);
-}
-
-.search-row input[type="submit"]:hover {
-    background: var(--theme_default_link);
-    color: var(--theme_default_bg);
 }
 
 .search-help {

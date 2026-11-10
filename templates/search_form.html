@@ -19,10 +19,10 @@
 			<details>
 				<summary>{% trans %}How to search{% endtrans %}</summary>
 				<ul>
-					<li><code>"exact phrase"</code> {% trans %}match exact text{% endtrans %}</li>
-					<li><code>word*</code> {% trans %}wildcard search{% endtrans %}</li>
-					<li><code>name:Anonymous</code> {% trans %}filter by poster name{% endtrans %}</li>
-					<li><code>subject:"Thread"</code> {% trans %}filter by subject{% endtrans %}</li>
+					<li><code>"{% trans %}exact phrase{% endtrans %}"</code> {% trans %}match exact text{% endtrans %}</li>
+					<li><code>{% trans %}word{% endtrans %}*</code> {% trans %}wildcard search{% endtrans %}</li>
+					<li><code>name:{% trans %}Anonymous{% endtrans %}</code> {% trans %}filter by poster name{% endtrans %}</li>
+					<li><code>subject:"{% trans %}Thread{% endtrans %}"</code> {% trans %}filter by subject{% endtrans %}</li>
 					<li><code>id:12345</code> {% trans %}find by post ID{% endtrans %}</li>
 					<li><code>thread:123</code> {% trans %}posts in thread{% endtrans %}</li>
 					{% if flags_enabled %}<li><code>flag:UA</code> {% trans %}filter by flag{% endtrans %}</li>{% endif %}

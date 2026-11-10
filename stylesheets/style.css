@@ -1256,8 +1256,11 @@ body.dialog-open {
     overflow: hidden;
 }
 
-.ui-dialog {
+:root {
     --ui-control-height: 32px;
+}
+
+.ui-dialog {
     box-sizing: border-box;
     max-width: calc(100vw - 16px);
     max-height: calc(100dvh - 16px);
@@ -1376,7 +1379,10 @@ body.dialog-open {
 
 .ui-dialog .ui-dialog-actions button,
 .ui-dialog .ui-dialog-actions input[type="submit"],
-.ui-dialog .ui-dialog-actions input[type="button"] {
+.ui-dialog .ui-dialog-actions input[type="button"],
+.search-row #search,
+.search-row input[type="submit"],
+.search-row select {
     box-sizing: border-box;
     height: var(--ui-control-height);
     min-height: var(--ui-control-height);
@@ -1415,7 +1421,7 @@ body.dialog-open {
 }
 
 @media (pointer: coarse), (max-width: 600px) {
-    .ui-dialog {
+    :root {
         --ui-control-height: 44px;
     }
     .ui-dialog .ui-dialog-close {
@@ -2373,35 +2379,25 @@ input[type=password], input[type=text], select, textarea
     align-items: center
 }
 
-.search-row input[type=text],
-.search-row select,
-.search-row input[type=submit] {
-    height: auto !important;
-    line-height: 1.4 !important;
-    padding: 8px 12px !important;
-    vertical-align: middle
-}
-
 .search-row input[type=text] {
     flex: 1;
-    min-width: 200px;
-    font-size: 10pt
+    min-width: 0;
+    flex-basis: 200px
 }
 
-.search-row input[type=text]:focus {
-    outline: none;
-    box-shadow: 0 0 5px rgba(128, 128, 128, .3)
+.search-row :focus-visible {
+    outline: 2px solid var(--theme_default_link, currentColor);
+    outline-offset: -2px
 }
 
 .search-row select {
     min-width: 140px;
+    padding-right: 28px;
     cursor: pointer
 }
 
 .search-row input[type=submit] {
-    padding: 8px 20px !important;
-    cursor: pointer;
-    font-weight: 700
+    cursor: pointer
 }
 
 .search-help {

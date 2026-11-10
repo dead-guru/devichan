@@ -4484,3 +4484,64 @@ msgstr[2] "Ще %count% новин"
 #: ../../../../templates/themes/catalog/catalog.html
 msgid "Back to board"
 msgstr "На дошку"
+
+#: ../../../../templates/search_form.html
+msgid "Enter search query..."
+msgstr "Введіть пошуковий запит…"
+
+#: ../../../../templates/search_form.html
+msgid "How to search"
+msgstr "Як шукати"
+
+#: ../../../../templates/search_form.html
+msgid "exact phrase"
+msgstr "точна фраза"
+
+#: ../../../../templates/search_form.html
+msgid "word"
+msgstr "слово"
+
+#: ../../../../templates/search_form.html
+msgid "Anonymous"
+msgstr "Анонім"
+
+#: ../../../../templates/search_form.html
+msgid "match exact text"
+msgstr "точний збіг тексту"
+
+#: ../../../../templates/search_form.html
+msgid "wildcard search"
+msgstr "довільні символи замість зірочки"
+
+#: ../../../../templates/search_form.html
+msgid "filter by poster name"
+msgstr "за ім’ям автора"
+
+#: ../../../../templates/search_form.html
+msgid "filter by subject"
+msgstr "за темою допису"
+
+#: ../../../../templates/search_form.html
+msgid "find by post ID"
+msgstr "за номером допису"
+
+#: ../../../../templates/search_form.html
+msgid "posts in thread"
+msgstr "дописи в треді"
+
+#: ../../../../templates/search_form.html
+msgid "filter by flag"
+msgstr "за прапорцем"
+
+#: ../../../../search.php
+msgid "Query too broad. Be more specific."
+msgstr "Запит надто загальний. Уточніть його."
+
+#: ../../../../search.php
+#, php-format
+msgid "Too many results (limit: %d). Try a more specific query."
+msgstr "Забагато результатів (обмеження: %d). Уточніть запит."
+
+#: ../../../../search.php
+msgid "No results found."
+msgstr "Нічого не знайдено."
