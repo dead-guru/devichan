@@ -121,8 +121,9 @@ and [GeoLite license](https://www.maxmind.com/en/geolite/eula).
 
 ## Attribution
 
-GeoLite requires attribution to MaxMind. Retain the GeoLite attribution in the
-footer when flags are enabled. MaxMind's example is:
+GeoLite requires attribution to MaxMind. DeVichan does not add this notice
+automatically. Add it to the site's private configuration through
+`$config['footer'][]`. MaxMind's example is:
 
 > This product includes GeoLite Data created by MaxMind, available from
 > https://www.maxmind.com.

@@ -139,16 +139,6 @@ final class ModeratorIpFlagsIntegrationTest extends TestCase
         self::assertStringNotContainsString('mod-ip-flag', Element('mod/bans_table.html', $args));
     }
 
-    public function testGeoLiteAttributionFollowsPublicAndModeratorFlags(): void
-    {
-        global $config, $mod;
-
-        self::assertStringContainsString('GeoLite Data', Element('footer.html', ['config' => $config, 'mod' => $mod]));
-        self::assertStringNotContainsString('GeoLite Data', Element('footer.html', ['config' => $config, 'mod' => false]));
-        $config['country_flags'] = true;
-        self::assertStringContainsString('GeoLite Data', Element('footer.html', ['config' => $config, 'mod' => false]));
-    }
-
     public function testBanListAssetsResolveFromNestedModeratorRoutes(): void
     {
         global $config, $mod;
