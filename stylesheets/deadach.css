@@ -1051,7 +1051,7 @@ form[name="post"]:not(#quick-reply) .post-field + input[type="submit"] {
     }
 }
 
-#upload_selection button:focus-visible {
+form[name="post"] .upload-modes button:focus-visible {
     outline: 1px solid var(--theme_default_link);
     outline-offset: -1px;
 }

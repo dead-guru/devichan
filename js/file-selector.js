@@ -50,7 +50,8 @@ $('.dropzone-wrap').css('user-select', 'none').show();
 window.FileSelector = {
     addFile: function(file) { addFile(file); },
     removeFile: function(file) { removeFile(file); },
-    getFiles: function() { return files; }
+    getFiles: function() { return files; },
+    clear: function() { clearFiles(); }
 };
 
 function addFile(file) {
@@ -63,6 +64,17 @@ function addFile(file) {
 
 function removeFile(file) {
 	files.splice(files.indexOf(file), 1);
+}
+
+function clearFiles() {
+	files = [];
+	$('.file-thumbs').empty();
+}
+
+// A hidden dropzone (e.g. upload-selection.js embed mode) must not take files
+// the user can't see.
+function accepting() {
+	return $('.dropzone:visible').length > 0;
 }
 
 function getThumbElement(file) {
@@ -104,10 +116,7 @@ $(document).on('ajax_before_post', function (e, formData) {
 });
 
 // clear file queue and UI on success
-$(document).on('ajax_after_post', function () {
-	files = [];
-	$('.file-thumbs').empty();
-});
+$(document).on('ajax_after_post', clearFiles);
 
 var dragCounter = 0;
 var dropHandlers = {
@@ -136,6 +145,8 @@ var dropHandlers = {
 
 		$('.dropzone').removeClass('dragover');
 		dragCounter = 0;
+		if (!accepting())
+			return;
 
 		var fileList = e.originalEvent.dataTransfer.files;
 		for (var i=0; i<fileList.length; i++) {
@@ -196,6 +207,8 @@ $(document).on('keypress click touchend', '.dropzone', function (e) {
 });
 
 $(document).on('paste', function (e) {
+	if (!accepting())
+		return;
 	var clipboard = e.originalEvent.clipboardData;
 	if (typeof clipboard.items != 'undefined' && clipboard.items.length != 0) {
 		

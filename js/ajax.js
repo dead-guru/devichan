@@ -103,7 +103,7 @@ $(window).ready(function() {
 									
 									$(form).find('input[type="submit"]').val(submit_txt);
 									$(form).find('input[type="submit"]').removeAttr('disabled');
-									$(form).find('input[name="subject"],input[name="file_url"],\
+									$(form).find('input[name="subject"],input[name="file_url"],input[name="embed"],\
 										textarea[name="body"],input[type="file"]').val('').change();
 
 									if (sessionStorage.body) {

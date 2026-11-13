@@ -116,6 +116,15 @@ if (($_COOKIE['e2e_options'] ?? null) === '1') {
     $config['stylesheets']['Photon'] = 'photon.css';
     $config['default_stylesheet'] = ['Photon', 'photon.css'];
 }
+if (($_COOKIE['e2e_post_form'] ?? null) === '1') {
+    array_push(
+        $config['additional_javascript'],
+        'js/instance.settings.js',
+        'js/quick-reply.js',
+        'js/file-selector.js',
+        'js/upload-selection.js',
+    );
+}
 if (($_COOKIE['e2e_post_controls'] ?? null) === '1') {
     $config['additional_javascript'][] = 'js/post-menu.js';
     $config['additional_javascript'][] = 'js/quick-post-controls.js';

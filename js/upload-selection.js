@@ -9,96 +9,85 @@
  *   $config['additional_javascript'][] = 'js/jquery.min.js';
  *   //$config['additional_javascript'][] = 'js/wpaint.js';
  *   $config['additional_javascript'][] = 'js/upload-selection.js';
- *                                                  
+ *
+ * The quick reply form (js/quick-reply.js) gets the same switch. Leaving the
+ * file mode also empties the js/file-selector.js queue.
  */
 
-$(function(){
-  var enabled_file = true;
-  var enabled_url = $("#upload_url").length > 0;
-  var enabled_embed = $("#upload_embed").length > 0;
-  var enabled_oekaki = typeof window.oekaki != "undefined";
+$(function() {
+  var labels = {file: _('File'), url: _('Remote'), embed: _('Embed'), oekaki: _('Oekaki')};
+  // Quick reply mirrors the main form, so all post forms share one mode.
+  var mode = 'file';
 
-  var select_mode = function(mode) {
-    $('#upload_selection button').each(function() {
-      $(this).attr('aria-pressed', $(this).data('mode') === mode ? 'true' : 'false');
+  var modes = function($form) {
+    var list = ['file'];
+    if ($form.find('[name="file_url"]').length) list.push('url');
+    if ($form.find('[name="embed"]').length) list.push('embed');
+    if (window.oekaki && !$form.is('#quick-reply')) list.push('oekaki');
+    return list;
+  };
+
+  var show = function($form) {
+    var m = modes($form).indexOf(mode) < 0 ? 'file' : mode;
+    $form.find('#upload').toggle(m === 'file' || m === 'url');
+    $form.find('[type="file"], .dropzone-wrap, .add_image, .file_separator').toggle(m === 'file');
+    $form.find('[name="file_url"]').closest('#upload_url, tr').toggle(m === 'url');
+    $form.find('[name="embed"]').closest('tr').toggle(m === 'embed');
+    $form.find('.upload-modes button').each(function() {
+      $(this).attr('aria-pressed', String($(this).attr('data-mode') === m));
     });
   };
 
-  var disable_all = function() {
-    $("#upload").hide();
-    $("[id^=upload_file]").hide();
-    $(".file_separator").hide();
-    $("#upload_url").hide();
-    $("#upload_embed").hide();
-    $(".add_image").hide();
-    $(".dropzone-wrap").hide();
-
-    $('[id^=upload_file]').each(function(i, v) {
-        $(v).val('');
-    });
-
-    $("#upload_embed > td > input").val("");
-
-    if (enabled_oekaki) {
-      if (window.oekaki.initialized) {
-        window.oekaki.deinit();
-      }
+  // A hidden attachment must not get posted, so switching drops the others.
+  var select = function(m) {
+    var $forms = $('form[name="post"]');
+    mode = m;
+    if (m !== 'file') {
+      $forms.find('[type="file"]').val('');
+      if (window.FileSelector) window.FileSelector.clear();
     }
-  };
-
-  enable_file = function() {
-    disable_all();
-    $("#upload").show();
-    $(".dropzone-wrap").show();
-    $(".file_separator").show();
-    $("[id^=upload_file]").show();
-    $(".add_image").show();
-    select_mode('file');
-  };
-
-  enable_url = function() {
-    disable_all();
-    $("#upload").show();
-    $("#upload_url").show();
-
-    $('#file_url').attr('placeholder', _('URL'));
-    select_mode('url');
-  };
-
-  enable_embed = function() {
-    disable_all();
-    $("#upload_embed").show();
-    select_mode('embed');
-  };
-
-  enable_oekaki = function() {
-    disable_all();
-
-    window.oekaki.init();
-    select_mode('oekaki');
-  };
-
-  if (enabled_url || enabled_embed || enabled_oekaki) {
-    $("<tr class='upload-modes'><th></th><td id='upload_selection'></td></tr>").insertBefore("#upload");
-    var choices = $('<div role="group"></div>').attr('aria-label', _('Select')).appendTo('#upload_selection');
-    var add_choice = function(mode, label, enable) {
-      $('<button type="button" aria-pressed="false"></button>')
-        .text(label).data('mode', mode).on('click', function() {
-          if ($(this).attr('aria-pressed') !== 'true') enable();
-        }).appendTo(choices);
-    };
-    add_choice('file', _('File'), enable_file);
-    if (enabled_url) {
-      add_choice('url', _('Remote'), enable_url);
+    if (m !== 'url') $forms.find('[name="file_url"]').val('');
+    if (m !== 'embed') $forms.find('[name="embed"]').val('');
+    if (window.oekaki) {
+      if (m === 'oekaki') window.oekaki.init();
+      else if (window.oekaki.initialized) window.oekaki.deinit();
     }
-    if (enabled_embed) {
-      add_choice('embed', _('Embed'), enable_embed);
-    }
-    if (enabled_oekaki) {
-      add_choice('oekaki', _('Oekaki'), enable_oekaki);
+    $forms.each(function() { show($(this)); });
+  };
 
-      $("#confirm_oekaki_label").hide();
+  var decorate = function() {
+    var $form = $(this);
+    var $upload = $form.find('#upload');
+    if (!$upload.length || $form.data('upload-modes')) return;
+    $form.data('upload-modes', true);
+    // quick reply clones the main form together with its switch
+    $form.find('.upload-modes').remove();
+    // shown alone in its own mode, so not "Or URL"
+    $form.find('[name="file_url"]').attr('placeholder', _('URL'));
+
+    var list = modes($form);
+    if (list.length > 1) {
+      var $group = $('<div role="group"></div>').attr('aria-label', _('Select'));
+      list.forEach(function(m) {
+        $('<button type="button"></button>').attr('data-mode', m).text(labels[m]).appendTo($group);
+      });
+      // match the upload row, quick reply drops the <th> column
+      var $row = $('<tr class="upload-modes"></tr>').insertBefore($upload);
+      var span = 0;
+      $upload.children('td').each(function() { span += this.colSpan; });
+      if ($upload.children('th').length) $row.append('<th></th>');
+      $('<td></td>').attr('colspan', span).append($group).appendTo($row);
     }
-    enable_file();
-  }
+    show($form);
+  };
+
+  $(document).on('click', 'form[name="post"] .upload-modes button', function() {
+    if ($(this).attr('aria-pressed') !== 'true') select($(this).attr('data-mode'));
+  });
+  $(window).on('quick-reply', function() {
+    $('form[name="post"]').each(decorate);
+  });
+
+  $('form[name="post"]').each(decorate);
+  select(mode);
 });

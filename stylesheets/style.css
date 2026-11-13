@@ -274,7 +274,7 @@ form[name="post"] .postarea .format-text button {
     line-height: 1.4
 }
 
-form[name="post"] #upload_selection {
+form[name="post"] .upload-modes > td {
     padding-bottom: .25em
 }
 
@@ -282,7 +282,7 @@ form[name="post"] .upload-modes > th {
     background: transparent
 }
 
-#upload_selection > div {
+form[name="post"] .upload-modes [role="group"] {
     display: flex;
     flex-wrap: wrap;
     float: none;
@@ -290,7 +290,7 @@ form[name="post"] .upload-modes > th {
     text-align: left
 }
 
-#upload_selection button {
+form[name="post"] .upload-modes button {
     box-sizing: border-box;
     height: auto;
     min-height: 2em;
@@ -305,16 +305,16 @@ form[name="post"] .upload-modes > th {
     cursor: pointer
 }
 
-#upload_selection button[aria-pressed="true"] {
+form[name="post"] .upload-modes button[aria-pressed="true"] {
     border-bottom-color: currentColor;
     font-weight: bold
 }
 
-#upload_selection button:hover {
+form[name="post"] .upload-modes button:hover {
     background-color: rgba(128, 128, 128, .15)
 }
 
-#upload_selection button:focus-visible,
+form[name="post"] .upload-modes button:focus-visible,
 form[name="post"] .format-text button:focus-visible {
     outline: 2px solid currentColor;
     outline-offset: -2px
