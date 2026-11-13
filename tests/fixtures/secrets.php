@@ -120,6 +120,8 @@ if (($_COOKIE['e2e_post_form'] ?? null) === '1') {
     array_push(
         $config['additional_javascript'],
         'js/instance.settings.js',
+        'js/storage-migration.js',
+        'js/comment-toolbar.js',
         'js/quick-reply.js',
         'js/file-selector.js',
         'js/upload-selection.js',

@@ -27,6 +27,25 @@ final class PostFormCest
         $I->resetCookie('e2e_post_form');
     }
 
+    public function firstVisitKeepsTheToolbarAndPostPassword(BrowserTester $I): void
+    {
+        $I->executeJS('localStorage.clear();');
+        $this->openThread($I);
+        $I->waitForElementVisible(self::MAIN . ' .format-text button');
+        $I->assertSame(
+            $I->grabValueFrom(self::MAIN . ' input[name="password"]'),
+            $I->executeJS('return localStorage.password;'),
+        );
+    }
+
+    public function returningVisitorKeepsTheirSettings(BrowserTester $I): void
+    {
+        $I->executeJS('localStorage.clear(); localStorage.version = "3"; localStorage.formatText_toolbar_1 = "false";');
+        $this->openThread($I);
+        $I->assertSame('false', $I->executeJS('return localStorage.formatText_toolbar_1;'));
+        $I->dontSeeElement(self::MAIN . ' .format-text');
+    }
+
     public function quickReplySwitchesAttachmentsTogetherWithTheMainForm(BrowserTester $I): void
     {
         $this->openQuickReply($I);
