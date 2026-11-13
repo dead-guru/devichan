@@ -136,6 +136,29 @@ final class PaintCest
         }
     }
 
+    public function phoneToolbarKeepsToolsAndActionsInTwoRows(BrowserTester $I): void
+    {
+        $I->executeJS('window.paintTool.close();');
+        $I->resizeWindow(390, 844);
+        try {
+            // themes used to override the toolbar layout
+            foreach ([null, 'Deadach', 'Dark New Photon'] as $style) {
+                if ($style) {
+                    $I->executeJS('changeStyle(arguments[0]);', [$style]);
+                    $I->waitForJS('const l = document.getElementById("stylesheet"); return !!(l.sheet && l.sheet.href === l.href);', 10);
+                }
+                $I->executeJS('window.paintTool.open();');
+                $I->assertSame([1, 1], $I->executeJS(<<<'JS'
+                    const rows = s => new Set([...document.querySelectorAll(s)].map(el => Math.round(el.getBoundingClientRect().top))).size;
+                    return [rows('.paint-toolbar [data-tool]'), rows('.paint-toolbar .paint-color-input, .paint-toolbar [data-action]')];
+                    JS), $style ?? 'default');
+                $I->executeJS('window.paintTool.close();');
+            }
+        } finally {
+            $I->executeJS('localStorage.removeItem("stylesheet");');
+        }
+    }
+
     public function fillWorksInsideShapesOnLightAndDarkBackgrounds(BrowserTester $I): void
     {
         foreach (['rect', 'circle'] as $shape) {

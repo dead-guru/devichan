@@ -1659,10 +1659,6 @@ div.post.reply {
 }
 
 .paint-toolbar {
-    display: flex !important;
-    flex-wrap: wrap !important;
-    gap: 6px !important;
-    padding: 8px !important;
     background: var(--theme_default_bg) !important;
     border-bottom: 1px solid var(--theme_default_border) !important;
 }
@@ -1671,18 +1667,6 @@ div.post.reply {
     background: var(--theme_default_bg) !important;
     border-bottom-color: var(--theme_default_border) !important;
     color: var(--theme_default_text) !important;
-}
-
-.paint-toolbar-group {
-    display: flex !important;
-    gap: 4px !important;
-    padding: 0 8px !important;
-    border-right: 1px solid var(--theme_default_border) !important;
-    align-items: center !important;
-}
-
-.paint-toolbar-group:last-child {
-    border-right: none !important;
 }
 
 .paint-btn {

@@ -1849,7 +1849,7 @@
                 <dialog class="paint-modal ui-dialog" aria-labelledby="paint-title">
                         <div class="paint-header ui-dialog-header"><h3 id="paint-title" class="ui-dialog-title">Dead Paint</h3><button type="button" class="paint-close ui-dialog-close" aria-label="${escapeHtml(_('Close'))}">&times;</button></div>
                         <div class="paint-toolbar">
-                            <div class="paint-toolbar-group">
+                            <div class="paint-toolbar-group paint-tools">
                                 ${[
                                     {n: 'brush',     i: 'fa-solid fa-paintbrush',    t: _('Brush')},
                                     {n: 'eraser',    i: 'fa-solid fa-eraser',        t: _('Eraser')},
@@ -2216,9 +2216,13 @@
                 .paint-modal { padding: 0; width: 760px; scrollbar-gutter: stable; }
                 .paint-modal[open] { display: flex; flex-direction: column; }
                 .paint-header { flex: none; }
-                .paint-toolbar { display: flex; flex: none; flex-wrap: wrap; gap: 4px; padding: 4px; background: #d4d4d4; border-bottom: 1px solid #888; }
-                .paint-toolbar-group { display: flex; flex-wrap: wrap; max-width: 100%; min-width: 0; box-sizing: border-box; gap: 2px; padding: 0 6px; border-right: 1px solid #aaa; align-items: center; }
-                .paint-tool-options { display: flex; flex: none; flex-wrap: wrap; gap: 4px; padding: 4px; background: #cdcdcd; border-bottom: 1px solid #888; min-height: 28px; box-sizing: content-box; }
+                /* groups are told apart by spacing: a divider line ends up alone at a wrapped row's edge */
+                .paint-toolbar { display: flex; flex: none; flex-wrap: wrap; gap: 4px 12px; padding: 8px; background: #d4d4d4; border-bottom: 1px solid #888; }
+                .paint-toolbar-group { display: flex; flex-wrap: wrap; max-width: 100%; min-width: 0; box-sizing: border-box; gap: 4px; align-items: center; }
+                /* narrow screens shrink the tools to keep them in one row instead of wrapping a few */
+                .paint-tools { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, var(--ui-control-height)); }
+                .paint-modal .paint-tools .paint-btn { min-width: 0; padding-left: 0; padding-right: 0; }
+                .paint-tool-options { display: flex; flex: none; flex-wrap: wrap; gap: 4px 12px; padding: 4px 8px; background: #cdcdcd; border-bottom: 1px solid #888; min-height: 28px; box-sizing: content-box; }
                 .paint-btn { cursor: pointer; min-width: 28px; min-height: 28px; margin: 0; display: inline-flex; align-items: center; justify-content: center; gap: 4px; }
                 .paint-btn i { font-size: 14px; line-height: 1; pointer-events: none; }
                 .paint-btn.active { outline: 2px solid currentColor; outline-offset: -3px; }
