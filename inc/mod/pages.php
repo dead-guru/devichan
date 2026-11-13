@@ -2361,15 +2361,16 @@ function mod_rebuild() {
 			}
 		}
 		
-		if (isset($_POST['rebuild_themes'])) {
-			$log[] = 'Regenerating theme files';
-			rebuildThemes('all');
-		}
-		
+		// before any page: pages embed hashes of the minified CSS it writes
 		if (isset($_POST['rebuild_javascript'])) {
 			$log[] = 'Rebuilding <strong>' . $config['file_script'] . '</strong>';
 			buildJavascript();
 			$rebuilt_scripts[] = $config['file_script'];
+		}
+
+		if (isset($_POST['rebuild_themes'])) {
+			$log[] = 'Regenerating theme files';
+			rebuildThemes('all');
 		}
 		
 		foreach ($boards as $board) {

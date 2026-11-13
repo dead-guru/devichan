@@ -47,13 +47,14 @@ if(is_string($cache) && is_dir($cache)) {
     rrmdir($cache);
 }
 
-if(!$options['quiet'])
-	echo "Regenerating theme files...\n";
-rebuildThemes('all');
-
+// before any page: pages embed hashes of the minified CSS it writes
 if(!$options['quiet'])
 	echo "Generating Javascript file...\n";
 buildJavascript();
+
+if(!$options['quiet'])
+	echo "Regenerating theme files...\n";
+rebuildThemes('all');
 
 $main_js = $config['file_script'];
 

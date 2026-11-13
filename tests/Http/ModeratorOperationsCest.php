@@ -141,6 +141,9 @@ final class ModeratorOperationsCest
         ]);
         $this->assertHealthyPage($I);
         $I->see('Creating index pages');
+        // pages embed stylesheet hashes, so the minified CSS has to exist first
+        $log = $I->grabPageSource();
+        $I->assertLessThan(strpos($log, 'Regenerating theme files'), strpos($log, 'Rebuilding <strong>'));
     }
 
     public function administratorCanConfigureAndRebuildThemes(HttpTester $I): void

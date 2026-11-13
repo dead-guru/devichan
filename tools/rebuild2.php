@@ -50,14 +50,15 @@ if ($options['cache']) {
     }
 }
 
-if($options['themes']) {
-	echo "Regenerating theme files...\n";
-	rebuildThemes('all');
-}
-
+// before any page: pages embed hashes of the minified CSS it writes
 if($options['js']) {
 	echo "Generating Javascript file...\n";
 	buildJavascript();
+}
+
+if($options['themes']) {
+	echo "Regenerating theme files...\n";
+	rebuildThemes('all');
 }
 
 $main_js = $config['file_script'];
