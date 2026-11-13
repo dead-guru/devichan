@@ -79,6 +79,10 @@ final class HighYieldFunctionIntegrationTest extends TestCase
         self::assertFileExists($absoluteOutput . '/main.min.js');
         self::assertFileExists($absoluteOutput . '/js/package.json');
         self::assertStringContainsString('e2eExtra', (string) file_get_contents($absoluteOutput . '/main.min.js'));
+        self::assertStringContainsString(
+            $config['uri_stylesheets'] . 'theme.min.css?v=' . md5_file($assetDirectory . '/theme.min.css'),
+            (string) file_get_contents($absoluteOutput . '/main.min.js'),
+        );
 
         $config['minify_css'] = false;
         $config['minify_js'] = false;
@@ -87,6 +91,10 @@ final class HighYieldFunctionIntegrationTest extends TestCase
         buildJavascript();
         self::assertFileExists($absoluteOutput . '/main.js');
         self::assertFileDoesNotExist($absoluteOutput . '/js/package.json');
+        self::assertStringContainsString(
+            $config['uri_stylesheets'] . 'theme.css?v=' . md5_file($assetDirectory . '/theme.css'),
+            (string) file_get_contents($absoluteOutput . '/main.js'),
+        );
     }
 
     public function testFileAndPostDeletionCoverMultiFileAndCrossBoardCleanup(): void

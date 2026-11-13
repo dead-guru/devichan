@@ -20,12 +20,10 @@
     {% if config.default_stylesheet.1 != '' %}
     <script>
     (function(){
-        var b='{{ config.uri_stylesheets }}';
-        var m={{ config.stylesheets|json_encode|raw }};
-        var d='{{ config.default_stylesheet.1 }}';
+        var m={ {%- for name, file in config.stylesheets %}{{ name|json_encode|raw }}:{{ (file == '' ? '' : (config.uri_stylesheets ~ file)|ccss)|json_encode|raw }}{% if not loop.last %},{% endif %}{% endfor -%} };
         var s=localStorage.getItem('stylesheet');
-        var f=(s&&m[s])?m[s]:d;
-        document.write('<link rel="stylesheet" id="stylesheet" href="'+b+f+'" onload="document.documentElement.classList.add(\'style-ready\')">');
+        var f=(s&&m[s])||{{ (config.uri_stylesheets ~ config.default_stylesheet.1)|ccss|json_encode|raw }};
+        document.write('<link rel="stylesheet" id="stylesheet" href="'+f+'" onload="document.documentElement.classList.add(\'style-ready\')">');
     })();
     </script>
     <noscript>

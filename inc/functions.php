@@ -1775,23 +1775,18 @@ function buildJavascript() {
     $stylesheetList['_style'] = 'style.css'; //because $config is global
     
 	foreach ($stylesheetList as $name => $stylesheet) {
-        if (
-            !empty($stylesheet) && $config['minify_css']
-            && file_exists($root . $config['uri_stylesheets'] . $stylesheet)
-        ) { //try to minify css using php if enabled
-            $stylesheet = $config['uri_stylesheets'] . $stylesheet;
-            $path_parts = pathinfo($stylesheet);
+        // main.js passes it through ccss, which picks the minified file and versions it
+        $uri = (!empty($stylesheet) ? $config['uri_stylesheets'] : '') . $stylesheet;
+        if (!empty($stylesheet) && $config['minify_css'] && file_exists($root . $uri)) {
+            $path_parts = pathinfo($uri);
             $newPath = $path_parts['dirname'] . DIRECTORY_SEPARATOR . str_replace(
                     $path_parts['extension'],
                     'min.' . $path_parts['extension'],
                     $path_parts['basename']
                 );
-            
-            $minifier = new CSS($root . $stylesheet);
+
+            $minifier = new CSS($root . $uri);
             $minifier->minify($root . $newPath);
-            $uri = $newPath . '?v=' . md5_file($root . $newPath);
-        } else {
-            $uri = (!empty($stylesheet) ? $config['uri_stylesheets'] : '') . $stylesheet;
         }
         if ($name !== '_style') { //Do Not include style.css to list
             $stylesheets[] = [

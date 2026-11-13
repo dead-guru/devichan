@@ -26,29 +26,27 @@ class CssCompressTwigExtension extends Twig\Extension\AbstractExtension
     public function cssComp(string $filepath): string
     {
         global $config;
-        
-        if($config['minify_css'] === false || $filepath === '') {
+
+        if ($filepath === '') {
             return $filepath;
         }
-        
+
         $root = realpath(__DIR__ . '/../../../../..');
-    
-        $path_parts = pathinfo($filepath);
-        $newPath = $path_parts['dirname'] . DIRECTORY_SEPARATOR . str_replace(
-                $path_parts['extension'],
-                'min.' . $path_parts['extension'],
-                $path_parts['basename']
-            );
-        
-        if (is_file($root . $newPath)) {
-            if(!str_contains($newPath, '?v=')) {
-                $newPath .= '?v=' . md5_file($root . $newPath);
+
+        if ($config['minify_css']) {
+            $path_parts = pathinfo($filepath);
+            $newPath = $path_parts['dirname'] . DIRECTORY_SEPARATOR . str_replace(
+                    $path_parts['extension'],
+                    'min.' . $path_parts['extension'],
+                    $path_parts['basename']
+                );
+            if (is_file($root . $newPath)) {
+                $filepath = $newPath;
             }
-            
-            return $newPath;
         }
-        
-        return $filepath;
+
+        // stylesheets are cached as immutable, so the URL has to change with the file
+        return is_file($root . $filepath) ? $filepath . '?v=' . md5_file($root . $filepath) : $filepath;
     }
     
 }

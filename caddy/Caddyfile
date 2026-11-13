@@ -23,8 +23,18 @@
     @static path *.jpg *.jpeg *.gif *.png *.ico *.cur *.svg *.svgz *.mp4 *.ogg *.ogv *.webm *.htc *.gz *.woff *.woff2 *.ttf *.eot
     header @static Cache-Control "public, max-age=2592000, immutable"
 
-    @assets path *.css *.js
-    header @assets Cache-Control "public, max-age=31536000, immutable"
+    # Only a URL that changes with the file (?v=hash) can be cached for good.
+    @versioned_assets {
+        path *.css *.js
+        query v=*
+    }
+    header @versioned_assets Cache-Control "public, max-age=31536000, immutable"
+
+    @assets {
+        path *.css *.js
+        not query v=*
+    }
+    header @assets Cache-Control "no-cache"
 
     @no_cache_ext path *.html *.json
     header @no_cache_ext {
